@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('grade_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedInteger('weight');
+            $table->unsignedInteger('weight')->default(1);
             $table->timestamps();
         });
     }

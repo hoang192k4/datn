@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('file_path');
-            $table->unsignedBigInteger('subject_id');
-            $table->unsignedBigInteger('teacher_id');
+            $table->unsignedBigInteger('subject_id')->nullable();
+            $table->unsignedBigInteger('teacher_id')->nullable();
             $table->enum('status',['public', 'privite'])->default('privite');
             $table->timestamps();
         });
