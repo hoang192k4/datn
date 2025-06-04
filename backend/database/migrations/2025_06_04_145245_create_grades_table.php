@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('grades', function (Blueprint $table) {
             $table->id();
-            $table->decimal('score',10,2);
-            $table->unsignedBigInteger('course_offer_id');
-            $table->unsignedBigInteger('student_id');
-            $table->unsignedBigInteger('grade_type_id');
+            $table->decimal('score',10,2)->default(0);
+            $table->unsignedBigInteger('course_offer_id')->nullable();
+            $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('grade_type_id')->nullable();
             $table->enum('score_visibility',['public', 'private'])->default('private');
             $table->timestamps();
         });

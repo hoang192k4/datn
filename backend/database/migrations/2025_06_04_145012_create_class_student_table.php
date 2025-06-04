@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->date('start_time');
             $table->date('start_time');
-            $table->unsignedBigInteger('student_id');
-            $table->unsignedBigInteger('class_id');
+            $table->unsignedBigInteger('student_id')->nullable();
+            $table->unsignedBigInteger('class_id')->nullable();
             $table->enum('status',['studying', 'completed'])->default('studying');
         });
     }
