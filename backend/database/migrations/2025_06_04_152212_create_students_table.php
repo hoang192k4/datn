@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('student_code')->unique();
             $table->string('email')->unique();
             $table->string('name');
-            $table->sring('password');
+            $table->string('password');
             $table->date('date_of_birth');
             $table->string('address');
             $table->enum('gender', ['male', 'female']);

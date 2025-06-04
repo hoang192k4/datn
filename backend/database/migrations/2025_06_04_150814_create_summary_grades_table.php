@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('summary_grades', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id')->nullable();
-            $table->unsignedBigInteger('sesmester_id')->nullable();
+            $table->unsignedBigInteger('semester_id')->nullable();
             $table->unsignedBigInteger('subject_id')->nullable();
             $table->unsignedInteger('attempt')->nullable();
             $table->unsignedInteger('attendance_score')->nullable();

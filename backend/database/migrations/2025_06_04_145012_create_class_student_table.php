@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('class_student', function (Blueprint $table) {
             $table->id();
             $table->date('start_time');
-            $table->date('start_time');
+            $table->date('end_time');
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('class_id')->nullable();
             $table->enum('status',['studying', 'completed'])->default('studying');

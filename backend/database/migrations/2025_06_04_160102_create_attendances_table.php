@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('note')->nullable();
             $table->enum('status', ['present', 'absent', 'excused_absent', 'late'])->nullable();
+            $table->unsignedBigInteger('session_id')->nullable();
+            $table->unsignedBigInteger('student_id')->nullable();
             $table->timestamps();
         });
     }
