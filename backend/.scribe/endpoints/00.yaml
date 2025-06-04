@@ -1,0 +1,345 @@
+name: 'Sản phẩm'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/products
+    metadata:
+      groupName: 'Sản phẩm'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'API lấy danh sách sản phẩm'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      X-API-KEY: 'string required Khóa API để xác thực. Example: x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      limit:
+        name: limit
+        description: 'Số lượng sản phẩm mỗi trang. Mặc định 10.'
+        required: false
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      page:
+        name: page
+        description: 'Trang hiện tại. Mặc định 1.'
+        required: false
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      limit: 17
+      page: 17
+    bodyParameters:
+      limit:
+        name: limit
+        description: 'Must be at least 1.'
+        required: false
+        example: 73
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      page:
+        name: page
+        description: 'Must be at least 1.'
+        required: false
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      limit: 73
+      page: 45
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": 200,
+            "message": "Thực hiện thành công",
+            "data": {
+              "products": [
+                {
+                  // Thông tin chi tiết của từng sản phẩm (theo ProductResource)
+                }
+              ],
+              "links": {
+                "first": "http://localhost/api/products?page=1",
+                "last": "http://localhost/api/products?page=10",
+                "prev": null,
+                "next": "http://localhost/api/products?page=2"
+              },
+              "meta": {
+                "current_page": 1,
+                "from": 1,
+                "to": 10,
+                "limit": 10,
+                "total": 100,
+                "count": 10,
+                "total_pages": 10
+              }
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/products
+    metadata:
+      groupName: 'Sản phẩm'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'API thêm mới sản phẩm'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Tên sản phẩm. Bắt buộc.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      name: consequatur
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "status": 201,
+            "message": "Thực hiện thành công",
+            "data": null
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "status": 400,
+            "message": "Thực hiện không thành công",
+            "data": null
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "status": 500,
+            "message": "Lỗi hệ thống!",
+            "data": null
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/products/{product_id}'
+    metadata:
+      groupName: 'Sản phẩm'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'API lấy thông tin chi tiết sản phẩm'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      product_id:
+        name: product_id
+        description: 'The ID of the product.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      id:
+        name: id
+        description: 'ID sản phẩm.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      product_id: 1
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": 200,
+            "message": "Thực hiện thành công",
+            "data": {
+              // Thông tin chi tiết của sản phẩm (theo ProductResource)
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/v1/products/{product_id}'
+    metadata:
+      groupName: 'Sản phẩm'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'API cập nhật thông tin sản phẩm'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      product_id:
+        name: product_id
+        description: 'The ID of the product.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      id:
+        name: id
+        description: 'ID sản phẩm.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      product_id: 1
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Tên sản phẩm. Không bắt buộc.'
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      name: consequatur
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "status": 200,
+            "message": "Thực hiện thành công",
+            "data": null
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 400
+        content: |-
+          {
+            "status": 400,
+            "message": "Thực hiện không thành công",
+            "data": null
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 500
+        content: |-
+          {
+            "status": 500,
+            "message": "Lỗi hệ thống!",
+            "data": null
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

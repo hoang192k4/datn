@@ -34,5 +34,7 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'api' => [
+        'key' => 'x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs',
+    ],
 ];
