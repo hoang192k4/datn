@@ -42,7 +42,7 @@ return [
         ],
         'api' => [
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'teachers',
         ],
     ],
 
@@ -64,15 +64,16 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'students' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\Student::class,
+        ],
+        'teachers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Teacher::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+
     ],
 
     /*
