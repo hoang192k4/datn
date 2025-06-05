@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Teacher extends Authenticatable implements JWTSubject
 {
@@ -59,5 +60,10 @@ class Teacher extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function role():BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 }

@@ -18,6 +18,13 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->group(function () {
         Route::post('/login', 'login')->name('login');
         Route::post('/register', 'register')->name('register');
+    });
+
+
+Route::controller(App\Http\Controllers\Teacher\TeacherAuthController::class)
+    ->prefix('teachers')
+    ->group(function () {
+        Route::post('/login', 'login')->name('login');
         Route::post('/refresh', 'refresh')->name('refresh');
         Route::get('/me', 'me')->name('me');
         Route::post('/logout', 'logout')->name('logout');

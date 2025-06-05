@@ -12,7 +12,7 @@ use Carbon\Carbon;
 /**
  * @group Tài khoản giảng viên
  */
-class AuthController extends BaseController
+class TeacherAuthController extends BaseController
 {
     use AuthServiceApi;
     public function __construct()
@@ -54,37 +54,9 @@ class AuthController extends BaseController
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
-    }
+        $user = Auth::guard('api')->user();
 
-    /**
-     * Đăng ký người dùng mới
-     *
-     * @header X-API-KEY string required Khóa API để xác thực. Example: x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs
-     * @bodyParam name string required Tên của người dùng. Example: Meta
-     * @bodyParam email string required Email của người dùng. Example:
-     *
-     * @bodyParam password string required Mật khẩu của người dùng. Example: secret
-     * @response 201 {
-     * "message": "User registered successfully"
-     * }
-     * @response 400 {
-     * "error": "Registration failed"
-     * }
-     * @response 500 {
-     * "error": "Internal Server Error"
-     * }
-     */
-    public function register(Request $request)
-    {
-        $data = $request->only('name', 'email', 'password');
-        $user = User::create($data);
-
-        if (!$user) {
-            return response()->json(['error' => 'Registration failed'], 400);
-        }
-
-        return response()->json(['message' => 'User registered successfully'], 201);
+        return $this->respondWithToken($token, $user->role->name);
     }
 
     /**
@@ -155,16 +127,30 @@ class AuthController extends BaseController
     }
 
 
-    protected function respondWithToken($token)
+    protected function respondWithToken($token, $role)
     {
         $ttl = config('jwt.ttl'); // Get the TTL from the JWT configuration
         $expiration = Carbon::now()->addMinutes($ttl);
+
+
+        $cookie = cookie(
+            'token',             // Tên cookie
+            $token,              // Nội dung là JWT
+            60,                  // Thời gian sống (phút)
+            null,
+            null,
+            false,                // Secure (true nếu dùng HTTPS)
+            true,                // HttpOnly = true
+            false,
+            'Strict'             // SameSite policy (nếu cần CORS thì để 'Lax' hoặc 'None')
+        );
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $ttl * 60,
-            'expires_at' => $expiration->toDateTimeString()
-        ]);
+            'expires_at' => $expiration->toDateTimeString(),
+            'role' => $role
+        ])->cookie($cookie);
     }
 }
