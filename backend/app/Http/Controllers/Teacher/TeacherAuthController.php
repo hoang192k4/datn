@@ -123,7 +123,7 @@ class TeacherAuthController extends BaseController
      */
     public function me()
     {
-        return response()->json(Auth::guard('api')->user());
+        return response()->json(auth('api')->user());
     }
 
 
@@ -131,7 +131,6 @@ class TeacherAuthController extends BaseController
     {
         $ttl = config('jwt.ttl'); // Get the TTL from the JWT configuration
         $expiration = Carbon::now()->addMinutes($ttl);
-
 
         $cookie = cookie(
             'token',             // Tên cookie

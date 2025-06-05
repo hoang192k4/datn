@@ -62,7 +62,7 @@ class Teacher extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function role():BelongsTo
+    public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
