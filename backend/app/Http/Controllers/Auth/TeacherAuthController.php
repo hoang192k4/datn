@@ -152,7 +152,5 @@ class TeacherAuthController extends BaseController
             'expires_at' => $expiration->toDateTimeString(),
             'role' => $role
         ])->cookie($cookie);
-
-
     }
 }
