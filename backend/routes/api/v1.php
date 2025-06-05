@@ -22,3 +22,10 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
         Route::get('/me', 'me')->name('me');
         Route::post('/logout', 'logout')->name('logout');
     });
+
+
+Route::controller(App\Http\Controllers\Student\StudentAuthController::class)
+    ->prefix('students')
+    ->group(function (){
+        Route::post('/login','login');
+    });
