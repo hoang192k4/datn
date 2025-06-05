@@ -35,4 +35,5 @@ Route::controller(App\Http\Controllers\Student\StudentAuthController::class)
     ->prefix('students')
     ->group(function (){
         Route::post('/login','login');
+        Route::get('/me','me');
     });
