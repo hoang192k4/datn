@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'guard' => 'teacher',
+        'passwords' => 'teachers',
     ],
 
     /*
@@ -36,13 +36,13 @@ return [
     */
 
     'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-        'api' => [
+        'teacher' => [
             'driver' => 'jwt',
             'provider' => 'teachers',
+        ],
+        'student' => [
+            'driver' => 'jwt',
+            'provider' => 'students',
         ],
     ],
 

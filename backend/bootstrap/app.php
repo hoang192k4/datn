@@ -30,13 +30,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias(['auth' => Authenticate::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (TokenInvalidException $e, Request $request) {
-            return response()->json(['message' => 'Token không hợp lệ'], 401);
-        });
-
-        $exceptions->render(function (TokenExpiredException $e, Request $request) {
-            return response()->json(['message' => 'Token đã hết hạn'], 401);
-        });
 
         $exceptions->render(function (JWTException $e, Request $request) {
             return response()->json(['message' => 'Không tìm thấy token'], 401);

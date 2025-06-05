@@ -1,27 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Teacher;
+namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
-use App\Models\Teacher;
-use App\Services\AuthServiceApi;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\Student;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use App\Http\Controllers\BaseController;
 
-/**
- * @group Tài khoản giảng viên
- */
-class TeacherAuthController extends BaseController
+class StudentAuthController extends BaseController
 {
-    use AuthServiceApi;
+
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['login', 'register']);
+        $this->middleware('auth:student')->except(['login']);
     }
 
     /**
-     * Đăng nhập dành cho giảng viên
+     * Đăng nhập dành cho sinh viên
      *
      * @header X-API-KEY string required Khóa API để xác thực. Example: x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs
      * @bodyParam email string required Email của người dùng. Example: meta@example.com
@@ -46,63 +44,16 @@ class TeacherAuthController extends BaseController
      * }
      *
      */
+
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = Auth::guard('api')->attempt($credentials)) {
+        if (!$token = Auth::guard('student')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        $user = Auth::guard('api')->user();
-
-        return $this->respondWithToken($token, $user->role->name);
+        return $this->respondWithToken($token);
     }
-
-    /**
-     * Làm mới token đăng nhập
-     *
-     * @authenticated
-     * @header X-API-KEY string required Khóa API để xác thực. Example: x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs
-     * @response 200 {
-     * "access_token": "eyJ0eXAiOiJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6Ik1ldGEiLCJpYXQiOjE2MTYwMjYyMDAsImV4cCI6MTYxNjAyOTgwMH0.3z8b",
-     * "token_type": "bearer",
-     * "expires_in": 3600,
-     * "expires_at": "2021-03-01 12:00:00"
-     * }
-     * @response 401 {
-     * "error": "Unauthorized"
-     * }
-     * @response 500 {
-     * "error": "Internal Server Error"
-     * }
-     */
-    public function refresh()
-    {
-        return $this->respondWithToken(Auth::guard('api')->refresh());
-    }
-
-    /**
-     * Đăng xuất người dùng
-     *
-     * @authenticated
-     * @header X-API-KEY string required Khóa API để xác thực. Example: x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs
-     * @response 200 {
-     * "message": "Successfully logged out"
-     * }
-     * @response 401 {
-     * "error": "Unauthorized"
-     * }
-     * @response 500 {
-     * "error": "Internal Server Error"
-     * }
-     */
-    public function logout()
-    {
-        Auth::guard('api')->logout();
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
 
     /**
      * Lấy thông tin người dùng hiện tại
@@ -121,18 +72,16 @@ class TeacherAuthController extends BaseController
      * "error": "Internal Server Error"
      * }
      */
+
     public function me()
     {
-        return response()->json(Auth::guard('api')->user());
+        return response()->json(Auth::guard('student')->user());
     }
 
-
-    protected function respondWithToken($token, $role)
+    public function respondWithToken($token)
     {
         $ttl = config('jwt.ttl'); // Get the TTL from the JWT configuration
         $expiration = Carbon::now()->addMinutes($ttl);
-
-
         $cookie = cookie(
             'token',             // Tên cookie
             $token,              // Nội dung là JWT
@@ -144,13 +93,11 @@ class TeacherAuthController extends BaseController
             false,
             'Strict'             // SameSite policy (nếu cần CORS thì để 'Lax' hoặc 'None')
         );
-
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $ttl * 60,
             'expires_at' => $expiration->toDateTimeString(),
-            'role' => $role
-        ])->cookie($cookie);
+        ])->cookie(Cookie::forget('token'));
     }
 }

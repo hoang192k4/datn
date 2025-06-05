@@ -2,15 +2,16 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
-use Symfony\Component\HttpFoundation\Response;
-use Closure;
+use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Authenticate extends Middleware
 {
@@ -28,19 +29,27 @@ class Authenticate extends Middleware
 
         // Skip authentication if the current route is in the excluded list
 
-
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['message' => 'Unauthenticated'], 401);
-            }
-        } catch (TokenExpiredException $e) {
-            return response()->json(['message' => 'Token đăng nhập đã hết hạn'], 401);
-        } catch (TokenInvalidException $e) {
-            return response()->json(['message' => 'Xác thực thông tin không thành công'], 401);
-        } catch (JWTException $e) {
-            return response()->json(['message' => 'Vui lòng gửi token đăng nhập'], 401);
+        if (empty($guards)) {
+            $guards = [null]; // fallback về guard mặc định nếu không truyền gì
         }
 
-        return $next($request);
+        foreach ($guards as $guard) {
+            try {
+                Auth::shouldUse($guard);
+                // Dùng JWTAuth trực tiếp để parse token và lấy user
+                $user = JWTAuth::parseToken()->authenticate();
+                if ($user) {
+                    return $next($request);
+                }
+            } catch (TokenExpiredException $e) {
+                return response()->json(['message' => 'Token đăng nhập đã hết hạn'], 401);
+            } catch (TokenInvalidException $e) {
+                return response()->json(['message' => 'Token không hợp lệ'], 401);
+            } catch (JWTException $e) {
+                return response()->json(['message' => 'Vui lòng gửi token'], 401);
+            }
+        }
+
+        return response()->json(['status' => 401, 'message' => 'Xác thực không thành công!'], 401);
     }
 }

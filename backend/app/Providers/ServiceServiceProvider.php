@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 class ServiceServiceProvider extends ServiceProvider
 {
     protected array $services = [
-        'App\Services\Product\ProductServiceInterface' => 'App\Services\Product\ProductService',
+
     ];
     /**
      * Register any application services.
