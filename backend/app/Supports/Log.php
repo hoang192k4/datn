@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Supports;
 
 
@@ -6,7 +7,8 @@ use Exception;
 use Illuminate\Support\Facades\Log as LogHelp;
 use Throwable;
 
-trait Log {
+trait Log
+{
     /*   * Log an informational message.
      *
      * @param string $message The log message.
@@ -29,5 +31,4 @@ trait Log {
             'exception' => $e->getMessage(),
         ]);
     }
-
 }

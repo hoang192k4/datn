@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Teacher;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Teacher;
 use App\Services\AuthServiceApi;
+use App\Traits\AuthTeacherApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -14,10 +15,10 @@ use Carbon\Carbon;
  */
 class TeacherAuthController extends BaseController
 {
-    use AuthServiceApi;
+    use AuthTeacherApi;
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['login', 'register']);
+        $this->middleware('auth:teacher')->except(['login', 'register']);
     }
 
     /**
@@ -50,11 +51,11 @@ class TeacherAuthController extends BaseController
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = Auth::guard('api')->attempt($credentials)) {
+        if (!$token = Auth::guard('teacher')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = Auth::guard('api')->user();
+        $user = Auth::guard('teacher')->user();
 
         return $this->respondWithToken($token, $user->role->name);
     }
@@ -79,7 +80,7 @@ class TeacherAuthController extends BaseController
      */
     public function refresh()
     {
-        return $this->respondWithToken(Auth::guard('api')->refresh());
+        return $this->respondWithToken(Auth::guard('teacher')->refresh());
     }
 
     /**
@@ -99,7 +100,7 @@ class TeacherAuthController extends BaseController
      */
     public function logout()
     {
-        Auth::guard('api')->logout();
+        Auth::guard('teacher')->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -123,7 +124,7 @@ class TeacherAuthController extends BaseController
      */
     public function me()
     {
-        return response()->json(Auth::guard('api')->user());
+        return response()->json($this->getCurrentTeacher());
     }
 
 
@@ -152,5 +153,7 @@ class TeacherAuthController extends BaseController
             'expires_at' => $expiration->toDateTimeString(),
             'role' => $role
         ])->cookie($cookie);
+
+
     }
 }

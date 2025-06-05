@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Student;
+namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
+use Carbon\Carbon;
+use App\Models\Student;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Models\Student;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Cookie;
+use App\Http\Controllers\BaseController;
 
 class StudentAuthController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['login']);
+        $this->middleware('auth:student')->except(['login']);
     }
 
     /**
@@ -47,7 +48,7 @@ class StudentAuthController extends BaseController
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = Auth::guard('student-api')->attempt($credentials)) {
+        if (!$token = Auth::guard('student')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $this->respondWithToken($token);
@@ -73,7 +74,7 @@ class StudentAuthController extends BaseController
 
     public function me()
     {
-        return response()->json(Auth::guard('student-api')->user());
+        return response()->json(Auth::guard('student')->user());
     }
 
     public function respondWithToken($token)
@@ -96,6 +97,6 @@ class StudentAuthController extends BaseController
             'token_type' => 'bearer',
             'expires_in' => $ttl * 60,
             'expires_at' => $expiration->toDateTimeString(),
-        ])->cookie($cookie);
+        ])->cookie(Cookie::forget('token'));
     }
 }

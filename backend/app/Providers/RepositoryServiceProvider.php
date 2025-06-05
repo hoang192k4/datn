@@ -8,7 +8,7 @@ class RepositoryServiceProvider extends ServiceProvider
 {
     protected array $repositories = [
         'App\Repositories\EloquentRepositoryInterface' => 'App\Repositories\EloquentRepository',
-        'App\Repositories\Product\ProductRepositoryInterface' => 'App\Repositories\Product\ProductRepository',
+
     ];
     /**
      * Register any application services.

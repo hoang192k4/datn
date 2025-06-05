@@ -21,7 +21,7 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
     });
 
 
-Route::controller(App\Http\Controllers\Teacher\TeacherAuthController::class)
+Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
     ->prefix('teachers')
     ->group(function () {
         Route::post('/login', 'login')->name('login');
@@ -31,9 +31,9 @@ Route::controller(App\Http\Controllers\Teacher\TeacherAuthController::class)
     });
 
 
-Route::controller(App\Http\Controllers\Student\StudentAuthController::class)
+Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
     ->prefix('students')
-    ->group(function (){
-        Route::post('/login','login');
-        Route::get('/me','me');
+    ->group(function () {
+        Route::post('/login', 'login');
+        Route::get('/me', 'me');
     });
