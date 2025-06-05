@@ -133,7 +133,6 @@ class TeacherAuthController extends BaseController
         $ttl = config('jwt.ttl'); // Get the TTL from the JWT configuration
         $expiration = Carbon::now()->addMinutes($ttl);
 
-
         $cookie = cookie(
             'token',             // Tên cookie
             $token,              // Nội dung là JWT
