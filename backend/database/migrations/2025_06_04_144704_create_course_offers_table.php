@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('course_offers', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->date('start_date');
             $table->date('end_date');
             $table->unsignedInteger('week_total')->default(0);
@@ -20,8 +21,8 @@ return new class extends Migration
             $table->unsignedBigInteger('classroom_id')->nullable();
             $table->unsignedBigInteger('teacher_id')->nullable();
             $table->unsignedBigInteger('subject_id')->nullable();
-             $table->unsignedBigInteger('semester_id')->nullable();
-            $table->enum('status',['in_register', 'in_progress', 'completed'])->default('in_register');
+            $table->unsignedBigInteger('semester_id')->nullable();
+            $table->enum('status', ['in_register', 'in_progress', 'completed'])->default('in_register');
             $table->timestamps();
         });
     }

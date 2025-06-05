@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('student_id')->nullable();
             $table->unsignedBigInteger('class_id')->nullable();
             $table->enum('status',['studying', 'completed'])->default('studying');
+
         });
     }
 

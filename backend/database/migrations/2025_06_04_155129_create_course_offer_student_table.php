@@ -15,6 +15,8 @@ return new class extends Migration
             $table->unsignedBigInteger('course_offer_id');
             $table->unsignedBigInteger('student_id');
             $table->timestamps();
+
+            $table->primary(['course_offer_id', 'student_id']);
         });
     }
 

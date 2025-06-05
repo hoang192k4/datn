@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('graduation_date')->nullable();
             $table->unsignedBigInteger('major_id')->nullable();
             $table->enum('status', ['active', 'graduated', 'suspended', 'dropped_out', 'pending'])->default('active');
+            $table->string('device-token');
             $table->timestamps();
         });
     }
