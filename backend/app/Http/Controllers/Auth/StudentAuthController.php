@@ -9,9 +9,11 @@ use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\BaseController;
+use App\Traits\AuthStudentApi;
 
 class StudentAuthController extends BaseController
 {
+    use AuthStudentApi;
 
     public function __construct()
     {
@@ -75,7 +77,7 @@ class StudentAuthController extends BaseController
 
     public function me()
     {
-        return response()->json(Auth::guard('student')->user());
+        return response()->json($this->getCurrentStudent());
     }
 
     public function respondWithToken($token)

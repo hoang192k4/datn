@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PublicStatus;
 use App\Enums\Evaluation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,7 @@ class SummaryGrade extends Model
     {
         return [
             'avaluation' => Evaluation::class,
+            'status' => PublicStatus::class,
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Gender;
+use App\Enums\Student\StudentStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -43,7 +44,9 @@ class Student extends Authenticatable implements JWTSubject
     {
         return [
             'password' => 'hashed',
-            'gender' => Gender::class
+            'gender' => Gender::class,
+
+            'status' => StudentStatus::class,
         ];
     }
 
