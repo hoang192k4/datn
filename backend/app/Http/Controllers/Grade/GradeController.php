@@ -38,6 +38,7 @@ class GradeController extends BaseController
         $this->repository = $repository;
         $this->service = $service;
         $this->gradeService = $gradeService;
+        // $this->middleware('auth:teacher');
     }
 
     public function getGradesByCourseOffer(CourseOfferGradeRequest $request): JsonResponse
@@ -69,6 +70,22 @@ class GradeController extends BaseController
     {
         try {
             $instance = $this->gradeService->updateOrCreate($request, $id);
+            if ($instance)
+                return $this->jsonResponseSuccess(new GradeResource($instance));
+            return $this->jsonResponseError();
+        } catch (ModelNotFoundByIdException $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError($e->getMessage(), 404);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function create(GradeRequest $request)
+    {
+        try {
+            $instance = $this->gradeService->create($request);
             if ($instance)
                 return $this->jsonResponseSuccess(new GradeResource($instance));
             return $this->jsonResponseError();

@@ -2,12 +2,15 @@
 
 namespace App\Services\Grade;
 
+use Exception;
+use App\Supports\Log;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
 use App\Exceptions\ModelNotFoundByIdException;
+use App\Http\Requests\Grade\GradeRequest;
 use App\Repositories\Grade\GradeRepositoryInterface;
 use App\Services\SummaryGrade\SummaryGradeServiceInterface;
-use App\Supports\Log;
-use Exception;
-use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class GradeService implements GradeServiceInterface
 {
@@ -28,13 +31,26 @@ class GradeService implements GradeServiceInterface
     {
         try {
             $data = $request->validated();
-            $score = $data['score'];
-            $instance = $this->repository->findOrFailById($id);
-            $response =  $this->repository->updateOrCreateById($id, ['score' => $score]);
-            $this->summaryGradeSerivce->updateSummaryGrade($instance->student_id, $instance->course_offer_id);
+            $instance = $this->repository->find($id);
+            if ($instance) {
+                $data = Arr::only($data, ['score']);
+            }
+            $response =  $this->repository->updateOrCreateById($id, $data);
+            $this->summaryGradeSerivce->updateSummaryGrade($response->student_id, $response->course_offer_id);
             return  $response;
-        } catch (ModelNotFoundByIdException $e) {
-            throw new ModelNotFoundByIdException('grade', $id);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
+    public function create(Request $request): object|bool
+    {
+        try {
+            $data = $request->validated();
+            $response =  $this->repository->create($data);
+            $this->summaryGradeSerivce->updateSummaryGrade($response->student_id, $response->course_offer_id);
+            return  $response;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;
