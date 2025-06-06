@@ -7,12 +7,13 @@ use App\Http\Resources\Student\StudentResource;
 use App\Models\CourseOffer;
 use App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepositoryInterface;
 use App\Services\CourseOfferAttendance\CourseOfferAttendanceServiceInterface;
+use App\Supports\Log;
 use App\Supports\ResponseWithJson;
 use Illuminate\Http\Request;
 
 class AttendanceController extends BaseController
 {
-    use ResponseWithJson;
+    use ResponseWithJson, Log;
     public function __construct(CourseOfferAttendanceServiceInterface $service, CourseOfferAttendanceRepositoryInterface $repository)
     {
         $this->service = $service;
@@ -29,38 +30,27 @@ class AttendanceController extends BaseController
 
     public function storeAttendanceStudents(Request $request)
     {
-        $result = $this->service->storeAttendanceStudents($request);
-        if (!$result)
-            return $this->jsonResponseError('Thực hiện không thành công vui lòng xem lại dữ liệu');
-        return $this->jsonResponseSuccess($result);
+        try {
+            $result = $this->service->storeAttendanceStudents($request);
+            if (!$result)
+                return $this->jsonResponseError('Thực hiện không thành công vui lòng xem lại dữ liệu');
+            return $this->jsonResponseSuccess($result);
+        } catch (\Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
     }
 
     public function getAllAttendanceByCourseOffer(string $courseOfferId)
     {
-        $studentData = [];
-        $courseOffer = CourseOffer::with([
-            'schedules.sessions.attendances.student'
-        ])->find($courseOfferId);
-        foreach($courseOffer->schedules as $schedule)
-        {
-            foreach($schedule->sessions as $session)
-            {
-                foreach($session->attendances as $attendance)
-                {
-                    $studentId = $attendance->student->id;
-                    $studentName = $attendance->student->name;
-
-                    $studentData[$studentId]['id'] = $studentId;
-                    $studentData[$studentId]['name'] = $studentName;
-                    $studentData[$studentId]['attendance'][] = [
-                        'sessionDate' => $session->study_date,
-                        'status' => $attendance->status,
-                        'note' => $attendance->note,
-                    ];
-                }
-            }
+        try {
+            $studentData = $this->service->getAllAttendanceByCourseOffer($courseOfferId);
+            if (!$studentData)
+                return $this->jsonResponseSuccessNoData('', 201);
+            return $this->jsonResponseSuccess($studentData);
+        } catch (\Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
-
-        return response()->json($studentData);
     }
 }

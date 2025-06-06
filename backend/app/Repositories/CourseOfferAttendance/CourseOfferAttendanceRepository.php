@@ -33,4 +33,11 @@ class CourseOfferAttendanceRepository extends EloquentRepository implements Cour
         }
         return $result;
     }
+
+    public function getAllAttendanceByCourseOffer(string $courseOfferId)
+    {
+        return CourseOffer::with([
+            'schedules.sessions.attendances.student'
+        ])->find($courseOfferId);
+    }
 }
