@@ -12,7 +12,7 @@ class Grade extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['id', 'score', 'course_offer_id', 'score_visibility', 'grade_type_id', 'student_id', 'attempt'];
+    protected $fillable = ['score', 'course_offer_id', 'score_visibility', 'grade_type_id', 'student_id', 'attempt'];
 
     protected function casts(): array
     {
