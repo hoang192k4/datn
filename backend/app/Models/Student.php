@@ -77,4 +77,12 @@ class Student extends Authenticatable implements JWTSubject
         return $this->hasMany(Attendance::class);
     }
 
+    public function grades(): HasMany
+    {
+        return $this->hasMany(Grade::class);
+    }
+    public function summary_grades(): HasMany
+    {
+        return $this->hasMany(SummaryGrade::class);
+    }
 }

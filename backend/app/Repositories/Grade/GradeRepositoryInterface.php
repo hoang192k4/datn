@@ -6,5 +6,5 @@ use App\Repositories\EloquentRepositoryInterface;
 
 interface GradeRepositoryInterface extends EloquentRepositoryInterface
 {
-    
+    public function getMaxAttemptByCourseOffer($courseOfferId, $gradeTypeId): int|false;
 }
