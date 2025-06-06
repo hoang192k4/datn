@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Grade;
 
+use App\Enums\GradeWeight;
 use App\Exceptions\ModelNotFoundByIdException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CourseOffer\CourseOfferGradeRequest;

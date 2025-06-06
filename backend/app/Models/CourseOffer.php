@@ -32,6 +32,11 @@ class CourseOffer extends Model
         return $this->hasMany(SummaryGrade::class);
     }
 
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
     public function grades(): HasMany
     {
         return $this->hasMany(Grade::class);

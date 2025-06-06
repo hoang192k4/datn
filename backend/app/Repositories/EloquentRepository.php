@@ -94,4 +94,10 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
 
         return $record;
     }
+
+
+    public function whereGetOne($field, $value)
+    {
+        return $this->model->where($field, $value)->first();
+    }
 }
