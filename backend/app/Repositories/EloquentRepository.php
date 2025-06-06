@@ -48,4 +48,13 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         }
         return false;
     }
+
+    /**
+     *  @param id
+     * @return object|false
+     */
+    public function find($id): object|bool
+    {
+        return $this->model->find($id) ?? false;
+    }
 }

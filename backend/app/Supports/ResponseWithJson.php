@@ -3,6 +3,7 @@
 namespace App\Supports;
 
 use Illuminate\Http\JsonResponse as HttpJsonResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 trait ResponseWithJson
 {
@@ -13,9 +14,9 @@ trait ResponseWithJson
      * @param string $message
      * @param int $tatus
      *
-     * @return ResponseWithJson
+     * @return JsonResponse
      */
-    protected function jsonResponseSuccess(mixed $data, string $message = '', int $status = 200): HttpJsonResponse
+    protected function jsonResponseSuccess(mixed $data, string $message = '', int $status = 200):JsonResponse
     {
         return response()->json([
             'status' => $status,
@@ -30,9 +31,9 @@ trait ResponseWithJson
      * @param string $message
      * @param int $tatus
      *
-     * @return ResponseWithJson
+     * @return JsonResponse
      */
-    protected function jsonResponseSuccessNoData(string $message = '', int $status = 200): HttpJsonResponse
+    protected function jsonResponseSuccessNoData(string $message = '', int $status = 200):JsonResponse
     {
         return response()->json([
             'status' => $status,
@@ -47,12 +48,11 @@ trait ResponseWithJson
      *
      * @return JsonResponse
      */
-    protected function jsonResponseError(string $message = '', int $status = 400): HttpJsonResponse
+    protected function jsonResponseError(string $message = '', int $status = 400):JsonResponse
     {
         return response()->json([
             'status' => $status,
             'message' => $message ?: 'Thực hiện không thành công'
         ], $status);
     }
-
 }

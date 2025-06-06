@@ -1,9 +1,6 @@
 <?php
 
-use App\Http\Controllers\Product\ProductController;
 use Illuminate\Support\Facades\Route;
-
-
 
 Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
     ->prefix('teachers')
@@ -23,7 +20,13 @@ Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
     });
 
 Route::controller(App\Http\Controllers\CourseOffer\CourseOfferController::class)
-    ->prefix('course_offers')
+    ->prefix('course-offers')
     ->group(function () {
-        Route::get('/getstudents/{course_offer_id}','getStudentsByCourseOffer');
+        Route::get('/{courseOfferId}/students', 'getStudentsByCourseOffer');
+    });
+
+Route::controller(App\Http\Controllers\Grade\GradeController::class)
+    ->prefix('grades')
+    ->group(function () {
+        Route::get('/', 'getGradesByCourseOffer');
     });
