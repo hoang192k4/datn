@@ -10,6 +10,8 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Student extends Authenticatable implements JWTSubject
 {
@@ -45,7 +47,6 @@ class Student extends Authenticatable implements JWTSubject
         return [
             'password' => 'hashed',
             'gender' => Gender::class,
-
             'status' => StudentStatus::class,
         ];
     }
@@ -65,4 +66,15 @@ class Student extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function courseOffers():BelongsToMany
+    {
+        return $this->belongsToMany(CourseOffer::class,'course_offer_student');
+    }
+
+    public function attendances():HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
 }

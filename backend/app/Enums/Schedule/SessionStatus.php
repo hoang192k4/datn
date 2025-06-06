@@ -2,7 +2,7 @@
 
 namespace App\Enums\Schedule;
 
-enum Session:string
+enum SessionStatus:string
 {
     //
     case Morning = 'morning';
