@@ -7,5 +7,6 @@ enum StudentStatus:string
     case Active = 'active';
     case Graduated = 'graduated';
     case Suspended = 'suspended';
-    case Propped  = 'Propped';
+    case DroppedOut  = 'dropped_out';
+    case Pending = 'pending';
 }

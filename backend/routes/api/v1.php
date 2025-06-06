@@ -21,3 +21,9 @@ Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
         Route::post('/login', 'login');
         Route::get('/me', 'me');
     });
+
+Route::controller(App\Http\Controllers\CourseOffer\CourseOfferController::class)
+    ->prefix('courseoffers')
+    ->group(function () {
+        Route::get('/getstudents/{course_offer_id}','getStudentsByCourseOffer');
+    });

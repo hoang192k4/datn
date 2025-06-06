@@ -11,6 +11,11 @@ class Subject extends Model
     //
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'credit',
+    ];
+
     protected function casts(): array
     {
         return [
