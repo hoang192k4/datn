@@ -7,7 +7,8 @@ use Illuminate\Support\ServiceProvider;
 class RepositoryServiceProvider extends ServiceProvider
 {
     protected array $repositories = [
-        'App\Repositories\SummaryGrade\SummaryGradeInterface' =>  'App\Repositories\SummaryGrade\SummaryGrade',
+        'App\Repositories\Student\StudentRepositoryInterface' => 'App\Repositories\Student\StudentRepository',
+        'App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface' =>  'App\Repositories\SummaryGrade\SummaryGradeRepository',
         'App\Repositories\Grade\GradeRepositoryInterface' => 'App\Repositories\Grade\GradeRepository',
         'App\Repositories\EloquentRepositoryInterface' => 'App\Repositories\EloquentRepository',
         'App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepositoryInterface' => 'App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepository',

@@ -4,5 +4,5 @@ namespace App\Services\Calculate;
 
 interface CalculateServiceInterface
 {
-
+    public function calculateAverageExam($student, $courseOfferId);
 }

@@ -13,7 +13,7 @@ class GradeRequest extends BaseRequest
             'grade_type_id' => 'exists:grade_types,id|nullable',
             'student_id' => 'exists:students,id|nullable',
             'id' => 'exists:grades,id|integer|min:0',
-            'score' =>  'required|numeric|between:1,10',
+            'score' =>  'required|numeric|between:0,10',
         ];
     }
 }

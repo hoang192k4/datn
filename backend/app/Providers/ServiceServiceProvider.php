@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 class ServiceServiceProvider extends ServiceProvider
 {
     protected array $services = [
+        'App\Services\SummaryGrade\SummaryGradeServiceInterface' => 'App\Services\SummaryGrade\SummaryGradeService',
         'App\Services\Calculate\CalculateServiceInterface' => 'App\Services\Calculate\CalculateService',
         'App\Services\CourseOffer\CourseOfferServiceInter' => 'App\Services\CourseOffer\CourseOfferService',
         'App\Services\CourseOfferAttendance\CourseOfferAttendanceServiceInterface' => 'App\Services\CourseOfferAttendance\CourseOfferAttendanceService',
