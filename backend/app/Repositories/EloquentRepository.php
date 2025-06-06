@@ -57,4 +57,25 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
     {
         return $this->model->find($id) ?? false;
     }
+
+
+    /**
+     *  @param id
+     * @return object|false
+     */
+    public function findWithRelation($id, array $relation): object|bool
+    {
+        $instance = $this->model->with($relation)->find($id);
+        return $instance ?? false;
+    }
+
+    /**
+     *  @param id
+     * @param array resource
+     * @return object|false
+     */
+    public function updateOrCreateById($id, array $resource): object|bool
+    {
+        return $this->model->updateOrcreate(['id' => $id], $resource) ?? false;
+    }
 }

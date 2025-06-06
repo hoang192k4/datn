@@ -13,6 +13,8 @@ class CourseOffer extends Model
     //
     use HasFactory;
 
+    protected $table = 'course_offers';
+
     protected function casts(): array
     {
         return [
@@ -25,8 +27,13 @@ class CourseOffer extends Model
         return $this->belongsToMany(Student::class, 'course_offer_student');
     }
 
-    public function summaryGrades(): HasMany
+    public function summary_grades(): HasMany
     {
         return $this->hasMany(SummaryGrade::class);
+    }
+
+    public function grades(): HasMany
+    {
+        return $this->hasMany(Grade::class);
     }
 }

@@ -16,7 +16,7 @@ trait ResponseWithJson
      *
      * @return JsonResponse
      */
-    protected function jsonResponseSuccess(mixed $data, string $message = '', int $status = 200):JsonResponse
+    protected function jsonResponseSuccess(mixed $data = null, string $message = '', int $status = 200):JsonResponse
     {
         return response()->json([
             'status' => $status,
