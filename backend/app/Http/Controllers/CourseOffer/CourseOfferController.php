@@ -10,8 +10,8 @@ class CourseOfferController extends BaseController
 {
     public function getStudentsByCourseOffer(string $id)
     {
-       
-        $couseOffer = CourseOffer::with('students')->find($id); 
+
+        $couseOffer = CourseOffer::with('students')->find($id);
         $listStudents = $couseOffer->students;
         return response()->json($listStudents);
     }

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 
 use App\Http\Controllers\BaseController;
+use App\Http\Resources\Grade\GradeResourceCollection;
 use App\Models\CourseOffer;
+use App\Models\Grade;
 use App\Supports\JsonResponse;
 use App\Supports\Log;
 use Exception;
@@ -19,11 +21,12 @@ class GradeController extends BaseController
         $this->middleware('auth:teacher');
     }
 
-    public function getGradesByCourseOffer(): Json
+    public function getGradesByCourseOffer($courseOfferId): Json
     {
-        $gradesAndStudents = CourseOffer::with('students')->with('grades');
+        $courseOffer = CourseOffer::find($courseOfferId);
+        $gradesAndStudents = $courseOffer->grades;
         try {
-            $this->jsonResponseSuccess($gradesAndStudents);
+            return $this->jsonResponseSuccess(new GradeResourceCollection($gradesAndStudents));
         } catch (Exception $e) {
             $this->logError('Lỗi', $e);
             $this->jsonResponseError('Lỗi hệ thống', 500);

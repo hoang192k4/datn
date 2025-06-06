@@ -64,4 +64,5 @@ class Student extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
 }
