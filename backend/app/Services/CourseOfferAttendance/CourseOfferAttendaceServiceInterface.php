@@ -2,7 +2,7 @@
 
 namespace App\Servies\CourseOfferAttendance;
 
-interface CourseOfferAttendaceServiesInterface
+interface CourseOfferAttendaceServiceInterface
 {
     
 }
