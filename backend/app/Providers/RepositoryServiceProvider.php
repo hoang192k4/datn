@@ -7,8 +7,8 @@ use Illuminate\Support\ServiceProvider;
 class RepositoryServiceProvider extends ServiceProvider
 {
     protected array $repositories = [
+        'App\Repositories\Grade\GradeRepositoryInterface' => 'App\Repositories\Grade\GradeRepository',
         'App\Repositories\EloquentRepositoryInterface' => 'App\Repositories\EloquentRepository',
-
     ];
     /**
      * Register any application services.
