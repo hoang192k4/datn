@@ -4,7 +4,7 @@ namespace App\Supports;
 
 use Illuminate\Http\JsonResponse as HttpJsonResponse;
 
-trait JsonResponse
+trait ResponseWithJson
 {
 
     /**
@@ -13,7 +13,7 @@ trait JsonResponse
      * @param string $message
      * @param int $tatus
      *
-     * @return JsonResponse
+     * @return ResponseWithJson
      */
     protected function jsonResponseSuccess(mixed $data, string $message = '', int $status = 200): HttpJsonResponse
     {
@@ -30,7 +30,7 @@ trait JsonResponse
      * @param string $message
      * @param int $tatus
      *
-     * @return JsonResponse
+     * @return ResponseWithJson
      */
     protected function jsonResponseSuccessNoData(string $message = '', int $status = 200): HttpJsonResponse
     {
