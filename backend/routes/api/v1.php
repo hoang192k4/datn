@@ -23,7 +23,7 @@ Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
     });
 
 Route::controller(App\Http\Controllers\CourseOffer\CourseOfferController::class)
-    ->prefix('courseoffers')
+    ->prefix('course_offers')
     ->group(function () {
         Route::get('/getstudents/{course_offer_id}','getStudentsByCourseOffer');
     });
