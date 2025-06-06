@@ -32,6 +32,7 @@ Route::controller(App\Http\Controllers\Grade\GradeController::class)
         Route::get('/', 'getGradesByCourseOffer');
         Route::post('/', 'createGradeColumn');
         Route::put('/{id}', 'updateOrCreateGrade');
+        Route::get('/calculate', 'calculate');
     });
 
 

@@ -95,9 +95,8 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         return $record;
     }
 
-
-    public function whereGetOne($field, $value)
+    public function updateOrCreate(array $conditions, array $resource)
     {
-        return $this->model->where($field, $value)->first();
+        return $this->model->updateOrCreate($conditions, $resource) ?? false;
     }
 }

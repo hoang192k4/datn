@@ -14,8 +14,10 @@ use App\Http\Resources\Student\StudentGradeResource;
 use App\Models\CourseOffer;
 use App\Models\Grade;
 use App\Repositories\CourseOfferGrade\CourseOfferGradeRepositoryInterface;
+use App\Services\Calculate\CalculateService;
 use App\Services\Grade\GradeServiceInterface;
 use App\Services\CourseOfferGrade\CourseOfferGradeServiceInterface;
+use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use App\Supports\Log;
 use App\Supports\ResponseWithJson;
 use Exception;
@@ -66,7 +68,6 @@ class GradeController extends BaseController
     public function updateOrCreateGrade(GradeRequest $request, $id)
     {
         try {
-
             $instance = $this->gradeService->updateOrCreate($request, $id);
             if ($instance)
                 return $this->jsonResponseSuccess(new GradeResource($instance));
