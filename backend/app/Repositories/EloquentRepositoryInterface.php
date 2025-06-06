@@ -12,4 +12,5 @@ interface EloquentRepositoryInterface
     public function find($id): object|bool;
     public function findWithRelation($id, array $relation): object|bool;
     public function updateOrCreateById($id, array $resource): object|bool;
+    public function findOrFailById($id);
 }

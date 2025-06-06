@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\ModelNotFoundByIdException;
+
 abstract class EloquentRepository implements EloquentRepositoryInterface
 {
     protected $model;
@@ -76,6 +78,20 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
      */
     public function updateOrCreateById($id, array $resource): object|bool
     {
-        return $this->model->updateOrcreate(['id' => $id], $resource) ?? false;
+        return $this->model->updateOrCreate(['id' => $id], $resource) ?? false;
+    }
+
+    /**
+     * Tìm một instance theo id, nếu không có sẽ bắt lỗi exception
+     */
+    public function findOrFailById($id)
+    {
+        $record = $this->model->find($id);
+
+        if (!$record) {
+            throw new ModelNotFoundByIdException(class_basename($this->model), $id);
+        }
+
+        return $record;
     }
 }
