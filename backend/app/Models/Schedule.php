@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Enums\DayOfWeek;
-use App\Enums\Schedule\Session;
+use App\Enums\Schedule\SessionStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Schedule extends Model
 {
@@ -15,8 +17,19 @@ class Schedule extends Model
     protected function casts(): array
     {
         return [
-            'session' => Session::class,
+            'session' => SessionStatus::class,
             'day_of_week' => DayOfWeek::class
         ];
+    }
+
+
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
+    }
+
+    public function courseoffer():BelongsTo
+    {
+        return $this->belongsTo(CourseOffer::class);
     }
 }

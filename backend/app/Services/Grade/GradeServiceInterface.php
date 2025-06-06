@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\CourseOffer;
+namespace App\Services\Grade;
 
 interface GradeServiceInterface
 {
