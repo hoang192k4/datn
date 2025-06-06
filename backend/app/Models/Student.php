@@ -45,7 +45,6 @@ class Student extends Authenticatable implements JWTSubject
         return [
             'password' => 'hashed',
             'gender' => Gender::class,
-
             'status' => StudentStatus::class,
         ];
     }

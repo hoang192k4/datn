@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums\Enums\Subject;
+namespace App\Enums\Subject;
 
 enum SubjectStatus
 {

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\Enums\Teacher\TeacherStatus;
+use App\Enums\Teacher\TeacherStatus;
 use App\Enums\Gender;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
