@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseOffer\CourseOfferController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
@@ -19,7 +20,7 @@ Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
         Route::get('/me', 'me');
     });
 
-Route::controller(App\Http\Controllers\CourseOffer\CourseOfferController::class)
+Route::controller(CourseOfferController::class)
     ->prefix('course-offers')
     ->group(function () {
         Route::get('/{courseOfferId}/students', 'getStudentsByCourseOffer');
@@ -29,6 +30,10 @@ Route::controller(App\Http\Controllers\Grade\GradeController::class)
     ->prefix('grades')
     ->group(function () {
         Route::get('/', 'getGradesByCourseOffer');
+        Route::post('/grade-column', 'createGradeColumn');
+        Route::post('/', 'create');
+        Route::put('/{id}', 'updateOrCreateGrade');
+        Route::get('/calculate', 'calculate');
     });
 
 
@@ -37,5 +42,5 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
     ->group(function () {
         Route::get('/{courseOfferId}/students', 'getStudentsByCourseOffer');
         Route::post('/attendance-students', 'storeAttendanceStudents');
-        Route::get('/{courseOfferId}/allAttendances','getAllAttendanceByCourseOffer');
+        Route::get('/{courseOfferId}/allAttendances', 'getAllAttendanceByCourseOffer');
     });

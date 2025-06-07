@@ -12,7 +12,7 @@ class Grade extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['id', 'score', 'course_offer_id', 'score_visibility', 'grade_type_id'];
+    protected $fillable = ['score', 'course_offer_id', 'score_visibility', 'grade_type_id', 'student_id', 'attempt'];
 
     protected function casts(): array
     {
@@ -26,12 +26,12 @@ class Grade extends Model
         return $this->belongsTo(Student::class);
     }
 
-    public function courseOffer(): BelongsTo
+    public function course_offer(): BelongsTo
     {
-        return $this->belongsTo(CourseOffer::class);
+        return $this->belongsTso(CourseOffer::class);
     }
 
-    public function gradeType(): BelongsTo
+    public function grade_type(): BelongsTo
     {
         return $this->belongsTo(GradeType::class);
     }
