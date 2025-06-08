@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Attendance;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\CourseOffer\CourseOfferAttendanceRequest;
+use App\Http\Resources\Attendance\AttendanceResource;
 use App\Http\Resources\Student\StudentResource;
 use App\Models\CourseOffer;
 use App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepositoryInterface;
@@ -28,12 +30,13 @@ class AttendanceController extends BaseController
         return response()->json($studentJson);
     }
 
-    public function storeAttendanceStudents(Request $request)
+    public function storeAttendanceStudents(CourseOfferAttendanceRequest $request)
     {
         try {
             $result = $this->service->storeAttendanceStudents($request);
             if (!$result)
                 return $this->jsonResponseError('Thực hiện không thành công vui lòng xem lại dữ liệu');
+
             return $this->jsonResponseSuccess($result);
         } catch (\Exception $e) {
             $this->logError($e->getMessage(), $e);
@@ -45,8 +48,6 @@ class AttendanceController extends BaseController
     {
         try {
             $studentData = $this->service->getAllAttendanceByCourseOffer($courseOfferId);
-            if (!$studentData)
-                return $this->jsonResponseSuccessNoData('', 201);
             return $this->jsonResponseSuccess($studentData);
         } catch (\Exception $e) {
             $this->logError($e->getMessage(), $e);

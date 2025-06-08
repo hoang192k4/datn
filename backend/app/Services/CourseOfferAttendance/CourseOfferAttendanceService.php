@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use App\Services\CourseOfferAttendance\CourseOfferAttendanceServiceInterface;
 use App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepositoryInterface;
 use App\Supports\Log;
+use App\Supports\ResponseWithJson;
 use Illuminate\Support\Facades\DB;
 
 class CourseOfferAttendanceService implements CourseOfferAttendanceServiceInterface
@@ -26,17 +27,18 @@ class CourseOfferAttendanceService implements CourseOfferAttendanceServiceInterf
     {
         DB::beginTransaction();
         try {
-            $data = $request->all();
+            $data = $request->validated();
             $date = $data['date'];
-            $courseOfferId = $data['courseOfferId'];
-            $attendanceStudents = $data['attendance'];
-            $session_id = Session::whereHas('schedule', function ($query) use ($courseOfferId) {
+            $courseOfferId = $data['course_offer_id']; 
+            $attendanceStudents = $data['attendance'];  
+            $sessionId = Session::whereHas('schedule', function ($query) use ($courseOfferId) {
                 $query->where('course_offer_id', $courseOfferId);
             })->where('study_date', $date)->first()?->id;
-            if ($session_id == null)
+            if ($sessionId == null)
                 return false;
-            return $this->repository->storeAttendanceStudents($session_id, $attendanceStudents);
+            return $this->repository->storeAttendanceStudents($sessionId, $attendanceStudents);
         } catch (\Exception $e) {
+            $this->logError($e->getMessage(), $e);
             Db::rollBack();
             return false;
         }

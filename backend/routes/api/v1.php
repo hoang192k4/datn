@@ -41,6 +41,6 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
     ->prefix('course-offer-attendances')
     ->group(function () {
         Route::get('/{courseOfferId}/students', 'getStudentsByCourseOffer');
-        Route::post('/attendance-students', 'storeAttendanceStudents');
-        Route::get('/{courseOfferId}/allAttendances', 'getAllAttendanceByCourseOffer');
+        Route::post('/', 'storeAttendanceStudents');
+        Route::get('/{courseOfferId}/attendances', 'getAllAttendanceByCourseOffer');
     });
