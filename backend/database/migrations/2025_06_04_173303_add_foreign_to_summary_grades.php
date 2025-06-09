@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::table('summary_grades', function (Blueprint $table) {
             //
-            $table->foreign('course_offer_id')
+            $table->foreign('course_section_id')
                 ->references('id')
-                ->on('course_offers')
+                ->on('course_sections')
                 ->onDelete('set null');
             $table->foreign('student_id')
                 ->references('id')
@@ -39,9 +39,9 @@ return new class extends Migration
     {
         Schema::table('summary_grades', function (Blueprint $table) {
             //
-            $table->dropForeign(['course_offer_id']);
+            $table->dropForeign(['course_section_id']);
             $table->dropForeign(['semester_id']);
-            $table->dropForeign(['student_id']); 
+            $table->dropForeign(['student_id']);
             $table->dropForeign(['subject_id']);
         });
     }

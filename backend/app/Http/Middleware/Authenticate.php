@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Supports\ResponseWithJson;
 use Closure;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Authenticate extends Middleware
 {
+    use ResponseWithJson;
+
     protected function redirectTo($request)
     {
         if (!$request->expectsJson()) {
@@ -42,14 +45,14 @@ class Authenticate extends Middleware
                     return $next($request);
                 }
             } catch (TokenExpiredException $e) {
-                return response()->json(['message' => 'Token đăng nhập đã hết hạn'], 401);
+                return $this->jsonResponseError('Token đăng nhập đã hết hạn', 401);
             } catch (TokenInvalidException $e) {
-                return response()->json(['message' => 'Token không hợp lệ'], 401);
+                return $this->jsonResponseError('Token không hợp lệ', 401);
             } catch (JWTException $e) {
-                return response()->json(['message' => 'Vui lòng gửi token'], 401);
+                return $this->jsonResponseError('Vui lòng gửi token', 401);
             }
         }
 
-        return response()->json(['status' => 401, 'message' => 'Xác thực không thành công!'], 401);
+        return $this->jsonResponseError('Xác thực không thành công!', 401);
     }
 }

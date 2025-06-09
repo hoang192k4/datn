@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('exam2_score', 10, 2)->default(0);
             $table->decimal('final_score', 10, 2)->default(0);
             $table->enum('evaluation', ['exellent', 'good', 'fair', 'average', 'poor', 'very_poor']);
-            $table->unsignedBigInteger('course_offer_id')->nullable();
+            $table->unsignedBigInteger('course_section_id')->nullable();
             $table->timestamps();
         });
     }

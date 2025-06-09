@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('schedules', function (Blueprint $table) {
+        Schema::table('roles', function (Blueprint $table) {
             //
-            $table->foreign('course_section_id')
-                ->references('id')
-                ->on('course_sections')
-                ->onDelete('set null');
+            $table->string('title')->nullable();
         });
     }
 
@@ -25,9 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('schedules', function (Blueprint $table) {
+        Schema::table('roles', function (Blueprint $table) {
             //
-            $table->dropForeign(['course_section_id']);
+            $table->dropColumn('title');
         });
     }
 };

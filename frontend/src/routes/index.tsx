@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import MainLayout from "../components/layout/MainLayout";
 import LoginPage from "../pages/login/LoginPage";
 import HomePage from "../pages/home/HomePage";
@@ -22,7 +23,7 @@ const AppRoutes = () => {
                 <Route path="/class" element={<ClassPage />} />
                 <Route path="/schedule" element={<SchedulePage />} />
                 <Route path="/grade" element={<GradePage />} />
-                 <Route path="/attendance" element={<AttendancePage />} />
+                <Route path="/attendance" element={<AttendancePage />} />
 
             </Route>
 
@@ -34,7 +35,6 @@ const AppRoutes = () => {
                 }
             </Route>
         </Routes>
-    )
-}
-
+    );
+};
 export default AppRoutes

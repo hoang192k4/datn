@@ -2,14 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Supports\ResponseWithJson;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApiKeyMiddleware
+class AttachAccessTokenFromCookie
 {
-    use ResponseWithJson;
     /**
      * Handle an incoming request.
      *
@@ -17,14 +15,12 @@ class ApiKeyMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $apiKey = $request->header('X-API-KEY');
+        $token = $request->cookie('access_token');
 
-        // Bạn có thể so sánh hardcode, config, hoặc DB
-        $validKey = config('services.api.key'); // ví dụ đọc từ config
-        if ($apiKey !== $validKey) {
-            return $this->jsonResponseError('Bạn không có quyền truy cập hệ thống!', 401);
+        if ($token) {
+            // Gắn token vào Authorization header
+            $request->headers->set('Authorization', 'Bearer ' . $token);
         }
-
         return $next($request);
     }
 }

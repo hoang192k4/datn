@@ -17,9 +17,9 @@ return new class extends Migration
                 ->references('id')
                 ->on('students')
                 ->onDelete('set null');
-            $table->foreign('course_offer_id')
+            $table->foreign('course_section_id')
                 ->references('id')
-                ->on('course_offers')
+                ->on('course_sections')
                 ->onDelete('set null');
             $table->foreign('grade_type_id')
                 ->references('id')
@@ -36,7 +36,7 @@ return new class extends Migration
         Schema::table('grades', function (Blueprint $table) {
             //
             $table->dropForeign(['student_id']);
-            $table->dropForeign(['course_offer_id']);
+            $table->dropForeign(['course_section_id']);
             $table->dropForeign(['grade_type_id']);
         });
     }

@@ -1,12 +1,15 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { teacherLogin } from '../../services/authService';
 import './loginPage.css';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { login } from '../../store/slices/authSlice';
 const LoginPage = () => {
     return (
         <>
             <section className="login-section">
                 <div className="login-card">
                     <h2>Đăng Nhập</h2>
-                    <form action="#" method="post">
+                    <form>
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
                             <input type="text" id="email" name="email" placeholder="Enter your email" required />
