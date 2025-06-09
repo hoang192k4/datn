@@ -1,19 +1,19 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-interface TearcherItemProps {
+interface BoxItem {
   children: ReactNode;
-  slug: string;
+  href: string;
 }
 
-const TearcherItem = ({children, slug}: TearcherItemProps) => {
+const BoxItem = ({children, href}: BoxItem) => {
     return (
         <>
             <div className="card">
-                <Link to={slug}><h4>{children}</h4></Link>
+                <Link to={href}><h4>{children}</h4></Link>
             </div>
         </>
     )
 }
 
-export default TearcherItem
+export default BoxItem

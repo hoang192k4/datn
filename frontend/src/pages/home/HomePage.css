@@ -13,10 +13,11 @@
       max-width: 600px;
       margin: 0 auto;
     }
-    .section {
+    .teacher-list {
       padding: 2rem;
+      min-height: 350px;
     }
-    .section h3 {
+    .teacher-list h3 {
       margin-bottom: 1rem;
       color: #1e3a8a;
     }
