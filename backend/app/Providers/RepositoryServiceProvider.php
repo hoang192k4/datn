@@ -11,8 +11,8 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface' =>  'App\Repositories\SummaryGrade\SummaryGradeRepository',
         'App\Repositories\Grade\GradeRepositoryInterface' => 'App\Repositories\Grade\GradeRepository',
         'App\Repositories\EloquentRepositoryInterface' => 'App\Repositories\EloquentRepository',
-        'App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepositoryInterface' => 'App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepository',
-        'App\Repositories\CourseOfferGrade\CourseOfferGradeRepositoryInterface' => 'App\Repositories\CourseOfferGrade\CourseOfferGradeRepository',
+        'App\Repositories\CourseSectionAttendance\CourseSectionAttendanceRepositoryInterface' => 'App\Repositories\CourseSectionAttendance\CourseSectionAttendanceRepository',
+        'App\Repositories\CourseSectionGrade\CourseSectionGradeRepositoryInterface' => 'App\Repositories\CourseSectionGrade\CourseSectionGradeRepository',
     ];
     /**
      * Register any application services.

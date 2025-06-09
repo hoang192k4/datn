@@ -18,12 +18,11 @@ class CalculateService implements CalculateServiceInterface
         $this->studentRepository = $studentRepository;
     }
 
-    public function calculateAverageExam($student, $courseOfferId)
+    public function calculateAverageExam($student, $courseSectionId)
     {
         $totalWeights = 0;
         $totalScore = 0;
-        $grades = $student->grades->where('course_offer_id', $courseOfferId);
-
+        $grades = $student->grades->where('course_section_id', $courseSectionId);
         foreach ($grades as $grade) {
             $totalScore += $grade->score * $grade->grade_type->weight;
             $totalWeights += $grade->grade_type->weight;

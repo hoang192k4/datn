@@ -17,13 +17,13 @@ class StudentGradeResource extends JsonResource
             'grades' => $this->grades
                 ->groupBy('grade_type_id')
                 ->map(function (Collection $grades) {
-                    return $grades->where('course_offer_id', request()->get('course_offer_id'))
+                    return $grades->where('course_section_id', request()->get('course_section_id'))
                         ->sortBy('attempt')
                         ->values()
                         ->map(fn($grade) => new GradeResource($grade));
                 })
                 ->toArray(),
-            'summary_grade' => $this->summary_grades->where('course_offer_id', request()->get('course_offer_id'))->first(),
+            'summary_grade' => $this->summary_grades->where('course_section_id', request()->get('course_section_id'))->first(),
         ];
     }
 }

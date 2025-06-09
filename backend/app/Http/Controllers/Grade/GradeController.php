@@ -5,18 +5,18 @@ namespace App\Http\Controllers\Grade;
 use App\Enums\GradeWeight;
 use App\Exceptions\ModelNotFoundByIdException;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\CourseOffer\CourseOfferGradeRequest;
+use App\Http\Requests\CourseSection\CourseSectionGradeRequest;
 use App\Http\Requests\Grade\GradeColumnRequest;
 use App\Http\Requests\Grade\GradeRequest;
 use App\Http\Resources\Grade\GradeResource;
 use App\Http\Resources\Grade\GradeResourceCollection;
 use App\Http\Resources\Student\StudentGradeResource;
-use App\Models\CourseOffer;
+use App\Models\CourseSection;
 use App\Models\Grade;
-use App\Repositories\CourseOfferGrade\CourseOfferGradeRepositoryInterface;
+use App\Repositories\CourseSectionGrade\CourseSectionGradeRepositoryInterface;
 use App\Services\Calculate\CalculateService;
 use App\Services\Grade\GradeServiceInterface;
-use App\Services\CourseOfferGrade\CourseOfferGradeServiceInterface;
+use App\Services\CourseSectionGrade\CourseSectionGradeServiceInterface;
 use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use App\Supports\Log;
 use App\Supports\ResponseWithJson;
@@ -31,8 +31,8 @@ class GradeController extends BaseController
     protected $gradeService;
 
     public function __construct(
-        CourseOfferGradeRepositoryInterface $repository,
-        CourseOfferGradeServiceInterface $service,
+        CourseSectionGradeRepositoryInterface $repository,
+        CourseSectionGradeServiceInterface $service,
         GradeServiceInterface $gradeService,
     ) {
         $this->repository = $repository;
@@ -41,9 +41,9 @@ class GradeController extends BaseController
         // $this->middleware('auth:teacher');
     }
 
-    public function getGradesByCourseOffer(CourseOfferGradeRequest $request): JsonResponse
+    public function getGradesByCourseSection(CourseSectionGradeRequest $request): JsonResponse
     {
-        $gradesWithStudent = $this->service->getGradesByStudentAndCourseOffer($request);
+        $gradesWithStudent = $this->service->getGradesByStudentAndCourseSection($request);
         try {
             return $this->jsonResponseSuccess(StudentGradeResource::collection($gradesWithStudent));
         } catch (Exception $e) {

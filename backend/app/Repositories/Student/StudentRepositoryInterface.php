@@ -6,5 +6,5 @@ use App\Repositories\EloquentRepositoryInterface;
 
 interface StudentRepositoryInterface extends EloquentRepositoryInterface
 {
-    public function getStudentsAndGradesByCourseOfferId($courseOfferId);
+    public function getStudentsAndGradesBycourseSectionId($courseSectionId);
 }

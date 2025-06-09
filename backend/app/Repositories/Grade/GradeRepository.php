@@ -12,10 +12,10 @@ class GradeRepository extends EloquentRepository implements GradeRepositoryInter
         return Grade::class;
     }
 
-    public function getMaxAttemptByCourseOffer($courseOfferId, $gradeTypeId): int|false
+    public function getMaxAttemptBycourseSection($courseSectionId, $gradeTypeId): int|false
     {
         $maxAttempt =
-            $this->model->where('course_offer_id', $courseOfferId)
+            $this->model->where('course_section_id', $courseSectionId)
             ->where('grade_type_id', $gradeTypeId)
             ->max('attempt');
 

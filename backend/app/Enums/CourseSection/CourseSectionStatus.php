@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Enums\CourseOffer;
+namespace App\Enums\CourseSection;
 
-enum CourseOfferStatus: string
+enum CourseSectionStatus: string
 {
     case InRegister = 'in_register';
     case InProgress = 'in_progress';

@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Services\CourseOfferAttendance;
+namespace App\Services\CourseSectionAttendance;
 
 
 use App\Models\Session;
-use App\Models\CourseOffer;
+use App\Models\CourseSection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Services\CourseOfferAttendance\CourseOfferAttendanceServiceInterface;
-use App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepositoryInterface;
+use App\Services\CourseSectionAttendance\CourseSectionAttendanceServiceInterface;
+use App\Repositories\CourseSectionAttendance\CourseSectionAttendanceRepositoryInterface;
 use App\Supports\Log;
 use App\Supports\ResponseWithJson;
 use Illuminate\Support\Facades\DB;
 
-class CourseOfferAttendanceService implements CourseOfferAttendanceServiceInterface
+class CourseSectionAttendanceService implements CourseSectionAttendanceServiceInterface
 {
     use Log;
     protected $repository;
 
-    public function __construct(CourseOfferAttendanceRepositoryInterface $repository)
+    public function __construct(CourseSectionAttendanceRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -29,10 +29,10 @@ class CourseOfferAttendanceService implements CourseOfferAttendanceServiceInterf
         try {
             $data = $request->validated();
             $date = $data['date'];
-            $courseOfferId = $data['course_offer_id']; 
-            $attendanceStudents = $data['attendance'];  
-            $sessionId = Session::whereHas('schedule', function ($query) use ($courseOfferId) {
-                $query->where('course_offer_id', $courseOfferId);
+            $courseSectionId = $data['course_section_id'];
+            $attendanceStudents = $data['attendance'];
+            $sessionId = Session::whereHas('schedule', function ($query) use ($courseSectionId) {
+                $query->where('course_section_id', $courseSectionId);
             })->where('study_date', $date)->first()?->id;
             if ($sessionId == null)
                 return false;
@@ -44,14 +44,14 @@ class CourseOfferAttendanceService implements CourseOfferAttendanceServiceInterf
         }
     }
 
-    public function getAllAttendanceByCourseOffer(string $courseOfferId)
+    public function getAllAttendanceByCourseSection(string $courseSectionId)
     {
         DB::beginTransaction();
         try {
             $studentData = [];
-            $courseOffer = $this->repository->getAllAttendanceByCourseOffer($courseOfferId);
-            if ($courseOffer) {
-                foreach ($courseOffer->schedules as $schedule) {
+            $courseSection = $this->repository->getAllAttendanceByCourseSection($courseSectionId);
+            if ($courseSection) {
+                foreach ($courseSection->schedules as $schedule) {
                     foreach ($schedule->sessions as $session) {
                         foreach ($session->attendances as $attendance) {
                             $studentId = $attendance->student->id;

@@ -2,29 +2,29 @@
 
 namespace App\Models;
 
-use App\Enums\CourseOffer\CourseOfferStatus;
+use App\Enums\CourseSection\CourseSectionStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class CourseOffer extends Model
+class CourseSection extends Model
 {
     //
     use HasFactory;
 
-    protected $table = 'course_offers';
+    protected $table = 'course_sections';
 
     protected function casts(): array
     {
         return [
-            'status' => CourseOfferStatus::class,
+            'status' => CourseSectionStatus::class,
         ];
     }
 
     public function students(): BelongsToMany
     {
-        return $this->belongsToMany(Student::class, 'course_offer_student');
+        return $this->belongsToMany(Student::class, 'course_section_student');
     }
 
     public function summary_grades(): HasMany

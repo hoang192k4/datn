@@ -9,7 +9,7 @@ class GradeColumnRequest extends BaseRequest
     public function methodPost()
     {
         return [
-            'course_offer_id' => 'exists:course_offers,id|required',
+            'course_section_id' => 'exists:course_sections,id|required',
             'grade_type_id' => 'exists:grade_types,id|required',
         ];
     }

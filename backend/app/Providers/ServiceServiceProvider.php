@@ -9,10 +9,10 @@ class ServiceServiceProvider extends ServiceProvider
     protected array $services = [
         'App\Services\SummaryGrade\SummaryGradeServiceInterface' => 'App\Services\SummaryGrade\SummaryGradeService',
         'App\Services\Calculate\CalculateServiceInterface' => 'App\Services\Calculate\CalculateService',
-        'App\Services\CourseOffer\CourseOfferServiceInter' => 'App\Services\CourseOffer\CourseOfferService',
-        'App\Services\CourseOfferAttendance\CourseOfferAttendanceServiceInterface' => 'App\Services\CourseOfferAttendance\CourseOfferAttendanceService',
+        'App\Services\CourseSection\CourseSectionServiceInter' => 'App\Services\CourseSection\CourseSectionService',
+        'App\Services\CourseSectionAttendance\CourseSectionAttendanceServiceInterface' => 'App\Services\CourseSectionAttendance\CourseSectionAttendanceService',
         'App\Services\Grade\GradeServiceInterface' => 'App\Services\Grade\GradeService',
-        'App\Services\CourseOfferGrade\CourseOfferGradeServiceInterface' => 'App\Services\CourseOfferGrade\CourseOfferGradeService',
+        'App\Services\CourseSectionGrade\CourseSectionGradeServiceInterface' => 'App\Services\CourseSectionGrade\CourseSectionGradeService',
     ];
     /**
      * Register any application services.

@@ -12,10 +12,10 @@ class StudentRepository extends EloquentRepository implements StudentRepositoryI
         return Student::class;
     }
 
-    public function getStudentsAndGradesByCourseOfferId($courseOfferId)
+    public function getStudentsAndGradesBycourseSectionId($courseSectionId)
     {
-        return $this->model->whereHas('grades', function ($query) use ($courseOfferId) {
-            $query->where('course_offer_id', $courseOfferId);
+        return $this->model->whereHas('grades', function ($query) use ($courseSectionId) {
+            $query->where('course_offer_id', $courseSectionId);
         })->with(['grades.grade_type' => function ($query) {
             $query->select('id', 'weight');
         }])->get();

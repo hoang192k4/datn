@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Attendance;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\CourseOffer\CourseOfferAttendanceRequest;
-use App\Http\Resources\Attendance\AttendanceResource;
+use App\Http\Requests\CourseSection\CourseSectionAttendanceRequest;
 use App\Http\Resources\Student\StudentResource;
-use App\Models\CourseOffer;
-use App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepositoryInterface;
-use App\Services\CourseOfferAttendance\CourseOfferAttendanceServiceInterface;
+use App\Repositories\CourseSectionAttendance\CourseSectionAttendanceRepositoryInterface;
+use App\Services\CourseSectionAttendance\CourseSectionAttendanceServiceInterface;
 use App\Supports\Log;
 use App\Supports\ResponseWithJson;
 use Illuminate\Http\Request;
@@ -16,21 +14,21 @@ use Illuminate\Http\Request;
 class AttendanceController extends BaseController
 {
     use ResponseWithJson, Log;
-    public function __construct(CourseOfferAttendanceServiceInterface $service, CourseOfferAttendanceRepositoryInterface $repository)
+    public function __construct(CourseSectionAttendanceServiceInterface $service, CourseSectionAttendanceRepositoryInterface $repository)
     {
         $this->service = $service;
         $this->repository = $repository;
     }
-    public function getStudentsByCourseOffer(string $courseOfferId)
+    public function getStudentsByCourseSection(string $courseSectionId)
     {
-        $listStudent = $this->repository->find($courseOfferId)->students;
+        $listStudent = $this->repository->find($courseSectionId)->students;
         $studentJson = $listStudent->map(function ($item) {
             return new StudentResource($item);
         });
         return response()->json($studentJson);
     }
 
-    public function storeAttendanceStudents(CourseOfferAttendanceRequest $request)
+    public function storeAttendanceStudents(CourseSectionAttendanceRequest $request)
     {
         try {
             $result = $this->service->storeAttendanceStudents($request);
@@ -44,10 +42,10 @@ class AttendanceController extends BaseController
         }
     }
 
-    public function getAllAttendanceByCourseOffer(string $courseOfferId)
+    public function getAllAttendanceByCourseSection(string $courseSectionId)
     {
         try {
-            $studentData = $this->service->getAllAttendanceByCourseOffer($courseOfferId);
+            $studentData = $this->service->getAllAttendanceByCourseSection($courseSectionId);
             return $this->jsonResponseSuccess($studentData);
         } catch (\Exception $e) {
             $this->logError($e->getMessage(), $e);

@@ -27,25 +27,24 @@ class SummaryGradeService implements SummaryGradeServiceInterface
         $this->summaryGradeRepository = $summaryGradeRepository;
     }
 
-    public function updateSummaryGrade($studentId, $courseOfferId)
+    public function updateSummaryGrade($studentId, $courseSectionId)
     {
         try {
             $student = $this->studentRepository->findOrFailById($studentId);
-            $avgScore = $this->calculateService->calculateAverageExam($student, $courseOfferId);
-
-            $this->summaryGradeRepository->updateOrCreate(['student_id' => $student->id, 'course_offer_id' => $courseOfferId], ['avg_score' => $avgScore]);
+            $avgScore = $this->calculateService->calculateAverageExam($student, $courseSectionId);
+            $this->summaryGradeRepository->updateOrCreate(['student_id' => $student->id, 'course_section_id' => $courseSectionId], ['avg_score' => $avgScore]);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;
         }
     }
 
-    public function updateSummaryGrades($courseOfferId)
+    public function updateSummaryGrades($courseSectionId)
     {
         try {
-            $students = $this->studentRepository->getStudentsAndGradesByCourseOfferId($courseOfferId);
+            $students = $this->studentRepository->getStudentsAndGradesBycourseSectionId($courseSectionId);
             foreach ($students as $student) {
-                $this->updateSummaryGrade($student->id, $courseOfferId);
+                $this->updateSummaryGrade($student->id, $courseSectionId);
             }
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

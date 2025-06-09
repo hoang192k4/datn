@@ -36,7 +36,7 @@ class GradeService implements GradeServiceInterface
                 $data = Arr::only($data, ['score']);
             }
             $response =  $this->repository->updateOrCreateById($id, $data);
-            $this->summaryGradeSerivce->updateSummaryGrade($response->student_id, $response->course_offer_id);
+            $this->summaryGradeSerivce->updateSummaryGrade($response->student_id, $response->course_section_id);
             return  $response;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
@@ -49,7 +49,7 @@ class GradeService implements GradeServiceInterface
         try {
             $data = $request->validated();
             $response =  $this->repository->create($data);
-            $this->summaryGradeSerivce->updateSummaryGrade($response->student_id, $response->course_offer_id);
+            $this->summaryGradeSerivce->updateSummaryGrade($response->student_id, $response->course_section_id);
             return  $response;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

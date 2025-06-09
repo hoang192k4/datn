@@ -23,16 +23,11 @@ Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
         Route::post('/logout', 'logout')->name('logout');
     });
 
-Route::controller(CourseOfferController::class)
-    ->prefix('course-offers')
-    ->group(function () {
-        Route::get('/{courseOfferId}/students', 'getStudentsByCourseOffer');
-    });
 
 Route::controller(App\Http\Controllers\Grade\GradeController::class)
     ->prefix('grades')
     ->group(function () {
-        Route::get('/', 'getGradesByCourseOffer');
+        Route::get('/', 'getGradesByCourseSection');
         Route::post('/grade-column', 'createGradeColumn');
         Route::post('/', 'create');
         Route::put('/{id}', 'updateOrCreateGrade');
@@ -41,9 +36,9 @@ Route::controller(App\Http\Controllers\Grade\GradeController::class)
 
 
 Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
-    ->prefix('course-offer-attendances')
+    ->prefix('course-section-attendances')
     ->group(function () {
-        Route::get('/{courseOfferId}/students', 'getStudentsByCourseOffer');
+        Route::get('/{courseSectionId}/students', 'getStudentsByCourseSection');
         Route::post('/', 'storeAttendanceStudents');
-        Route::get('/{courseOfferId}/attendances', 'getAllAttendanceByCourseOffer');
+        Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection');
     });

@@ -1,32 +1,32 @@
 <?php
 
-namespace App\Services\CourseOfferGrade;
+namespace App\Services\CourseSectionGrade;
 
 use Exception;
 use Illuminate\Http\Request;
 use App\Repositories\Grade\GradeRepositoryInterface;
-use App\Repositories\CourseOfferGrade\CourseOfferGradeRepositoryInterface;
+use App\Repositories\CourseSectionGrade\CourseSectionGradeRepositoryInterface;
 use App\Supports\Log;
 use Illuminate\Support\Facades\DB;
 
-class CourseOfferGradeService implements CourseOfferGradeServiceInterface
+class CourseSectionGradeService implements CourseSectionGradeServiceInterface
 {
     use Log;
     protected $repository;
     protected $gradeRepository;
     public function __construct(
-        CourseOfferGradeRepositoryInterface $repository,
+        CourseSectionGradeRepositoryInterface $repository,
         GradeRepositoryInterface $gradeRepository
     ) {
         $this->repository = $repository;
         $this->gradeRepository = $gradeRepository;
     }
 
-    public function getGradesByStudentAndCourseOffer(Request $request)
+    public function getGradesByStudentAndcourseSection(Request $request)
     {
-        $id = $request->validated()['course_offer_id'];
-        $courseOffer = $this->repository->findWithRelation($id, ['students', 'grades']);
-        return $courseOffer->students ?? false;
+        $id = $request->validated()['course_section_id'];
+        $courseSection = $this->repository->findWithRelation($id, ['students', 'grades']);
+        return $courseSection->students ?? false;
     }
 
 
@@ -35,17 +35,17 @@ class CourseOfferGradeService implements CourseOfferGradeServiceInterface
         DB::beginTransaction();
         try {
             $data = $request->validated();
-            $courseOfferId = $data['course_offer_id'];
+            $courseSectionId = $data['course_section_id'];
             $gradeTypeId = $data['grade_type_id'];
-            $maxAttempt = $this->gradeRepository->getMaxAttemptByCourseOffer($courseOfferId, $gradeTypeId);
+            $maxAttempt = $this->gradeRepository->getMaxAttemptBycourseSection($courseSectionId, $gradeTypeId);
 
-            $studentIds = $this->repository->find($courseOfferId)->students->pluck('id');
+            $studentIds = $this->repository->find($courseSectionId)->students->pluck('id');
 
             $newAttempt = $maxAttempt + 1;
 
             foreach ($studentIds as $studentId) {
                 $grade = [
-                    'course_offer_id' => $courseOfferId,
+                    'course_section_id' => $courseSectionId,
                     'grade_type_id' => $gradeTypeId,
                     'student_id' => $studentId,
                     'attempt' => $newAttempt,

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Repositories\CourseOfferAttendance;
+namespace App\Repositories\CourseSectionAttendance;
 
 use App\Models\Attendance;
-use App\Models\CourseOffer;
+use App\Models\CourseSection;
 use Illuminate\Http\Request;
 use App\Repositories\EloquentRepository;
-use App\Repositories\CourseOfferAttendance\CourseOfferAttendanceRepositoryInterface;
+use App\Repositories\CourseSectionAttendance\CourseSectionAttendanceRepositoryInterface;
 
-class CourseOfferAttendanceRepository extends EloquentRepository implements CourseOfferAttendanceRepositoryInterface
+class CourseSectionAttendanceRepository extends EloquentRepository implements CourseSectionAttendanceRepositoryInterface
 {
     public function getModel()
     {
-        return CourseOffer::class;
+        return CourseSection::class;
     }
 
     public function storeAttendanceStudents($sessionId, $attendanceStudents)
@@ -31,14 +31,14 @@ class CourseOfferAttendanceRepository extends EloquentRepository implements Cour
             );
             $result[] = $attendanceStudent;
         }
-       
+
         return $result;
     }
 
-    public function getAllAttendanceByCourseOffer(string $courseOfferId)
+    public function getAllAttendanceByCourseSection(string $courseSectionId)
     {
-        return CourseOffer::with([
+        return CourseSection::with([
             'schedules.sessions.attendances.student'
-        ])->find($courseOfferId);
+        ])->find($courseSectionId);
     }
 }

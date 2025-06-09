@@ -28,8 +28,8 @@ class Schedule extends Model
         return $this->hasMany(Session::class);
     }
 
-    public function courseoffer():BelongsTo
+    public function course_section():BelongsTo
     {
-        return $this->belongsTo(CourseOffer::class);
+        return $this->belongsTo(CourseSection::class);
     }
 }
