@@ -15,14 +15,14 @@ class CourseOfferAttendanceRepository extends EloquentRepository implements Cour
         return CourseOffer::class;
     }
 
-    public function storeAttendanceStudents($session_id, $attendanceStudents)
+    public function storeAttendanceStudents($sessionId, $attendanceStudents)
     {
         $result = [];
         foreach ($attendanceStudents as $attendanceStudent) {
             Attendance::updateOrCreate(
                 [
-                    'session_id' => $session_id,
-                    'student_id' => $attendanceStudent['studentId'],
+                    'session_id' => $sessionId,
+                    'student_id' => $attendanceStudent['student_id'],
                 ],
                 [
                     'status' => $attendanceStudent['status'] ?? 'absent',
@@ -31,6 +31,7 @@ class CourseOfferAttendanceRepository extends EloquentRepository implements Cour
             );
             $result[] = $attendanceStudent;
         }
+       
         return $result;
     }
 

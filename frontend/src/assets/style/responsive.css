@@ -1,0 +1,44 @@
+/* style responsive PC first */
+/* style responsive laptop */
+@media (max-width: 1200px) {
+    .container {
+        width: 100%;
+    }
+}
+
+/* style responsive table */
+@media (max-width: 767px) {
+
+    /* responsive dashboard admin */
+    .mobile-toggle {
+        display: block !important;
+    }
+    .navbar .logo{
+        font-size: 16px;
+    }
+    .navbar {
+        padding:0 6px !important;
+    }
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* style responsive mobible */
+@media (max-width: 576px) {}

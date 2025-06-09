@@ -1,15 +1,13 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import './assets/style/responsive.css';
+import AppRoutes from './routes'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <h1>Khởi tạo dự án</h1>
-    </>
+    <AppRoutes />
   )
 }
 
