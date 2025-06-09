@@ -1,0 +1,33 @@
+ .schedule-page {
+     margin-top: 3rem;
+     margin-bottom: 1rem;
+     background-color: #fff;
+     padding: 1.5rem;
+     border-radius: 10px;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ }
+
+ .schedule-page>h1 {
+     text-align: center;
+     color: #1e2a78;
+     margin-bottom: 20px;
+ }
+
+ .schedule-table {
+     width: 100%;
+     border-collapse: collapse;
+     overflow-x: auto;
+ }
+
+ 
+ .schedule-table td {
+     border: 1px solid #ddd;
+     padding: 10px;
+     text-align: center;
+
+ }
+
+ .period {
+     background-color: #f1f3f8;
+     font-weight: bold;
+ }
