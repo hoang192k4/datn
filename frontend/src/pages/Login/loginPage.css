@@ -3,7 +3,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 2rem;
+        padding: 5rem 2rem 3rem 2rem;
     }
 
     .login-card {
@@ -63,19 +63,4 @@
 
     .login-btn:hover {
         background-color: #374dbb;
-    }
-
-    .forgot-password {
-        text-align: right;
-        margin-top: 0.5rem;
-    }
-
-    .forgot-password a {
-        font-size: 0.9rem;
-        color: #1e3a8a;
-        text-decoration: none;
-    }
-
-    .forgot-password a:hover {
-        text-decoration: underline;
     }

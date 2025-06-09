@@ -1,0 +1,56 @@
+.teacher-page {
+    min-height: 600px;
+}
+.teacher-page h2 {
+    padding: 0.5rem 0;
+    color: #1e3a8a;
+}
+
+.notification {
+    padding: 2.5rem 2rem 0 2rem;
+}
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0 auto;
+}
+
+.notification-card {
+    background-color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+}
+
+.notification-card:hover {
+    transform: translateY(-2px);
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #1e3a8a;
+    margin-bottom: 0.5rem;
+}
+
+.notification-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.notification-content {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.class-list {
+    padding: 2rem;
+}
+
+.document-subject-list {
+    padding: 0 2rem 2rem 2rem;
+}
