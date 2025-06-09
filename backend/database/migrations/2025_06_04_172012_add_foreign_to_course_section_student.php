@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('course_offer_student', function (Blueprint $table) {
+        Schema::table('course_section_student', function (Blueprint $table) {
             //
-            $table->foreign('course_offer_id')
+            $table->foreign('course_section_id')
                 ->references('id')
-                ->on('course_offers')
+                ->on('course_sections')
                 ->onDelete('cascade');
             $table->foreign('student_id')
                 ->references('id')
@@ -29,10 +29,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('course_offer_student', function (Blueprint $table) {
+        Schema::table('course_section_student', function (Blueprint $table) {
             //
             $table->dropForeign(['student_id']);
-            $table->dropForeign(['course_offer_id']);
+            $table->dropForeign(['course_section_id']);
         });
     }
 };

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_offer_student', function (Blueprint $table) {
-            $table->unsignedBigInteger('course_offer_id');
+        Schema::create('course_section_student', function (Blueprint $table) {
+            $table->unsignedBigInteger('course_section_id');
             $table->unsignedBigInteger('student_id');
             $table->timestamps();
 
-            $table->primary(['course_offer_id', 'student_id']);
+            $table->primary(['course_section_id', 'student_id']);
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('course_offer_student');
+        Schema::dropIfExists('course_section_student');
     }
 };

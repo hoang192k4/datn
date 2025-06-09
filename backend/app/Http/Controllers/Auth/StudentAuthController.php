@@ -2,26 +2,32 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Student;
+use Illuminate\Http\Request;
+use App\Traits\AuthstudentApi;
+use App\Services\AuthServiceApi;
+use App\Supports\ResponseWithJson;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\BaseController;
-use App\Traits\AuthStudentApi;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
+/**
+ * @group Tài khoản giảng viên
+ */
 class StudentAuthController extends BaseController
 {
-    use AuthStudentApi;
-
+    use AuthstudentApi, ResponseWithJson;
     public function __construct()
     {
-        $this->middleware('auth:student')->except(['login']);
+        $this->middleware('auth:student')->except(['login', 'register', 'refresh']);
     }
 
     /**
-     * Đăng nhập dành cho sinh viên
+     * Đăng nhập dành cho giảng viên
      *
      * @header X-API-KEY string required Khóa API để xác thực. Example: x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs
      * @bodyParam email string required Email của người dùng. Example: meta@example.com
@@ -46,16 +52,88 @@ class StudentAuthController extends BaseController
      * }
      *
      */
-
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
         if (!$token = Auth::guard('student')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Xác thực không thành công'], 401);
         }
-        return $this->respondWithToken($token);
+
+        $user = Auth::guard('student')->user();
+        return $this->respondWithTokens($token, $user);
     }
+
+    /**
+     * Làm mới token đăng nhập
+     *
+     * @authenticated
+     * @header X-API-KEY string required Khóa API để xác thực. Example: x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs
+     * @response 200 {
+     * "access_token": "eyJ0eXAiOiJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6Ik1ldGEiLCJpYXQiOjE2MTYwMjYyMDAsImV4cCI6MTYxNjAyOTgwMH0.3z8b",
+     * "token_type": "bearer",
+     * "expires_in": 3600,
+     * "expires_at": "2021-03-01 12:00:00"
+     * }
+     * @response 401 {
+     * "error": "Unauthorized"
+     * }
+     * @response 500 {
+     * "error": "Internal Server Error"
+     * }
+     */
+    public function refresh(Request $request)
+    {
+        $refreshToken = $request->cookie('refresh_token');
+        if (!$refreshToken) {
+            return $this->jsonResponseError('Không có refresh token', 401);
+        }
+
+        try {
+            $payload = JWTAuth::setToken($refreshToken)->getPayload();
+
+            if ($payload->get('type') !== 'refresh') {
+                return $this->jsonResponseError('refresh token không hợp lệ', 401);
+            }
+            $userId = $payload->get('sub');
+            $user = Student::find($userId);
+
+            if (!$user) {
+                return $this->jsonResponseError('Không tìm thấy người dùng', 404);
+            }
+
+            $newAccessToken = Auth::guard('student')->tokenById($userId);
+            return $this->respondWithTokens($newAccessToken, $user);
+        } catch (TokenExpiredException $e) {
+            return $this->jsonResponseError('Refresh token hết hạn', 401);
+        } catch (JWTException $e) {
+            return $this->jsonResponseError('refresh token không hợp lệ', 401);
+        }
+    }
+
+    /**
+     * Đăng xuất người dùng
+     *
+     * @authenticated
+     * @header X-API-KEY string required Khóa API để xác thực. Example: x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs
+     * @response 200 {
+     * "message": "Successfully logged out"
+     * }
+     * @response 401 {
+     * "error": "Unauthorized"
+     * }
+     * @response 500 {
+     * "error": "Internal Server Error"
+     * }
+     */
+    public function logout()
+    {
+        Auth::guard('student')->logout();
+        return response()->json(['status' => 200, 'message' => 'Logged out'])
+            ->withCookie(Cookie::forget('access_token'))
+            ->withCookie(Cookie::forget('refresh_token'));
+    }
+
 
     /**
      * Lấy thông tin người dùng hiện tại
@@ -74,32 +152,31 @@ class StudentAuthController extends BaseController
      * "error": "Internal Server Error"
      * }
      */
-
     public function me()
     {
-        return response()->json($this->getCurrentStudent());
+        return response()->json($this->getCurrentstudent());
     }
 
-    public function respondWithToken($token)
+
+    protected function respondWithTokens($accessToken, $user)
     {
-        $ttl = config('jwt.ttl'); // Get the TTL from the JWT configuration
-        $expiration = Carbon::now()->addMinutes($ttl);
-        $cookie = cookie(
-            'token',             // Tên cookie
-            $token,              // Nội dung là JWT
-            60,                  // Thời gian sống (phút)
-            null,
-            null,
-            false,                // Secure (true nếu dùng HTTPS)
-            true,                // HttpOnly = true
-            false,
-            'Strict'             // SameSite policy (nếu cần CORS thì để 'Lax' hoặc 'None')
-        );
+        $accessTtl = (int)config('jwt.ttl'); // phút
+        $refreshTtl = (int)config('jwt.refresh_ttl'); // phút
+        $userId = Auth::guard('student')->id();
+
+        $refreshToken = Auth::guard('student')
+            ->claims(['type' => 'refresh'])
+            ->setTTL($refreshTtl)
+            ->tokenById($userId);
+
         return response()->json([
-            'access_token' => $token,
+            'access_token' => $accessToken,
             'token_type' => 'bearer',
-            'expires_in' => $ttl * 60,
-            'expires_at' => $expiration->toDateTimeString(),
-        ])->cookie(Cookie::forget('token'));
+            'expires_in' => $accessTtl,
+            'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
+            'user' => $user,
+        ])
+            ->cookie('access_token', $accessToken, $accessTtl, null, null, false, true, false, 'Lax')
+            ->cookie('refresh_token', $refreshToken, $refreshTtl, null, null, false, true, false, 'Lax');
     }
 }

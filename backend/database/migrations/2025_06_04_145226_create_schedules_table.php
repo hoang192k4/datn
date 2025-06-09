@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('period_start')->nullable();
             $table->unsignedInteger('period_end')->nullable();
             $table->unsignedInteger('period_number')->nullable();
-            $table->unsignedBigInteger('course_offer_id')->nullable();
+            $table->unsignedBigInteger('course_section_id')->nullable();
             $table->enum('session',['morning','affternoon']);
             $table->enum('day_of_week',['0','1','2','3','4','5','6']);
             $table->timestamps();

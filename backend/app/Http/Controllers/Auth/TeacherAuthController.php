@@ -2,23 +2,35 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
-use App\Models\Teacher;
-use App\Services\AuthServiceApi;
-use App\Traits\AuthTeacherApi;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\Teacher;
+use Illuminate\Http\Request;
+use App\Traits\AuthTeacherApi;
+use App\Services\AuthServiceApi;
+use App\Supports\ResponseWithJson;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Auth\ChangePassword;
+use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Resources\Teacher\TeacherAuthResource;
+use App\Http\Resources\Teacher\TeacherResource;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+
 
 /**
  * @group Tài khoản giảng viên
  */
 class TeacherAuthController extends BaseController
 {
-    use AuthTeacherApi;
+    use AuthTeacherApi, ResponseWithJson;
     public function __construct()
     {
-        $this->middleware('auth:teacher')->except(['login', 'register']);
+        $this->middleware('auth:teacher')->except(['login', 'register', 'refresh']);
+        $this->middleware('role:faculty_admin,subject_teacher')->except(['login', 'register', 'refresh']);
     }
 
     /**
@@ -52,12 +64,11 @@ class TeacherAuthController extends BaseController
         $credentials = $request->only('email', 'password');
 
         if (!$token = Auth::guard('teacher')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Xác thực không thành công'], 401);
         }
 
         $user = Auth::guard('teacher')->user();
-
-        return $this->respondWithToken($token, $user->role->name);
+        return $this->respondWithTokens($token, $user);
     }
 
     /**
@@ -78,9 +89,34 @@ class TeacherAuthController extends BaseController
      * "error": "Internal Server Error"
      * }
      */
-    public function refresh()
+    public function refresh(Request $request)
     {
-        return $this->respondWithToken(Auth::guard('teacher')->refresh());
+        $refreshToken = $request->cookie('refresh_token');
+        if (!$refreshToken) {
+            return $this->jsonResponseError('Không có refresh token', 401);
+        }
+
+        try {
+            $payload = JWTAuth::setToken($refreshToken)->getPayload();
+
+            if ($payload->get('type') !== 'refresh') {
+                return $this->jsonResponseError('refresh token không hợp lệ', 401);
+            }
+
+            $userId = $payload->get('sub');
+            $user = \App\Models\Teacher::find($userId);
+
+            if (!$user) {
+                return $this->jsonResponseError('Không tìm thấy người dùng', 404);
+            }
+
+            $newAccessToken = Auth::guard('teacher')->tokenById($userId);
+            return $this->respondWithTokens($newAccessToken, $user);
+        } catch (TokenExpiredException $e) {
+            return $this->jsonResponseError('Refresh token hết hạn', 401);
+        } catch (JWTException $e) {
+            return $this->jsonResponseError('refresh token không hợp lệ', 401);
+        }
     }
 
     /**
@@ -101,7 +137,9 @@ class TeacherAuthController extends BaseController
     public function logout()
     {
         Auth::guard('teacher')->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['status' => 200, 'message' => 'Logged out'])
+            ->withCookie(Cookie::forget('access_token'))
+            ->withCookie(Cookie::forget('refresh_token'));
     }
 
 
@@ -124,33 +162,45 @@ class TeacherAuthController extends BaseController
      */
     public function me()
     {
-        return response()->json($this->getCurrentTeacher());
+        return response()->json(new TeacherResource($this->getCurrentTeacher()));
     }
 
 
-    protected function respondWithToken($token, $role)
+    protected function respondWithTokens($accessToken, $user)
     {
-        $ttl = config('jwt.ttl'); // Get the TTL from the JWT configuration
-        $expiration = Carbon::now()->addMinutes($ttl);
+        $accessTtl = (int)config('jwt.ttl'); // phút
+        $refreshTtl = (int)config('jwt.refresh_ttl'); // phút
+        $userId = Auth::guard('teacher')->id();
 
-        $cookie = cookie(
-            'token',             // Tên cookie
-            $token,              // Nội dung là JWT
-            60,                  // Thời gian sống (phút)
-            null,
-            null,
-            false,                // Secure (true nếu dùng HTTPS)
-            true,                // HttpOnly = true
-            false,
-            'Strict'             // SameSite policy (nếu cần CORS thì để 'Lax' hoặc 'None')
-        );
+        $refreshToken = Auth::guard('teacher')
+            ->claims(['type' => 'refresh'])
+            ->setTTL($refreshTtl)
+            ->tokenById($userId);
 
         return response()->json([
-            'access_token' => $token,
+            'access_token' => $accessToken,
+
             'token_type' => 'bearer',
-            'expires_in' => $ttl * 60,
-            'expires_at' => $expiration->toDateTimeString(),
-            'role' => $role
-        ])->cookie($cookie);
+            'expires_in' => $accessTtl,
+            'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
+            'user' => new TeacherAuthResource($user),
+        ])
+            ->cookie('access_token', $accessToken, $accessTtl, null, null, false, true, false, 'Lax')
+            ->cookie('refresh_token', $refreshToken, $refreshTtl, null, null, false, true, false, 'Lax');
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $data = $request->validated();
+
+        $teacher = $this->getCurrentTeacher();
+        if (!Hash::check($data['current_password'], $teacher->password)) {
+            return $this->jsonResponseError('Mật khẩu hiện tại không đúng!', 422);
+        }
+
+        $teacher->password = Hash::make($data['new_password']);
+        $teacher->save();
+
+        return $this->jsonResponseSuccessNoData('Thay đổi mật khẩu thành công!');
     }
 }

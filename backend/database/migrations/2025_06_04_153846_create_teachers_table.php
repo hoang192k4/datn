@@ -23,7 +23,7 @@ return new class extends Migration
             $table->enum('gender', ['male', 'female']);
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->unsignedBigInteger('role_id')->nullable();
-            $table->string('device-token');
+            $table->string('device_token');
             $table->timestamps();
         });
     }

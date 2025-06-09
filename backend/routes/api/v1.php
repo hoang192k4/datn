@@ -10,14 +10,17 @@ Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
         Route::post('/refresh', 'refresh')->name('refresh');
         Route::get('/me', 'me')->name('me');
         Route::post('/logout', 'logout')->name('logout');
+        Route::post('/change-password', 'changePassword');
     });
 
 
 Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
     ->prefix('students')
     ->group(function () {
-        Route::post('/login', 'login');
-        Route::get('/me', 'me');
+        Route::post('/login', 'login')->name('login');
+        Route::post('/refresh', 'refresh')->name('refresh');
+        Route::get('/me', 'me')->name('me');
+        Route::post('/logout', 'logout')->name('logout');
     });
 
 Route::controller(CourseOfferController::class)

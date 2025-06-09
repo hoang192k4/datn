@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedBigInteger('teacher_id')->nullable();
-            $table->enum('status',['in_register', 'in_progress', 'completed'])->default('in_register');
+            $table->enum('status', ['in_register', 'in_progress', 'completed'])->default('in_register');
             $table->timestamps();
         });
     }
@@ -25,6 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('class_student');
+        Schema::dropIfExists('grades');
         Schema::dropIfExists('classes');
     }
 };

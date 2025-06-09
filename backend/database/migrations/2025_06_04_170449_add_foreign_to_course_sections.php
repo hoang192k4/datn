@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('course_offers', function (Blueprint $table) {
+        Schema::table('course_sections', function (Blueprint $table) {
             //
             $table->foreign('teacher_id')
                 ->references('id')
@@ -41,7 +41,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('course_offers', function (Blueprint $table) {
+        Schema::table('course_sections', function (Blueprint $table) {
             //
             $table->dropForeign(['teacher_id']);
             $table->dropForeign(['subject_id']);

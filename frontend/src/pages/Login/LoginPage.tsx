@@ -1,7 +1,10 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { teacherLogin } from '../../services/authService';
 import './loginPage.css';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { login } from '../../store/slices/authSlice';
 const LoginPage = () => {
-
+    const dispatch = useDispatch();
     const tonggleForgotPassword = (roleSelect: any) => {
         const forgotLink = document.getElementById('forgotPasswordLink');
         if (!forgotLink) return;
@@ -11,15 +14,35 @@ const LoginPage = () => {
             forgotLink.style.display = 'none';
         }
     }
+
+    function handleLogin() {
+        const email = document.getElementById('email') as HTMLInputElement;
+        const password = document.getElementById('password') as HTMLInputElement;
+        const role = document.getElementById('role') as HTMLInputElement;
+
+        if (role.value === 'teacher') {
+            teacherLogin(email.value, password.value)
+                .then((data) => {
+                    if (data.status == 200) {
+
+                        console.log(data.status, data.data.user);
+                        const user = data.data.user;
+                        const role = data.data.role;
+                        dispatch(login({ user, role }));
+                    }
+                });
+
+        }
+    }
     return (
         <>
             <section className="login-section">
                 <div className="login-card">
                     <h2>Đăng Nhập</h2>
-                    <form action="#" method="post">
+                    <form>
                         <div className="form-group">
-                            <label htmlFor="username">Username</label>
-                            <input type="text" id="username" name="username" placeholder="Enter your username" required />
+                            <label htmlFor="email">Username</label>
+                            <input type="text" id="email" name="email" placeholder="Enter your email" required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
@@ -35,7 +58,7 @@ const LoginPage = () => {
                         <div className="forgot-password" id="forgotPasswordLink" style={{ display: "none" }}>
                             <Link to="/forgotpassword">Quên mật khẩu?</Link>
                         </div>
-                        <button type="submit" className="login-btn">Đăng Nhập</button>
+                        <button type="button" className="login-btn" onClick={handleLogin}>Đăng Nhập</button>
                     </form>
                 </div>
             </section>

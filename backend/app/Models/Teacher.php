@@ -25,8 +25,12 @@ class Teacher extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'slug',
     ];
 
+    protected $slugFrom = 'name';         // Cột nguồn để tạo slug
+    protected $slugField = 'slug';         // Cột slug trong DB
+    protected $autoUpdateSlug = true;
     /**
      * The attributes that should be hidden for serialization.
      *
