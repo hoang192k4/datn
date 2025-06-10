@@ -176,7 +176,7 @@ class StudentAuthController extends BaseController
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => $user,
         ])
-            ->cookie('access_token', $accessToken, $accessTtl, null, null, false, true, false, 'Lax')
-            ->cookie('refresh_token', $refreshToken, $refreshTtl, null, null, false, true, false, 'Lax');
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, false, true, false, 'Lax')
+            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, false, true, false, 'Lax');
     }
 }

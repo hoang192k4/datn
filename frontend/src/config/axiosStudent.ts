@@ -1,8 +1,13 @@
 import axios from 'axios';
+
+const appURL = import.meta.env.VITE_APP_URL;
+const apiKey = import.meta.env.VITE_API_KEY;
+
+console.log(appURL, apiKey);
 const axiosStudentInstance = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/v1',
+    baseURL: appURL,
     headers: {
-        'X-API-KEY': 'x8Yz0ABRLa9cP7KYJ1TFojZUDqk4MPsxhNQvVGAs'
+        'X-API-KEY': apiKey
     },
     withCredentials: true,
 })

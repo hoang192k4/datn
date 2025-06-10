@@ -10,6 +10,8 @@ interface FormDataLogIn {
     password: string,
     role: string
 }
+const url = import.meta.env.VITE_APP_URL;
+
 const LoginPage = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit: validated, formState: { errors } } = useForm<FormDataLogIn>();
@@ -25,6 +27,8 @@ const LoginPage = () => {
             alert('thực hiện student');
         }
     }
+
+    console.log(url);
     return (
         <>
             <section className="login-section">
