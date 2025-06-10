@@ -48,3 +48,18 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
         Route::post('/', 'storeAttendanceStudents');
         Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection');
     });
+
+
+Route::controller(App\Http\Controllers\DeviceToken\DeviceTokenController::class)
+    ->prefix('device-token')
+    ->group(function () {
+        Route::post('/', 'update');
+    });
+
+
+
+Route::controller(App\Http\Controllers\Notification\NotificationController::class)
+    ->prefix('notifications')
+    ->group(function () {
+        Route::post('/', 'sendNotification');
+    });
