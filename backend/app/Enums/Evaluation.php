@@ -9,5 +9,6 @@ enum Evaluation: string
     case Good = 'good';
     case Fair = 'fair';
     case Poor = 'poor';
+    case Average = 'average';
     case VeryPoor = 'very_poor';
 }

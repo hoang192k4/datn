@@ -97,4 +97,9 @@ class GradeController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
+
+    public function updateExamScore()
+    {
+
+    }
 }

@@ -34,6 +34,12 @@ Route::controller(App\Http\Controllers\Grade\GradeController::class)
         Route::get('/calculate', 'calculate');
     });
 
+Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::class)
+    ->prefix('summary-grades')
+    ->group(function () {
+        Route::put('/{id}', 'update');
+    });
+
 
 Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
     ->prefix('course-section-attendances')

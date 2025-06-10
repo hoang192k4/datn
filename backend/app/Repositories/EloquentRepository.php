@@ -99,4 +99,10 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
     {
         return $this->model->updateOrCreate($conditions, $resource) ?? false;
     }
+
+
+    public function findWithConditions(array $conditions)
+    {
+        return $this->model->where($conditions)->first();
+    }
 }
