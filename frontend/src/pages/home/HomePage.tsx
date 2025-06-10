@@ -1,6 +1,8 @@
 import './HomePage.css';
 import TearcherItem from '../../components/ui/BoxItem';
+
 const HomePage = () => {
+
     return (
         <>
             <section className="hero">

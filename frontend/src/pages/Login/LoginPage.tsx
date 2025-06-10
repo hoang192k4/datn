@@ -10,7 +10,7 @@ interface FormDataLogIn {
     password: string,
     role: string
 }
-const url = import.meta.env.VITE_APP_URL;
+
 
 const LoginPage = () => {
     const dispatch = useDispatch();
@@ -28,7 +28,6 @@ const LoginPage = () => {
         }
     }
 
-    console.log(url);
     return (
         <>
             <section className="login-section">

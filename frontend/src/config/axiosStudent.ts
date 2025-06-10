@@ -3,7 +3,6 @@ import axios from 'axios';
 const appURL = import.meta.env.VITE_APP_URL;
 const apiKey = import.meta.env.VITE_API_KEY;
 
-console.log(appURL, apiKey);
 const axiosStudentInstance = axios.create({
     baseURL: appURL,
     headers: {
