@@ -34,6 +34,12 @@ Route::controller(App\Http\Controllers\Grade\GradeController::class)
         Route::get('/calculate', 'calculate');
     });
 
+Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::class)
+    ->prefix('summary-grades')
+    ->group(function () {
+        Route::put('/{id}', 'update');
+    });
+
 
 Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
     ->prefix('course-section-attendances')
@@ -41,4 +47,19 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
         Route::get('/{courseSectionId}/students', 'getStudentsByCourseSection');
         Route::post('/', 'storeAttendanceStudents');
         Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection');
+    });
+
+
+Route::controller(App\Http\Controllers\DeviceToken\DeviceTokenController::class)
+    ->prefix('device-token')
+    ->group(function () {
+        Route::post('/', 'update');
+    });
+
+
+
+Route::controller(App\Http\Controllers\Notification\NotificationController::class)
+    ->prefix('notifications')
+    ->group(function () {
+        Route::post('/', 'sendNotification');
     });

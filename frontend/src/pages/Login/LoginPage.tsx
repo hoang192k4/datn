@@ -10,6 +10,8 @@ interface FormDataLogIn {
     password: string,
     role: string
 }
+
+
 const LoginPage = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit: validated, formState: { errors } } = useForm<FormDataLogIn>();
@@ -25,6 +27,7 @@ const LoginPage = () => {
             alert('thực hiện student');
         }
     }
+
     return (
         <>
             <section className="login-section">

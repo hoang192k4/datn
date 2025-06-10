@@ -14,5 +14,7 @@ interface EloquentRepositoryInterface
     public function updateOrCreateById($id, array $resource): object|bool;
     public function findOrFailById($id);
     public function updateOrCreate(array $conditions, array $resource);
+
+      public function findWithConditions(array $conditions);
 }
 

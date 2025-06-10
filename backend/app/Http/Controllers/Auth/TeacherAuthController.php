@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Log;
 use Carbon\Carbon;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
@@ -10,14 +11,15 @@ use App\Services\AuthServiceApi;
 use App\Supports\ResponseWithJson;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Auth\ChangePassword;
-use App\Http\Requests\Auth\ChangePasswordRequest;
-use App\Http\Resources\Teacher\TeacherAuthResource;
-use App\Http\Resources\Teacher\TeacherResource;
-use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Http\Resources\Teacher\TeacherResource;
+use App\Http\Requests\Auth\ChangePasswordRequest;
+use Illuminate\Support\Facades\Log as LogSupport;
+use App\Http\Resources\Teacher\TeacherAuthResource;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 
@@ -177,16 +179,18 @@ class TeacherAuthController extends BaseController
             ->setTTL($refreshTtl)
             ->tokenById($userId);
 
+
+        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl * 30, '/', null, false, true, true, 'Lax');
+        $refreshCookie = Cookie::make('refresh_token', $refreshToken, $refreshTtl * 30, '/', null, false, true, true, 'Lax');
         return response()->json([
             'access_token' => $accessToken,
-
             'token_type' => 'bearer',
             'expires_in' => $accessTtl,
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => new TeacherAuthResource($user),
         ])
-            ->cookie('access_token', $accessToken, $accessTtl, null, null, false, true, false, 'Lax')
-            ->cookie('refresh_token', $refreshToken, $refreshTtl, null, null, false, true, false, 'Lax');
+            ->withCookie($accessCookie)
+            ->withCookie($refreshCookie);
     }
 
     public function changePassword(ChangePasswordRequest $request)

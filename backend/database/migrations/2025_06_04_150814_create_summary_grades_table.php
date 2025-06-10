@@ -19,10 +19,10 @@ return new class extends Migration
             $table->unsignedInteger('attempt')->nullable();
             $table->unsignedInteger('attendance_score')->nullable();
             $table->decimal('avg_score', 10, 2)->default(0);
-            $table->decimal('exam1_score', 10, 2)->default(0);
-            $table->decimal('exam2_score', 10, 2)->default(0);
-            $table->decimal('final_score', 10, 2)->default(0);
-            $table->enum('evaluation', ['exellent', 'good', 'fair', 'average', 'poor', 'very_poor']);
+            $table->decimal('exam1_score', 10, 2)->nullable();
+            $table->decimal('exam2_score', 10, 2)->nullable();
+            $table->decimal('final_score', 10, 2)->nullable();
+            $table->enum('evaluation', ['excellent', 'good', 'fair', 'average', 'poor', 'very_poor']);
             $table->unsignedBigInteger('course_section_id')->nullable();
             $table->timestamps();
         });

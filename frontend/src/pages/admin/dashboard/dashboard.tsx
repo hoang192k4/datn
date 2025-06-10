@@ -1,6 +1,13 @@
+import { useEffect, useState } from 'react';
 import './dashboard.css';
+import { getFCMToken } from '../../../services/deviceTokenService';
+
 
 const Dashboard = () => {
+    const [permission, setPermission] = useState('default');
+    useEffect(() => {
+        getFCMToken([permission, setPermission]);
+    }, []);
     return (
         <>
             <div className="main-content">
@@ -9,7 +16,7 @@ const Dashboard = () => {
                     <p className="page-subtitle">Tổng quan về hoạt động giảng dạy và quản lý lớp học</p>
                 </div>
 
-          
+
                 <div className="stats-grid">
                     <div className="stat-card">
                         <div className="stat-header">
@@ -53,7 +60,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                
+
                 <div className="dashboard-grid">
                     <div className="dashboard-card">
                         <h2 className="card-title">
