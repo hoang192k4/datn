@@ -1,11 +1,16 @@
-import axiosTeacherTnstance from "../config/axiosTeacher";
+import axiosTeacherInstance from "../config/axiosTeacher";
 
 export const teacherLogin = async (email: string, password: string) => {
-    const response = await axiosTeacherTnstance.post('/teachers/login', {
+    const response = await axiosTeacherInstance.post('/teachers/login', {
         requiresAuth: false,
         email,
         password,
     });
 
+    return response;
+}
+
+export const teacherAuth = async () => {
+    const response = await axiosTeacherInstance.get('/teachers/me');
     return response;
 }

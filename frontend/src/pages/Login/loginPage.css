@@ -42,6 +42,10 @@
         color: black;
         outline: none;
     }
+    .form-group>p{
+        color: red;
+        font-size: 13px;
+    }
 
     .form-group select {
         background-color: #fff;
