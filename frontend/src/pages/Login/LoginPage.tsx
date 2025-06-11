@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { teacherLogin, teacherAuth } from '../../services/authTeacherService';
+import { teacherLogin } from '../../services/authTeacherService';
 import './loginPage.css';
 import { Link, Navigate } from 'react-router-dom';
 import { login } from '../../store/slices/authSlice';

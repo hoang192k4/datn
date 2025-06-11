@@ -180,9 +180,8 @@ class TeacherAuthController extends BaseController
             ->setTTL($refreshTtl)
             ->tokenById($userId);
         $this->logInfo($userId ?? 'Không có ');
-        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl * 30, '/', null, false, true, false, 'Lax');
+        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl, '/', null, false, true, false, 'Lax');
         $refreshCookie = Cookie::make('refresh_token', $refreshToken, $refreshTtl, '/', null, false, true, false, 'Lax');
-        $this->logInfo($refreshCookie);
         return response()->json([
             'access_token' => $accessToken,
             'token_type' => 'bearer',

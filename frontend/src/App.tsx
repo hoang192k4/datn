@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux';
 import { authCheck } from './services/authTeacherService';
 import { login, logout } from './store/slices/authSlice';
 import { HttpStatus } from './enums/HttpStatus';
-import { Navigate } from 'react-router-dom';
 
 function App() {
   const dispatch = useDispatch();
@@ -15,6 +14,7 @@ function App() {
   useEffect(() => {
     authCheck()
       .then(res => {
+        console.log(res);
         if (res.status === HttpStatus.SUCCESS) {
           dispatch(login({ user: res.data }));
         } else {

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Notification;
 
-use App\Http\Controllers\BaseController;
-use App\Http\Requests\Notification\NotificationRequest;
-use App\Http\Requests\Notification\NotificationStudentsRequest;
+use Exception;
 use App\Models\Notification;
+use App\Http\Controllers\BaseController;
 use App\Services\Firebase\FirebaseService;
 use App\Services\Firebase\FirebaseServiceInterface;
+use App\Http\Requests\Notification\NotificationRequest;
+use App\Http\Requests\Notification\NotificationTestRequest;
 use App\Services\Notification\NotificationServiceInterface;
-use Exception;
+use App\Http\Requests\Notification\NotificationStudentsRequest;
 
 class NotificationController extends BaseController
 {
@@ -18,14 +19,16 @@ class NotificationController extends BaseController
     public function __construct(
         FirebaseServiceInterface $service,
         NotificationServiceInterface $notificationService,
+
     ) {
         $this->service = $service;
         $this->notificationService = $notificationService;
-        $this->middleware('auth:teacher,student');
+        $this->middleware('auth:teacher');
     }
 
-    public function sendNotification(NotificationRequest $request)
+    public function sendNotification(NotificationTestRequest $request)
     {
+
         $data = $request->validated();
         $result =  $this->service->sendNotification($data['device_tokens'], $data['title'], $data['body'], $data['data'] ?? []);
         if ($result)
@@ -33,11 +36,11 @@ class NotificationController extends BaseController
         return $this->jsonResponseError('Thêm thất bại', 500);
     }
 
-    public function sendNotificationToStudents(NotificationStudentsRequest $request)
+    public function sendNotifications(NotificationRequest $request)
     {
         try {
-            $response = $this->notificationService->sendNotificationToStudents($request);
-
+            $response = $this->notificationService->sendNotifications($request);
+            return $this->jsonResponseSuccess($response);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

@@ -11,8 +11,6 @@ export const teacherLogin = async (email: string, password: string) => {
 }
 
 
-
-
 export const teacherLogout = async () => {
     const response = await axiosTeacherInstance.post('/teachers/logout');
     return response;

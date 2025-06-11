@@ -61,5 +61,12 @@ Route::controller(App\Http\Controllers\DeviceToken\DeviceTokenController::class)
 Route::controller(App\Http\Controllers\Notification\NotificationController::class)
     ->prefix('notifications')
     ->group(function () {
-        Route::post('/', 'sendNotification');
+        Route::post('/', 'sendNotifications');
+        Route::post('/send-test', 'sendNotification');
     });
+
+Route::controller(App\Http\Controllers\Auth\AuthController::class)
+->prefix('auth')
+->group(function (){
+    Route::post('/me', 'me');
+});
