@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import './HeaderAdmin.css';
 import { Link } from 'react-router-dom';
-import { teacherLogout } from '../../services/authService';
+import { teacherLogout } from '../../services/authTeacherService';
 import { logout } from '../../store/slices/authSlice';
 import { getInitials } from '../../utils/stringUtil';
 import { HttpStatus } from '../../enums/HttpStatus';
