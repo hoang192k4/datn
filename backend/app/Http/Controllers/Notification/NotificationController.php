@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Notification;
 use Exception;
 use App\Models\Notification;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Notification\NotificationCourseSectionRequest;
 use App\Services\Firebase\FirebaseService;
 use App\Services\Firebase\FirebaseServiceInterface;
 use App\Http\Requests\Notification\NotificationRequest;
@@ -40,7 +41,23 @@ class NotificationController extends BaseController
     {
         try {
             $response = $this->notificationService->sendNotifications($request);
-            return $this->jsonResponseSuccess($response);
+            if (!$response)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccessNoData();
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+
+    public function sendNotificationToCourseSection(NotificationCourseSectionRequest $request)
+    {
+        try {
+            $response = $this->notificationService->sendNotificationToCourseSection($request);
+            if (!$response)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccessNoData();
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 interface NotificationServiceInterface
 {
-    public function sendNotificationToStudents(Request $request);
-    public function sendNotifications(Request $request):bool;
+    public function sendNotificationToStudents(string $title, string $body, array $student_ids, string $type);
+    public function sendNotifications(Request $request);
+    public function sendNotificationToCourseSection(Request $request);
 }
