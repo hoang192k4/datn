@@ -1,6 +1,6 @@
 import Dashboard from "../pages/admin/dashboard/dashboard"
 
-export const AdminRoute = [
+export const TeacherRoute = [
     {
         'path': 'dashboard',
         'element': <Dashboard />,

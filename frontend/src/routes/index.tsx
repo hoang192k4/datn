@@ -1,10 +1,10 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import MainLayout from "../components/layout/MainLayout";
-import LoginPage from "../pages/login/LoginPage";
+import LoginPage from "../pages/Login/LoginPage";
 import HomePage from "../pages/home/HomePage";
 import AdminLayout from "../components/layout/AdminLayout";
-import { AdminRoute } from "./AdminRoute";
+import { TeacherRoute } from "./TeacherRoute";
 import TeacherPage from "../pages/home/TeacherPage";
 import DocumentPage from "../pages/document/DocumentPage";
 import ClassPage from "../pages/Class/ClassPage";
@@ -32,7 +32,7 @@ const AppRoutes = () => {
 
             <Route path="/admin" element={<AdminLayout />} >
                 {
-                    AdminRoute.map((route, index) => (
+                    TeacherRoute.map((route, index) => (
                         <Route key={index} path={route.path} element={isAuthencation && role !== null ? route.element : <Navigate to="/login" replace />} />
                     ))
                 }

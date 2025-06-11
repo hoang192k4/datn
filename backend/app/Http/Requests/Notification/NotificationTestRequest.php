@@ -4,7 +4,7 @@ namespace App\Http\Requests\Notification;
 
 use App\Http\Requests\BaseRequest;
 
-class NotificationStudentsRequest extends BaseRequest
+class NotificationTestRequest extends BaseRequest
 {
 
     public function methodPost()
@@ -12,7 +12,8 @@ class NotificationStudentsRequest extends BaseRequest
         return [
             'title' => 'required|string',
             'body' => 'required|string',
-            'student_ids' => 'required|array',
+            'device_tokens' => 'required|array',
+            'data' => 'nullable|array'
         ];
     }
 }

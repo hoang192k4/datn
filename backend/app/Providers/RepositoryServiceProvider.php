@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 class RepositoryServiceProvider extends ServiceProvider
 {
     protected array $repositories = [
-        'namespace App\Repositories\Notification\NotificationRepositoryInterface' => 'namespace App\Repositories\Notification\NotificationRepository',
+        'App\Repositories\Notification\NotificationRepositoryInterface' => 'App\Repositories\Notification\NotificationRepository',
         'App\Repositories\Student\StudentRepositoryInterface' => 'App\Repositories\Student\StudentRepository',
         'App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface' =>  'App\Repositories\SummaryGrade\SummaryGradeRepository',
         'App\Repositories\Grade\GradeRepositoryInterface' => 'App\Repositories\Grade\GradeRepository',
