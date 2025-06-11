@@ -37,7 +37,7 @@ export const getFCMToken = async ([permission, setPermission]: any) => {
                 console.log('FCM Token:', currentToken);
 
                 // Gửi token lên server Laravel
-                updateDeviceToken(currentToken).then((data) => { if(data.status==200) console.log('Cập nhật device-token thành công!') });
+                updateDeviceToken(currentToken).then((data) => { if (data.status == 200) console.log('Cập nhật device-token thành công!') });
             } else {
                 console.log('No registration token available.');
             }

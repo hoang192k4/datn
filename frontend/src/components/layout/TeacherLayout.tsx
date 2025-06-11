@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import HeaderAdmin from "../Header/HeaderAdmin";
 import Sidebar from "../sidebar/Sidebar";
-const AdminLayout = () => {
+const TeacherLayout = () => {
     const toggleSidebar = () => {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -19,4 +19,4 @@ const AdminLayout = () => {
     )
 }
 
-export default AdminLayout
+export default TeacherLayout

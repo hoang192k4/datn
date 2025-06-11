@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { teacherLogin, teacherAuth } from '../../services/authTeacherService';
+import { teacherLogin } from '../../services/authTeacherService';
 import './loginPage.css';
 import { Link, Navigate } from 'react-router-dom';
 import { login } from '../../store/slices/authSlice';
@@ -7,6 +7,7 @@ import { Role } from '../../enums/Role';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { HttpStatus } from '../../enums/HttpStatus';
+import { studentLogin } from '../../services/authStudentService';
 interface FormDataLogIn {
     email: string,
     password: string,
@@ -20,14 +21,16 @@ const LoginPage = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit: validated, formState: { errors } } = useForm<FormDataLogIn>();
     const hanldeLogin = async (dataForm: FormDataLogIn) => {
-        setLoading(true);
         try {
+            setLoading(true);
             if (dataForm.role === Role.Teacher) {
                 const data = await teacherLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
                 setErrorPassword(false);
             } else {
-                alert('thực hiện student');
+                const data = await studentLogin(dataForm.email, dataForm.password);
+                dispatch(login({ user: data.data.user }));
+                setErrorPassword(false);
             }
         } catch (errors: any) {
             if (errors.status === HttpStatus.AUTH_ERROR) {
