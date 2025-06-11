@@ -70,4 +70,5 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
 ->prefix('auth')
 ->group(function (){
     Route::get('/me', 'me');
+    Route::post('/refresh', 'refresh');
 });
