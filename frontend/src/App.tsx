@@ -4,21 +4,18 @@ import './App.css'
 import './assets/style/responsive.css';
 import AppRoutes from './routes'
 import { useDispatch } from 'react-redux';
-import { teacherAuth } from './services/authTeacherService';
+import { authCheck } from './services/authTeacherService';
 import { login, logout } from './store/slices/authSlice';
 import { HttpStatus } from './enums/HttpStatus';
-import { Navigate } from 'react-router-dom';
 
 function App() {
   const dispatch = useDispatch();
-
   const [authLoading, setAuthLoading] = useState(true);
-
   useEffect(() => {
-    teacherAuth()
+    authCheck()
       .then(res => {
         if (res.status === HttpStatus.SUCCESS) {
-          dispatch(login({ user: res.data }));
+          dispatch(login({ user: res.data.data }));
         } else {
           dispatch(logout());
         }

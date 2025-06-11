@@ -14,6 +14,7 @@ class TeacherAuthResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'status' => $this->status,
+            'slug' => $this->slug,
             'role' => $this->role->name,
         ];
     }

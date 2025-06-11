@@ -7,7 +7,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const menuItems = [
         { icon: "📊", url: "#", label: "Dashboard" },
         { icon: "👥", url: "#", label: "Danh Sách Sinh Viên" },
-        { icon: "📚", url: "class", label: "Lớp Học" },
+        { icon: "📚", url: "lop-hoc", label: "Lớp Học" },
         { icon: "📝", url: "#", label: "Quản Lý Điểm" },
         { icon: "📅", url: "#", label: "Thời Khóa Biểu" },
         { icon: "📢", url: "#", label: "Thông Báo" },

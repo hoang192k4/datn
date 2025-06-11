@@ -11,13 +11,12 @@ export const teacherLogin = async (email: string, password: string) => {
 }
 
 
-export const teacherAuth = async () => {
-    const response = await axiosTeacherInstance.get('/teachers/me');
-    return response;
-}
-
 export const teacherLogout = async () => {
     const response = await axiosTeacherInstance.post('/teachers/logout');
     return response;
 }
 
+export const authCheck = async () => {
+    const response = await axiosTeacherInstance.get('/auth/me');
+    return response;
+}

@@ -1,8 +1,13 @@
+import DashboardStudent from "../pages/student/dashboard/DashboardSrudent";
 
 
 export const StudentRoute = [
     {
         'path': 'dashboard',
-        'element': 'student'
-    }
+        'element': <DashboardStudent/>,
+    },
+      {
+        'path': '',
+        'element': <DashboardStudent/>,
+    },
 ]

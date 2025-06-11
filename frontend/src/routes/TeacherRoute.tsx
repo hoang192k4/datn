@@ -1,3 +1,4 @@
+import Class from "../pages/admin/class/Class";
 import Dashboard from "../pages/admin/dashboard/dashboard"
 
 export const TeacherRoute = [
@@ -8,5 +9,9 @@ export const TeacherRoute = [
     {
         'path': '',
         'element': <Dashboard />,
+    },
+    {
+        'path': 'lop-hoc',
+        'element': <Class />,
     },
 ];
