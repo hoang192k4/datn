@@ -13,41 +13,48 @@ import GradePage from "../pages/grade/GradePage";
 import AttendancePage from "../pages/attendance/AttendancePage";
 import StudentLayout from "../components/layout/StudentLayout";
 import { StudentRoute } from "./StudentRoute";
+import NotFoundPage from "../pages/notfound/NotFoundPage";
 const AppRoutes = () => {
     const isAuthencation = useSelector((state: any) => state.auth.isAuthentication);
     const role = useSelector((state: any) => state.auth.user?.role ?? null);
+
+    const slugTeacher = useSelector((state: any) => state.auth.user?.slug ?? null);
     return (
         <Routes>
-
+            {/* Route public */}
             <Route element={<MainLayout />}>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={isAuthencation && role === null ? <Navigate to="/students" replace /> :
-                    isAuthencation && role !== null ? <Navigate to="/admin" replace /> : < LoginPage />} />
+                <Route path="/dang-nhap" element={isAuthencation && role === null ? <Navigate to="/sinh-vien" replace /> :
+                    isAuthencation && role !== null ? <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> : < LoginPage />} />
                 <Route path="/lehuvinh" element={<TeacherPage />} />
-                <Route path="/document" element={<DocumentPage />} />
-                <Route path="/class" element={<ClassPage />} />
-                <Route path="/schedule" element={<SchedulePage />} />
-                <Route path="/grade" element={<GradePage />} />
-                <Route path="/attendance" element={<AttendancePage />} />
+                <Route path="/tai-lieu" element={<DocumentPage />} />
+                <Route path="/lop-hoc" element={<ClassPage />} />
+                <Route path="/thoi-khoa-bieu" element={<SchedulePage />} />
+                <Route path="/diem" element={<GradePage />} />
+                <Route path="/diem-danh" element={<AttendancePage />} />
             </Route>
 
-
-            <Route path="/students" element={<StudentLayout />}>
+            {/* Route dành cho sinh viên */}
+            <Route path="/sinh-vien" element={<StudentLayout />}>
                 {
                     StudentRoute.map((route, index) => (
-                        <Route key={index} path={route.path} element={isAuthencation && role === null ? route.element : <Navigate to="/login" replace />}></Route>
+                        <Route key={index} path={route.path} element={isAuthencation && role === null ? route.element : <Navigate to="/dang-nhap" replace />}></Route>
                     ))
                 }
             </Route>
 
-
-            <Route path="/admin" element={<TeacherLayout />} >
+            {/* Route dành cho giảng viên */}
+            <Route path={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} element={<TeacherLayout />} >
                 {
                     TeacherRoute.map((route, index) => (
-                        <Route key={index} path={route.path} element={isAuthencation && role !== null ? route.element : <Navigate to="/login" replace />} />
+                        <Route key={index} path={route.path} element={isAuthencation && role !== null ? route.element : <Navigate to="/dang-nhap" replace />} />
                     ))
                 }
             </Route>
+
+                {/* Route cho notfoud 404 */}
+                <Route path="*" element={<NotFoundPage/>}/>
+
         </Routes>
     );
 };

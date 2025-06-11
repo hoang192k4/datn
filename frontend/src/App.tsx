@@ -14,9 +14,8 @@ function App() {
   useEffect(() => {
     authCheck()
       .then(res => {
-        console.log(res);
         if (res.status === HttpStatus.SUCCESS) {
-          dispatch(login({ user: res.data }));
+          dispatch(login({ user: res.data.data }));
         } else {
           dispatch(logout());
         }

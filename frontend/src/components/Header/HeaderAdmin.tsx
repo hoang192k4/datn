@@ -5,7 +5,10 @@ import { teacherLogout } from '../../services/authTeacherService';
 import { logout } from '../../store/slices/authSlice';
 import { getInitials } from '../../utils/stringUtil';
 import { HttpStatus } from '../../enums/HttpStatus';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
+    const [loadingLogout, setLoadingLogout] = useState(false);
     const toggleUserDropdown = () => {
         const dropdown = document.getElementById('userDropdown');
         if (!dropdown)
@@ -14,15 +17,28 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     }
     const user = useSelector((state: any) => state.auth?.user ?? null);
     const dispatch = useDispatch();
-    const handleLogout = () => {
-        teacherLogout().
-        then((res) => {
-            if(res.status === HttpStatus.SUCCESS)
+    const navigate = useNavigate();
+    const handleLogout = async () => {
+        try {
+            setLoadingLogout(true);
+            const data = await teacherLogout();
+            if (data.status === HttpStatus.SUCCESS) {
+                navigate("/dang-nhap",{replace: true});
                 dispatch(logout());
-        }).catch((errors) => console.log(errors));
+            }
+        } catch (errors) {
+            console.log(errors);
+        } finally {
+            setLoadingLogout(false);
+        }
     }
     return (
         <header>
+            {loadingLogout && (
+                <div className="loading-overlay">
+                    <div className="spinner"></div>
+                </div>
+            )}
             <nav className="navbar">
                 <button className="mobile-toggle" onClick={toggleSidebar}>☰</button>
                 <div className="logo"><Link to="dashboard">Khoa Công Nghệ Thông Tin</Link></div>
@@ -57,7 +73,6 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     </div>
                 </div>
             </nav>
-            {/* Sidebar Overlay for Mobile  */}
 
         </header>
 

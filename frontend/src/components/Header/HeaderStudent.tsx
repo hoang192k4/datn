@@ -4,20 +4,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { studentLogout } from "../../services/authStudentService";
 import { HttpStatus } from "../../enums/HttpStatus";
 import { logout } from "../../store/slices/authSlice";
+import { useState } from "react";
 const HeaderStudent = () => {
+    const [loadingLogoutStudent, setLoadingLogoutStudent] = useState(false);
     const user = useSelector((state: any) => state.auth.user);
     const dispatch = useDispatch();
     const handleStudentLogout = async () => {
         try {
+            setLoadingLogoutStudent(true);
             const data = await studentLogout();
-            if(data.status === HttpStatus.SUCCESS)
+            if (data.status === HttpStatus.SUCCESS)
                 dispatch(logout());
-        }catch(error){
+        } catch (error) {
             console.log(error)
+        } finally {
+            setLoadingLogoutStudent(false);
         }
     }
     return (
         <>
+            {loadingLogoutStudent && (
+                <div className="loading-overlay">
+                    <div className="spinner"></div>
+                </div>
+            )}
             <header className="header-student">
                 <h1>KHOA CÔNG NGHỆ THÔNG TIN</h1>
                 <div className="nav-links-student">

@@ -7,8 +7,8 @@ const ClassPage = () => {
                 <div className="class-header">
                     <div className="class-name">Lớp: Nhập môn lập trình</div>
                     <div className="buttons">
-                        <Link to ="/grade">Điểm</Link>
-                        <Link to ="/attendance">Điểm Danh </Link>
+                        <Link to ="/diem">Điểm</Link>
+                        <Link to ="/diem-danh">Điểm Danh </Link>
                     </div>
                 </div>
 

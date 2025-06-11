@@ -11,7 +11,7 @@ const Header = () => {
                     <Link to="/"><h1>KHOA CÔNG NGHỆ THÔNG TIN</h1></Link>
                     <ul className="nav-links">
                         {/* xuất hiện khi chuyển vào trang giáo viên */}
-                        <li className="dropdown"><Link to="/document">Tài Liệu</Link>
+                        <li className="dropdown"><Link to="/tai-lieu">Tài Liệu</Link>
                             <ul className="submenu">
                                 <li className="dropdown">
                                     <Link to="#">Nhập môn lập trình</Link>
@@ -27,7 +27,7 @@ const Header = () => {
                                 </li>
                             </ul>
                         </li>
-                        <li className="dropdown"><Link to="/class">Lớp Học</Link>
+                        <li className="dropdown"><Link to="/lop-hoc">Lớp Học</Link>
                             <ul className="submenu">
                                 <li className="dropdown">
                                     <Link to="#">Lớp CĐTH22A</Link>
@@ -43,8 +43,8 @@ const Header = () => {
                                 </li>
                             </ul>
                         </li>
-                        <li><Link to="/schedule">Thời Khóa Biểu</Link></li>
-                        {!isAuthencation && <li><Link to="/login">Đăng Nhập</Link></li>}
+                        <li><Link to="/thoi-khoa-bieu">Thời Khóa Biểu</Link></li>
+                        {!isAuthencation && <li><Link to="/dang-nhap">Đăng Nhập</Link></li>}
                         
                     </ul>
                 </nav>

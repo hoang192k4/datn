@@ -21,15 +21,15 @@ const LoginPage = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit: validated, formState: { errors } } = useForm<FormDataLogIn>();
     const hanldeLogin = async (dataForm: FormDataLogIn) => {
-        setLoading(true);
         try {
+            setLoading(true);
             if (dataForm.role === Role.Teacher) {
                 const data = await teacherLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
                 setErrorPassword(false);
             } else {
                 const data = await studentLogin(dataForm.email, dataForm.password);
-                dispatch(login({user: data.data.user}));
+                dispatch(login({ user: data.data.user }));
                 setErrorPassword(false);
             }
         } catch (errors: any) {
