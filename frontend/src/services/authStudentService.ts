@@ -3,7 +3,7 @@ import axiosStudentInstance from "../config/axiosStudent"
 
 export const studentLogin = async(email:string, password:string) => {
     const response = await axiosStudentInstance.post('/students/login',{
-        requiresAtuth:false,
+        requiresAuth:false,
         email,
         password
     });

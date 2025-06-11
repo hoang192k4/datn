@@ -7,6 +7,7 @@ import { Role } from '../../enums/Role';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { HttpStatus } from '../../enums/HttpStatus';
+import { studentLogin } from '../../services/authStudentService';
 interface FormDataLogIn {
     email: string,
     password: string,
@@ -27,7 +28,9 @@ const LoginPage = () => {
                 dispatch(login({ user: data.data.user }));
                 setErrorPassword(false);
             } else {
-                alert('thực hiện student');
+                const data = await studentLogin(dataForm.email, dataForm.password);
+                dispatch(login({user: data.data.user}));
+                setErrorPassword(false);
             }
         } catch (errors: any) {
             if (errors.status === HttpStatus.AUTH_ERROR) {

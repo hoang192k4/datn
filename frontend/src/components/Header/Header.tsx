@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom"
 import './Header.css';
+import { useSelector } from "react-redux";
 
 const Header = () => {
+    const isAuthencation = useSelector((state:any) => state.auth.isAuthentication);
     return (
         <>
             <header>
@@ -42,7 +44,8 @@ const Header = () => {
                             </ul>
                         </li>
                         <li><Link to="/schedule">Thời Khóa Biểu</Link></li>
-                        <li><Link to="/login">Đăng Nhập</Link></li>
+                        {!isAuthencation && <li><Link to="/login">Đăng Nhập</Link></li>}
+                        
                     </ul>
                 </nav>
             </header>

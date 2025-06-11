@@ -39,19 +39,19 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                                 <div className="dropdown-email">{user && user.email}</div>
                             </div>
                             <div className="dropdown-menu">
-                                <a href="#" className="dropdown-item" >
+                                <Link to="#" className="dropdown-item" >
                                     <span className="dropdown-item-icon">👤</span>
                                     Thông tin cá nhân
-                                </a>
-                                <a href="#" className="dropdown-item">
+                                </Link>
+                                <Link to="#" className="dropdown-item">
                                     <span className="dropdown-item-icon">🔑</span>
                                     Đổi mật khẩu
-                                </a>
+                                </Link>
                                 <div className="dropdown-divider"></div>
-                                <a href="#" className="dropdown-item" onClick={handleLogout}>
+                                <Link to="#" className="dropdown-item" onClick={handleLogout}>
                                     <span className="dropdown-item-icon">🚪</span>
                                     Đăng xuất
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
