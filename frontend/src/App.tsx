@@ -11,17 +11,14 @@ import { Navigate } from 'react-router-dom';
 
 function App() {
   const dispatch = useDispatch();
- /*  useEffect(() => {
+  useEffect(() => {
     teacherAuth().then((res) => {
       if (res.status === HttpStatus.SUCCESS) {
         dispatch(login({ user: res.data }));
       }
-      else if (res.status === HttpStatus.AUTH_ERROR) {
-        dispatch(logout());
-      }
     }).catch((errors) => console.log(errors));
 
-  }, [dispatch]); */
+  }, [dispatch]);
   return (
     <AppRoutes />
   )
