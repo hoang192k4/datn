@@ -4,17 +4,18 @@ namespace App\Http\Middleware;
 
 use App\Supports\ResponseWithJson;
 use Closure;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\Middleware;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class Authenticate extends Middleware
+class Authenticate
 {
     use ResponseWithJson;
 
@@ -50,6 +51,9 @@ class Authenticate extends Middleware
                 return $this->jsonResponseError('Token không hợp lệ', 401);
             } catch (JWTException $e) {
                 return $this->jsonResponseError('Vui lòng gửi token', 401);
+            } catch (\Exception $e) {
+                // Xử lý fallback các lỗi ném ra khác, trong đó có AuthenticationException
+                return $this->jsonResponseError('Lỗi xác thực: ' . $e->getMessage(), 401);
             }
         }
 

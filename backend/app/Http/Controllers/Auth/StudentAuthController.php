@@ -105,7 +105,7 @@ class StudentAuthController extends BaseController
             $newAccessToken = Auth::guard('student')->tokenById($userId);
             return $this->respondWithTokens($newAccessToken, $user);
         } catch (TokenExpiredException $e) {
-            return $this->jsonResponseError('Refresh token hết hạn', 401);
+            return response()->json(['status' => 401, 'message' => 'Refresh token hết hạn'])->withCookie(Cookie::foreget('refresh_token'))->withCookie(Cookie::forget('access_token'));
         } catch (JWTException $e) {
             return $this->jsonResponseError('refresh token không hợp lệ', 401);
         }
