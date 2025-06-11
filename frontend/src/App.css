@@ -33,4 +33,47 @@
         padding: 10px;
     }
 
-    
+     .loading-overlay-layout {
+      position: fixed;
+      inset: 0;
+      background: rgba(251, 251, 251, 0.929); /* sáng hơn, nhẹ nhàng hơn */
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    /* Container spinner */
+    .spinner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Spinner với hiệu ứng bóng sáng xanh dương học thuật */
+    .spinner-glow {
+      width: 55px;
+      height: 55px;
+      border: 6px solid rgba(180, 190, 255, 0.2);
+      border-top: 6px solid #3b5bdb; /* xanh dương nghiêm túc */
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 10px rgba(59, 91, 219, 0.3);
+    }
+
+    /* Dòng chữ loading */
+    .loading-text {
+      font-size: 16px;
+      color: #2c3e50;
+      font-weight: 500;
+      font-family: 'Segoe UI', sans-serif;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }

@@ -20,3 +20,4 @@ export const teacherLogout = async () => {
     const response = await axiosTeacherInstance.post('/teachers/logout');
     return response;
 }
+
