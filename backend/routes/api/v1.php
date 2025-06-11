@@ -68,5 +68,5 @@ Route::controller(App\Http\Controllers\Notification\NotificationController::clas
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
 ->prefix('auth')
 ->group(function (){
-    Route::post('/me', 'me');
+    Route::get('/me', 'me');
 });
