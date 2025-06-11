@@ -11,6 +11,7 @@ import { Navigate } from 'react-router-dom';
 
 function App() {
   const dispatch = useDispatch();
+
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ function App() {
       </div>
     );
   }
+
 
   return (
     <AppRoutes />

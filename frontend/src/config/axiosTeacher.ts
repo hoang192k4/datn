@@ -56,6 +56,7 @@ axiosTeacherInstance.interceptors.response.use(
                 return axiosTeacherInstance(originalRequest); // thực hiện lại request gốc
             } catch (err) {
                 processQueue(err);
+
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;
