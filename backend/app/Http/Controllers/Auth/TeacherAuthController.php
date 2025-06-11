@@ -113,9 +113,10 @@ class TeacherAuthController extends BaseController
             }
 
             $newAccessToken = Auth::guard('teacher')->tokenById($userId);
+
             return $this->respondWithTokens($newAccessToken, $user);
         } catch (TokenExpiredException $e) {
-            return response()->json(['status' => 401, 'message' => 'Refresh token hết hạn'])->withCookie(Cookie::forget('refresh_token'))->withCookie(Cookie::forget('access_token'));
+            return response()->json(['status' => 401, 'message' => 'Refresh token hết hạn']);
         } catch (JWTException $e) {
             return $this->jsonResponseError('refresh token không hợp lệ', 401);
         }
@@ -172,16 +173,16 @@ class TeacherAuthController extends BaseController
     {
         $accessTtl = (int)config('jwt.ttl'); // phút
         $refreshTtl = (int)config('jwt.refresh_ttl'); // phút
-        $userId = Auth::guard('teacher')->id();
+        $userId = $user->id;
 
         $refreshToken = Auth::guard('teacher')
             ->claims(['type' => 'refresh'])
             ->setTTL($refreshTtl)
             ->tokenById($userId);
-
-
-        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl * 30, '/', null, false, true, true, 'Lax');
-        $refreshCookie = Cookie::make('refresh_token', $refreshToken, $refreshTtl * 30, '/', null, false, true, true, 'Lax');
+        $this->logInfo($userId ?? 'Không có ');
+        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl * 30, '/', null, false, true, false, 'Lax');
+        $refreshCookie = Cookie::make('refresh_token', $refreshToken, $refreshTtl, '/', null, false, true, false, 'Lax');
+        $this->logInfo($refreshCookie);
         return response()->json([
             'access_token' => $accessToken,
             'token_type' => 'bearer',
