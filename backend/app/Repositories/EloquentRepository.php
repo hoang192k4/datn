@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Exceptions\ModelNotFoundByIdException;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 abstract class EloquentRepository implements EloquentRepositoryInterface
 {
@@ -104,5 +106,23 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
     public function findWithConditions(array $conditions)
     {
         return $this->model->where($conditions)->first();
+    }
+
+    public function inserts(array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $this->model->insert($data);
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+    }
+
+    public function findMany($ids)
+    {
+        return $this->model->findMany($ids) ?? false;
     }
 }

@@ -29,13 +29,17 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(prepend: [ApiKeyMiddleware::class, AttachAccessTokenFromCookie::class]);
-        $middleware->alias(['auth' => Authenticate::class]);
-        $middleware->alias(['role' => RoleMiddleware::class]);
+        $middleware->alias(['auth' => Authenticate::class, 'role' => RoleMiddleware::class]);
+
+       
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
         $exceptions->render(function (JWTException $e, Request $request) {
             return response()->json(['message' => 'Không tìm thấy token'], 401);
+        });
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            return response()->json(['message' => 'Xác thực không thành công!'], 401);
         });
     })
     ->create();
