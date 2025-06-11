@@ -12,6 +12,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\BaseController;
+use App\Http\Resources\Student\StudentResource;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
@@ -105,7 +106,7 @@ class StudentAuthController extends BaseController
             $newAccessToken = Auth::guard('student')->tokenById($userId);
             return $this->respondWithTokens($newAccessToken, $user);
         } catch (TokenExpiredException $e) {
-            return response()->json(['status' => 401, 'message' => 'Refresh token hết hạn'])->withCookie(Cookie::foreget('refresh_token'))->withCookie(Cookie::forget('access_token'));
+            return response()->json(['status' => 401, 'message' => 'Refresh token hết hạn']);
         } catch (JWTException $e) {
             return $this->jsonResponseError('refresh token không hợp lệ', 401);
         }
@@ -154,7 +155,7 @@ class StudentAuthController extends BaseController
      */
     public function me()
     {
-        return response()->json($this->getCurrentstudent());
+        return $this->jsonResponseSuccess(new StudentResource($this->getCurrentstudent()));
     }
 
 
@@ -162,7 +163,7 @@ class StudentAuthController extends BaseController
     {
         $accessTtl = (int)config('jwt.ttl'); // phút
         $refreshTtl = (int)config('jwt.refresh_ttl'); // phút
-        $userId = Auth::guard('student')->id();
+        $userId = $user->id;
 
         $refreshToken = Auth::guard('student')
             ->claims(['type' => 'refresh'])
