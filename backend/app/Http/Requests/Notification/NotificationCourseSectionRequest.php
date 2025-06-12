@@ -5,6 +5,7 @@ namespace App\Http\Requests\Notification;
 use App\Http\Requests\BaseRequest;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\Notification\NotificationType;
+use App\Enums\PublicStatus;
 
 class NotificationCourseSectionRequest extends BaseRequest
 {
@@ -14,6 +15,7 @@ class NotificationCourseSectionRequest extends BaseRequest
             'title' => ['required', 'string'],
             'body' => ['required', 'string'],
             'course_section_id' => ['required', 'exists:course_sections,id'],
+            'public_type' => [new Enum(PublicStatus::class), 'nullable']
         ];
     }
 }

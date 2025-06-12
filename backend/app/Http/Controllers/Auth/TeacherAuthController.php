@@ -32,7 +32,7 @@ class TeacherAuthController extends BaseController
     public function __construct()
     {
         $this->middleware('auth:teacher')->except(['login', 'register', 'refresh']);
-        $this->middleware('role:faculty_admin,subject_teacher')->except(['login', 'register', 'refresh']);
+        $this->middleware('role:faculty_admin,subject_teacher,homeroom_teacher,department_admin')->except(['login', 'register', 'refresh']);
     }
 
     /**

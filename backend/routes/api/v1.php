@@ -64,11 +64,12 @@ Route::controller(App\Http\Controllers\Notification\NotificationController::clas
         Route::post('/', 'sendNotifications');
         Route::post('/send-to-course-section', 'sendNotificationToCourseSection');
         Route::post('/send-test', 'sendNotification');
+        Route::get('/', 'getMyNotifications');
     });
 
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
-->prefix('auth')
-->group(function (){
-    Route::get('/me', 'me');
-    Route::post('/refresh', 'refresh');
-});
+    ->prefix('auth')
+    ->group(function () {
+        Route::get('/me', 'me');
+        Route::post('/refresh', 'refresh');
+    });

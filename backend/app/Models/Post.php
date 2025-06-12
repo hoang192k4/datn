@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Post extends Model
 {
     //
-    protected $fillable = ['id', 'title', 'content', 'teacher_id', 'course_section_id'];
+    protected $fillable = ['id', 'title', 'content', 'teacher_id', 'course_section_id', 'status'];
     protected $casts = [
         'status' => PublicStatus::class
     ];

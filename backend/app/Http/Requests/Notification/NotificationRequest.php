@@ -19,4 +19,13 @@ class NotificationRequest extends BaseRequest
             'send_to' => [new Enum(SendToUserType::class), 'nullable'],
         ];
     }
+
+    public function methodGet()
+    {
+        return [
+            'limit' => ['integer', 'min:1'],
+            'page' => ['integer', 'min:1'],
+            'type' => [new Enum(NotificationType::class), 'nullable']
+        ];
+    }
 }

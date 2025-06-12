@@ -1,7 +1,7 @@
 <?php
 
 use Carbon\Carbon;
-
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +36,32 @@ if (!function_exists('getCurrentGuard')) {
                 return $guard;
             }
         }
-        return null;
+        throw new AuthenticationException('Xác thực không thành công');
+    }
+}
+
+
+if (!function_exists('getCurrentUser')) {
+    function getCurrentUser()
+    {
+        foreach (array_keys(config('auth.guards')) as $guard) {
+            if (Auth::guard($guard)->check()) {
+                return Auth::guard($guard)->user();
+            }
+        }
+        throw new AuthenticationException('Xác thực không thành công');
+    }
+}
+
+
+if (!function_exists('getCurrentUserId')) {
+    function getCurrentUserId()
+    {
+        foreach (array_keys(config('auth.guards')) as $guard) {
+            if (Auth::guard($guard)->check()) {
+                return Auth::guard($guard)->id();
+            }
+        }
+        throw new AuthenticationException('Xác thực không thành công');
     }
 }
