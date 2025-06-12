@@ -26,7 +26,7 @@ class NotificationController extends BaseController
     ) {
         $this->service = $service;
         $this->notificationService = $notificationService;
-        $this->middleware('auth:teacher')->except('getMyNotifications');
+        $this->middleware('auth:teacher,student');
     }
 
     public function sendNotification(NotificationTestRequest $request)

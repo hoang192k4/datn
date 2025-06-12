@@ -72,7 +72,12 @@ Route::controller(App\Http\Controllers\Notification\StudentNotificationControlle
     ->group(function () {
         Route::post('/', 'sendFeedbackToTeacher');
     });
-    
+
+Route::controller(App\Http\Controllers\Post\PostController::class)
+    ->prefix('posts')
+    ->group(function () {
+        Route::get('/', 'getPostByTeacherSlug');
+    });
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')
     ->group(function () {

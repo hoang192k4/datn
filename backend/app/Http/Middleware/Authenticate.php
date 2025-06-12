@@ -51,8 +51,6 @@ class Authenticate
                 return $this->jsonResponseError('Không tìm thấy người dùng từ token', 401);
             }
 
-
-
             // Buộc Laravel dùng đúng guard
             Auth::shouldUse($guardFromToken);
 
