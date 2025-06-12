@@ -15,8 +15,8 @@ class NotificationResource extends JsonResource
             'content' => $this->content,
             'status' => $this->status,
             'created_at' => format_datetime($this->created_at),
-            'sender' => $this->teacher->name,
-            'from' => $this->teacher->role->title
+            'sender' => $this->teacher->name ?? $this->student->name,
+            'from' => $this->teacher->role->title ?? 'student'
         ];
     }
 }

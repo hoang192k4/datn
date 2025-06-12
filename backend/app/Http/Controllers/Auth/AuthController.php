@@ -25,8 +25,9 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 class AuthController extends BaseController
 {
     use AuthstudentApi, ResponseWithJson, AuthTeacherApi;
-    public function __construct() {
-        
+    public function __construct()
+    {
+        $this->middleware('auth:teacher,student');
     }
 
     public function me()

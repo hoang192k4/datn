@@ -67,6 +67,12 @@ Route::controller(App\Http\Controllers\Notification\NotificationController::clas
         Route::get('/', 'getMyNotifications');
     });
 
+Route::controller(App\Http\Controllers\Notification\StudentNotificationController::class)
+    ->prefix('feedbacks')
+    ->group(function () {
+        Route::post('/', 'sendFeedbackToTeacher');
+    });
+    
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')
     ->group(function () {

@@ -227,12 +227,46 @@ class NotificationService implements NotificationServiceInterface
             if ($guard == Guard::TEACHER)
                 $notifications = $this->repository->getList(['teacher_receive_id' => $currentUserId, 'type' =>  $type], ['created_at' => 'desc'], ['teacher'], $limit, $page);
             if ($guard == Guard::STUDENT) {
-                $notifications = $this->repository->getList(['student_id' => $currentUserId], ['created_at' => 'desc'], ['teacher'], $limit, $page);
+                $notifications = $this->repository->getList(['student_id' => $currentUserId, 'type' => ['!=', NotificationType::StudentSend]], ['created_at' => 'desc'], ['teacher'], $limit, $page);
             }
 
             return $notifications;
         } catch (AuthenticationException $e) {
             throw new AuthenticationException('Không xác định được người dùng');
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
+
+    public function sendFeedbackToTeacher(Request $request)
+    {
+        try {
+            $studentId = $this->getCurrentStudentId();
+            $data = $request->validated();
+            $title = $data['title'];
+            $body = $data['body'];
+
+            $teacherIds = $data['receiver_ids'];
+
+            $teachers = Teacher::findMany($teacherIds);
+            if (!$teachers)
+                return false;
+            foreach ($teachers as $teacher) {
+                $this->repository->create([
+                    'student_id' => $studentId,
+                    'title' => $title,
+                    'content' => $body,
+                    'teacher_receive_id' => $teacher->id,
+                    'type' => NotificationType::StudentSend
+                ]);
+            }
+
+            $deviceTokens = $teachers->pluck('device_token')->values();
+
+            $this->firebaseService->sendNotification($deviceTokens, $title, $body, null);
+            return true;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;

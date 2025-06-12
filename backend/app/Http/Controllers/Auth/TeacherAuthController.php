@@ -69,8 +69,10 @@ class TeacherAuthController extends BaseController
             return response()->json(['error' => 'Xác thực không thành công'], 401);
         }
 
+
         $user = Auth::guard('teacher')->user();
-        return $this->respondWithTokens($token, $user);
+        $tokenWithGuard = JWTAuth::claims(['guard' => 'teacher'])->fromUser($user);
+        return $this->respondWithTokens($tokenWithGuard, $user);
     }
 
     /**
