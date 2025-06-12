@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum SendToUserType:string
 {
-    case Teacher = 'teacher';
-    case Student = 'student';
+    case AllTeacher = 'all_teacher';
+    case AllStudent = 'all_student';
     case All = 'all';
 }

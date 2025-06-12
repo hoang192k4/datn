@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 if (!function_exists('format_datetime')) {
     function format_datetime($datetime, $format = 'd-m-Y H:i')
@@ -23,5 +24,18 @@ if (!function_exists('generate_slug')) {
     function generate_slug($string)
     {
         return Str::slug($string, '-');
+    }
+}
+
+
+if (!function_exists('getCurrentGuard')) {
+    function getCurrentGuard()
+    {
+        foreach (array_keys(config('auth.guards')) as $guard) {
+            if (Auth::guard($guard)->check()) {
+                return $guard;
+            }
+        }
+        return null;
     }
 }
