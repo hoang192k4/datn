@@ -7,8 +7,10 @@ import { useDispatch } from 'react-redux';
 import { authCheck } from './services/authTeacherService';
 import { login, logout } from './store/slices/authSlice';
 import { HttpStatus } from './enums/HttpStatus';
+import { getFCMToken } from './services/deviceTokenService';
 
 function App() {
+
   const dispatch = useDispatch();
   const [authLoading, setAuthLoading] = useState(true);
   useEffect(() => {
@@ -16,6 +18,7 @@ function App() {
       .then(res => {
         if (res.status === HttpStatus.SUCCESS) {
           dispatch(login({ user: res.data.data }));
+          getFCMToken();
         } else {
           dispatch(logout());
         }

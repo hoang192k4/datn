@@ -33,7 +33,8 @@ class SummaryGradeController extends BaseController
         SummaryGradeServiceInterface $service
     ) {
         $this->service = $service;
-        // $this->middleware('auth:teacher');
+        $this->middleware('auth:teacher');
+        $this->middleware('role:homeroom_teacher,subject_teacher,faculty_admin,apartment_admin');
     }
 
     public function update(SummaryGradeRequest $request, SummaryGrade $id)

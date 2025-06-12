@@ -32,7 +32,7 @@ class TeacherAuthController extends BaseController
     public function __construct()
     {
         $this->middleware('auth:teacher')->except(['login', 'register', 'refresh']);
-        $this->middleware('role:faculty_admin,subject_teacher')->except(['login', 'register', 'refresh']);
+        $this->middleware('role:faculty_admin,subject_teacher,homeroom_teacher,department_admin')->except(['login', 'register', 'refresh']);
     }
 
     /**
@@ -69,8 +69,10 @@ class TeacherAuthController extends BaseController
             return response()->json(['error' => 'Xác thực không thành công'], 401);
         }
 
+
         $user = Auth::guard('teacher')->user();
-        return $this->respondWithTokens($token, $user);
+        $tokenWithGuard = JWTAuth::claims(['guard' => 'teacher'])->fromUser($user);
+        return $this->respondWithTokens($tokenWithGuard, $user);
     }
 
     /**

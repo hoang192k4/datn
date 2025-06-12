@@ -51,7 +51,7 @@ axiosTeacherInstance.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                await axiosTeacherInstance.post('/teachers/refresh'); // refresh token từ cookie
+                await axiosTeacherInstance.post('/auth/refresh'); // refresh token từ cookie
                 processQueue(null);
                 return axiosTeacherInstance(originalRequest); // thực hiện lại request gốc
             } catch (err) {

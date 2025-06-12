@@ -17,3 +17,5 @@ const app = initializeApp(firebaseConfig);
 export const messaging = getMessaging(app);
 
 export const VAPID_KEY = "BC5hCaXURA0hYpAX0qR_9IhakOjgYghkAIN0bSkutxWcsmLxtG821P4XDKc-GLq2ThzXC_msqb9h9fVIbKksA3E";
+
+ 

@@ -125,4 +125,35 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
     {
         return $this->model->findMany($ids) ?? false;
     }
+
+
+    /**
+     * @param array $filter Mảng điều kiện. ví dụ ['status' => 'active', 'id' => ['!=', 1]];
+     * @param  arry $order Sắp xếp. Ví dụ ['name' => 'asc];
+     * @param arry $relations Load thêm quan hệ. Ví dụ: ['teachers'];
+     * @param mixed $limit Giới hạn lấy record (phân trang). Ví dụ: 10
+     * @param mixed $page lấy theo trang. Ví dụ: 1
+     */
+    public function getList(array $filter = [], array $order = [], array $relations = [], $limit = null, $page = null)
+    {
+        $query = $this->model->query();
+
+        if (!empty($relations)) {
+            $query->with($relations);
+        }
+
+        foreach ($filter as $column => $value) {
+            if (is_array($value)) {
+                [$operator, $val] = $value;
+                $query->where($column, $operator, $val);
+            } else
+                $query->where($column, $value);
+        }
+
+
+        foreach ($order as $column => $direction) {
+            $query->orderBy($column, $direction);
+        }
+        return $limit ? $query->paginate($limit, ['*'], 'page', $page ?? 1)->appends(['limit' => $limit]) : $query->get();
+    }
 }

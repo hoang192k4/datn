@@ -4,6 +4,7 @@ import { messaging } from '../config/firebase';
 
 
 import { api } from "../config/api";
+import Swal from "sweetalert2";
 
 export const updateDeviceToken = async (deviceToken: string) => {
     const response = api.post('/device-token', {
@@ -14,18 +15,16 @@ export const updateDeviceToken = async (deviceToken: string) => {
 }
 
 
-
-
-export const getFCMToken = async ([permission, setPermission]: any) => {
+export const getFCMToken = async () => {
 
     try {
         // Request permission
-        const permission = await Notification.requestPermission();
+        let permission = await Notification.requestPermission();
 
         const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
 
-        setPermission(permission);
-
+        if (permission === 'denied')
+            permission = await Notification.requestPermission();
         if (permission === 'granted') {
             // Lấy token
             const currentToken = await getToken(messaging, {
@@ -37,12 +36,18 @@ export const getFCMToken = async ([permission, setPermission]: any) => {
                 console.log('FCM Token:', currentToken);
 
                 // Gửi token lên server Laravel
-                updateDeviceToken(currentToken).then((data) => { if(data.status==200) console.log('Cập nhật device-token thành công!') });
+                updateDeviceToken(currentToken).then((data) => { if (data.status == 200) console.log('Cập nhật device-token thành công!') });
             } else {
                 console.log('No registration token available.');
+
             }
         } else {
             console.log('Unable to get permission to notify.');
+            Swal.fire({
+                title: "Bạn cần mở thông báo?",
+                text: "Bạn có thể mở quyền thông báo để nhận thông báo mới nhất",
+                icon: "question"
+            });
         }
     } catch (error) {
         console.error('An error occurred while retrieving token:', error);

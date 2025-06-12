@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { HttpStatus } from '../../enums/HttpStatus';
 import { studentLogin } from '../../services/authStudentService';
+import { getFCMToken } from '../../services/deviceTokenService';
 interface FormDataLogIn {
     email: string,
     password: string,
@@ -26,10 +27,12 @@ const LoginPage = () => {
             if (dataForm.role === Role.Teacher) {
                 const data = await teacherLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
+                getFCMToken();
                 setErrorPassword(false);
             } else {
                 const data = await studentLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
+                getFCMToken();
                 setErrorPassword(false);
             }
         } catch (errors: any) {
