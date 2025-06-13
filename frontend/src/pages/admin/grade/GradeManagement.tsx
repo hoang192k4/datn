@@ -197,12 +197,9 @@ const GradeManagement = () => {
       setGradeTypeOrder(prev => [...prev, typeId]);
     }
 
-    showApiStatus('Thêm cột điểm thành công!');
+    
   };
 
-  const exportGrades = () => {
-    showApiStatus('Xuất điểm thành công!');
-  };
 
   const handleCellDoubleClick = (cellType, studentId, gradeTypeId = null, attempt = null) => {
     const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}`;
@@ -407,9 +404,6 @@ const GradeManagement = () => {
       <td key="stt" className="gm-table-cell gm-cell-center">{index + 1}</td>,
       <td key="name" className="gm-table-cell">
         <div className="gm-student-info">
-          <div className="gm-student-avatar">
-            {student.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-          </div>
           <div className="gm-student-details">
             <h4 className="gm-student-name">{student.name}</h4>
             <div className="gm-student-id">SV{String(student.id).padStart(6, '0')}</div>
@@ -435,7 +429,7 @@ const GradeManagement = () => {
     // Add summary cells
     const summary = student.summary_grade || {};
     cells.push(
-      <td key="avg" className="gm-table-cell gm-cell-center gm-summary-cell">{summary.avg_score || '-'}</td>,
+      <td key="avg" className="gm-table-cell gm-cell-centerl">{summary.avg_score || '-'}</td>,
       <td key="exam1" className="gm-table-cell gm-cell-center">
         {renderEditableCell('exam1', student.id, summary.exam1_score)}
       </td>,
@@ -448,8 +442,8 @@ const GradeManagement = () => {
       <td key="exam2_retake" className="gm-table-cell gm-cell-center">
         {renderEditableCell('exam2_retake', student.id, summary.exam2_retake)}
       </td>,
-      <td key="final" className="gm-table-cell gm-cell-center gm-summary-cell">{summary.final_score || '-'}</td>,
-      <td key="evaluation" className="gm-table-cell gm-cell-center gm-summary-cell">{summary.evaluation || '-'}</td>,
+      <td key="final" className="gm-table-cell gm-cell-center">{summary.final_score || '-'}</td>,
+      <td key="evaluation" className="gm-table-cell gm-cell-center">{summary.evaluation || '-'}</td>,
       <td key="notes" className="gm-table-cell">
         {renderEditableCell('notes', student.id, student.notes)}
       </td>
@@ -460,8 +454,6 @@ const GradeManagement = () => {
 
   return (
     <>
-
-
       <div className="gm-api-status">
         {apiStatus.message}
       </div>
@@ -546,7 +538,7 @@ const GradeManagement = () => {
             </div>
 
             <div className="gm-control-group">
-              <button className="gm-btn gm-btn-secondary" onClick={exportGrades}>
+              <button className="gm-btn gm-btn-secondary"  >
                 📊 Xuất điểm
               </button>
             </div>

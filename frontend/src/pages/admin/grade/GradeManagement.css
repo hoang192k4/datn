@@ -33,7 +33,6 @@
  .gm-selection-title {
      font-size: 1.5rem;
      font-weight: 600;
-     color: #333;
      margin-bottom: 10px;
  }
 
@@ -153,7 +152,7 @@
  }
 
  .gm-btn {
-     padding: 10px 20px;
+     padding: 5px 10px;
      border: none;
      border-radius: 8px;
      cursor: pointer;
@@ -557,17 +556,17 @@
      }
 
      .gm-selection-title {
-         color: #e0e0e0;
+        
      }
 
      .gm-selection-subtitle {
-         color: #b0b0b0;
+         color: black;
      }
 
      .gm-select-dropdown {
-         background: #3d3d3d;
-         border-color: #555;
-         color: #e0e0e0;
+         background: #d6d6e2;
+         border-color: #d6d6e2;
+         color: black;
      }
 
      .gm-select-dropdown:focus {
@@ -575,60 +574,60 @@
      }
 
      .gm-table-header {
-         background: linear-gradient(135deg, #3d3d3d 0%, #2d2d2d 100%);
-         color: #e0e0e0;
-         border-color: #555;
+         background: linear-gradient(135deg, #35468e 0%, #2d3a7a 100%);
+         color: white;
+         border-color: #363e67;
      }
 
      .gm-table-cell {
-         border-color: #404040;
+         border-color: white;
      }
 
      .gm-grade-table tr:hover {
-         background: #2a2a2a;
+         background: wheat;
      }
 
      .gm-student-name {
-         color: #e0e0e0;
+         color: black;
      }
 
      .gm-student-id {
-         color: #b0b0b0;
+         color: black;
      }
 
      .gm-editable-cell:hover {
-         background-color: #1a2332;
+         background-color: white;
          border-color: #667eea;
      }
 
      .gm-edit-input {
-         background: #3d3d3d;
+         background: white;
          border-color: #667eea;
-         color: #e0e0e0;
+         color: black;
      }
 
      .gm-summary-cell {
-         background-color: #3d3d3d;
-         color: #e0e0e0;
+         background-color: white;
+         color: black;
      }
 
      .gm-grade-controls {
-         background: #2a2a2a;
-         border-color: #404040;
+         background: white;
+         border-color: white;
      }
 
      .gm-control-label {
-         color: #e0e0e0;
+         color: black;
      }
 
      .gm-btn-secondary {
-         background: #3d3d3d;
-         color: #e0e0e0;
-         border-color: #555;
+         background: linear-gradient(135deg, #3b4d99 0%, #2d3a7a 100%);
+         color: rgb(248, 247, 247);
+         border-color: white;
      }
 
      .gm-btn-secondary:hover {
-         background: #4d4d4d;
+         background: linear-gradient(135deg, #687ddc 0%, #2f3d82 100%);
      }
  }
 
@@ -647,7 +646,7 @@
 
      .gm-grade-header {
          background: white !important;
-         border: 1px solid black !important;
+         border: 1px solid white !important;
      }
 
      .gm-table-container {
@@ -661,14 +660,14 @@
 
      .gm-table-header,
      .gm-table-cell {
-         border: 1px solid black !important;
+         border: 1px solid white !important;
          background: white !important;
          color: white !important;
      }
 
      .gm-student-avatar {
          background: #f0f0f0 !important;
-         color: black !important;
+         color: white !important;
      }
 
      .gm-api-status {
