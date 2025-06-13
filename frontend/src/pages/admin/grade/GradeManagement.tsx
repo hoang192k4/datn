@@ -1,9 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './GradeManagement.css';
 import PageHeader from '../../../components/ui/PageHeader';
+import { getCourseSectionByTeacher } from '../../../services/courseSectionService';
+import { HttpStatus } from '../../../enums/HttpStatus';
+import Loadding from '../../../components/ui/Loadding';
+
+import { addGradeColumnToCourseSection, createGrade, getGradeTypes, getStudentByCourseSectionId, updateGradeById } from '../../../services/gradeStudentService';
+import Swal from 'sweetalert2';
+import { Evaluation } from '../../../enums/Evaluation';
 const GradeManagement = () => {
   // State management
   const [currentClassId, setCurrentClassId] = useState(null);
+  const [currentGradeId, setCurrentGradeId] = useState(null);
   const [gradeTypeCounts, setGradeTypeCounts] = useState({});
   const [gradeTypeOrder, setGradeTypeOrder] = useState([]);
   const [studentData, setStudentData] = useState([]);
@@ -14,18 +22,40 @@ const GradeManagement = () => {
   const [apiStatus, setApiStatus] = useState({ show: false, message: '', isSuccess: true });
   const [editingCell, setEditingCell] = useState(null);
   const [tempValue, setTempValue] = useState('');
+  const [gradeTypes, setGradeTypes] = useState([]);
   const inputRef = useRef(null);
 
-  const gradeTypes = [
-    { id: 1, name: "Điểm hệ số 1" },
-    { id: 2, name: "Điểm hệ số 2" },
-    { id: 3, name: "Điểm thi" }
-  ];
+
+
+
 
   // Initialize data
   useEffect(() => {
-    loadClasses();
+    loadCourseSections('');
+    loadGradeTypes();
   }, []);
+
+  const loadGradeTypes = async () => {
+    const response = await getGradeTypes();
+    if (response.status == HttpStatus.SUCCESS) {
+      const gradeTypes = response.data.data;
+      setGradeTypes(gradeTypes);
+    }
+  }
+  const [loading, setLoading] = useState(false);
+  const loadCourseSections = async (keyWord: string) => {
+    try {
+      setLoading(true);
+      const response = await getCourseSectionByTeacher(keyWord);
+      if (response.status === HttpStatus.SUCCESS) {
+        setAllClasses(response.data.data.course_sections);
+      }
+    } catch (e) {
+
+    } finally {
+      setLoading(false);
+    }
+  }
 
   // Focus input when editing starts
   useEffect(() => {
@@ -42,26 +72,11 @@ const GradeManagement = () => {
     }, 3000);
   };
 
-  const loadClasses = () => {
-    setClassLoading(true);
 
-    // Mock data - replace with actual API call
-    setTimeout(() => {
-      const mockClasses = [
-        { id: 37, name: "Lập trình Java", code: "IT2021A", students: 35 },
-        { id: 38, name: "Cấu trúc dữ liệu", code: "IT2021B", students: 32 },
-        { id: 39, name: "Lập trình Web", code: "IT2022A", students: 28 },
-        { id: 40, name: "Cơ sở dữ liệu", code: "IT2022B", students: 30 }
-      ];
-
-      setAllClasses(mockClasses);
-      setClassLoading(false);
-
-    }, 1000);
-  };
 
   const handleClassSelection = (classId) => {
     if (classId) {
+      console.log(classId);
       setCurrentClassId(parseInt(classId));
       fetchGrades(parseInt(classId));
     }
@@ -75,85 +90,48 @@ const GradeManagement = () => {
     }
   };
 
-  const fetchGrades = (classId) => {
-    if (!classId) return;
+  const fetchGrades = async (courseSectionId: any) => {
+    if (!courseSectionId) return;
 
-    setGradeLoading(true);
+    try {
+      setGradeLoading(true);
+      const response = await getStudentByCourseSectionId(courseSectionId);
+      if (response.status == HttpStatus.SUCCESS) {
+        const students = response.data.data;
+        setStudentData(students);
+        prepareGradeTypeData(students);
 
-    // Mock grade data with notes and exam retakes
-    setTimeout(() => {
-      const mockStudentData = [
-        {
-          id: 1,
-          name: "Nguyễn Văn An",
-          grades: [
-            [
-              { id: 1, grade_type: { id: 1, name: "Điểm hệ số 1" }, attempt: 1, score: 8.5 },
-              { id: 2, grade_type: { id: 1, name: "Điểm hệ số 1" }, attempt: 2, score: 9.0 }
-            ],
-            [
-              { id: 3, grade_type: { id: 2, name: "Điểm hệ số 2" }, attempt: 1, score: 7.8 }
-            ]
-          ],
-          summary_grade: {
-            avg_score: 8.5,
-            exam1_score: 7.8,
-            exam2_score: null,
-            exam1_retake: null,
-            exam2_retake: null,
-            final_score: 8.2,
-            evaluation: "Giỏi"
-          },
-          notes: "Học tập tích cực"
-        },
-        {
-          id: 2,
-          name: "Trần Thị Bình",
-          grades: [
-            [
-              { id: 4, grade_type: { id: 1, name: "Điểm hệ số 1" }, attempt: 1, score: 9.2 }
-            ],
-            [
-              { id: 5, grade_type: { id: 2, name: "Điểm hệ số 2" }, attempt: 1, score: 8.9 }
-            ]
-          ],
-          summary_grade: {
-            avg_score: 9.2,
-            exam1_score: 8.9,
-            exam2_score: null,
-            exam1_retake: null,
-            exam2_retake: null,
-            final_score: 9.1,
-            evaluation: "Xuất sắc"
-          },
-          notes: ""
-        },
-        {
-          id: 3,
-          name: "Lê Văn Cường",
-          grades: [
-            [
-              { id: 6, grade_type: { id: 1, name: "Điểm hệ số 1" }, attempt: 1, score: 7.5 }
-            ]
-          ],
-          summary_grade: {
-            avg_score: 7.5,
-            exam1_score: 5.2,
-            exam2_score: null,
-            exam1_retake: 6.8,
-            exam2_retake: null,
-            final_score: 7.5,
-            evaluation: "Khá"
-          },
-          notes: "Đã thi lại GK"
-        }
-      ];
-
-      setStudentData(mockStudentData);
-      prepareGradeTypeData(mockStudentData);
+      }
+    } catch (e: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Lỗi trong quá trình lấy dữ liệu!",
+      })
+    } finally {
       setGradeLoading(false);
+    }
+  };
 
-    }, 1000);
+  const fetchGradesNoLoading = async (courseSectionId: any) => {
+    if (!courseSectionId) return;
+
+    try {
+      const response = await getStudentByCourseSectionId(courseSectionId);
+      if (response.status == HttpStatus.SUCCESS) {
+        const students = response.data.data;
+        setStudentData(students);
+        prepareGradeTypeData(students);
+
+      }
+    } catch (e: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Lỗi trong quá trình lấy dữ liệu!",
+      })
+    } finally {
+    }
   };
 
   const prepareGradeTypeData = (data) => {
@@ -179,7 +157,7 @@ const GradeManagement = () => {
     setGradeTypeOrder(order);
   };
 
-  const addGradeColumn = () => {
+  const addGradeColumn = async () => {
     if (!selectedGradeType) {
       showApiStatus('Vui lòng chọn loại điểm!', false);
       return;
@@ -197,32 +175,34 @@ const GradeManagement = () => {
       setGradeTypeOrder(prev => [...prev, typeId]);
     }
 
-    
+    try {
+      const response = await addGradeColumnToCourseSection(currentClassId, typeId);
+      if (response.status === HttpStatus.SUCCESS)
+        fetchGradesNoLoading(currentClassId);
+    } catch (e) {
+
+    }
+
   };
 
 
-  const handleCellDoubleClick = (cellType, studentId, gradeTypeId = null, attempt = null) => {
-    const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}`;
+  const handleCellDoubleClick = (cellType, studentId, gradeTypeId = null, attempt = null, gradeId = null, summaryId = null) => {
+    const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}-${gradeId || ''}-${summaryId || ''}`;
     setEditingCell(cellKey);
-
+    setCurrentGradeId(gradeId);
     let currentValue = '';
     const student = studentData.find(s => s.id === studentId);
 
     if (cellType === 'grade' && gradeTypeId && attempt) {
-      currentValue = getGradeValue(student, gradeTypeId, attempt);
+      const grade = getGradeValue(student, gradeTypeId, attempt);
+      currentValue = grade.score;
     } else if (cellType === 'exam1') {
       currentValue = student.summary_grade?.exam1_score || '';
     } else if (cellType === 'exam2') {
       currentValue = student.summary_grade?.exam2_score || '';
-    } else if (cellType === 'exam1_retake') {
-      currentValue = student.summary_grade?.exam1_retake || '';
-    } else if (cellType === 'exam2_retake') {
-      currentValue = student.summary_grade?.exam2_retake || '';
-    } else if (cellType === 'notes') {
-      currentValue = student.notes || '';
     }
 
-    setTempValue(currentValue.toString());
+    setTempValue(currentValue ? currentValue.toString() : 0);
   };
 
   const handleInputChange = (e) => {
@@ -245,13 +225,13 @@ const GradeManagement = () => {
   const saveEditedValue = () => {
     if (!editingCell) return;
 
-    const [cellType, studentId, gradeTypeId, attempt] = editingCell.split('-');
+    const [cellType, studentId, gradeTypeId, attempt, gradeId, summaryId] = editingCell.split('-');
     const parsedStudentId = parseInt(studentId);
 
     if (cellType === 'grade') {
       const score = parseFloat(tempValue);
       if (!isNaN(score) && score >= 0 && score <= 10) {
-        updateGrade(parsedStudentId, parseInt(gradeTypeId), parseInt(attempt), tempValue);
+        updateGrade(parsedStudentId, parseInt(gradeTypeId), parseInt(attempt), tempValue, gradeId);
       }
     } else if (cellType === 'notes') {
       updateStudentNotes(parsedStudentId, tempValue);
@@ -266,7 +246,7 @@ const GradeManagement = () => {
     setTempValue('');
   };
 
-  const updateGrade = (studentId, gradeTypeId, attempt, value) => {
+  const updateGrade = async (studentId, gradeTypeId, attempt, value, gradeId) => {
     const score = parseFloat(value);
     if (isNaN(score) || score < 0 || score > 10) return;
 
@@ -307,9 +287,30 @@ const GradeManagement = () => {
       }
       return student;
     }));
+
+
+    if (gradeId == "undefined" || gradeId === '') {
+      try {
+        const response = await createGrade(currentClassId, gradeTypeId, studentId, score, attempt);
+        if (response.status === HttpStatus.SUCCESS) {
+          fetchGradesNoLoading(currentClassId);
+        }
+      } catch (e) {
+
+      }
+    }
+
+    try {
+      const response = await updateGradeById(gradeId, score);
+      if (response.status === HttpStatus.SUCCESS) {
+        fetchGradesNoLoading(currentClassId);
+      }
+    } catch (e) {
+
+    }
   };
 
-  const updateExamScore = (studentId, examType, score) => {
+  const updateExamScore = (studentId, examType, score, summaryId) => {
     setStudentData(prev => prev.map(student => {
       if (student.id === studentId) {
         return {
@@ -334,15 +335,15 @@ const GradeManagement = () => {
   };
 
   const getGradeValue = (student, gradeTypeId, attempt) => {
-    if (!student.grades) return '';
+    if (!student.grades) return {};
 
     for (const gradeGroup of student.grades) {
       const grade = gradeGroup.find(g =>
         g.grade_type.id === gradeTypeId && g.attempt === attempt
       );
-      if (grade) return grade.score || '';
+      if (grade) return grade || {};
     }
-    return '';
+    return {};
   };
 
   const getSelectedClassInfo = () => {
@@ -357,19 +358,19 @@ const GradeManagement = () => {
       const count = gradeTypeCounts[typeId] || 0;
 
       for (let i = 1; i <= count; i++) {
-        headers.push(`${gradeType.name} ${i}`);
+        headers.push(`${gradeType.name} - ${i}`);
       }
     });
 
-    headers.push('ĐTB', 'Thi GK', 'Thi lại GK', 'Thi CK', 'Thi lại CK', 'Tổng kết', 'Xếp loại', 'Ghi chú');
+    headers.push('ĐTB', 'Thi Lần 1', 'Thi Lần 2', 'Tổng kết', 'Xếp loại', 'Ghi chú');
 
     return headers.map((header, index) => (
       <th key={index} className="gm-table-header">{header}</th>
     ));
   };
 
-  const renderEditableCell = (cellType, studentId, value, gradeTypeId = null, attempt = null) => {
-    const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}`;
+  const renderEditableCell = (cellType, studentId, value, gradeTypeId = null, attempt = null, gradeId = null, summaryId = null) => {
+    const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}-${gradeId || ''}-${summaryId || ''}`;
     const isEditing = editingCell === cellKey;
 
     if (isEditing) {
@@ -392,7 +393,7 @@ const GradeManagement = () => {
     return (
       <div
         className="gm-editable-cell"
-        onDoubleClick={() => handleCellDoubleClick(cellType, studentId, gradeTypeId, attempt)}
+        onDoubleClick={() => handleCellDoubleClick(cellType, studentId, gradeTypeId, attempt, gradeId, summaryId)}
       >
         {value || (cellType === 'notes' ? '' : '-')}
       </div>
@@ -406,7 +407,7 @@ const GradeManagement = () => {
         <div className="gm-student-info">
           <div className="gm-student-details">
             <h4 className="gm-student-name">{student.name}</h4>
-            <div className="gm-student-id">SV{String(student.id).padStart(6, '0')}</div>
+            <div className="gm-student-id">{student.student_code}</div>
           </div>
         </div>
       </td>
@@ -417,10 +418,10 @@ const GradeManagement = () => {
       const count = gradeTypeCounts[typeId] || 0;
 
       for (let attempt = 1; attempt <= count; attempt++) {
-        const value = getGradeValue(student, typeId, attempt);
+        const grade = getGradeValue(student, typeId, attempt);
         cells.push(
           <td key={`${typeId}-${attempt}`} className="gm-table-cell gm-cell-center">
-            {renderEditableCell('grade', student.id, value, typeId, attempt)}
+            {renderEditableCell('grade', student.id, grade.score, typeId, attempt, grade.id)}
           </td>
         );
       }
@@ -431,19 +432,13 @@ const GradeManagement = () => {
     cells.push(
       <td key="avg" className="gm-table-cell gm-cell-centerl">{summary.avg_score || '-'}</td>,
       <td key="exam1" className="gm-table-cell gm-cell-center">
-        {renderEditableCell('exam1', student.id, summary.exam1_score)}
-      </td>,
-      <td key="exam1_retake" className="gm-table-cell gm-cell-center">
-        {renderEditableCell('exam1_retake', student.id, summary.exam1_retake)}
+        {renderEditableCell('exam1', student.id, summary.exam1_score, null, null, null, summary.id)}
       </td>,
       <td key="exam2" className="gm-table-cell gm-cell-center">
-        {renderEditableCell('exam2', student.id, summary.exam2_score)}
-      </td>,
-      <td key="exam2_retake" className="gm-table-cell gm-cell-center">
-        {renderEditableCell('exam2_retake', student.id, summary.exam2_retake)}
+        {renderEditableCell('exam2', student.id, summary.exam2_score, null, null, null, summary.id)}
       </td>,
       <td key="final" className="gm-table-cell gm-cell-center">{summary.final_score || '-'}</td>,
-      <td key="evaluation" className="gm-table-cell gm-cell-center">{summary.evaluation || '-'}</td>,
+      <td key="evaluation" className="gm-table-cell gm-cell-center">{Evaluation[summary.evaluation] || '-'}</td>,
       <td key="notes" className="gm-table-cell">
         {renderEditableCell('notes', student.id, student.notes)}
       </td>
@@ -458,8 +453,8 @@ const GradeManagement = () => {
         {apiStatus.message}
       </div>
 
-   
-      <PageHeader title="🎓 Quản lý điểm số" subtitle="Hệ thống quản lý và theo dõi kết quả học tập của sinh viên"/>
+
+      <PageHeader title="🎓 Quản lý điểm số" subtitle="Hệ thống quản lý và theo dõi kết quả học tập của sinh viên" />
       {!currentClassId ? (
         <section className="gm-class-selection">
           <div className="gm-selection-icon">📚</div>
@@ -467,25 +462,19 @@ const GradeManagement = () => {
           <p className="gm-selection-subtitle">Vui lòng chọn lớp học để bắt đầu quản lý điểm</p>
 
           <div className="gm-class-select">
-            {classLoading ? (
-              <div className="gm-loading">
-                <div className="gm-loading-spinner"></div>
-                <p>Đang tải danh sách lớp...</p>
-              </div>
-            ) : (
-              <select
-                className="gm-select-dropdown"
-                onChange={(e) => handleClassSelection(e.target.value)}
-                defaultValue=""
-              >
-                <option value="" disabled>-- Chọn lớp học --</option>
-                {allClasses.map(cls => (
-                  <option key={cls.id} value={cls.id}>
-                    {cls.name} ({cls.code}) - {cls.students} sinh viên
-                  </option>
-                ))}
-              </select>
-            )}
+            <select
+              className="gm-select-dropdown"
+              onChange={(e) => handleClassSelection(e.target.value)}
+              defaultValue=""
+            >
+              <option value="" disabled>-- Chọn lớp học --</option>
+              {allClasses.map(cls => (
+                <option key={cls.id} value={cls.id}>
+                  {cls.name} - {cls.students_total} sinh viên
+                </option>
+              ))}
+            </select>
+
           </div>
         </section>
       ) : (
@@ -508,7 +497,7 @@ const GradeManagement = () => {
               >
                 {allClasses.map(cls => (
                   <option key={cls.id} value={cls.id}>
-                    {cls.name} ({cls.code})
+                    {cls.name}
                   </option>
                 ))}
               </select>

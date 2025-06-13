@@ -21,7 +21,8 @@ class CourseSectionResource extends JsonResource
             'subject' => optional($this->subject)->name,
             'semester' => optional($this->semester)->name,
             'status' => $this->status,
-            'created_at' => format_date($this->created_at)
+            'created_at' => format_date($this->created_at),
+            'students_total' => count($this->students)
         ];
     }
 }

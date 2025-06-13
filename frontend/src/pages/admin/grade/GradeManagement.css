@@ -193,6 +193,7 @@
      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
      border: 1px solid #e9ecef;
      border-top: none;
+     overflow-x: auto;
  }
 
  .gm-grade-table {
@@ -251,6 +252,7 @@
      color: #333;
      margin-bottom: 2px;
      font-size: 0.9rem;
+     width: 2rem;
  }
 
  .gm-student-id {
@@ -446,6 +448,7 @@
      .gm-table-header {
          padding: 8px 6px;
          font-size: 0.75rem;
+         width: 2rem;
      }
 
      .gm-table-cell {
@@ -568,6 +571,12 @@
 
      .gm-table-cell {
          border-color: white;
+         width: max-content;
+     }
+
+     .gm-table-cell h4 {
+         border-color: white;
+         width: max-content;
      }
 
      .gm-grade-table tr:hover {

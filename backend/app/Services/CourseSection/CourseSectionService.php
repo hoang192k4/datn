@@ -29,10 +29,9 @@ class CourseSectionService implements CourseSectionServiceInterface
             $data = $request->validated();
             $limit = $data['limit'] ?? 10;
             $page = $data['page'] ?? 1;
-            $key = isset($request->validated()['key']) ?? null;
+            $key = $request->validated()['key'] ?? null;
 
-
-            return  $this->courseSectionRepository->getList(['teacher_id' => $currentTeacherId, 'status' => CourseSectionStatus::InProgress, 'name' => ['like', $key]], ['name' => 'asc','created_at' => 'desc'], [], $limit, $page);
+            return  $this->courseSectionRepository->getList(['teacher_id' => $currentTeacherId, 'status' => CourseSectionStatus::InProgress, 'name' => ['like', $key]], ['name' => 'asc', 'created_at' => 'desc'], [], $limit, $page);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;

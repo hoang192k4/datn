@@ -14,6 +14,7 @@ class StudentGradeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'student_code' => $this->student_code,
             'grades' => $this->grades
                 ->groupBy('grade_type_id')
                 ->map(function (Collection $grades) {

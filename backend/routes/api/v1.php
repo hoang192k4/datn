@@ -92,3 +92,9 @@ Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::cl
     ->group(function () {
         Route::get('/', 'getCourseSectionByTeacher');
     });
+
+Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)
+    ->prefix('grade-types')
+    ->group(function () {
+        Route::get('/', 'index');
+    });
