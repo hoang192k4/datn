@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { HttpStatus } from '../../enums/HttpStatus';
 import { studentLogin } from '../../services/authStudentService';
 import { getFCMToken } from '../../services/deviceTokenService';
+import Loadding from '../../components/ui/Loadding';
 interface FormDataLogIn {
     email: string,
     password: string,
@@ -47,11 +48,7 @@ const LoginPage = () => {
     return (
         <>
             <section className="login-section">
-                {loading && (
-                    <div className="loading-overlay">
-                        <div className="spinner"></div>
-                    </div>
-                )}
+                {loading && <Loadding/>}
                 <div className="login-card">
                     <h2>Đăng Nhập</h2>
                     <form>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import viteLogo from '/vite.svg'
 import './App.css'
 import './assets/style/responsive.css';
 import AppRoutes from './routes'
@@ -23,7 +22,10 @@ function App() {
         }
       })
       .catch(() => dispatch(logout()))
-      .finally(() => setAuthLoading(false));
+      .finally(() => {
+        setAuthLoading(false)
+      }
+    );
   }, [dispatch]);
 
 

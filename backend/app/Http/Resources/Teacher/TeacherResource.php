@@ -14,12 +14,12 @@ class TeacherResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'slug' => $this->slug,
-            'date_of_birth' => format_date($this->date_of_birth),
+            'date_of_birth' => $this->date_of_birth,
             'gender' => $this->gender,
             'status' => $this->status,
             'address' => $this->address,
             'role' => $this->role->name,
-            'created_at' => format_date($this->created_at),
+            'created_at' => $this->created_at,
         ];
     }
 }

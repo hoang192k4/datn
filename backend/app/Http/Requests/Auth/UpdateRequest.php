@@ -13,7 +13,7 @@ class UpdateRequest extends BaseRequest
         return [
             "name" => "required|string|max:255",
             "email" => "required|email|max:255",
-            "date_of_birth" => "required|date", 
+            "date_of_birth" => "required|date_format:Y-m-d|before_or_equal:today", 
             "gender" => ["required", new Enum(Gender::class)], 
             "address" => "required|string|max:255",
         ];
