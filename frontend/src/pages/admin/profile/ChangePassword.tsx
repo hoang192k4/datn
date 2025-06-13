@@ -3,7 +3,8 @@ import "./ChangePassword.css";
 import { useForm } from "react-hook-form";
 import { teacherChangePassword } from "../../../services/authTeacherService";
 import { HttpStatus } from "../../../enums/HttpStatus";
-
+import Swal from "sweetalert2";
+import Loadding from "../../../components/ui/Loadding";
 interface FormPassword {
     current_password: string,
     new_password: string,
@@ -15,9 +16,6 @@ const ChangePasswrod = () => {
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loadingChangePasswrod, setLoadingChangePassword] = useState(false);
-    const [showDialog, setShowDialog] = useState(false);
-    const [showDialogMessage, setShowDialogMessage] = useState('');
-    const [showDialogStatus, setShowDialogStatus] = useState(false);
     const [checkNewPassword, setCheckNewPassword] = useState(false);
     const { register, handleSubmit, formState: { errors }, reset } = useForm<FormPassword>();
     const handleChangePassword = async (data: FormPassword) => {
@@ -29,20 +27,21 @@ const ChangePasswrod = () => {
                 setLoadingChangePassword(true);
                 const res = await teacherChangePassword(data.current_password, data.new_password, data.new_password_confirmation)
                 if (res.data.status === HttpStatus.SUCCESS) {
-                    setShowDialogMessage("Mật khẩu đã được cập nhật thành công!");
-                    setShowDialog(true);
-                    setShowDialogStatus(true);
+                    Swal.fire({
+                        title: res.data.message,
+                        icon: "success",
+                        draggable: true
+                    });
                     reset();
                 }
-
             }
         } catch (errors: any) {
-            setShowDialog(true);
-            setShowDialogStatus(false);
-            if (errors.response.data.status === 422) {
-                setShowDialogMessage("Mật khẩu hiện tại không đúng vui lòng kiểm tra lại.");
-            } else {
-                setShowDialogMessage("Có lỗi xảy ra. Vui lòng thử lại.");
+            if (errors.response) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Thất bại!",
+                    text: errors.response.data.message,
+                });
             }
         } finally {
             setLoadingChangePassword(false);
@@ -50,11 +49,7 @@ const ChangePasswrod = () => {
     }
     return (
         <>
-            {loadingChangePasswrod && (
-                <div className="loading-overlay">
-                    <div className="spinner"></div>
-                </div>
-            )}
+            {loadingChangePasswrod &&  <Loadding/>}
             <div className="cpw-container">
                 <h2>🔒 Đổi mật khẩu</h2>
                 <form onSubmit={handleSubmit(handleChangePassword)}>
@@ -98,15 +93,6 @@ const ChangePasswrod = () => {
                     {errors.new_password_confirmation ? <p>{errors.new_password_confirmation.message}</p> : !checkNewPassword ? '' : <p>Mật khẩu xác nhận không trùng khớp</p>}
                     <button type="submit" className="cpw-submit-btn">Cập nhật mật khẩu</button>
                 </form>
-            </div>
-
-            {/*  Overlay popup  */}
-            <div id="cpw-overlay" className={showDialog ? "cpw-overlay show" : "cpw-overlay"} onClick={() => setShowDialog(false)}>
-                <div className="cpw-popup">
-                    {showDialogStatus ? <h3>✅ Thành công</h3> : <h3 style={{ color: 'red' }}>❌ Thất bại</h3>}
-                    {showDialogStatus ? <p>{showDialogMessage}</p> : <p style={{ color: 'red' }}>{showDialogMessage}</p>}
-                    <button style={{ backgroundColor: showDialogStatus ? 'green' : 'red' }} className="cpw-ok-btn" onClick={() => setShowDialog(false)} >OK</button>
-                </div>
             </div>
         </>
     )
