@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./StudentProfile.css";
 import { getInitials } from "../../../utils/stringUtil";
-import { formatToInputDate, formatToDisplayDate } from "../../../utils/stringUtil";
 import { useForm } from "react-hook-form";
-import type{ StudentForm } from "../../../types/student";
+import type { StudentForm } from "../../../types/student";
 
 const StudentProfile = () => {
     const user = useSelector((state: any) => state.auth.user);
@@ -12,16 +11,12 @@ const StudentProfile = () => {
 
     useEffect(() => {
         if (user) {
-            reset({
-                ...user,
-                date_of_birth: formatToInputDate(user.date_of_birth)
-            })
+            reset(user);
         }
     }, [user, reset]);
 
-    const handleSubmit = (data:StudentForm) => {
-        data.date_of_birth = formatToDisplayDate(data.date_of_birth)
-        console.log('data đượp cập nhật',data);
+    const handleSubmit = (data: StudentForm) => {
+        console.log('data đượp cập nhật', data);
     };
 
     return (

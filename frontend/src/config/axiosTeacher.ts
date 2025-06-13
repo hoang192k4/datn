@@ -30,7 +30,7 @@ axiosTeacherInstance.interceptors.response.use(
     response => response,
     async error => {
         const originalRequest = error.config;
-        const excludedUrls = ['/teachers/login', '/teachers/refresh'];
+        const excludedUrls = ['/teachers/login', '/auth/refresh'];
         const shouldSkip = excludedUrls.some(url => originalRequest.url?.includes(url));
 
         if (originalRequest.requiresAuth === false || shouldSkip) {

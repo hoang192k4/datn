@@ -1,53 +1,55 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux"
-import { formatToDisplayDate, formatToInputDate, getInitials } from "../../../utils/stringUtil";
+import { getInitials } from "../../../utils/stringUtil";
 import type { TeacherForm } from "../../../types/teacher";
-import { authCheck, teacherUpdate } from "../../../services/authTeacherService";
-import { login, logout } from '../../../store/slices/authSlice';
+import { teacherUpdate } from "../../../services/authTeacherService";
+import { login } from '../../../store/slices/authSlice';
 import { HttpStatus } from "../../../enums/HttpStatus";
+import Swal from "sweetalert2";
+import Loadding from "../../../components/ui/Loadding";
+
 
 const TeacherProfile = () => {
     const [loadingUpdate, setLoadingUpdate] = useState(false);
-    const [showDialogUpdate, setShowDialogUpdate] = useState(false);
     const teacher = useSelector((state: any) => state.auth.user);
     const { register, handleSubmit: validate, reset, formState: { errors } } = useForm<TeacherForm>();
     const dispatch = useDispatch();
     useEffect(() => {
         if (teacher) {
-            reset({
-                ...teacher,
-                date_of_birth: formatToInputDate(teacher.date_of_birth)
-            })
+            reset(teacher);
         }
     }, [teacher, reset]);
+
     const handleSubmit = async (data: TeacherForm) => {
         setLoadingUpdate(true);
         try {
             const res = await teacherUpdate(data);
             if (res.status === HttpStatus.SUCCESS) {
                 {
-                    const userUpdate = {
-                        ...data,
-                        date_of_birth: formatToInputDate(data.date_of_birth)
-                    }
-                    dispatch(login({ user: userUpdate }));
-                    setShowDialogUpdate(true);
+                    dispatch(login({ user: data }));
+                    /* setShowDialogUpdate(true); */
+                    Swal.fire({
+                        title: res.data.message,
+                        icon: "success",
+                        draggable: true
+                    });
                 }
             }
         } catch (errors: any) {
-            console.log(errors.response);
+            if (errors.response)
+                Swal.fire({
+                    icon: "error",
+                    title: "Thất Bại",
+                    text: errors.response.data.message,
+                });
         } finally {
             setLoadingUpdate(false);
         }
     }
     return (
         <>
-            {loadingUpdate && (
-                <div className="loading-overlay">
-                    <div className="spinner"></div>
-                </div>
-            )}
+            {loadingUpdate &&  <Loadding/>}
             <form className="card-profile" onSubmit={validate(handleSubmit)}>
                 <div className="profile">
                     <div className="avatar-text">{getInitials(teacher.name)}</div>
@@ -113,13 +115,6 @@ const TeacherProfile = () => {
                     <button type="submit">Lưu thay đổi</button>
                 </div>
             </form>
-            <div id="cpw-overlay" className={showDialogUpdate ? "cpw-overlay show" : "cpw-overlay"} onClick={() => setShowDialogUpdate(false)}>
-                <div className="cpw-popup">
-                    <h3>✅ Thành công</h3>
-                    <p>Đã cập nhật thông tin cá nhân thành công!</p>
-                    <button className="cpw-ok-btn" onClick={() => setShowDialogUpdate(false)} >OK</button>
-                </div>
-            </div>
         </>
     )
 }

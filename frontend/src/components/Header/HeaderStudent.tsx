@@ -5,6 +5,7 @@ import { studentLogout } from "../../services/authStudentService";
 import { HttpStatus } from "../../enums/HttpStatus";
 import { logout } from "../../store/slices/authSlice";
 import { useState } from "react";
+import Loadding from "../ui/Loadding";
 const HeaderStudent = () => {
     const [loadingLogoutStudent, setLoadingLogoutStudent] = useState(false);
     const user = useSelector((state: any) => state.auth.user);
@@ -23,11 +24,7 @@ const HeaderStudent = () => {
     }
     return (
         <>
-            {loadingLogoutStudent && (
-                <div className="loading-overlay">
-                    <div className="spinner"></div>
-                </div>
-            )}
+            {loadingLogoutStudent && <Loadding/>}
             <header className="header-student">
                 <h1><Link to="">KHOA CÔNG NGHỆ THÔNG TIN</Link></h1>
                 <div className="nav-links-student">

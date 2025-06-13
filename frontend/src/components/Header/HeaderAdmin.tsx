@@ -7,6 +7,7 @@ import { getInitials } from '../../utils/stringUtil';
 import { HttpStatus } from '../../enums/HttpStatus';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Loadding from '../ui/Loadding';
 const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const [loadingLogout, setLoadingLogout] = useState(false);
     const toggleUserDropdown = () => {
@@ -34,11 +35,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     }
     return (
         <header>
-            {loadingLogout && (
-                <div className="loading-overlay">
-                    <div className="spinner"></div>
-                </div>
-            )}
+            {loadingLogout && <Loadding/>}
             <nav className="navbar">
                 <button className="mobile-toggle" onClick={toggleSidebar}>☰</button>
                 <div className="logo"><Link to="dashboard">Khoa Công Nghệ Thông Tin</Link></div>
