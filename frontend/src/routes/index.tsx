@@ -52,8 +52,8 @@ const AppRoutes = () => {
                 }
             </Route>
 
-                {/* Route cho notfoud 404 */}
-                <Route path="*" element={<NotFoundPage/>}/>
+            {/* Route cho notfoud 404 */}
+            <Route path="*" element={<NotFoundPage />} />
 
         </Routes>
     );

@@ -38,7 +38,8 @@ class GradeController extends BaseController
         $this->repository = $repository;
         $this->service = $service;
         $this->gradeService = $gradeService;
-        // $this->middleware('auth:teacher');
+        $this->middleware('auth:teacher');
+        $this->middleware('role:subject_teacher,homeroom_teacher')->except(['getGradesByCourseSection']);
     }
 
     public function getGradesByCourseSection(CourseSectionGradeRequest $request): JsonResponse
@@ -98,8 +99,5 @@ class GradeController extends BaseController
         }
     }
 
-    public function updateExamScore()
-    {
-
-    }
+    public function updateExamScore() {}
 }

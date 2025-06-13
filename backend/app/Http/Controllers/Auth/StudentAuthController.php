@@ -62,7 +62,8 @@ class StudentAuthController extends BaseController
         }
 
         $user = Auth::guard('student')->user();
-        return $this->respondWithTokens($token, $user);
+        $tokenWithGuard = JWTAuth::claims(['guard' => 'student'])->fromUser($user);
+        return $this->respondWithTokens($tokenWithGuard, $user);
     }
 
     /**

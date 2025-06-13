@@ -6,11 +6,14 @@ use App\Enums\Notification\NotificationStatus;
 use App\Enums\Notification\NotificationType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Notification extends Model
 {
     //
     use HasFactory;
+
+    protected $fillable = ['id', 'teacher_id', 'teacher_receive_id', 'student_id', 'title', 'content', 'type', 'status'];
 
     protected function casts(): array
     {
@@ -18,5 +21,15 @@ class Notification extends Model
             'status' => NotificationStatus::class,
             'type' => NotificationType::class,
         ];
+    }
+
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(Teacher::class);
+    }
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
     }
 }

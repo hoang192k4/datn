@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('content');
             $table->enum('type', ['student_send', 'teacher_send', 'admin_send'])->default('teacher_send');
             $table->enum('status', ['read', 'unread'])->default('unread');
-            $table->timestamps();
+            $table->timestamps()->useCurrent();
         });
     }
 

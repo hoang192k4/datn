@@ -50,7 +50,7 @@ axiosStudentInstance.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                await axiosStudentInstance.post('/students/refresh'); // refresh token từ cookie
+                await axiosStudentInstance.post('/auth/refresh'); // refresh token từ cookie
                 processQueue(null);
                 return axiosStudentInstance(originalRequest); // thực hiện lại request gốc
             } catch (err) {
@@ -63,5 +63,4 @@ axiosStudentInstance.interceptors.response.use(
 
         return Promise.reject(error);
     });
-
 export default axiosStudentInstance;

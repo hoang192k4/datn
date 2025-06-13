@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react';
+ 
 import './dashboard.css';
-import { getFCMToken } from '../../../services/deviceTokenService';
+ 
 
 
 const Dashboard = () => {
-    const [permission, setPermission] = useState('default');
-    useEffect(() => {
-        getFCMToken([permission, setPermission]);
-    }, []);
     return (
         <>
                 <div className="page-header">

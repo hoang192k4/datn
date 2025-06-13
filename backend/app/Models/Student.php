@@ -65,7 +65,7 @@ class Student extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return ['guard' => 'student'];
     }
 
     public function course_sections(): BelongsToMany

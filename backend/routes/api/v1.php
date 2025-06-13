@@ -63,11 +63,25 @@ Route::controller(App\Http\Controllers\Notification\NotificationController::clas
     ->prefix('notifications')
     ->group(function () {
         Route::post('/', 'sendNotifications');
+        Route::post('/send-to-course-section', 'sendNotificationToCourseSection');
         Route::post('/send-test', 'sendNotification');
+        Route::get('/', 'getMyNotifications');
     });
 
+Route::controller(App\Http\Controllers\Notification\StudentNotificationController::class)
+    ->prefix('feedbacks')
+    ->group(function () {
+        Route::post('/', 'sendFeedbackToTeacher');
+    });
+
+Route::controller(App\Http\Controllers\Post\PostController::class)
+    ->prefix('posts')
+    ->group(function () {
+        Route::get('/', 'getPostByTeacherSlug');
+    });
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
-->prefix('auth')
-->group(function (){
-    Route::get('/me', 'me');
-});
+    ->prefix('auth')
+    ->group(function () {
+        Route::get('/me', 'me');
+        Route::post('/refresh', 'refresh');
+    });

@@ -17,4 +17,5 @@ interface EloquentRepositoryInterface
     public function findWithConditions(array $conditions);
     public function inserts(array $data);
     public function findMany($ids);
+    public function getList(array $filter = [], array $order = [], array $relations = [], $limit = null, $page = null);
 }

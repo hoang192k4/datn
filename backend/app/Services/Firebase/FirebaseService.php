@@ -105,7 +105,7 @@ class FirebaseService implements FirebaseServiceInterface
                                 'title' => $title,
                                 'body' => $body,
                                 'icon' => url('/logo192.png'),
-                                'click_action' => url('/'),
+                                'click_action' => url('/notifications'),
                                 'requireInteraction' => true
                             ]
                         ]

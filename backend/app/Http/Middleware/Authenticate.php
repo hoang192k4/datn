@@ -28,35 +28,39 @@ class Authenticate
 
     public function handle($request, Closure $next, ...$guards)
     {
-        // Define routes to exclude from authentication
-
-
-        // Skip authentication if the current route is in the excluded list
-
         if (empty($guards)) {
-            $guards = [null]; // fallback về guard mặc định nếu không truyền gì
+            $guards = [config('auth.defaults.guard')];
         }
 
-        foreach ($guards as $guard) {
-            try {
-                Auth::shouldUse($guard);
-                // Dùng JWTAuth trực tiếp để parse token và lấy user
-                $user = JWTAuth::parseToken()->authenticate();
-                if ($user) {
-                    return $next($request);
-                }
-            } catch (TokenExpiredException $e) {
-                return $this->jsonResponseError('Token đăng nhập đã hết hạn', 401);
-            } catch (TokenInvalidException $e) {
-                return $this->jsonResponseError('Token không hợp lệ', 401);
-            } catch (JWTException $e) {
-                return $this->jsonResponseError('Vui lòng gửi token', 401);
-            } catch (\Exception $e) {
-                // Xử lý fallback các lỗi ném ra khác, trong đó có AuthenticationException
-                return $this->jsonResponseError('Lỗi xác thực: ' . $e->getMessage(), 401);
+        try {
+            $token = JWTAuth::getToken();
+            if (!$token) {
+                return $this->jsonResponseError('Token không tồn tại', 401);
             }
-        }
 
-        return $this->jsonResponseError('Xác thực không thành công!', 401);
+            $payload = JWTAuth::setToken($token)->getPayload();
+            $sub = $payload->get('sub');
+            $guardFromToken = $payload->get('guard'); // bạn cần lưu guard khi tạo token
+            Auth::shouldUse($guardFromToken);
+
+            $user = Auth::authenticate();
+            if (!in_array($guardFromToken, $guards)) {
+                return $this->jsonResponseError('Bạn không có quyền truy cập chức năng này', 403);
+            }
+            if (!$user) {
+                return $this->jsonResponseError('Không tìm thấy người dùng từ token', 401);
+            }
+
+            // Buộc Laravel dùng đúng guard
+            Auth::shouldUse($guardFromToken);
+
+            return $next($request);
+        } catch (TokenExpiredException $e) {
+            return $this->jsonResponseError('Token đã hết hạn', 401);
+        } catch (TokenInvalidException $e) {
+            return $this->jsonResponseError('Token không hợp lệ', 401);
+        } catch (JWTException $e) {
+            return $this->jsonResponseError('Lỗi xác thực token: ' . $e->getMessage(), 401);
+        }
     }
 }

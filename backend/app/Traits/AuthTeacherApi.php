@@ -17,4 +17,9 @@ trait AuthTeacherApi
         // Assuming you have a method to get the authenticated user ID
         return Auth::guard('teacher')->id();
     }
+
+    public function getCurrentTeacherRole()
+    {
+        return Auth::guard('teacher')->user()->role->name;
+    }
 }
