@@ -13,7 +13,7 @@ const HomePage = () => {
             <section className="teacher-list container">
                 <h3>Danh Sách Giảng Viên</h3>
                 <div className="card-grid">
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
+                    <TearcherItem href="leh-uu-vinh">Lê Hữu vinh</TearcherItem>
                     <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
                     <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
                     <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>

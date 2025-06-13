@@ -7,7 +7,9 @@ import { getInitials } from '../../utils/stringUtil';
 import { HttpStatus } from '../../enums/HttpStatus';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ChangePasswordModal from '../ChangePassword/ChangePasswordModal';
 const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
+    const [showModal, setShowModal] = useState(false);
     const [loadingLogout, setLoadingLogout] = useState(false);
     const toggleUserDropdown = () => {
         const dropdown = document.getElementById('userDropdown');
@@ -23,7 +25,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             setLoadingLogout(true);
             const data = await teacherLogout();
             if (data.status === HttpStatus.SUCCESS) {
-                navigate("/dang-nhap",{replace: true});
+                navigate("/dang-nhap", { replace: true });
                 dispatch(logout());
             }
         } catch (errors) {
@@ -59,10 +61,12 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                                     <span className="dropdown-item-icon">👤</span>
                                     Thông tin cá nhân
                                 </Link>
-                                <Link to="#" className="dropdown-item">
+                                <div className="dropdown-item" onClick={(e) => { setShowModal(true) }}>
+
                                     <span className="dropdown-item-icon">🔑</span>
+
                                     Đổi mật khẩu
-                                </Link>
+                                </div>
                                 <div className="dropdown-divider"></div>
                                 <Link to="#" className="dropdown-item" onClick={handleLogout}>
                                     <span className="dropdown-item-icon">🚪</span>
@@ -73,7 +77,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     </div>
                 </div>
             </nav>
-
+            {showModal && <ChangePasswordModal onClose={() => setShowModal(false)} />}
         </header>
 
 
