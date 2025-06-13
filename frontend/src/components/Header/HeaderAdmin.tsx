@@ -65,19 +65,18 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                                     <span className="dropdown-item-icon">🔑</span>
 
                                     Đổi mật khẩu
-                                </div>
-                                <div className="dropdown-divider"></div>
-                                <Link to="#" className="dropdown-item" onClick={handleLogout}>
-                                    <span className="dropdown-item-icon">🚪</span>
-                                    Đăng xuất
                                 </Link>
                             </div>
+                            <div className="dropdown-divider"></div>
+                            <Link to="#" className="dropdown-item" onClick={handleLogout}>
+                                <span className="dropdown-item-icon">🚪</span>
+                                Đăng xuất
+                            </Link>
                         </div>
                     </div>
                 </div>
             </nav>
-            {showModal && <ChangePasswordModal onClose={() => setShowModal(false)} />}
-        </header>
+        </header >
 
 
 

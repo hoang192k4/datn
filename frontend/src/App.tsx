@@ -10,7 +10,6 @@ import { HttpStatus } from './enums/HttpStatus';
 import { getFCMToken } from './services/deviceTokenService';
 
 function App() {
-
   const dispatch = useDispatch();
   const [authLoading, setAuthLoading] = useState(true);
   useEffect(() => {
