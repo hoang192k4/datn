@@ -25,3 +25,10 @@ if (!function_exists('generate_slug')) {
         return Str::slug($string, '-');
     }
 }
+
+if (!function_exists('format_date_client')) {
+    function format_date_client($datetime, $format = 'Y-m-d')
+    {
+        return Carbon::parse($datetime)->format($format);
+    }
+}

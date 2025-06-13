@@ -1,0 +1,134 @@
+  .card-profile {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    padding: 40px 35px;
+    width: 100%;
+  }
+
+  .profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .avatar-text {
+    background-color: #0050b3;
+    color: #ffffff;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-size: 26px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    box-shadow: 0 4px 10px rgba(0, 80, 179, 0.3);
+  }
+
+  .info h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #333333;
+  }
+
+  .info>h2>input {
+    padding: 16px;
+    background-color: #ffffff;
+    color: #333333;
+    outline: none;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    font-weight: 600;
+  }
+
+  .info p {
+    margin: 4px 0;
+    color: #666666;
+  }
+
+  .details-profile {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .detail-profile-item {
+    background-color: #e6f0ff;
+    padding: 15px 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  .detail-profile-item label {
+    display: block;
+    font-size: 13px;
+    color: #777777;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .detail-profile-item input,
+  .detail-profile-item select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #333333;
+    box-sizing: border-box;
+  }
+
+  .detail-profile-item p {
+    color: red;
+    font-size: 13px;
+  }
+
+  .detail-profile-item input:focus,
+  .detail-profile-item select:focus {
+    outline: none;
+    border-color: #0050b3;
+    box-shadow: 0 0 0 2px rgba(0, 80, 179, 0.2);
+  }
+
+  .edit-button {
+    text-align: right;
+    margin-top: 30px;
+  }
+
+  .edit-button button {
+    background-color: #0050b3;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .edit-button button:hover {
+    background-color: #003d80;
+  }
+
+  @media (max-width: 600px) {
+    .details-profile {
+      grid-template-columns: 1fr;
+    }
+
+    .avatar-text {
+      width: 65px;
+      height: 65px;
+      font-size: 22px;
+    }
+
+    .info h2 {
+      font-size: 22px;
+    }
+  }

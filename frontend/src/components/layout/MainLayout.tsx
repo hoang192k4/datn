@@ -5,7 +5,10 @@ const MainLayout = () => {
     return (
         <>
             <Header />
-            <Outlet />
+            <div style={{ minHeight: 'calc(100vh - 180px)' }}>
+                <Outlet />
+            </div>
+
             <Footer />
         </>
 

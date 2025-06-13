@@ -10,7 +10,6 @@ const Dashboard = () => {
     }, []);
     return (
         <>
-            <div className="main-content">
                 <div className="page-header">
                     <h1 className="page-title">Dashboard</h1>
                     <p className="page-subtitle">Tổng quan về hoạt động giảng dạy và quản lý lớp học</p>
@@ -129,7 +128,6 @@ const Dashboard = () => {
                         </ul>
                     </div>
                 </div>
-            </div>
         </>
     )
 }

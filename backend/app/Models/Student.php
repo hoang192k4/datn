@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -84,5 +85,10 @@ class Student extends Authenticatable implements JWTSubject
     public function summary_grades(): HasMany
     {
         return $this->hasMany(SummaryGrade::class);
+    }
+
+    public function major():BelongsTo
+    {
+        return $this->belongsTo(Major::class);
     }
 }
