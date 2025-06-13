@@ -241,18 +241,7 @@
      text-align: left;
  }
 
- .gm-student-avatar {
-     width: 35px;
-     height: 35px;
-     border-radius: 50%;
-     background: linear-gradient(45deg, #4ecdc4, #44a08d);
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     font-weight: bold;
-     color: white;
-     font-size: 0.8rem;
- }
+
 
  .gm-student-details {
      flex: 1;
@@ -555,9 +544,7 @@
          color: #b0b0b0;
      }
 
-     .gm-selection-title {
-        
-     }
+     .gm-selection-title {}
 
      .gm-selection-subtitle {
          color: black;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './GradeManagement.css';
-
+import PageHeader from '../../../components/ui/PageHeader';
 const GradeManagement = () => {
   // State management
   const [currentClassId, setCurrentClassId] = useState(null);
@@ -458,11 +458,8 @@ const GradeManagement = () => {
         {apiStatus.message}
       </div>
 
-      <div className="gm-page-header">
-        <h1 className="page-title">🎓 Quản lý điểm số</h1>
-        <p className="page-subtitle">Hệ thống quản lý và theo dõi kết quả học tập của sinh viên</p>
-      </div>
-
+   
+      <PageHeader title="🎓 Quản lý điểm số" subtitle="Hệ thống quản lý và theo dõi kết quả học tập của sinh viên"/>
       {!currentClassId ? (
         <section className="gm-class-selection">
           <div className="gm-selection-icon">📚</div>

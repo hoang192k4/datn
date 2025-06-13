@@ -133,8 +133,10 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
      * @param arry $relations Load thêm quan hệ. Ví dụ: ['teachers'];
      * @param mixed $limit Giới hạn lấy record (phân trang). Ví dụ: 10
      * @param mixed $page lấy theo trang. Ví dụ: 1
+     * @param arry orFilter Mảng điều kiện để lấy sau khi lọc filter ban đầu
+     *
      */
-    public function getList(array $filter = [], array $order = [], array $relations = [], $limit = null, $page = null)
+    public function getList(array $filter = [], array $order = [], array $relations = [], $limit = null, $page = null, array $orFilter = [])
     {
         $query = $this->model->query();
 
@@ -145,11 +147,33 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         foreach ($filter as $column => $value) {
             if (is_array($value)) {
                 [$operator, $val] = $value;
-                $query->where($column, $operator, $val);
+                if (strtolower($operator) === 'like') {
+                    $query->where($column, 'LIKE', "%{$val}%");
+                } else {
+                    $query->where($column, $operator, $val);
+                }
             } else
                 $query->where($column, $value);
         }
 
+        // Thêm điều kiện orWhere
+        if (!empty($orFilter)) {
+            $query->where(function ($subQuery) use ($orFilter) {
+                foreach ($orFilter as $column => $value) {
+                    if (is_array($value)) {
+                        [$operator, $val] = $value;
+
+                        if (strtolower($operator) === 'like') {
+                            $subQuery->orWhere($column, 'LIKE', "%{$val}%");
+                        } else {
+                            $subQuery->orWhere($column, $operator, $val);
+                        }
+                    } else {
+                        $subQuery->orWhere($column, $value);
+                    }
+                }
+            });
+        }
 
         foreach ($order as $column => $direction) {
             $query->orderBy($column, $direction);

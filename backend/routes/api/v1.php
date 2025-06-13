@@ -11,7 +11,7 @@ Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
         Route::get('/me', 'me')->name('me');
         Route::post('/logout', 'logout')->name('logout');
         Route::post('/change-password', 'changePassword');
-         Route::post('/update-profile', 'update');
+        Route::post('/update-profile', 'update');
     });
 
 
@@ -84,4 +84,11 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->group(function () {
         Route::get('/me', 'me');
         Route::post('/refresh', 'refresh');
+    });
+
+
+Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::class)
+    ->prefix('course-sections')
+    ->group(function () {
+        Route::get('/', 'getCourseSectionByTeacher');
     });
