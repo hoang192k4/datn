@@ -26,6 +26,9 @@ class Teacher extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'date_of_birth',
+        'address',
+        'gender',
         'slug',
     ];
 

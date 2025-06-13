@@ -18,8 +18,10 @@ use App\Http\Requests\Auth\ChangePassword;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Resources\Teacher\TeacherResource;
 use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\UpdateRequest;
 use Illuminate\Support\Facades\Log as LogSupport;
 use App\Http\Resources\Teacher\TeacherAuthResource;
+use App\Repositories\Teacher\TeacherRepositoryInterface;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 
@@ -29,9 +31,10 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 class TeacherAuthController extends BaseController
 {
     use AuthTeacherApi, ResponseWithJson;
-    public function __construct()
+    public function __construct(TeacherRepositoryInterface $repository)
     {
         $this->middleware('auth:teacher')->except(['login', 'register', 'refresh']);
+        $this->repository =  $repository;
         $this->middleware('role:faculty_admin,subject_teacher,homeroom_teacher,department_admin')->except(['login', 'register', 'refresh']);
     }
 
@@ -189,7 +192,7 @@ class TeacherAuthController extends BaseController
             'token_type' => 'bearer',
             'expires_in' => $accessTtl,
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
-            'user' => new TeacherAuthResource($user),
+            'user' => new TeacherResource($user),
         ])
             ->withCookie($accessCookie)
             ->withCookie($refreshCookie);
@@ -208,5 +211,18 @@ class TeacherAuthController extends BaseController
         $teacher->save();
 
         return $this->jsonResponseSuccessNoData('Thay đổi mật khẩu thành công!');
+    }
+
+    public function update(UpdateRequest $request)
+    {
+        $data = $request->validated();
+        $teacherId = $this->getCurrentTeacherId();
+        if (!$teacherId) {
+            return $this->jsonResponseError();
+        }
+        $data['slug'] = generate_slug($data['name']);
+        $result = $this->repository->updateOrCreateById($teacherId, $data);
+        if ($result)
+            return $this->jsonResponseSuccessNoData('Cập nhật thông tin thành công!');
     }
 }

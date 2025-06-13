@@ -29,13 +29,13 @@ const HeaderStudent = () => {
                 </div>
             )}
             <header className="header-student">
-                <h1>KHOA CÔNG NGHỆ THÔNG TIN</h1>
+                <h1><Link to="">KHOA CÔNG NGHỆ THÔNG TIN</Link></h1>
                 <div className="nav-links-student">
                     <Link to="#">🔔 Thông Báo</Link>
                     <div className="user-menu-student">
                         <button className="user-btn-student">{user && user.name}</button>
                         <div className="dropdown-content-student">
-                            <Link to="#">Thông Tin Cá Nhân</Link>
+                            <Link to="thong-tin-ca-nhan">Thông Tin Cá Nhân</Link>
                             <Link to="#" onClick={handleStudentLogout}>Đăng Xuất</Link>
                         </div>
                     </div>

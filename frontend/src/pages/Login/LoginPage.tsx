@@ -57,12 +57,12 @@ const LoginPage = () => {
                     <form>
                         <div className="form-group">
                             <label htmlFor="email">Email</label>
-                            <input type="text" id="email" {...register("email", { required: "Vui lòng nhập email" })} placeholder="Nhập email..." />
+                            <input type="email" id="email" {...register("email", { required: "Vui lòng nhập email" })} placeholder="Nhập email..." onChange={() => setErrorPassword(false)} />
                             {errors.email && <p>{errors.email.message}</p>}
                         </div>
                         <div className="form-group">
                             <label htmlFor="password">Mật Khẩu</label>
-                            <input type="password" id="password" {...register("password", { required: 'Vui lòng nhập passowrd' })} placeholder="Nhập mật khẩu..." />
+                            <input type="password" id="password" {...register("password", { required: 'Vui lòng nhập passowrd' })} placeholder="Nhập mật khẩu..." onChange={() => setErrorPassword(false)} />
                             {errors.password ? <p>{errors.password.message}</p> : errorPassword && <p>Email hoặc mật khẩu không đúng</p>}
                         </div>
                         <div className="form-group">

@@ -65,3 +65,4 @@ if (!function_exists('getCurrentUserId')) {
         throw new AuthenticationException('Xác thực không thành công');
     }
 }
+
