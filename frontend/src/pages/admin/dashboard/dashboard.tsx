@@ -1,4 +1,5 @@
  
+import PageHeader from '../../../components/ui/PageHeader';
 import './dashboard.css';
  
 
@@ -6,12 +7,7 @@ import './dashboard.css';
 const Dashboard = () => {
     return (
         <>
-                <div className="page-header">
-                    <h1 className="page-title">Dashboard</h1>
-                    <p className="page-subtitle">Tổng quan về hoạt động giảng dạy và quản lý lớp học</p>
-                </div>
-
-
+               <PageHeader title="Dashboard" subtitle="tổng quan về dashboard"/> 
                 <div className="stats-grid">
                     <div className="stat-card">
                         <div className="stat-header">
