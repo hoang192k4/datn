@@ -27,7 +27,7 @@ class AuthController extends BaseController
     use AuthstudentApi, ResponseWithJson, AuthTeacherApi;
     public function __construct()
     {
-        $this->middleware('auth:teacher,student');
+        $this->middleware('auth:teacher,student')->except('refresh');
     }
 
     public function me()
