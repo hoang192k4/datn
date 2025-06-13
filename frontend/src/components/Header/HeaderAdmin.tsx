@@ -57,12 +57,11 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                                 <div className="dropdown-email">{user && user.email}</div>
                             </div>
                             <div className="dropdown-menu">
-                                <Link to="#" className="dropdown-item" >
+                                <Link to="thong-tin-ca-nhan" className="dropdown-item" >
                                     <span className="dropdown-item-icon">👤</span>
                                     Thông tin cá nhân
                                 </Link>
-                                <div className="dropdown-item" onClick={(e) => { setShowModal(true) }}>
-
+                                <Link to="doi-mat-khau" className="dropdown-item">
                                     <span className="dropdown-item-icon">🔑</span>
 
                                     Đổi mật khẩu

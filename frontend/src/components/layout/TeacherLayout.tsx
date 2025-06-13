@@ -12,9 +12,12 @@ const TeacherLayout = () => {
     }
     return (
         <>
-            <HeaderAdmin toggleSidebar ={toggleSidebar}/>
-            <Sidebar  toggleSidebar ={toggleSidebar}/>
-            <Outlet />
+            <HeaderAdmin toggleSidebar={toggleSidebar} />
+            <Sidebar toggleSidebar={toggleSidebar} />
+            <div className="main-content">
+                <Outlet />
+            </div>
+
         </>
     )
 }

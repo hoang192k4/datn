@@ -11,6 +11,7 @@ Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
         Route::get('/me', 'me')->name('me');
         Route::post('/logout', 'logout')->name('logout');
         Route::post('/change-password', 'changePassword');
+         Route::post('/update-profile', 'update');
     });
 
 
