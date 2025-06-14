@@ -4,13 +4,19 @@ import PageHeader from '../../../components/ui/PageHeader';
 import { getCourseSectionByTeacher } from '../../../services/courseSectionService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import Loadding from '../../../components/ui/Loadding';
+import SelectWithPagination from '../../../components/ui/SelectWithPagination';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { addGradeColumnToCourseSection, createGrade, getGradeTypes, getStudentByCourseSectionId, updateGradeById } from '../../../services/gradeStudentService';
+import { addGradeColumnToCourseSection, createGrade, getGradeTypes, getStudentByCourseSectionId, updateGradeById, updateSummaryScore } from '../../../services/gradeStudentService';
 import Swal from 'sweetalert2';
 import { Evaluation } from '../../../enums/Evaluation';
+import axiosTeacherInstance from '../../../config/axiosTeacher';
+
 const GradeManagement = () => {
   // State management
   const [currentClassId, setCurrentClassId] = useState(null);
+  const [loadListCourse, setLoadListCourse] = useState(true);
   const [currentGradeId, setCurrentGradeId] = useState(null);
   const [gradeTypeCounts, setGradeTypeCounts] = useState({});
   const [gradeTypeOrder, setGradeTypeOrder] = useState([]);
@@ -24,6 +30,9 @@ const GradeManagement = () => {
   const [tempValue, setTempValue] = useState('');
   const [gradeTypes, setGradeTypes] = useState([]);
   const inputRef = useRef(null);
+  const [keyword, setKeyword] = useState('');
+  const [debouncedKeyword, setDebouncedKeyword] = useState('');
+  const [totalColumn, setTotalColumn] = useState(null);
 
 
 
@@ -65,20 +74,12 @@ const GradeManagement = () => {
     }
   }, [editingCell]);
 
-  const showApiStatus = (message, isSuccess = true) => {
-    setApiStatus({ show: true, message, isSuccess });
-    setTimeout(() => {
-      setApiStatus(prev => ({ ...prev, show: false }));
-    }, 3000);
-  };
-
-
 
   const handleClassSelection = (classId) => {
     if (classId) {
       console.log(classId);
-      setCurrentClassId(parseInt(classId));
-      fetchGrades(parseInt(classId));
+      setCurrentClassId(parseInt(classId.value));
+      fetchGrades(parseInt(classId.value));
     }
   };
 
@@ -100,7 +101,6 @@ const GradeManagement = () => {
         const students = response.data.data;
         setStudentData(students);
         prepareGradeTypeData(students);
-
       }
     } catch (e: any) {
       Swal.fire({
@@ -113,11 +113,11 @@ const GradeManagement = () => {
     }
   };
 
-  const fetchGradesNoLoading = async (courseSectionId: any) => {
+  const fetchGradesNoLoading = async (courseSectionId: any, key: string = '') => {
     if (!courseSectionId) return;
 
     try {
-      const response = await getStudentByCourseSectionId(courseSectionId);
+      const response = await getStudentByCourseSectionId(courseSectionId, key);
       if (response.status == HttpStatus.SUCCESS) {
         const students = response.data.data;
         setStudentData(students);
@@ -137,7 +137,7 @@ const GradeManagement = () => {
   const prepareGradeTypeData = (data) => {
     const counts = {};
     const order = [];
-
+    let total: number = 0;
     data.forEach(student => {
       student.grades?.forEach(gradeGroup => {
         gradeGroup.forEach(grade => {
@@ -149,12 +149,15 @@ const GradeManagement = () => {
             }
           }
           counts[typeId] = Math.max(counts[typeId], grade.attempt);
+          total += Math.max(counts[typeId], grade.attempt);
         });
       });
+      total = total + 9;
     });
 
     setGradeTypeCounts(counts);
     setGradeTypeOrder(order);
+    setTotalColumn(total);
   };
 
   const addGradeColumn = async () => {
@@ -178,7 +181,7 @@ const GradeManagement = () => {
     try {
       const response = await addGradeColumnToCourseSection(currentClassId, typeId);
       if (response.status === HttpStatus.SUCCESS)
-        fetchGradesNoLoading(currentClassId);
+        fetchGradesNoLoading(currentClassId, '');
     } catch (e) {
 
     }
@@ -196,9 +199,9 @@ const GradeManagement = () => {
     if (cellType === 'grade' && gradeTypeId && attempt) {
       const grade = getGradeValue(student, gradeTypeId, attempt);
       currentValue = grade.score;
-    } else if (cellType === 'exam1') {
+    } else if (cellType === 'exam1_score') {
       currentValue = student.summary_grade?.exam1_score || '';
-    } else if (cellType === 'exam2') {
+    } else if (cellType === 'exam2_score') {
       currentValue = student.summary_grade?.exam2_score || '';
     }
 
@@ -228,19 +231,30 @@ const GradeManagement = () => {
     const [cellType, studentId, gradeTypeId, attempt, gradeId, summaryId] = editingCell.split('-');
     const parsedStudentId = parseInt(studentId);
 
+
     if (cellType === 'grade') {
       const score = parseFloat(tempValue);
       if (!isNaN(score) && score >= 0 && score <= 10) {
         updateGrade(parsedStudentId, parseInt(gradeTypeId), parseInt(attempt), tempValue, gradeId);
       }
+      else {
+        Swal.fire({
+          title: 'Dữ liệu không phù hợp',
+          icon: 'warning',
+          text: 'Vui lòng chỉ nhập điểm từ 0 đến 10',
+
+        })
+      }
     } else if (cellType === 'notes') {
       updateStudentNotes(parsedStudentId, tempValue);
-    } else if (cellType.includes('exam')) {
+    } else if (cellType.includes('exam') || cellType.includes('attendance')) {
       const score = parseFloat(tempValue);
+
       if (!isNaN(score) && score >= 0 && score <= 10) {
-        updateExamScore(parsedStudentId, cellType, score);
+        updateExamScore(parsedStudentId, cellType, score, summaryId);
       }
     }
+
 
     setEditingCell(null);
     setTempValue('');
@@ -248,7 +262,16 @@ const GradeManagement = () => {
 
   const updateGrade = async (studentId, gradeTypeId, attempt, value, gradeId) => {
     const score = parseFloat(value);
-    if (isNaN(score) || score < 0 || score > 10) return;
+
+    if (isNaN(score) || score < 0 || score > 10) {
+      Swal.fire({
+        title: 'Dữ liệu không phù hợp',
+        icon: 'warning',
+        text: 'Vui lòng chỉ nhập điểm từ 0 đến 10',
+
+      })
+      return;
+    }
 
     setStudentData(prev => prev.map(student => {
       if (student.id === studentId) {
@@ -293,7 +316,7 @@ const GradeManagement = () => {
       try {
         const response = await createGrade(currentClassId, gradeTypeId, studentId, score, attempt);
         if (response.status === HttpStatus.SUCCESS) {
-          fetchGradesNoLoading(currentClassId);
+          fetchGradesNoLoading(currentClassId, debouncedKeyword);
         }
       } catch (e) {
 
@@ -303,16 +326,20 @@ const GradeManagement = () => {
     try {
       const response = await updateGradeById(gradeId, score);
       if (response.status === HttpStatus.SUCCESS) {
-        fetchGradesNoLoading(currentClassId);
+        toast.success("Cập nhật điểm thành công!");
+
+        fetchGradesNoLoading(currentClassId, debouncedKeyword);
+
       }
     } catch (e) {
 
     }
   };
 
-  const updateExamScore = (studentId, examType, score, summaryId) => {
+  const updateExamScore = async (studentId, examType, score, summaryId) => {
     setStudentData(prev => prev.map(student => {
       if (student.id === studentId) {
+        console.log(student, examType, score);
         return {
           ...student,
           summary_grade: {
@@ -321,8 +348,28 @@ const GradeManagement = () => {
           }
         };
       }
+
+      console.log('sau update', student);
       return student;
     }));
+    if (score > 10 || score < 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Dữ liệu không phù hợp',
+        text: 'Vui lòng chỉ nhập giá trị từ 0 đến 10!'
+      })
+    }
+    try {
+      const response = await updateSummaryScore(summaryId, examType, score);
+      if (response.status === HttpStatus.SUCCESS) {
+        toast.success("Cập nhật điểm thi thành công!");
+        fetchGradesNoLoading(currentClassId, debouncedKeyword);
+      }
+    } catch (e) {
+      if (e.response.status) {
+        toast.error("Cập nhật điểm thất bại!");
+      }
+    }
   };
 
   const updateStudentNotes = (studentId, notes) => {
@@ -351,7 +398,7 @@ const GradeManagement = () => {
   };
 
   const renderTableHeaders = () => {
-    const headers = ['STT', 'Họ tên'];
+    const headers = ['STT', 'Họ tên', 'C. Cần'];
 
     gradeTypeOrder.forEach(typeId => {
       const gradeType = gradeTypes.find(t => t.id === typeId);
@@ -400,7 +447,10 @@ const GradeManagement = () => {
     );
   };
 
+  // Add summary cells
+
   const renderStudentRow = (student, index) => {
+    const summary = student.summary_grade || {};
     const cells = [
       <td key="stt" className="gm-table-cell gm-cell-center">{index + 1}</td>,
       <td key="name" className="gm-table-cell">
@@ -410,6 +460,9 @@ const GradeManagement = () => {
             <div className="gm-student-id">{student.student_code}</div>
           </div>
         </div>
+      </td>,
+      <td key="attendance" className="gm-table-cell">
+        {renderEditableCell('attendance_score', student.id, summary.attendance_score, null, null, null, summary.id)}
       </td>
     ];
 
@@ -427,33 +480,59 @@ const GradeManagement = () => {
       }
     });
 
-    // Add summary cells
-    const summary = student.summary_grade || {};
+
     cells.push(
       <td key="avg" className="gm-table-cell gm-cell-centerl">{summary.avg_score || '-'}</td>,
       <td key="exam1" className="gm-table-cell gm-cell-center">
-        {renderEditableCell('exam1', student.id, summary.exam1_score, null, null, null, summary.id)}
+        {renderEditableCell('exam1_score', student.id, summary.exam1_score, null, null, null, summary.id)}
       </td>,
       <td key="exam2" className="gm-table-cell gm-cell-center">
-        {renderEditableCell('exam2', student.id, summary.exam2_score, null, null, null, summary.id)}
+        {renderEditableCell('exam2_score', student.id, summary.exam2_score, null, null, null, summary.id)}
       </td>,
       <td key="final" className="gm-table-cell gm-cell-center">{summary.final_score || '-'}</td>,
       <td key="evaluation" className="gm-table-cell gm-cell-center">{Evaluation[summary.evaluation] || '-'}</td>,
       <td key="notes" className="gm-table-cell">
-        {renderEditableCell('notes', student.id, student.notes)}
+        {renderEditableCell('notes', student.id, summary.note)}
       </td>
     );
 
     return cells;
   };
 
+  useEffect(() => {
+    if (!debouncedKeyword || debouncedKeyword.trim() === '') {
+      setDebouncedKeyword('');
+    }
+    const fetchData = async () => {
+      try {
+        setGradeLoading(true);
+        const response = await getStudentByCourseSectionId(currentClassId, debouncedKeyword);
+        if (response.status == HttpStatus.SUCCESS) {
+          setGradeLoading(false);
+          setStudentData(response.data.data);
+        }
+
+      } catch (error) {
+        console.error('Lỗi khi gọi API:', error);
+
+      }
+    }
+    fetchData()
+  }, [debouncedKeyword]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedKeyword(keyword)
+    }, 500);
+    return () => clearTimeout(handler)
+  }, [keyword]);
+
+  const handleChangeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  }
   return (
     <>
-      <div className="gm-api-status">
-        {apiStatus.message}
-      </div>
-
-
+      <ToastContainer />
       <PageHeader title="🎓 Quản lý điểm số" subtitle="Hệ thống quản lý và theo dõi kết quả học tập của sinh viên" />
       {!currentClassId ? (
         <section className="gm-class-selection">
@@ -462,19 +541,7 @@ const GradeManagement = () => {
           <p className="gm-selection-subtitle">Vui lòng chọn lớp học để bắt đầu quản lý điểm</p>
 
           <div className="gm-class-select">
-            <select
-              className="gm-select-dropdown"
-              onChange={(e) => handleClassSelection(e.target.value)}
-              defaultValue=""
-            >
-              <option value="" disabled>-- Chọn lớp học --</option>
-              {allClasses.map(cls => (
-                <option key={cls.id} value={cls.id}>
-                  {cls.name} - {cls.students_total} sinh viên
-                </option>
-              ))}
-            </select>
-
+            <SelectWithPagination handleClassSelection={handleClassSelection} />
           </div>
         </section>
       ) : (
@@ -489,18 +556,7 @@ const GradeManagement = () => {
             </div>
 
             <div className="gm-grade-actions">
-              <select
-                className="gm-select-dropdown"
-                onChange={(e) => changeClass(e.target.value)}
-                value={currentClassId}
-                style={{ minWidth: '200px' }}
-              >
-                {allClasses.map(cls => (
-                  <option key={cls.id} value={cls.id}>
-                    {cls.name}
-                  </option>
-                ))}
-              </select>
+              <SelectWithPagination handleClassSelection={handleClassSelection} />
             </div>
           </div>
 
@@ -522,12 +578,18 @@ const GradeManagement = () => {
                 ➕ Thêm cột
               </button>
             </div>
-
             <div className="gm-control-group">
-              <button className="gm-btn gm-btn-secondary"  >
+              <button className="gm-btn gm-btn-secondary" style={{ padding: '10px 10px' }} >
                 📊 Xuất điểm
               </button>
             </div>
+            <div className="gm-control-group">
+              <div className="search-container">
+                <input type="text" placeholder="Tìm kiếm..." onChange={handleChangeSearchInput} />
+                <span className="icon">🔍</span>
+              </div>
+            </div>
+
           </div>
 
           <div className="gm-table-container">
@@ -544,17 +606,19 @@ const GradeManagement = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {studentData.map((student, index) => (
+                  {studentData.length > 0 ? (studentData.map((student, index) => (
                     <tr key={student.id}>
                       {renderStudentRow(student, index)}
                     </tr>
-                  ))}
+                  ))) : (<tr style={{ width: "100%", textAlign: 'center', gridColumn: 1 / -1 }} > <td colSpan={totalColumn}>Không tìm thấy sinh viên phù hợp</td> </tr>)}
                 </tbody>
               </table>
             )}
           </div>
         </section>
       )}
+
+
     </>
   );
 };

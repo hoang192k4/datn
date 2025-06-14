@@ -1,8 +1,11 @@
 import axiosTeacherInstance from "../config/axiosTeacher"
 
 
-export const getCourseSectionByTeacher = (key: any) => {
+export const getCourseSectionByTeacher = (key: any, page = null) => {
     return axiosTeacherInstance.get('/course-sections', {
-        key
+        params: {
+            key,
+            page
+        }
     });
 }

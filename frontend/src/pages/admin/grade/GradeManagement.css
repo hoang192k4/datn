@@ -124,6 +124,7 @@
      display: flex;
      gap: 10px;
      flex-wrap: wrap;
+
  }
 
  .gm-grade-controls {
@@ -152,7 +153,7 @@
  }
 
  .gm-btn {
-     padding: 5px 10px;
+     padding: 0px 10px;
      border: none;
      border-radius: 8px;
      cursor: pointer;
@@ -231,9 +232,7 @@
      background: #f8f9ff;
  }
 
- .gm-grade-table tr:last-child td {
-     border-bottom: none;
- }
+ .gm-grade-table tr:last-child td {}
 
  .gm-student-info {
      display: flex;
@@ -570,7 +569,7 @@
      }
 
      .gm-table-cell {
-         border-color: white;
+         border-color: #ddd;
          width: max-content;
      }
 
@@ -734,4 +733,46 @@
  .page-subtitle {
      color: #666;
      font-size: 1rem;
+ }
+
+ .css-1nmdiq5-menu {
+     z-index: 1000 !important;
+ }
+
+ .css-1cfo1cf {
+     min-width: 300px !important;
+ }
+
+ .css-hlgwow {
+     width: 300px !important;
+ }
+
+ .css-o9ehiq-loadingIndicator {
+     width: 30px !important;
+ }
+
+ .search-container {
+     position: relative;
+     display: inline-block;
+ }
+
+ .search-container input {
+     padding: 10px 32px 10px 12px;
+     border-radius: 6px;
+     border: 1px solid #ccc;
+     width: 250px;
+     background: white;
+     border-color: rgb(227, 222, 222);
+     color: black;
+ }
+
+ .search-container input:focus {}
+
+ .search-container .icon {
+     position: absolute;
+     right: 10px;
+     top: 50%;
+     transform: translateY(-50%);
+     pointer-events: none;
+     color: #888;
  }
