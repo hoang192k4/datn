@@ -14,7 +14,7 @@ import { Evaluation } from '../../../enums/Evaluation';
 import axiosTeacherInstance from '../../../config/axiosTeacher';
 import { SummaryGrade } from '../../../enums/SummaryGrade';
 
-const GradeManagement = () => {
+const GradeManagement2 = () => {
   // State management
   const [currentClassId, setCurrentClassId] = useState(null);
   const [loadListCourse, setLoadListCourse] = useState(true);
@@ -156,8 +156,8 @@ const GradeManagement = () => {
             column[typeId] = [];
           }
 
-          if (!column[typeId].some((item) => { return item.attempt === grade.attempt && item.typeName == grade.grade_type.name})) {
-            column[typeId].push({ attempt: grade.attempt, typeName: grade.grade_type.name, scoreVisibility: grade.score_visibility });
+          if (!column[typeId].some((item) => { return item.attempt === grade.attempt && item.typeName == grade.grade_type.name })) {
+            column[typeId].push({ attempt: grade.attempt, typeName: grade.grade_type.name });
           }
 
           counts[typeId] = Math.max(counts[typeId], grade.attempt);
@@ -166,7 +166,7 @@ const GradeManagement = () => {
       });
       total = total + 9;
     });
-    setGradeColumn(column);
+    console.log(column);
     setGradeTypeCounts(counts);
     setGradeTypeOrder(order);
     setTotalColumn(total);
@@ -639,9 +639,11 @@ const GradeManagement = () => {
         </section>
       )}
 
-      <GradeColumnManagerModal isOpen={isOpenModal} onClose={() => { setIsOpenModal(false) }} gradeColumn={gradeColumn} courseSectionId={currentClassId}onDelete={() => { }} onToggleVisibility={() => { }} />
+      <GradeColumnManagerModal isOpen={isOpenModal} onClose={() => { setIsOpenModal(false) }} gradeTypes={[{ id: 1, name: 'Chuyên cần', is_visible: true },
+      { id: 2, name: 'Kiểm tra', is_visible: false },
+      { id: 3, name: 'Thi', is_visible: true },]} onDelete={() => { }} onToggleVisibility={() => { }} />
     </>
   );
 };
 
-export default GradeManagement;
+export default GradeManagement2;
