@@ -1,5 +1,5 @@
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import MainLayout from "../components/layout/MainLayout";
 import LoginPage from "../pages/login/LoginPage";
 import HomePage from "../pages/home/HomePage";

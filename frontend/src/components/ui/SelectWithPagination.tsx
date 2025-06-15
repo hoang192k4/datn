@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { getCourseSectionByTeacher } from '../../services/courseSectionService'
 
@@ -7,14 +7,12 @@ const SelectWithPagination = ({ handleClassSelection }: any) => {
     const customComponents = {
         LoadingIndicator: () => null, // ẩn loading spinner
     };
-    const loadOptions = async (search, loadedOptions, { page }) => {
-
-
+    const loadOptions = async (search: any, _loadedOptions: any, { page }: { page: number } = { page: 1 }): Promise<any> => {
         try {
             const response = await getCourseSectionByTeacher(search, page);
             const data = response.data.data;
             return {
-                options: data.course_sections.map(cls => ({
+                options: data.course_sections.map((cls: any) => ({
                     label: `${cls.name} - ${cls.students_total} sinh viên`,
                     value: cls.id,
                 })),

@@ -1,7 +1,6 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { teacherLogin } from '../../services/authTeacherService';
 import './loginPage.css';
-import { Link, Navigate } from 'react-router-dom';
 import { login } from '../../store/slices/authSlice';
 import { Role } from '../../enums/Role';
 import { useForm } from 'react-hook-form';
@@ -48,7 +47,7 @@ const LoginPage = () => {
     return (
         <>
             <section className="login-section">
-                {loading && <Loadding/>}
+                {loading && <Loadding />}
                 <div className="login-card">
                     <h2>Đăng Nhập</h2>
                     <form>

@@ -3,40 +3,76 @@ import './GradeManagement.css';
 import PageHeader from '../../../components/ui/PageHeader';
 import { getCourseSectionByTeacher } from '../../../services/courseSectionService';
 import { HttpStatus } from '../../../enums/HttpStatus';
-import Loadding from '../../../components/ui/Loadding';
 import SelectWithPagination from '../../../components/ui/SelectWithPagination';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GradeColumnManagerModal from './GradeColumnManagerModal';
 import { addGradeColumnToCourseSection, createGrade, getGradeTypes, getStudentByCourseSectionId, updateGradeById, updateSummaryScore } from '../../../services/gradeStudentService';
 import Swal from 'sweetalert2';
-import { Evaluation } from '../../../enums/Evaluation';
-import axiosTeacherInstance from '../../../config/axiosTeacher';
 import { SummaryGrade } from '../../../enums/SummaryGrade';
+import { Evaluation, type EvaluationKey } from '../../../enums/Evaluation';
 
-const GradeManagement = () => {
+
+interface GradeType {
+  id: number;
+  name: string;
+}
+
+interface CourseSection {
+  id?: number;
+  name: string;
+  students: number;
+}
+
+interface Grade {
+  id: number;
+  score: number;
+  course_section_id: number;
+  student_id: number;
+  attempt: number;
+  score_visibility: number;
+  grade_type: GradeType;
+}
+interface Student {
+  id?: number | null;
+  name: string;
+  student_code: string;
+  grades?: any[];
+  summary_grade: {
+    id: number;
+    attendance_score?: number;
+    avg_score: number;
+    exam1_score?: number;
+    exam2_score?: number;
+    final_score?: number;
+    note: string;
+    evaluation: EvaluationKey;
+  };
+}
+
+interface gradeTypeCounts {
+  [typeId: number]: any;
+}
+
+
+const GradeManagement: React.FC = () => {
   // State management
-  const [currentClassId, setCurrentClassId] = useState(null);
-  const [loadListCourse, setLoadListCourse] = useState(true);
-  const [currentGradeId, setCurrentGradeId] = useState(null);
-  const [gradeTypeCounts, setGradeTypeCounts] = useState({});
-  const [gradeTypeOrder, setGradeTypeOrder] = useState([]);
-  const [studentData, setStudentData] = useState([]);
+  const [currentClassId, setCurrentClassId] = useState<number>(0);
+  const [gradeTypeCounts, setGradeTypeCounts] = useState<gradeTypeCounts>({});
+  const [gradeTypeOrder, setGradeTypeOrder] = useState<number[]>([]);
+  const [studentData, setStudentData] = useState<Student[]>([]);
   const [allClasses, setAllClasses] = useState([]);
-  const [selectedGradeType, setSelectedGradeType] = useState('');
+  const [selectedGradeType, setSelectedGradeType] = useState<string | null>('');
   const [gradeLoading, setGradeLoading] = useState(false);
-  const [editingCell, setEditingCell] = useState(null);
-  const [tempValue, setTempValue] = useState('');
+  const [editingCell, setEditingCell] = useState<string | null>(null);
+  const [tempValue, setTempValue] = useState<string | number>('');
   const [gradeTypes, setGradeTypes] = useState([]);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState('');
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
-  const [totalColumn, setTotalColumn] = useState(null);
+  const [totalColumn, setTotalColumn] = useState<number | undefined | null>(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [gradeColumn, setGradeColumn] = useState([]);
-
-
-
 
 
   // Initialize data
@@ -61,7 +97,7 @@ const GradeManagement = () => {
         setAllClasses(response.data.data.course_sections);
       }
     } catch (e) {
-
+      console.log(loading);
     } finally {
       setLoading(false);
     }
@@ -75,23 +111,14 @@ const GradeManagement = () => {
     }
   }, [editingCell]);
 
-
-  console.log(gradeTypeOrder);
-  const handleClassSelection = (classId) => {
+  const handleClassSelection = (classId: { value: string }) => {
     if (classId) {
-      console.log(classId);
       setCurrentClassId(parseInt(classId.value));
       fetchGrades(parseInt(classId.value));
     }
   };
 
-  const changeClass = (classId) => {
-    if (classId && parseInt(classId) !== currentClassId) {
-      const newClassId = parseInt(classId);
-      setCurrentClassId(newClassId);
-      fetchGrades(newClassId);
-    }
-  };
+
 
   const fetchGrades = async (courseSectionId: any) => {
     if (!courseSectionId) return;
@@ -124,7 +151,6 @@ const GradeManagement = () => {
         const students = response.data.data;
         setStudentData(students);
         prepareGradeTypeData(students);
-
       }
     } catch (e: any) {
       Swal.fire({
@@ -136,14 +162,14 @@ const GradeManagement = () => {
     }
   };
 
-  const prepareGradeTypeData = (data) => {
-    const counts = {};
-    const order = [];
-    let column = {};
+  const prepareGradeTypeData = (data: any) => {
+    const counts: any = {};
+    const order: any = [];
+    let column: any = {};
     let total: number = 0;
-    data.forEach(student => {
+    data.forEach((student: Student) => {
       student.grades?.forEach(gradeGroup => {
-        gradeGroup.forEach(grade => {
+        gradeGroup.forEach((grade: any) => {
           const typeId = grade.grade_type.id;
           if (!counts[typeId]) {
             counts[typeId] = 0;
@@ -156,7 +182,7 @@ const GradeManagement = () => {
             column[typeId] = [];
           }
 
-          if (!column[typeId].some((item) => { return item.attempt === grade.attempt && item.typeName == grade.grade_type.name})) {
+          if (!column[typeId].some((item: any) => { return item.attempt === grade.attempt && item.typeName == grade.grade_type.name })) {
             column[typeId].push({ attempt: grade.attempt, typeName: grade.grade_type.name, scoreVisibility: grade.score_visibility });
           }
 
@@ -173,12 +199,13 @@ const GradeManagement = () => {
   };
 
   const addGradeColumn = async () => {
+    console.log('selectedGradeType:', selectedGradeType);
     if (!selectedGradeType) {
       toast.warning('Vui lòng chọn loại điểm!');
       return;
     }
 
-    const typeId = parseInt(selectedGradeType);
+    const typeId: number | never = parseInt(selectedGradeType);
     const currentCount = gradeTypeCounts[typeId] || 0;
 
     setGradeTypeCounts(prev => ({
@@ -187,14 +214,16 @@ const GradeManagement = () => {
     }));
 
     if (!gradeTypeOrder.includes(typeId)) {
-      setGradeTypeOrder(prev => [...prev, typeId]);
+      setGradeTypeOrder((prev: any[]) => [...prev, typeId]);
     }
 
     try {
       const response = await addGradeColumnToCourseSection(currentClassId, typeId);
-      if (response.status === HttpStatus.SUCCESS)
+      if (response.status === HttpStatus.SUCCESS) {
         toast.success('Thêm cột điểm mới thành công');
-      fetchGradesNoLoading(currentClassId, '');
+        fetchGradesNoLoading(currentClassId, '');
+      }
+
     } catch (e) {
 
     }
@@ -202,12 +231,12 @@ const GradeManagement = () => {
   };
 
 
-  const handleCellDoubleClick = (cellType, studentId, gradeTypeId = null, attempt = null, gradeId = null, summaryId = null) => {
-    const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}-${gradeId || ''}-${summaryId || ''}`;
+  const handleCellDoubleClick = (cellType: any, studentId: any, gradeTypeId = null, attempt: number | null = null, gradeId = null, summaryId: number | null = null) => {
+    const cellKey: string = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}-${gradeId || ''}-${summaryId || ''}`;
     setEditingCell(cellKey);
-    setCurrentGradeId(gradeId);
-    let currentValue = '';
+    let currentValue: string | number = '';
     const student = studentData.find(s => s.id === studentId);
+    if (!student) return;
 
     if (cellType === 'grade' && gradeTypeId && attempt) {
       const grade = getGradeValue(student, gradeTypeId, attempt);
@@ -221,7 +250,7 @@ const GradeManagement = () => {
     setTempValue(currentValue ? currentValue.toString() : 0);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     setTempValue(e.target.value);
   };
 
@@ -229,7 +258,7 @@ const GradeManagement = () => {
     saveEditedValue();
   };
 
-  const handleInputKeyPress = (e) => {
+  const handleInputKeyPress = (e: any) => {
     if (e.key === 'Enter') {
       saveEditedValue();
     } else if (e.key === 'Escape') {
@@ -246,7 +275,7 @@ const GradeManagement = () => {
 
 
     if (cellType === 'grade') {
-      const score = parseFloat(tempValue);
+      const score = parseFloat(tempValue.toString());
       if (!isNaN(score) && score >= 0 && score <= 10) {
         updateGrade(parsedStudentId, parseInt(gradeTypeId), parseInt(attempt), tempValue, gradeId);
       }
@@ -261,7 +290,7 @@ const GradeManagement = () => {
     } else if (cellType === 'notes') {
       updateStudentNotes(parsedStudentId, tempValue);
     } else if (cellType.includes('exam') || cellType.includes('attendance')) {
-      const score = parseFloat(tempValue);
+      const score = parseFloat(tempValue.toString());
 
       if (!isNaN(score) && score >= 0 && score <= 10) {
         updateExamScore(parsedStudentId, cellType, score, summaryId);
@@ -273,7 +302,7 @@ const GradeManagement = () => {
     setTempValue('');
   };
 
-  const updateGrade = async (studentId, gradeTypeId, attempt, value, gradeId) => {
+  const updateGrade = async (studentId: any, gradeTypeId: any, attempt: any, value: any, gradeId: any) => {
     const score = parseFloat(value);
 
     if (isNaN(score) || score < 0 || score > 10) {
@@ -292,7 +321,7 @@ const GradeManagement = () => {
 
         // Find or create grade group for this type
         let gradeGroupIndex = updatedGrades.findIndex(group =>
-          group.some(g => g.grade_type.id === gradeTypeId)
+          group.some((g: Grade) => g.grade_type.id === gradeTypeId)
         );
 
         if (gradeGroupIndex === -1) {
@@ -311,7 +340,7 @@ const GradeManagement = () => {
         } else {
           gradeGroup.push({
             id: Date.now(),
-            grade_type: gradeTypes.find(t => t.id === gradeTypeId),
+            grade_type: gradeTypes.find((t: GradeType) => t.id === gradeTypeId),
             attempt,
             score
           });
@@ -349,10 +378,9 @@ const GradeManagement = () => {
     }
   };
 
-  const updateExamScore = async (studentId, examType, score, summaryId) => {
+  const updateExamScore = async (studentId: any, examType: any, score: any, summaryId: any) => {
     setStudentData(prev => prev.map(student => {
       if (student.id === studentId) {
-        console.log(student, examType, score);
         return {
           ...student,
           summary_grade: {
@@ -381,15 +409,15 @@ const GradeManagement = () => {
           toast.success("Cập nhật điểm chuyên cần thành công!");
         fetchGradesNoLoading(currentClassId, debouncedKeyword);
       }
-    } catch (e) {
-      if (e.response.status) {
+    } catch (error: any) {
+      if (error.response.status) {
         toast.error("Cập nhật điểm thất bại!");
       }
     }
   };
 
-  const updateStudentNotes = (studentId, notes) => {
-    setStudentData(prev => prev.map(student => {
+  const updateStudentNotes = (studentId: any, notes: any) => {
+    setStudentData((prev: any[]) => prev.map(student => {
       if (student.id === studentId) {
         return { ...student, notes };
       }
@@ -397,11 +425,11 @@ const GradeManagement = () => {
     }));
   };
 
-  const getGradeValue = (student, gradeTypeId, attempt) => {
+  const getGradeValue = (student: any, gradeTypeId: any, attempt: any) => {
     if (!student.grades) return {};
 
     for (const gradeGroup of student.grades) {
-      const grade = gradeGroup.find(g =>
+      const grade = gradeGroup.find((g: Grade) =>
         g.grade_type.id === gradeTypeId && g.attempt === attempt
       );
       if (grade) return grade || {};
@@ -409,16 +437,15 @@ const GradeManagement = () => {
     return {};
   };
 
-  const getSelectedClassInfo = () => {
-    return allClasses.find(c => c.id === currentClassId);
+  const getSelectedClassInfo = (): CourseSection => {
+    return allClasses.find((c: any) => c.id === currentClassId) || { name: '', students: 0 };
   };
 
   const renderTableHeaders = () => {
     const headers = ['STT', 'Họ tên', 'C. Cần'];
 
     gradeTypeOrder.forEach(typeId => {
-      console.log(typeId);
-      const gradeType = gradeTypes.find(t => t.id === typeId);
+      const gradeType: GradeType = gradeTypes.find((t: GradeType) => t.id === typeId) || { id: 0, name: '' };
       const count = gradeTypeCounts[typeId] || 0;
       for (let i = 1; i <= count; i++) {
         headers.push(`${gradeType.name} - ${i}`);
@@ -432,7 +459,7 @@ const GradeManagement = () => {
     ));
   };
 
-  const renderEditableCell = (cellType, studentId, value, gradeTypeId = null, attempt = null, gradeId = null, summaryId = null) => {
+  const renderEditableCell = (cellType: any, studentId: any, value: any, gradeTypeId: any = null, attempt: number | null = null, gradeId = null, summaryId: number | null = null) => {
     const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}-${gradeId || ''}-${summaryId || ''}`;
     const isEditing = editingCell === cellKey;
 
@@ -465,8 +492,8 @@ const GradeManagement = () => {
 
   // Add summary cells
 
-  const renderStudentRow = (student, index) => {
-    const summary = student.summary_grade || {};
+  const renderStudentRow = (student: Student, index: number) => {
+    const summary = student.summary_grade;
     const cells = [
       <td key="stt" className="gm-table-cell gm-cell-center">{index + 1}</td>,
       <td key="name" className="gm-table-cell">
@@ -478,15 +505,15 @@ const GradeManagement = () => {
         </div>
       </td>,
       <td key="attendance" className="gm-table-cell">
-        {renderEditableCell('attendance_score', student.id, summary.attendance_score, null, null, null, summary.id)}
+        {renderEditableCell('attendance_score', student.id, summary?.attendance_score, null, null, null, summary?.id)}
       </td>
     ];
 
     // Add grade input cells
-    gradeTypeOrder.forEach(typeId => {
+    gradeTypeOrder.forEach((typeId: number) => {
       const count = gradeTypeCounts[typeId] || 0;
 
-      for (let attempt = 1; attempt <= count; attempt++) {
+      for (let attempt: number | null = 1; attempt <= count; attempt++) {
         const grade = getGradeValue(student, typeId, attempt);
         cells.push(
           <td key={`${typeId}-${attempt}`} className="gm-table-cell gm-cell-center">
@@ -498,17 +525,19 @@ const GradeManagement = () => {
 
 
     cells.push(
-      <td key="avg" className="gm-table-cell gm-cell-centerl">{summary.avg_score || '-'}</td>,
+      <td key="avg" className="gm-table-cell gm-cell-centerl">{summary?.avg_score || '-'}</td>,
       <td key="exam1" className="gm-table-cell gm-cell-center">
-        {renderEditableCell('exam1_score', student.id, summary.exam1_score, null, null, null, summary.id)}
+        {renderEditableCell('exam1_score', student.id, summary?.exam1_score, null, null, null, summary?.id)}
       </td>,
       <td key="exam2" className="gm-table-cell gm-cell-center">
-        {renderEditableCell('exam2_score', student.id, summary.exam2_score, null, null, null, summary.id)}
+        {renderEditableCell('exam2_score', student.id, summary?.exam2_score, null, null, null, summary?.id)}
       </td>,
-      <td key="final" className="gm-table-cell gm-cell-center">{summary.final_score || '-'}</td>,
-      <td key="evaluation" className="gm-table-cell gm-cell-center">{Evaluation[summary.evaluation] || '-'}</td>,
+      <td key="final" className="gm-table-cell gm-cell-center">{summary?.final_score || '-'}</td>,
+      <td key="evaluation" className="gm-table-cell gm-cell-center">
+        {Evaluation[summary.evaluation]}
+      </td>,
       <td key="notes" className="gm-table-cell">
-        {renderEditableCell('notes', student.id, summary.note)}
+        {renderEditableCell('notes', student.id, summary?.note)}
       </td>
     );
 
@@ -566,7 +595,6 @@ const GradeManagement = () => {
         <section className="gm-grade-section">
           <div className="gm-grade-header">
             <div className="gm-selected-class-info">
-              <div className="gm-class-badge">{getSelectedClassInfo()?.code}</div>
               <div className="gm-class-details">
                 <h3>{getSelectedClassInfo()?.name}</h3>
                 <p>{getSelectedClassInfo()?.students} sinh viên</p>
@@ -588,7 +616,7 @@ const GradeManagement = () => {
                 style={{ minWidth: '180px' }}
               >
                 <option value="">-- Chọn loại điểm --</option>
-                {gradeTypes.map(type => (
+                {gradeTypes.map((type: GradeType) => (
                   <option key={type.id} value={type.id}>{type.name}</option>
                 ))}
               </select>
@@ -627,11 +655,11 @@ const GradeManagement = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {studentData.length > 0 ? (studentData.map((student, index) => (
+                  {studentData.length > 0 ? (studentData.map((student: Student, index) => (
                     <tr key={student.id}>
                       {renderStudentRow(student, index)}
                     </tr>
-                  ))) : (<tr style={{ width: "100%", textAlign: 'center', gridColumn: 1 / -1 }} > <td colSpan={totalColumn}>Không tìm thấy sinh viên phù hợp</td> </tr>)}
+                  ))) : (<tr style={{ width: "100%", textAlign: 'center', gridColumn: 1 / -1 }} > <td colSpan={totalColumn ?? undefined}>Không tìm thấy sinh viên phù hợp</td> </tr>)}
                 </tbody>
               </table>
             )}
@@ -639,7 +667,7 @@ const GradeManagement = () => {
         </section>
       )}
 
-      <GradeColumnManagerModal isOpen={isOpenModal} onClose={() => { setIsOpenModal(false) }} gradeColumn={gradeColumn} courseSectionId={currentClassId}onDelete={() => { }} onToggleVisibility={() => { }} />
+      <GradeColumnManagerModal isOpen={isOpenModal} onClose={() => { setIsOpenModal(false) }} gradeColumn={gradeColumn} courseSectionId={currentClassId} fetchGradesNoLoading={() => fetchGradesNoLoading(currentClassId)} />
     </>
   );
 };

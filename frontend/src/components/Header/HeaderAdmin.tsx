@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loadding from '../ui/Loadding';
 const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
-    const [showModal, setShowModal] = useState(false);
     const [loadingLogout, setLoadingLogout] = useState(false);
     const toggleUserDropdown = () => {
         const dropdown = document.getElementById('userDropdown');
