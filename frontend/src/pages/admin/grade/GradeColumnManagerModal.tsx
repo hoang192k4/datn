@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 import { PublicStatus } from '../../../enums/PublicStatus';
+import { deleteGradeColumn } from '../../../services/gradeStudentService';
+import { ToastContainer, toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 interface GradeItem {
     attempt: number;
@@ -14,21 +18,56 @@ interface Props {
     isOpen: boolean;
     onClose: () => void;
     gradeColumn: GradeColumn;
-    onToggleVisibility: (id: number) => void;
-    onDelete: (id: number) => void;
-    courseSectionId: number;
+    courseSectionId: number | null;
+    fetchGradesNoLoading: () => void,
 }
 
 const GradeColumnManagerModal: React.FC<Props> = ({
     isOpen,
     onClose,
     gradeColumn,
-    onToggleVisibility,
-    onDelete,
     courseSectionId,
+    fetchGradesNoLoading,
 }) => {
 
+    const [gradeColumnManage, setGradeColumnManage] = useState<GradeColumn>({});
+    useEffect(() => {
+        setGradeColumnManage(gradeColumn);
+    }, [gradeColumn])
+
+    const handleDelete = (gradeTypeId: any, attempt: any) => {
+
+        Swal.fire({
+            title: "Bạn chắc chắn xóa cột điểm này?",
+            text: "Bạn sẽ không thể khôi phục điểm sau khi đã xóa!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Vâng, hãy xóa!",
+            cancelButtonText: "Hủy"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await deleteGradeColumn(courseSectionId, gradeTypeId, attempt);
+                    if (response.status) {
+                        toast.success('Xóa cột điểm thành công!');
+                        setGradeColumnManage(prev => ({
+                            ...prev,
+                            [gradeTypeId]: prev[gradeTypeId].filter(item => item.attempt !== attempt)
+                        }
+                        ));
+                        fetchGradesNoLoading();
+                    }
+                } catch (error) {
+                }
+            }
+        });
+
+
+    }
     return (
+
         <div
             className={`modal fade ${isOpen ? 'show d-block' : ''}`}
             tabIndex={-1}
@@ -51,13 +90,13 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                                 </tr>
                             </thead>
                             <tbody>
-                                {Object.entries(gradeColumn).map(([typeId, items]) => (
+                                {Object.entries(gradeColumnManage).map(([gradeTypeId, items]) => (
                                     items.map((column: any, index: number) => {
                                         return <tr key={index}>
                                             <td>{column.typeName} - {column.attempt}</td>
                                             <td className="text-center">
                                                 <button
-                                                    onClick={() => onToggleVisibility(column.id)}
+                                                    onClick={() => { }}
                                                     className={`btn btn-sm ${column.scoreVisibility ? 'btn-success' : 'btn-secondary'
                                                         }`}
                                                 >
@@ -66,7 +105,7 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                                             </td>
                                             <td className="text-center">
                                                 <button
-                                                    onClick={() => onDelete(column.id)}
+                                                    onClick={() => handleDelete(gradeTypeId, column.attempt)}
                                                     className="btn btn-sm btn-danger"
                                                 >
                                                     Xóa
@@ -85,6 +124,7 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

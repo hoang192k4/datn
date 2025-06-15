@@ -73,14 +73,6 @@
      border-color: #eaeaed;
  }
 
- .gm-grade-section {
-     display: $ {
-         currentClassId ? 'block': 'none'
-     }
-
-     ;
-     animation: fadeInUp 0.6s ease;
- }
 
  .gm-grade-header {
      background: white;
@@ -232,7 +224,6 @@
      background: #f8f9ff;
  }
 
- .gm-grade-table tr:last-child td {}
 
  .gm-student-info {
      display: flex;
@@ -316,46 +307,6 @@
      margin-bottom: 10px;
  }
 
- .gm-api-status {
-     position: fixed;
-     top: 20px;
-     right: 20px;
-     padding: 10px 15px;
-     border-radius: 8px;
-     font-size: 0.85rem;
-     font-weight: 500;
-     z-index: 1100;
-
-     display: $ {
-         apiStatus.show ? 'block': 'none'
-     }
-
-     ;
-
-     background: $ {
-         apiStatus.isSuccess ? '#d4edda': '#f8d7da'
-     }
-
-     ;
-
-     color: $ {
-         apiStatus.isSuccess ? '#155724': '#721c24'
-     }
-
-     ;
-
-     border: 1px solid $ {
-         apiStatus.isSuccess ? '#c3e6cb': '#f1b0b7'
-     }
-
-     ;
-
-     animation: $ {
-         apiStatus.show ? 'slideInRight 0.3s ease': 'none'
-     }
-
-     ;
- }
 
  @keyframes spin {
      0% {
@@ -766,7 +717,6 @@
      color: black;
  }
 
- .search-container input:focus {}
 
  .search-container .icon {
      position: absolute;
