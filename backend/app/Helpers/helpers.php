@@ -66,3 +66,10 @@ if (!function_exists('getCurrentUserId')) {
     }
 }
 
+
+if (!function_exists('formatScore')) {
+    function formatScore($score)
+    {
+        return rtrim(rtrim(number_format($score, 2, '.', ''), '0'), '.');
+    }
+}

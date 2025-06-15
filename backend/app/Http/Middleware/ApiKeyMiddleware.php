@@ -22,7 +22,7 @@ class ApiKeyMiddleware
         // Bạn có thể so sánh hardcode, config, hoặc DB
         $validKey = config('services.api.key'); // ví dụ đọc từ config
         if ($apiKey !== $validKey) {
-            return $this->jsonResponseError('Bạn không có quyền truy cập hệ thống!', 401);
+            return $this->jsonResponseError('Bạn không có quyền truy cập hệ thống!', 403);
         }
 
         return $next($request);

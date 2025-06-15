@@ -12,6 +12,7 @@ import { addGradeColumnToCourseSection, createGrade, getGradeTypes, getStudentBy
 import Swal from 'sweetalert2';
 import { Evaluation } from '../../../enums/Evaluation';
 import axiosTeacherInstance from '../../../config/axiosTeacher';
+import { SummaryGrade } from '../../../enums/SummaryGrade';
 
 const GradeManagement = () => {
   // State management
@@ -23,9 +24,7 @@ const GradeManagement = () => {
   const [studentData, setStudentData] = useState([]);
   const [allClasses, setAllClasses] = useState([]);
   const [selectedGradeType, setSelectedGradeType] = useState('');
-  const [classLoading, setClassLoading] = useState(false);
   const [gradeLoading, setGradeLoading] = useState(false);
-  const [apiStatus, setApiStatus] = useState({ show: false, message: '', isSuccess: true });
   const [editingCell, setEditingCell] = useState(null);
   const [tempValue, setTempValue] = useState('');
   const [gradeTypes, setGradeTypes] = useState([]);
@@ -162,7 +161,7 @@ const GradeManagement = () => {
 
   const addGradeColumn = async () => {
     if (!selectedGradeType) {
-      showApiStatus('Vui lòng chọn loại điểm!', false);
+      toast.warning('Vui lòng chọn loại điểm!');
       return;
     }
 
@@ -181,7 +180,8 @@ const GradeManagement = () => {
     try {
       const response = await addGradeColumnToCourseSection(currentClassId, typeId);
       if (response.status === HttpStatus.SUCCESS)
-        fetchGradesNoLoading(currentClassId, '');
+        toast.success('Thêm cột điểm mới thành công');
+      fetchGradesNoLoading(currentClassId, '');
     } catch (e) {
 
     }
@@ -348,8 +348,6 @@ const GradeManagement = () => {
           }
         };
       }
-
-      console.log('sau update', student);
       return student;
     }));
     if (score > 10 || score < 0) {
@@ -362,7 +360,12 @@ const GradeManagement = () => {
     try {
       const response = await updateSummaryScore(summaryId, examType, score);
       if (response.status === HttpStatus.SUCCESS) {
-        toast.success("Cập nhật điểm thi thành công!");
+        if (examType === SummaryGrade.EXAM1_SCORE)
+          toast.success("Cập nhật điểm thi lần 1 thành công!");
+        if (examType === SummaryGrade.EXAM2_SCORE)
+          toast.success("Cập nhật điểm thi lần 2 thành công!");
+        if (examType === SummaryGrade.ATTENDANCE_SCORE)
+          toast.success("Cập nhật điểm chuyên cần thành công!");
         fetchGradesNoLoading(currentClassId, debouncedKeyword);
       }
     } catch (e) {
@@ -500,6 +503,7 @@ const GradeManagement = () => {
   };
 
   useEffect(() => {
+    if (currentClassId == null) return;
     if (!debouncedKeyword || debouncedKeyword.trim() === '') {
       setDebouncedKeyword('');
     }

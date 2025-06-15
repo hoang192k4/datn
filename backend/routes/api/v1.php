@@ -28,17 +28,17 @@ Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
 Route::controller(App\Http\Controllers\Grade\GradeController::class)
     ->prefix('grades')
     ->group(function () {
-        Route::get('/', 'getGradesByCourseSection');
-        Route::post('/grade-column', 'createGradeColumn');
-        Route::post('/', 'create');
-        Route::put('/{id}', 'updateOrCreateGrade');
-        Route::get('/calculate', 'calculate');
+        Route::get('/', 'getGradesByCourseSection'); //api lấy danh sách sinh viên và điểm
+        Route::post('/grade-column', 'createGradeColumn'); //api tạo cột điểm mới (tạo nhiều điểm cùng loại và số lần)
+        Route::post('/', 'create'); // api tạo điểm mới
+        Route::put('/{id}', 'updateOrCreateGrade'); //api cập nhật điểm
+        Route::delete('/', 'deleteGradeColumn'); //api xóa cột điểm (xóa tất cả điểm trong cột)
     });
 
 Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::class)
     ->prefix('summary-grades')
     ->group(function () {
-        Route::put('/{id}', 'update');
+        Route::put('/{id}', 'update'); //api cập nhật điểm trong summary (cập nhật c.cần, điểm thi)
     });
 
 
@@ -54,7 +54,7 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
 Route::controller(App\Http\Controllers\DeviceToken\DeviceTokenController::class)
     ->prefix('device-token')
     ->group(function () {
-        Route::post('/', 'update');
+        Route::post('/', 'update'); //api cập nhật device-token khi người dùng truy cập hệ thống
     });
 
 
@@ -62,39 +62,38 @@ Route::controller(App\Http\Controllers\DeviceToken\DeviceTokenController::class)
 Route::controller(App\Http\Controllers\Notification\NotificationController::class)
     ->prefix('notifications')
     ->group(function () {
-        Route::post('/', 'sendNotifications');
-        Route::post('/send-to-course-section', 'sendNotificationToCourseSection');
-        Route::post('/send-test', 'sendNotification');
-        Route::get('/', 'getMyNotifications');
+        Route::post('/', 'sendNotifications'); //api gửi thông báo
+        Route::post('/send-to-course-section', 'sendNotificationToCourseSection'); //api gửi thông báo đến lớp
+        Route::get('/', 'getMyNotifications'); //api lấy danh sách thông báo theo người dùng đăng nhập
     });
 
 Route::controller(App\Http\Controllers\Notification\StudentNotificationController::class)
     ->prefix('feedbacks')
     ->group(function () {
-        Route::post('/', 'sendFeedbackToTeacher');
+        Route::post('/', 'sendFeedbackToTeacher'); //api gửi fb của sinh viên
     });
 
 Route::controller(App\Http\Controllers\Post\PostController::class)
     ->prefix('posts')
     ->group(function () {
-        Route::get('/', 'getPostByTeacherSlug');
+        Route::get('/', 'getPostByTeacherSlug'); //api lấy danh sách thông báo post theo slug teacher
     });
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')
     ->group(function () {
-        Route::get('/me', 'me');
-        Route::post('/refresh', 'refresh');
+        Route::get('/me', 'me'); //api lấy thông tin cá nhân
+        Route::post('/refresh', 'refresh'); //api lấy access và refresh token mới
     });
 
 
 Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::class)
     ->prefix('course-sections')
     ->group(function () {
-        Route::get('/', 'getCourseSectionByTeacher');
+        Route::get('/', 'getCourseSectionByTeacher'); //api lấy dánh sách lớp học phần theo teacher đăng nhập
     });
 
 Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)
     ->prefix('grade-types')
     ->group(function () {
-        Route::get('/', 'index');
+        Route::get('/', 'index'); //api lấy danh sách loại điểm
     });

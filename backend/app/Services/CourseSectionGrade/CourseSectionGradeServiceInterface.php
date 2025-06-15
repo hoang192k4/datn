@@ -8,4 +8,5 @@ interface CourseSectionGradeServiceInterface
 {
     public function getGradesByStudentAndCourseSection(Request $request);
     public function addGradeColumn(Request $request);
+    public function deleteGradeColumn(Request $request):bool;
 }

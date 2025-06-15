@@ -111,7 +111,7 @@ class SummaryGradeService implements SummaryGradeServiceInterface
 
     protected function evaluateAcademicResult($finalScore, $exam1Score, $exam2Score): string
     {
-        if ($finalScore < 5 && $exam1Score && is_null($exam2Score))
+        if (($finalScore < 5 && $exam1Score && is_null($exam2Score)) || $exam1Score < 1)
             return SummayryGradeEvaluation::RETEST;
         if ($finalScore < 5 && $exam2Score)
             return SummayryGradeEvaluation::LEARNAGAIN;
