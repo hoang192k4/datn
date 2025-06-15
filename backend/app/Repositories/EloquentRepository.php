@@ -180,4 +180,12 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         }
         return $limit ? $query->paginate($limit, ['*'], 'page', $page ?? 1)->appends(['limit' => $limit]) : $query->get();
     }
+
+    /**
+     * tìm theo điều kiện nếu không có record theo điều kiện thì tạo bản ghi mới
+     */
+    public function firstOrCreate(array $conditions)
+    {
+        return $this->model->firstOrCreate($conditions);
+    }
 }
