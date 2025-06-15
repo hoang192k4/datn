@@ -23,15 +23,17 @@ const AppRoutes = () => {
         <Routes>
             {/* Route public */}
             <Route element={<MainLayout />}>
+                <Route path="/:slug" element={<TeacherPage />} />
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dang-nhap" element={isAuthencation && role === null ? <Navigate to="/sinh-vien" replace /> :
                     isAuthencation && role !== null ? <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> : < LoginPage />} />
-                <Route path="/lehuvinh" element={<TeacherPage />} />
+
                 <Route path="/tai-lieu" element={<DocumentPage />} />
                 <Route path="/lop-hoc" element={<ClassPage />} />
                 <Route path="/thoi-khoa-bieu" element={<SchedulePage />} />
                 <Route path="/diem" element={<GradePage />} />
                 <Route path="/diem-danh" element={<AttendancePage />} />
+
             </Route>
 
             {/* Route dành cho sinh viên */}

@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
 if (!function_exists('format_datetime')) {
-    function format_datetime($datetime, $format = 'd-m-Y H:i')
+    function format_datetime($datetime, $format = 'Y-m-d H:i')
     {
         return Carbon::parse($datetime)->format($format);
     }
@@ -14,7 +14,7 @@ if (!function_exists('format_datetime')) {
 
 
 if (!function_exists('format_date')) {
-    function format_date($datetime, $format = 'd-m-Y')
+    function format_date($datetime, $format = 'Y-m-d')
     {
         return Carbon::parse($datetime)->format($format);
     }
@@ -66,3 +66,10 @@ if (!function_exists('getCurrentUserId')) {
     }
 }
 
+
+if (!function_exists('formatScore')) {
+    function formatScore($score)
+    {
+        return rtrim(rtrim(number_format($score, 2, '.', ''), '0'), '.');
+    }
+}

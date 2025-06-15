@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ClassRoom extends Model
 {
     //
+    protected $table = 'classrooms';
     use HasFactory;
 }

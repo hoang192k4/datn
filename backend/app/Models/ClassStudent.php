@@ -11,6 +11,8 @@ class ClassStudent extends Model
 {
     //
     use HasFactory;
+
+    protected $table = 'classes';
     protected function casts():array
     {
         return [

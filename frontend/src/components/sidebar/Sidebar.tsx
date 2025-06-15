@@ -8,9 +8,9 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         { icon: "📊", url: "#", label: "Dashboard" },
         { icon: "👥", url: "#", label: "Danh Sách Sinh Viên" },
         { icon: "📚", url: "lop-hoc", label: "Lớp Học" },
-        { icon: "📝", url: "#", label: "Quản Lý Điểm" },
+        { icon: "📝", url: "diem", label: "Quản Lý Điểm" },
         { icon: "📅", url: "#", label: "Thời Khóa Biểu" },
-        { icon: "📢", url: "#", label: "Thông Báo" },
+        { icon: "📢", url: "thong-bao", label: "Thông Báo" },
         { icon: "📁", url: "#", label: "Tài Liệu" },
     ];
     return (

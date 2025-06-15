@@ -13,7 +13,7 @@ class GradeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'score' => $this->score,
+            'score' => formatScore($this->score),
             'score_visibility' => $this->score_visibility,
             'attempt' => $this->attempt,
             'grade_type' => new GradeTypeResource($this->grade_type),

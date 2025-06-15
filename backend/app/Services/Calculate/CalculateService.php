@@ -3,6 +3,7 @@
 namespace App\Services\Calculate;
 
 use App\Enums\GradeWeight;
+use App\Models\Student;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface;
 use App\Supports\Log;
@@ -25,11 +26,9 @@ class CalculateService implements CalculateServiceInterface
     {
         $totalWeights = 0;
         $totalScore = 0;
-        $this->logInfo($student);
         $grades = $student->grades->where('course_section_id', $courseSectionId);
 
         foreach ($grades as $grade) {
-            $this->logInfo($grade);
             $totalScore += $grade->score * $grade->grade_type->weight;
             $totalWeights += $grade->grade_type->weight;
         }
@@ -45,5 +44,8 @@ class CalculateService implements CalculateServiceInterface
         return $finalScore ?? 0;
     }
 
-    public function calculateAttendanceScore() {}
+    public function calculateAttendanceScore(Student $student, $courseSectionId): int
+    {
+        return 0;
+    }
 }

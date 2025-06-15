@@ -2,6 +2,8 @@ import Class from "../pages/admin/class/Class";
 import Dashboard from "../pages/admin/dashboard/dashboard"
 import ChangePasswrod from "../pages/admin/profile/ChangePassword";
 import TeacherProfile from "../pages/admin/profile/TeacherProfile";
+import Grade from "../pages/admin/grade/GradeManagement";
+import NotificationPage from "../pages/Notification/NotificationPage";
 
 export const TeacherRoute = [
     {
@@ -25,4 +27,12 @@ export const TeacherRoute = [
         'element': <ChangePasswrod />,
     },
 
+    {
+        'path': 'thong-bao',
+        'element': <NotificationPage />
+    },
+    {
+        'path': 'diem',
+        'element': <Grade />
+    },
 ];
