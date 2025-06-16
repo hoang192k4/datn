@@ -13,4 +13,13 @@ class GradeColumnRequest extends BaseRequest
             'grade_type_id' => 'exists:grade_types,id|required',
         ];
     }
+
+    public function methodDelete()
+    {
+        return [
+            'course_section_id' => 'required|exists:course_sections,id|integer',
+            'grade_type_id' => 'required|exists:grade_types,id|integer',
+            'attempt' => 'integer|required'
+        ];
+    }
 }

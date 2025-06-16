@@ -33,11 +33,14 @@ class SummaryGradeService implements SummaryGradeServiceInterface
         $this->summaryGradeRepository = $summaryGradeRepository;
     }
 
+    //cập nhật điểm trung bình kiểm tra, điểm tổng kết, đánh giá
     public function updateSummaryGrade($studentId, $courseSectionId)
     {
         try {
             $student = $this->studentRepository->findOrFailById($studentId);
+            //tính điểm trung bình kiểm tra
             $avgScore = $this->calculateService->calculateAverageExam($student, $courseSectionId);
+
             $summaryGrade = $this->summaryGradeRepository->updateOrCreate(['student_id' => $student->id, 'course_section_id' => $courseSectionId], ['avg_score' => $avgScore]);
             $finalScore = $this->calculateService->calculateFinalScore($summaryGrade);
             $summaryGrade->final_score = $finalScore;
@@ -64,6 +67,8 @@ class SummaryGradeService implements SummaryGradeServiceInterface
         }
     }
 
+
+    //cập nhật điểm thi, chuyên cần
     public function update(Request $request, SummaryGrade $instance): object|bool
     {
         DB::beginTransaction();
@@ -96,6 +101,23 @@ class SummaryGradeService implements SummaryGradeServiceInterface
         }
     }
 
+    public function updateAttendanceSore($courseSectionId, $studentId, $attendanceScore): object|bool
+    {
+        try {
+            $student = $this->studentRepository->findOrFailById($studentId);
+            $summaryGrade = $this->summaryGradeRepository->firstOrCreate(['student_id' => $student->id, 'course_section_id' => $courseSectionId]);
+            $summaryGrade->attendance_score = $attendanceScore;
+            $finalScore = $this->calculateService->calculateFinalScore($summaryGrade);
+            $summaryGrade->final_score = $finalScore;
+            $summaryGrade->evaluation = $this->getEvaluation($finalScore);
+            $summaryGrade->save();
+            return true;
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
     protected function getEvaluation($score)
     {
         if ($score <= 10 && $score >= 9)
@@ -111,7 +133,7 @@ class SummaryGradeService implements SummaryGradeServiceInterface
 
     protected function evaluateAcademicResult($finalScore, $exam1Score, $exam2Score): string
     {
-        if ($finalScore < 5 && $exam1Score && is_null($exam2Score))
+        if (($finalScore < 5 && $exam1Score && is_null($exam2Score)) || $exam1Score < 1)
             return SummayryGradeEvaluation::RETEST;
         if ($finalScore < 5 && $exam2Score)
             return SummayryGradeEvaluation::LEARNAGAIN;

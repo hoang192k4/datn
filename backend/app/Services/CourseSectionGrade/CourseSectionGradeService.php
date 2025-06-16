@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Repositories\Grade\GradeRepositoryInterface;
 use App\Repositories\CourseSectionGrade\CourseSectionGradeRepositoryInterface;
+use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use App\Supports\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -14,24 +15,35 @@ class CourseSectionGradeService implements CourseSectionGradeServiceInterface
     use Log;
     protected $repository;
     protected $gradeRepository;
+    protected $summaryGradeService;
     public function __construct(
         CourseSectionGradeRepositoryInterface $repository,
-        GradeRepositoryInterface $gradeRepository
+        GradeRepositoryInterface $gradeRepository,
+        SummaryGradeServiceInterface $summaryGradeService,
     ) {
         $this->repository = $repository;
         $this->gradeRepository = $gradeRepository;
+        $this->summaryGradeService = $summaryGradeService;
     }
 
     public function getGradesByStudentAndcourseSection(Request $request)
     {
         $id = $request->validated()['course_section_id'];
+        $key = $request->validated()['key'] ?? '';
         $courseSection = $this->repository->findWithRelation($id, ['students', 'grades']);
-        return $courseSection->students ?? false;
+        return $courseSection->students()
+            ->where(function ($query) use ($key) {
+                $query->where('student_code', 'like', "%$key%")
+                    ->orWhere('name', 'like', "%$key%");
+            })
+            ->distinct()
+            ->get();
     }
 
 
     public function addGradeColumn(Request $request)
     {
+
         DB::beginTransaction();
         try {
             $data = $request->validated();
@@ -60,4 +72,36 @@ class CourseSectionGradeService implements CourseSectionGradeServiceInterface
             return false;
         }
     }
+
+
+    public function deleteGradeColumn(Request $request): bool
+    {
+        DB::beginTransaction();
+        try {
+            $data = $request->validated();
+            $courseSectionId = $data['course_section_id'];
+            $gradeTypeId = $data['grade_type_id'];
+            $attempt = $data['attempt'];
+
+            $isDeleted = $this->repository->deleteGradeColumn($courseSectionId, $gradeTypeId, $attempt);
+            if (!$isDeleted) {
+                DB::rollBack();
+                return false;
+            }
+
+            $isSummaryGradeUpdated = $this->summaryGradeService->updateSummaryGrades($courseSectionId);
+            if (!$isSummaryGradeUpdated) {
+                DB::rollBack();
+                return false;
+            }
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
+    public function exportGrade() {}
 }

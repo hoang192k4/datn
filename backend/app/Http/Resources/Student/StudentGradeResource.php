@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Student;
 
 use App\Http\Resources\Grade\GradeResource;
+use App\Http\Resources\SummaryGrade\SummaryGradeResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
@@ -14,7 +15,9 @@ class StudentGradeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'student_code' => $this->student_code,
             'grades' => $this->grades
+                ->sortBy('grade_type_id')
                 ->groupBy('grade_type_id')
                 ->map(function (Collection $grades) {
                     return $grades->where('course_section_id', request()->get('course_section_id'))
@@ -23,7 +26,7 @@ class StudentGradeResource extends JsonResource
                         ->map(fn($grade) => new GradeResource($grade));
                 })
                 ->toArray(),
-            'summary_grade' => $this->summary_grades->where('course_section_id', request()->get('course_section_id'))->first(),
+            'summary_grade' => new SummaryGradeResource($this->summary_grades->where('course_section_id', request()->get('course_section_id'))->first()),
         ];
     }
 }

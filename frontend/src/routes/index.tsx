@@ -1,5 +1,5 @@
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import MainLayout from "../components/layout/MainLayout";
 import LoginPage from "../pages/login/LoginPage";
 import HomePage from "../pages/home/HomePage";
@@ -23,15 +23,17 @@ const AppRoutes = () => {
         <Routes>
             {/* Route public */}
             <Route element={<MainLayout />}>
+                <Route path="/:slug" element={<TeacherPage />} />
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dang-nhap" element={isAuthencation && role === null ? <Navigate to="/sinh-vien" replace /> :
                     isAuthencation && role !== null ? <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> : < LoginPage />} />
-                <Route path="/lehuvinh" element={<TeacherPage />} />
+
                 <Route path="/tai-lieu" element={<DocumentPage />} />
                 <Route path="/lop-hoc" element={<ClassPage />} />
                 <Route path="/thoi-khoa-bieu" element={<SchedulePage />} />
                 <Route path="/diem" element={<GradePage />} />
                 <Route path="/diem-danh" element={<AttendancePage />} />
+
             </Route>
 
             {/* Route dành cho sinh viên */}

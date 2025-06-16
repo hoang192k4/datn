@@ -99,5 +99,17 @@ class GradeController extends BaseController
         }
     }
 
+    public function deleteGradeColumn(GradeColumnRequest $request)
+    {
+        try {
+            $response = $this->service->deleteGradeColumn($request);
+            if (!$response)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccess();
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
     public function updateExamScore() {}
 }

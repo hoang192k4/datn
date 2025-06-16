@@ -1,7 +1,10 @@
+import { useParams } from "react-router-dom";
 import BoxItem from "../../components/ui/BoxItem";
 import NotificationItem from "../../components/ui/NotificationItem"
 import './TeacherPage.css';
 const TeacherPage = () => {
+    const { slug }: any = useParams();
+    console.log(slug);
     const demoThongBao = [
         {
             title: 'giáo trình c',

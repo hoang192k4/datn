@@ -24,7 +24,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             setLoadingLogout(true);
             const data = await teacherLogout();
             if (data.status === HttpStatus.SUCCESS) {
-                navigate("/dang-nhap",{replace: true});
+                navigate("/dang-nhap", { replace: true });
                 dispatch(logout());
             }
         } catch (errors) {
@@ -35,7 +35,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     }
     return (
         <header>
-            {loadingLogout && <Loadding/>}
+            {loadingLogout && <Loadding />}
             <nav className="navbar">
                 <button className="mobile-toggle" onClick={toggleSidebar}>☰</button>
                 <div className="logo"><Link to="dashboard">Khoa Công Nghệ Thông Tin</Link></div>
@@ -52,26 +52,29 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                                 <div className="dropdown-email">{user && user.email}</div>
                             </div>
                             <div className="dropdown-menu">
+
                                 <Link to="thong-tin-ca-nhan" className="dropdown-item" >
                                     <span className="dropdown-item-icon">👤</span>
                                     Thông tin cá nhân
                                 </Link>
                                 <Link to="doi-mat-khau" className="dropdown-item">
                                     <span className="dropdown-item-icon">🔑</span>
+
                                     Đổi mật khẩu
                                 </Link>
+
                                 <div className="dropdown-divider"></div>
                                 <Link to="#" className="dropdown-item" onClick={handleLogout}>
                                     <span className="dropdown-item-icon">🚪</span>
                                     Đăng xuất
                                 </Link>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </nav>
-
-        </header>
+        </header >
 
 
 

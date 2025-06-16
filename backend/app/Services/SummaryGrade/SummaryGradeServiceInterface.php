@@ -11,4 +11,5 @@ interface SummaryGradeServiceInterface
     public function updateSummaryGrade($studentId, $courseSectionId);
     public function updateSummaryGrades($courseSectionId);
     public function update(Request $request, SummaryGrade $instance): object|bool;
+    public function updateAttendanceSore($courseSectionId, $studentId, $attendanceScore): object|bool;
 }

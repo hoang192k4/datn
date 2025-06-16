@@ -1,0 +1,728 @@
+ .gm-page-header {
+     margin-bottom: 30px;
+ }
+
+ .gm-page-title {
+     font-size: 2rem;
+     font-weight: 700;
+     color: #333;
+     margin-bottom: 8px;
+ }
+
+ .gm-page-subtitle {
+     color: #666;
+     font-size: 1rem;
+ }
+
+ .gm-class-selection {
+     background: white;
+     border-radius: 15px;
+     padding: 30px;
+     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+     border: 1px solid #f0f0f0;
+     margin-bottom: 30px;
+     text-align: center;
+ }
+
+ .gm-selection-icon {
+     font-size: 4rem;
+     margin-bottom: 20px;
+     color: #667eea;
+ }
+
+ .gm-selection-title {
+     font-size: 1.5rem;
+     font-weight: 600;
+     margin-bottom: 10px;
+ }
+
+ .gm-selection-subtitle {
+     color: #666;
+     margin-bottom: 25px;
+ }
+
+ .gm-class-select {
+     position: relative;
+     display: inline-block;
+     min-width: 300px;
+ }
+
+ .gm-select-dropdown {
+     width: 100%;
+     padding: 15px 20px;
+     border: 2px solid #e9ecef;
+     border-radius: 12px;
+     font-size: 1rem;
+     background: white;
+     cursor: pointer;
+     appearance: none;
+     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+     background-position: right 12px center;
+     background-repeat: no-repeat;
+     background-size: 16px;
+     transition: all 0.3s ease;
+ }
+
+ .gm-select-dropdown:focus {
+     outline: none;
+     border-color: #d5d7df;
+     box-shadow: 0 0 0 3px rgba(235, 235, 239, 0.1);
+ }
+
+ .gm-select-dropdown:hover {
+     border-color: #eaeaed;
+ }
+
+
+ .gm-grade-header {
+     background: white;
+     border-radius: 15px 15px 0 0;
+     padding: 25px 30px;
+     border: 1px solid #e9ecef;
+     border-bottom: none;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     flex-wrap: wrap;
+     gap: 20px;
+ }
+
+ .gm-selected-class-info {
+     display: flex;
+     align-items: center;
+     gap: 15px;
+ }
+
+ .gm-class-badge {
+     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+     color: white;
+     padding: 8px 16px;
+     border-radius: 20px;
+     font-weight: 600;
+     font-size: 0.9rem;
+ }
+
+ .gm-class-details h3 {
+     color: #333;
+     margin-bottom: 5px;
+ }
+
+ .gm-class-details p {
+     color: #666;
+     font-size: 0.9rem;
+ }
+
+ .gm-grade-actions {
+     display: flex;
+     gap: 10px;
+     flex-wrap: wrap;
+
+ }
+
+ .gm-grade-controls {
+     background: #f8f9ff;
+     padding: 20px 30px;
+     border: 1px solid #e9ecef;
+     border-top: none;
+     border-bottom: none;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     flex-wrap: wrap;
+     gap: 15px;
+ }
+
+ .gm-control-group {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+ }
+
+ .gm-control-label {
+     font-weight: 600;
+     color: #333;
+     font-size: 0.9rem;
+ }
+
+ .gm-btn {
+     padding: 0px 10px;
+     border: none;
+     border-radius: 8px;
+     cursor: pointer;
+     font-weight: 500;
+     transition: all 0.3s ease;
+     text-decoration: none;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 0.9rem;
+ }
+
+ .gm-btn-primary {
+     background: linear-gradient(135deg, #3b4d99 0%, #2d3a7a 100%);
+     color: white;
+ }
+
+ .gm-btn-primary:hover {
+     background: linear-gradient(135deg, #2d3a7a 0%, #1e2a5a 100%);
+     transform: translateY(-2px);
+     box-shadow: 0 5px 15px rgba(59, 77, 153, 0.3);
+ }
+
+ .gm-btn-secondary {
+     background: #f8f9fa;
+     color: #495057;
+     border: 1px solid #dee2e6;
+ }
+
+ .gm-btn-secondary:hover {
+     background: #e9ecef;
+ }
+
+ .gm-table-container {
+     background: white;
+     border-radius: 0 0 15px 15px;
+     overflow: hidden;
+     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+     border: 1px solid #e9ecef;
+     border-top: none;
+     overflow-x: auto;
+ }
+
+ .gm-grade-table {
+     width: 100%;
+     border-collapse: collapse;
+ }
+
+ .gm-table-header {
+     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+     padding: 12px 8px;
+     text-align: center;
+     font-weight: 600;
+     color: #495057;
+     border-bottom: 2px solid #dee2e6;
+     border-right: 1px solid #dee2e6;
+     position: sticky;
+     top: 0;
+     z-index: 10;
+     font-size: 0.85rem;
+     white-space: nowrap;
+ }
+
+ .gm-table-cell {
+     padding: 10px 8px;
+     border-bottom: 1px solid #f0f0f0;
+     border-right: 1px solid #f0f0f0;
+     vertical-align: middle;
+ }
+
+ .gm-cell-center {
+     text-align: center;
+ }
+
+ .gm-grade-table tr:hover {
+     background: #f8f9ff;
+ }
+
+
+ .gm-student-info {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+     text-align: left;
+ }
+
+
+
+ .gm-student-details {
+     flex: 1;
+ }
+
+ .gm-student-name {
+     color: #333;
+     margin-bottom: 2px;
+     font-size: 0.9rem;
+     width: 2rem;
+ }
+
+ .gm-student-id {
+     color: #666;
+     font-size: 0.75rem;
+ }
+
+ .gm-editable-cell {
+     min-height: 24px;
+     padding: 4px 8px;
+     cursor: pointer;
+     border-radius: 4px;
+     transition: background-color 0.2s ease;
+     min-width: 50px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .gm-editable-cell:hover {
+     background-color: #f0f8ff;
+     border: 1px dashed #3b4d99;
+ }
+
+ .gm-edit-input {
+     width: 100%;
+     max-width: 80px;
+     padding: 4px 6px;
+     border: 2px solid #3b4d99;
+     border-radius: 4px;
+     text-align: center;
+     font-size: 0.85rem;
+     background: white;
+     color: #333;
+ }
+
+ .gm-edit-input:focus {
+     outline: none;
+     box-shadow: 0 0 0 2px rgba(59, 77, 153, 0.2);
+ }
+
+ .gm-summary-cell {
+     font-weight: 600;
+     color: #333;
+     background-color: #f8f9fa;
+ }
+
+ .gm-loading {
+     text-align: center;
+     padding: 40px;
+     color: #666;
+ }
+
+ .gm-loading-spinner {
+     display: inline-block;
+     width: 30px;
+     height: 30px;
+     border: 3px solid #f3f3f3;
+     border-top: 3px solid #3b4d99;
+     border-radius: 50%;
+     animation: spin 1s linear infinite;
+     margin-bottom: 10px;
+ }
+
+
+ @keyframes spin {
+     0% {
+         transform: rotate(0deg);
+     }
+
+     100% {
+         transform: rotate(360deg);
+     }
+ }
+
+ @keyframes fadeInUp {
+     from {
+         opacity: 0;
+         transform: translateY(30px);
+     }
+
+     to {
+         opacity: 1;
+         transform: translateY(0);
+     }
+ }
+
+ @keyframes slideInRight {
+     from {
+         transform: translateX(100%);
+         opacity: 0;
+     }
+
+     to {
+         transform: translateX(0);
+         opacity: 1;
+     }
+ }
+
+ /* Responsive design */
+ @media (max-width: 768px) {
+     .gm-main-content {
+         padding: 15px;
+     }
+
+     .gm-page-title {
+         font-size: 1.5rem;
+     }
+
+     .gm-class-selection {
+         padding: 20px;
+     }
+
+     .gm-selection-icon {
+         font-size: 3rem;
+     }
+
+     .gm-class-select {
+         min-width: 250px;
+     }
+
+     .gm-grade-header {
+         padding: 20px;
+         flex-direction: column;
+         align-items: flex-start;
+     }
+
+     .gm-grade-controls {
+         padding: 15px 20px;
+         flex-direction: column;
+         align-items: flex-start;
+         gap: 10px;
+     }
+
+     .gm-control-group {
+         width: 100%;
+         justify-content: space-between;
+     }
+
+     .gm-grade-actions {
+         width: 100%;
+         justify-content: flex-end;
+     }
+
+     .gm-table-container {
+         overflow-x: auto;
+     }
+
+     .gm-grade-table {
+         min-width: 800px;
+     }
+
+     .gm-table-header {
+         padding: 8px 6px;
+         font-size: 0.75rem;
+         width: 2rem;
+     }
+
+     .gm-table-cell {
+         padding: 8px 6px;
+     }
+
+     .gm-student-info {
+         min-width: 150px;
+     }
+
+     .gm-student-avatar {
+         width: 30px;
+         height: 30px;
+         font-size: 0.7rem;
+     }
+
+     .gm-student-name {
+         font-size: 0.85rem;
+     }
+
+     .gm-student-id {
+         font-size: 0.7rem;
+     }
+
+     .gm-edit-input {
+         max-width: 60px;
+         font-size: 0.8rem;
+     }
+
+     .gm-api-status {
+         position: fixed;
+         top: 10px;
+         left: 10px;
+         right: 10px;
+         text-align: center;
+     }
+ }
+
+ @media (max-width: 480px) {
+     .gm-main-content {
+         padding: 10px;
+     }
+
+     .gm-class-selection {
+         padding: 15px;
+     }
+
+     .gm-selection-title {
+         font-size: 1.2rem;
+     }
+
+     .gm-class-select {
+         min-width: 200px;
+     }
+
+     .gm-select-dropdown {
+         padding: 12px 15px;
+         font-size: 0.9rem;
+     }
+
+     .gm-grade-header {
+         padding: 15px;
+     }
+
+     .gm-class-badge {
+         padding: 6px 12px;
+         font-size: 0.8rem;
+     }
+
+     .gm-btn {
+         padding: 8px 15px;
+         font-size: 0.8rem;
+     }
+
+     .gm-grade-table {
+         min-width: 600px;
+     }
+ }
+
+ /* Dark mode support */
+ @media (prefers-color-scheme: dark) {
+
+
+     .gm-class-selection,
+     .gm-grade-header,
+     .gm-table-container {
+         background: white;
+         border-color: white;
+     }
+
+     .gm-page-title {
+         color: #e0e0e0;
+     }
+
+     .gm-page-subtitle {
+         color: #b0b0b0;
+     }
+
+     .gm-selection-title {}
+
+     .gm-selection-subtitle {
+         color: black;
+     }
+
+     .gm-select-dropdown {
+         background: #d6d6e2;
+         border-color: #d6d6e2;
+         color: black;
+     }
+
+     .gm-select-dropdown:focus {
+         border-color: #667eea;
+     }
+
+     .gm-table-header {
+         background: linear-gradient(135deg, #35468e 0%, #2d3a7a 100%);
+         color: white;
+         border-color: #363e67;
+     }
+
+     .gm-table-cell {
+         border-color: #ddd;
+         width: max-content;
+     }
+
+     .gm-table-cell h4 {
+         border-color: white;
+         width: max-content;
+     }
+
+     .gm-grade-table tr:hover {
+         background: wheat;
+     }
+
+     .gm-student-name {
+         color: black;
+     }
+
+     .gm-student-id {
+         color: black;
+     }
+
+     .gm-editable-cell:hover {
+         background-color: white;
+         border-color: #667eea;
+     }
+
+     .gm-edit-input {
+         background: white;
+         border-color: #667eea;
+         color: black;
+     }
+
+     .gm-summary-cell {
+         background-color: white;
+         color: black;
+     }
+
+     .gm-grade-controls {
+         background: white;
+         border-color: white;
+     }
+
+     .gm-control-label {
+         color: black;
+     }
+
+     .gm-btn-secondary {
+         background: linear-gradient(135deg, #3b4d99 0%, #2d3a7a 100%);
+         color: rgb(248, 247, 247);
+         border-color: white;
+     }
+
+     .gm-btn-secondary:hover {
+         background: linear-gradient(135deg, #687ddc 0%, #2f3d82 100%);
+     }
+ }
+
+ /* Print styles */
+ @media print {
+     .gm-main-content {
+         background: white !important;
+         color: black !important;
+     }
+
+     .gm-class-selection,
+     .gm-grade-controls,
+     .gm-grade-actions {
+         display: none !important;
+     }
+
+     .gm-grade-header {
+         background: white !important;
+         border: 1px solid white !important;
+     }
+
+     .gm-table-container {
+         box-shadow: none !important;
+         border: 1px solid white !important;
+     }
+
+     .gm-grade-table {
+         border-collapse: collapse !important;
+     }
+
+     .gm-table-header,
+     .gm-table-cell {
+         border: 1px solid white !important;
+         background: white !important;
+         color: white !important;
+     }
+
+     .gm-student-avatar {
+         background: #f0f0f0 !important;
+         color: white !important;
+     }
+
+     .gm-api-status {
+         display: none !important;
+     }
+ }
+
+ /* Custom scrollbar */
+ .gm-table-container::-webkit-scrollbar {
+     height: 8px;
+ }
+
+ .gm-table-container::-webkit-scrollbar-track {
+     background: #f1f1f1;
+     border-radius: 4px;
+ }
+
+ .gm-table-container::-webkit-scrollbar-thumb {
+     background: #c1c1c1;
+     border-radius: 4px;
+ }
+
+ .gm-table-container::-webkit-scrollbar-thumb:hover {
+     background: #a8a8a8;
+ }
+
+ /* Focus states for accessibility */
+ .gm-select-dropdown:focus,
+ .gm-btn:focus,
+ .gm-edit-input:focus {
+     outline: 2px solid #667eea;
+     outline-offset: 2px;
+ }
+
+ /* Loading state enhancements */
+ .gm-loading-overlay {
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background: rgba(255, 255, 255, 0.8);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     z-index: 100;
+ }
+
+ .gm-loading-content {
+     text-align: center;
+     padding: 20px;
+     background: white;
+     border-radius: 8px;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+ }
+
+ .page-header {
+     margin-bottom: 30px;
+ }
+
+ .page-title {
+     font-size: 2rem;
+     font-weight: 700;
+     color: #333;
+     margin-bottom: 8px;
+ }
+
+ .page-subtitle {
+     color: #666;
+     font-size: 1rem;
+ }
+
+ .css-1nmdiq5-menu {
+     z-index: 1000 !important;
+ }
+
+ .css-1cfo1cf {
+     min-width: 300px !important;
+ }
+
+ .css-hlgwow {
+     width: 300px !important;
+ }
+
+ .css-o9ehiq-loadingIndicator {
+     width: 30px !important;
+ }
+
+ .search-container {
+     position: relative;
+     display: inline-block;
+ }
+
+ .search-container input {
+     padding: 10px 32px 10px 12px;
+     border-radius: 6px;
+     border: 1px solid #ccc;
+     width: 250px;
+     background: white;
+     border-color: rgb(227, 222, 222);
+     color: black;
+ }
+
+
+ .search-container .icon {
+     position: absolute;
+     right: 10px;
+     top: 50%;
+     transform: translateY(-50%);
+     pointer-events: none;
+     color: #888;
+ }

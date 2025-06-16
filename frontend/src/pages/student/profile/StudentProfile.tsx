@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./StudentProfile.css";
 import { getInitials } from "../../../utils/stringUtil";
