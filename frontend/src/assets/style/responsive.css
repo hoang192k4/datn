@@ -4,6 +4,9 @@
     .container {
         width: 100%;
     }
+      .subject-detail-title .search-subject {
+        width: 100% !important;
+    }
 }
 
 /* style responsive table */
@@ -101,6 +104,21 @@
         right: auto;
         left: 0;
     }
+
+    .subject-card {
+        width: 100% !important;
+    }
+
+    .subject-detail-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .subject-detail-btn {
+        width: 100%;
+    }
+
 }
 
 /* style responsive mobible */

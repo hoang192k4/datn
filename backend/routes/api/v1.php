@@ -11,7 +11,7 @@ Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
         Route::get('/me', 'me')->name('me');
         Route::post('/logout', 'logout')->name('logout');
         Route::post('/change-password', 'changePassword');
-         Route::post('/update-profile', 'update');
+        Route::post('/update-profile', 'update');
     });
 
 
@@ -84,4 +84,30 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->group(function () {
         Route::get('/me', 'me');
         Route::post('/refresh', 'refresh');
+    });
+
+
+Route::controller(App\Http\Controllers\Subject\SubjectController::class)
+    ->prefix('subjects')
+    ->group(function () {
+        Route::get('/', 'getSubjectByTeacherId');
+        Route::get('/detail-subject', 'getDetailDocumentBySubjectId');
+        Route::get('/search-subject','getListSubjectSearch');
+    });
+
+
+Route::controller(App\Http\Controllers\Chapter\ChapterController::class)
+    ->prefix('chapters')
+    ->group(function () {
+        Route::post('/', 'create');
+        Route::delete('/{chapter}', 'destroy');
+        Route::put('/{chapter}', 'update');
+    });
+
+Route::controller(App\Http\Controllers\Lecture\LectureController::class)
+    ->prefix('lectures')
+    ->group(function () {
+        Route::post('/', 'create');
+        Route::delete('/{lecture}', 'destroy');
+        Route::put('/{lecture}', 'update');
     });

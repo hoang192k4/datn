@@ -1,8 +1,8 @@
 .main-content {
     margin-left: 280px;
-    margin-top: 70px;
+    margin-top: 20px;
     padding: 30px;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 50px);
 }
 
 .page-header {

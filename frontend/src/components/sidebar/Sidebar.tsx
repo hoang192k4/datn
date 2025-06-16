@@ -11,7 +11,8 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         { icon: "📝", url: "#", label: "Quản Lý Điểm" },
         { icon: "📅", url: "#", label: "Thời Khóa Biểu" },
         { icon: "📢", url: "#", label: "Thông Báo" },
-        { icon: "📁", url: "#", label: "Tài Liệu" },
+        { icon: "📁", url: "tai-lieu", label: "Tài Liệu" },
+         { icon: "📅", url: "diem-danh", label: "Quản Lý Điểm Danh" },
     ];
     return (
         <>

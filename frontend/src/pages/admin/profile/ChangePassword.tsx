@@ -20,7 +20,6 @@ const ChangePasswrod = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<FormPassword>();
     const handleChangePassword = async (data: FormPassword) => {
         try {
-
             if (data.new_password !== data.new_password_confirmation) {
                 setCheckNewPassword(true);
             } else {
@@ -49,7 +48,7 @@ const ChangePasswrod = () => {
     }
     return (
         <>
-            {loadingChangePasswrod &&  <Loadding/>}
+            {loadingChangePasswrod && <Loadding />}
             <div className="cpw-container">
                 <h2>🔒 Đổi mật khẩu</h2>
                 <form onSubmit={handleSubmit(handleChangePassword)}>
@@ -60,7 +59,7 @@ const ChangePasswrod = () => {
                             {showCurrentPassword ? "🙈" : "🐵"}
                         </button>
                     </div>
-                    {errors.current_password && <p>{errors.current_password.message}</p>}
+                    {errors.current_password && <p className="error-message">{errors.current_password.message}</p>}
                     <div className="cpw-form-group">
                         <label htmlFor="newPassword">Mật khẩu mới</label>
                         <input type={showNewPassword ? "text" : "password"} id="newPassword" {...register("new_password",
@@ -75,7 +74,7 @@ const ChangePasswrod = () => {
                             {showNewPassword ? "🙈" : "🐵"}
                         </button>
                     </div>
-                    {errors.new_password && <p>{errors.new_password.message}</p>}
+                    {errors.new_password && <p className="error-message">{errors.new_password.message}</p>}
                     <div className="cpw-form-group">
                         <label htmlFor="confirmPassword">Xác nhận mật khẩu mới</label>
                         <input type={showConfirmPassword ? "text" : "password"} id="confirmPassword" {...register("new_password_confirmation", {
@@ -90,7 +89,7 @@ const ChangePasswrod = () => {
                             {showConfirmPassword ? "🙈" : "🐵"}
                         </button>
                     </div>
-                    {errors.new_password_confirmation ? <p>{errors.new_password_confirmation.message}</p> : !checkNewPassword ? '' : <p>Mật khẩu xác nhận không trùng khớp</p>}
+                    {errors.new_password_confirmation ? <p className="error-message">{errors.new_password_confirmation.message}</p> : !checkNewPassword ? '' : <p>Mật khẩu xác nhận không trùng khớp</p>}
                     <button type="submit" className="cpw-submit-btn">Cập nhật mật khẩu</button>
                 </form>
             </div>
