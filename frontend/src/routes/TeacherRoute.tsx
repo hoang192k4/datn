@@ -40,7 +40,7 @@ export const TeacherRoute = [
     {
         'path': 'diem-danh',
         'element': <AttendancePage />
-    }
+    },
 
     {
         'path': 'thong-bao',

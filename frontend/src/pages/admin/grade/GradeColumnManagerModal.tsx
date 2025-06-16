@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { PublicStatus } from '../../../enums/PublicStatus';
 import { deleteGradeColumn } from '../../../services/gradeStudentService';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-
+import './GradeColumnManagerModal.css';
 interface GradeItem {
     attempt: number;
     typeName: string;
@@ -69,20 +69,19 @@ const GradeColumnManagerModal: React.FC<Props> = ({
     return (
 
         <div
-            className={`modal fade ${isOpen ? 'show d-block' : ''}`}
+            className={`custom-modal ${isOpen ? 'custom-modal-show' : ''}`}
             tabIndex={-1}
             role="dialog"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
         >
-            <div className="modal-dialog modal-lg" role="document">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title">Quản lý cột điểm</h5>
-                        <button type="button" className="btn-close" onClick={onClose}></button>
+            <div className="custom-modal-dialog" role="document">
+                <div className="custom-modal-content">
+                    <div className="custom-modal-header">
+                        <h5 className="custom-modal-title">Quản lý cột điểm</h5>
+                        <button type="button" className="custom-btn-close" onClick={onClose}>×</button>
                     </div>
-                    <div className="modal-body">
-                        <table className="table table-bordered">
-                            <thead className="table-light">
+                    <div className="custom-modal-body">
+                        <table className="custom-table">
+                            <thead>
                                 <tr>
                                     <th>Tên cột điểm</th>
                                     <th className="text-center">Hiển thị</th>
@@ -90,15 +89,14 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                                 </tr>
                             </thead>
                             <tbody>
-                                {Object.entries(gradeColumnManage).map(([gradeTypeId, items]) => (
-                                    items.map((column: any, index: number) => {
-                                        return <tr key={index}>
+                                {Object.entries(gradeColumnManage).map(([gradeTypeId, items]) =>
+                                    items.map((column: any, index: number) => (
+                                        <tr key={index}>
                                             <td>{column.typeName} - {column.attempt}</td>
                                             <td className="text-center">
                                                 <button
                                                     onClick={() => { }}
-                                                    className={`btn btn-sm ${column.scoreVisibility ? 'btn-success' : 'btn-secondary'
-                                                        }`}
+                                                    className={`custom-btn custom-btn-sm ${column.scoreVisibility ? 'custom-btn-success' : 'custom-btn-secondary'}`}
                                                 >
                                                     {column.scoreVisibility === PublicStatus.Public ? 'Hiển thị' : 'Ẩn'}
                                                 </button>
@@ -106,26 +104,26 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                                             <td className="text-center">
                                                 <button
                                                     onClick={() => handleDelete(gradeTypeId, column.attempt)}
-                                                    className="btn btn-sm btn-danger"
+                                                    className="custom-btn custom-btn-sm custom-btn-danger"
                                                 >
                                                     Xóa
                                                 </button>
                                             </td>
                                         </tr>
-                                    })
-                                ))}
+                                    ))
+                                )}
                             </tbody>
                         </table>
                     </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                    <div className="custom-modal-footer">
+                        <button type="button" className="custom-btn custom-btn-secondary" onClick={onClose}>
                             Đóng
                         </button>
                     </div>
                 </div>
             </div>
-            <ToastContainer />
         </div>
+
     );
 };
 
