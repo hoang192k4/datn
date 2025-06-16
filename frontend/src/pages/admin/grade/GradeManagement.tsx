@@ -62,7 +62,7 @@ const GradeManagement: React.FC = () => {
   const [gradeTypeOrder, setGradeTypeOrder] = useState<number[]>([]);
   const [studentData, setStudentData] = useState<Student[]>([]);
   const [allClasses, setAllClasses] = useState([]);
-  const [selectedGradeType, setSelectedGradeType] = useState<string | null>('');
+  const [selectedGradeType, setSelectedGradeType] = useState<string>('');
   const [gradeLoading, setGradeLoading] = useState(false);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [tempValue, setTempValue] = useState<string | number>('');
@@ -611,7 +611,7 @@ const GradeManagement: React.FC = () => {
               <label className="gm-control-label">Loại điểm:</label>
               <select
                 className="gm-select-dropdown"
-                value={selectedGradeType}
+                value={selectedGradeType ?? ''}
                 onChange={(e) => setSelectedGradeType(e.target.value)}
                 style={{ minWidth: '180px' }}
               >
