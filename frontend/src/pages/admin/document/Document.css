@@ -1,0 +1,350 @@
+.subject {
+    border-radius: 10px;
+    min-height: 600px;
+    padding: 10px 30px;
+    box-shadow: 5px 5px 5px 5px #d1c5c5;
+}
+
+.subject>h2 {
+    margin: 5px 0;
+}
+
+.grid {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.subject-card {
+    width: calc(50% - 20px);
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+}
+
+.subject-card:hover {
+    transform: translateY(-4px);
+}
+
+.subject-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.doc-list {
+    margin-top: 10px;
+}
+
+.doc-item {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+
+.btn-add {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: #4f46e5;
+    color: white;
+    font-size: 13px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.subject-detail-container {
+    background: #f9fafb;
+    padding: 2rem;
+    border-radius: 1rem;
+    max-width: 1000px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.subject-detail-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.subject-detail-title .search-subject {
+    width: 30%;
+    position: relative;
+}
+
+.subject-detail-title .search-subject>input {
+    background-color: white;
+    color: black;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    width: 100%;
+    font-size: 16px;
+     color: #1e3a8a;
+    outline: none;
+    border-radius: 5px;
+}
+
+.suggestion-box {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    width: 100%;
+    margin-top: 4px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-height: 210px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.suggestion-box::-webkit-scrollbar {
+  width: 4px; /* Mỏng hơn */
+}
+
+.suggestion-box::-webkit-scrollbar-thumb {
+  background-color: #1e3a8a; 
+  border-radius: 4px;
+}
+
+.suggestion-box::-webkit-scrollbar-track {
+  background-color: white; 
+}
+
+
+
+.suggestion-link {
+    display: block;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #1e3a8a;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.suggestion-link:hover {
+    background-color: #eef2ff;
+}
+
+.subject-detail-chapter {
+    margin-bottom: 1.5rem;
+}
+
+.subject-detail-chapter-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.subject-detail-chapter-title>svg {
+    font-size: 26px;
+    padding: 2px;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    margin-right: 4px;
+}
+
+.subject-detail-chapter-title>svg:hover {
+    font-size: 30px;
+    color: #059669;
+}
+
+.subject-detail-lecture-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.subject-detail-lecture-item {
+    background: white;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.subject-detail-lecture-item>a {
+    color: #1e3a8a;
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+}
+
+.subject-detail-lecture-item-icons {
+    display: flex;
+    color: #1e3a8a;
+}
+
+.subject-detail-lecture-item-icons>svg {
+    font-size: 24px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.3s linear;
+}
+
+.subject-detail-lecture-item-icons>svg:first-child:hover {
+    color: #2e26ce;
+    font-size: 30px;
+}
+
+.subject-detail-lecture-item-icons>svg:last-child:hover {
+    color: red;
+    font-size: 30px;
+}
+
+.subject-detail-lecture-item:hover {
+    background: #eef2ff;
+}
+
+
+.subject-detail-buttons {
+    text-align: right;
+    margin-bottom: 16px;
+}
+
+.subject-detail-buttons .subject-detail-btn {
+    color: white;
+    background-color: #1e3a8a;
+    padding: 10px 30px;
+    margin-top: 6px;
+}
+
+.subject-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.subject-popup {
+    background: white;
+    padding: 24px 28px;
+    border-radius: 10px;
+    margin: 0 16px;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.subject-popup h3 {
+    font-size: 20px;
+    color: #1e3a8a;
+}
+
+.subject-detail-input,
+.subject-detail-select {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+    color: black;
+    outline: none;
+}
+
+.subject-detail-btn {
+    padding: 8px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #e5e7eb;
+    color: #1f2937;
+    transition: background 0.2s ease;
+    margin-right: 8px;
+    margin-top: 16px;
+}
+
+.subject-detail-btn:hover {
+    background-color: #2e26ce;
+    ;
+}
+
+.subject-detail-btn-popup {
+    color: black;
+    background-color: white;
+    padding: 10px 15px;
+    border: 1px solid rgb(223, 220, 220);
+    border-radius: 5px;
+    transition: all 0.3s linear;
+    margin-top: 16px;
+    cursor: pointer;
+}
+
+.btn-delete {
+    margin-right: 8px;
+    padding: 10px 30px;
+    background-color: red;
+    color: white;
+}
+
+.subject-detail-btn-popup:hover {
+    background-color: red;
+    color: white;
+}
+
+.subject-detail-btn.primary {
+    background-color: #4f46e5;
+    /* Tailwind indigo-600 */
+    color: white;
+}
+
+.subject-detail-btn.primary:hover {
+    background-color: #4338ca;
+    /* Tailwind indigo-700 */
+}
+
+.subject-detail-btn.green {
+    background-color: #10b981;
+    /* Tailwind emerald-500 */
+    color: white;
+}
+
+.subject-detail-btn.green:hover {
+    background-color: #059669;
+    /* Tailwind emerald-600 */
+}
+
+.popup-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

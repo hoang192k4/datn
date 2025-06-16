@@ -22,11 +22,10 @@ class AttendanceController extends BaseController
     public function getStudentsByCourseSection(string $courseSectionId)
     {
         $listStudent = $this->repository->find($courseSectionId)->students;
-        
         $studentJson = $listStudent->map(function ($item) {
             return new StudentResource($item);
         });
-        return response()->json($studentJson);
+        return $this->jsonResponseSuccess($studentJson);
     }
 
     public function storeAttendanceStudents(CourseSectionAttendanceRequest $request)

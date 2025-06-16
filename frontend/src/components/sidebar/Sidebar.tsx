@@ -10,8 +10,9 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         { icon: "📚", url: "lop-hoc", label: "Lớp Học" },
         { icon: "📝", url: "diem", label: "Quản Lý Điểm" },
         { icon: "📅", url: "#", label: "Thời Khóa Biểu" },
+        { icon: "📁", url: "tai-lieu", label: "Tài Liệu" },
+         { icon: "📅", url: "diem-danh", label: "Quản Lý Điểm Danh" },
         { icon: "📢", url: "thong-bao", label: "Thông Báo" },
-        { icon: "📁", url: "#", label: "Tài Liệu" },
     ];
     return (
         <>

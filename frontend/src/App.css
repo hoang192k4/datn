@@ -1,3 +1,9 @@
+    .error-message {
+      color: red;
+      font-size: 13px;
+      margin-bottom: 8px;
+      padding: 0 6px;
+    }
     /* grade page */
     .grade-page {
       min-height: 600px;

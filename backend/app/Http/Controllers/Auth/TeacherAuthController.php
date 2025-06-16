@@ -217,9 +217,6 @@ class TeacherAuthController extends BaseController
     {
         $data = $request->validated();
         $teacherId = $this->getCurrentTeacherId();
-        if (!$teacherId) {
-            return $this->jsonResponseError();
-        }
         $data['slug'] = generate_slug($data['name']);
         $result = $this->repository->updateOrCreateById($teacherId, $data);
         if ($result)

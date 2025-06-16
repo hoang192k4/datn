@@ -97,3 +97,29 @@ Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)
     ->group(function () {
         Route::get('/', 'index'); //api lấy danh sách loại điểm
     });
+
+
+Route::controller(App\Http\Controllers\Subject\SubjectController::class)
+    ->prefix('subjects')
+    ->group(function () {
+        Route::get('/', 'getSubjectByTeacherId');
+        Route::get('/detail-subject', 'getDetailDocumentBySubjectId');
+        Route::get('/search-subject','getListSubjectSearch');
+    });
+
+
+Route::controller(App\Http\Controllers\Chapter\ChapterController::class)
+    ->prefix('chapters')
+    ->group(function () {
+        Route::post('/', 'create');
+        Route::delete('/{chapter}', 'destroy');
+        Route::put('/{chapter}', 'update');
+    });
+
+Route::controller(App\Http\Controllers\Lecture\LectureController::class)
+    ->prefix('lectures')
+    ->group(function () {
+        Route::post('/', 'create');
+        Route::delete('/{lecture}', 'destroy');
+        Route::put('/{lecture}', 'update');
+    });
