@@ -82,11 +82,26 @@ class CourseSectionGradeService implements CourseSectionGradeServiceInterface
             $courseSectionId = $data['course_section_id'];
             $gradeTypeId = $data['grade_type_id'];
             $attempt = $data['attempt'];
+            $type = $data['type'];
 
-            $isDeleted = $this->repository->deleteGradeColumn($courseSectionId, $gradeTypeId, $attempt);
-            if (!$isDeleted) {
-                DB::rollBack();
-                return false;
+            if ($type === 'delete') {
+                $isGradeTypeDeleted = $this->repository->deleteGradeColumn($courseSectionId, $gradeTypeId, $attempt);
+                if (!$isGradeTypeDeleted) {
+                    DB::rollBack();
+                    return false;
+                }
+            } elseif ($type === 'private') {
+                $isGradeTypeUpdated = $this->repository->updateGradeTypeToPrivate($courseSectionId, $gradeTypeId, $attempt);
+                if (!$isGradeTypeUpdated) {
+                    DB::rollBack();
+                    return false;
+                }
+            } elseif ($type === 'public') {
+                $isGradeTypeUpdated = $this->repository->updateGradeTypeToPublic($courseSectionId, $gradeTypeId, $attempt);
+                if (!$isGradeTypeUpdated) {
+                    DB::rollBack();
+                    return false;
+                }
             }
 
             $isSummaryGradeUpdated = $this->summaryGradeService->updateSummaryGrades($courseSectionId);
