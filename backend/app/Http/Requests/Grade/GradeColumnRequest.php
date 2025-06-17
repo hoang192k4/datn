@@ -19,7 +19,8 @@ class GradeColumnRequest extends BaseRequest
         return [
             'course_section_id' => 'required|exists:course_sections,id|integer',
             'grade_type_id' => 'required|exists:grade_types,id|integer',
-            'attempt' => 'integer|required'
+            'attempt' => 'integer|required',
+            'type' => 'required|in:delete,private,public'
         ];
     }
 }
