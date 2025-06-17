@@ -523,9 +523,8 @@ const GradeManagement: React.FC = () => {
       }
     });
 
-
     cells.push(
-      <td key="avg" className="gm-table-cell gm-cell-centerl">{summary?.avg_score || '-'}</td>,
+      <td key="avg" className="gm-table-cell gm-cell-center">{summary?.avg_score || '-'}</td>,
       <td key="exam1" className="gm-table-cell gm-cell-center">
         {renderEditableCell('exam1_score', student.id, summary?.exam1_score, null, null, null, summary?.id)}
       </td>,

@@ -104,7 +104,7 @@ Route::controller(App\Http\Controllers\Subject\SubjectController::class)
     ->group(function () {
         Route::get('/', 'getSubjectByTeacherId');
         Route::get('/detail-subject', 'getDetailDocumentBySubjectId');
-        Route::get('/search-subject','getListSubjectSearch');
+        Route::get('/search-subject', 'getListSubjectSearch');
     });
 
 
