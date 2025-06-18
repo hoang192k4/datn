@@ -190,8 +190,8 @@ const GradeManagement: React.FC = () => {
           total += Math.max(counts[typeId], grade.attempt);
         });
       });
-      total = total + 9;
     });
+    total += 9;
     setGradeColumn(column);
     setGradeTypeCounts(counts);
     setGradeTypeOrder(order);

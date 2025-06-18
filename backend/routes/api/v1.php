@@ -73,11 +73,17 @@ Route::controller(App\Http\Controllers\Notification\StudentNotificationControlle
         Route::post('/', 'sendFeedbackToTeacher'); //api gửi fb của sinh viên
     });
 
-Route::controller(App\Http\Controllers\Post\PostController::class)
-    ->prefix('posts')
-    ->group(function () {
-        Route::get('/', 'getPostByTeacherSlug'); //api lấy danh sách thông báo post theo slug teacher
-    });
+Route::prefix('me')->group(function () {
+    Route::controller(App\Http\Controllers\Student\MyStudentController::class)
+        ->group(function () {
+            Route::get('/students', 'getMyStudents'); //api lấy danh sách sinh viên mà giáo viên đang dạy (có limit)
+        });
+
+    Route::controller(App\Http\Controllers\Post\MyPostController::class)
+        ->group(function () {
+            Route::get('/posts', 'getPostByTeacherId'); //api lấy danh sách bài viết của giáo viên
+        });
+});
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')
     ->group(function () {

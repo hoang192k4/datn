@@ -10,7 +10,7 @@ use App\Repositories\Teacher\TeacherRepositoryInterface;
 use App\Traits\AuthTeacherApi;
 use Exception;
 
-class PostController extends BaseController
+class MyPostController extends BaseController
 {
     use AuthTeacherApi;
     protected $teacherRepository;
@@ -19,17 +19,17 @@ class PostController extends BaseController
         TeacherRepositoryInterface $teacherRepository
     ) {
         $this->teacherRepository = $teacherRepository;
+        $this->middleware('auth:teacher', ['except' => ['getPostByTeacherSlug']]);
     }
-
-    public function getPostByTeacherSlug(PostRequest $request)
+    public function getPostByTeacherId()
     {
         try {
-            $slug = $request->validated()['slug'];
-            $limit = $request->validated()['limit'] ?? 5;
-            $page = $request->validated()['page'] ?? 1;
-            $teacher = $this->teacherRepository->findWithConditions(['slug' => $slug]);
+            $teacherId = $this->getCurrentTeacherId();
+            $limit = request()->get('limit', 10);
+            $page = request()->get('page', 1);
+            $teacher = $this->teacherRepository->findOrFailById($teacherId);
 
-            $posts = $teacher->posts()->where('status', PublicStatus::Public)->orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page)->appends(['limit' => $limit]);
+            $posts = $teacher->posts()->orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page)->appends(['limit' => $limit]);
 
             if (!$posts)
                 return $this->jsonResponseError();

@@ -15,7 +15,8 @@ class PostResource extends JsonResource
             'content' => $this->content,
             'course_section_name' => $this->course_section->name,
             'teacher' => $this->teacher->name,
-            'created_at' => format_datetime($this->created_at)
+            'created_at' => format_datetime($this->created_at, 'H:i d-m-Y'),
+            'status' => $this->status,
         ];
     }
 }
