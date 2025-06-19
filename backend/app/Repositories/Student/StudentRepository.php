@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Student;
 
+use App\Enums\Student\StudentStatus;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Repositories\EloquentRepository;
@@ -16,7 +17,7 @@ class StudentRepository extends EloquentRepository implements StudentRepositoryI
 
     public function getStudentsAndGradesBycourseSectionId($courseSectionId)
     {
-        return $this->model->whereHas('grades', function ($query) use ($courseSectionId) {
+        return $this->model->where('status', StudentStatus::Active)->whereHas('grades', function ($query) use ($courseSectionId) {
             $query->where('course_section_id', $courseSectionId);
         })->with(['grades.grade_type' => function ($query) {
             $query->select('id', 'weight');
@@ -30,8 +31,11 @@ class StudentRepository extends EloquentRepository implements StudentRepositoryI
             $query->where('teacher_id', $teacherId);
         });
         if ($key) {
-            $students->where('name', 'like', '%' . $key . '%')->orWhere('student_code', 'like', '%' . $key . '%');
+            $students->where(function ($query) use ($key) {
+                $query->where('name', 'like', '%' . $key . '%')
+                    ->orWhere('student_code', 'like', '%' . $key . '%');
+            });
         }
-        return $students->paginate($limit, ['*'], 'page', $page);
+        return $students->where('status', StudentStatus::Active)->paginate($limit, ['*'], 'page', $page);
     }
 }

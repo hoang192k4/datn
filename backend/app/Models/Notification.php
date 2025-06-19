@@ -13,7 +13,7 @@ class Notification extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['id', 'teacher_id', 'teacher_receive_id', 'student_id', 'title', 'content', 'type', 'status', 'is_post'];
+    protected $fillable = ['id', 'teacher_id', 'teacher_receive_id', 'student_id', 'title', 'content', 'type', 'status', 'post_id'];
 
     protected function casts(): array
     {

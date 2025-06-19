@@ -7,6 +7,7 @@ use App\Enums\Notification\NotificationType;
 use App\Enums\PublicStatus;
 use App\Enums\Role;
 use App\Enums\SendToUserType;
+use App\Enums\Student\StudentStatus;
 use App\Exceptions\ModelNotFoundByIdException;
 use App\Models\Student;
 use App\Models\Teacher;
@@ -101,10 +102,10 @@ class NotificationService implements NotificationServiceInterface
         }
     }
 
-    public function sendNotificationToStudents(string $title, string $body, array $student_ids, string $type, $postId = 0)
+    public function sendNotificationToStudents(string $title, string $body, array $studentIds, string $type, $postId = 0)
     {
         $teacherId = $this->getCurrentTeacherId();
-        $students = $this->studentRepository->findMany($student_ids);
+        $students = $this->studentRepository->findMany($studentIds);
 
         if (count($students) == 0)
             return false;
@@ -118,7 +119,9 @@ class NotificationService implements NotificationServiceInterface
                 'post_id' => $postId,
             ];
         })->toArray();
-        $this->repository->inserts($notifications);
+
+        $isTrue = $this->repository->inserts($notifications);
+
         $deviceTokens = $students->pluck('device_token')->filter()->values()->toArray();
 
         $this->firebaseService->sendNotification($deviceTokens, $title, $body, null);
@@ -134,7 +137,7 @@ class NotificationService implements NotificationServiceInterface
             $body = $data['body'];
             $publicStatus = $data['public_type'] ?? PublicStatus::Public;
             $courseSection = $this->courseSectionRepository->findOrFailById($data['course_section_id']);
-            $studentIds = $courseSection->students->pluck('id')->values()->toArray();
+            $studentIds = $courseSection->students->where('status', StudentStatus::Active)->pluck('id')->values()->toArray();
             $post = $this->postRepository->create(['title' => $title, 'content' => $body, 'course_section_id' => $courseSection->id, 'teacher_id' => $teacherSendId, 'status' => $publicStatus]);
             $this->sendNotificationToStudents($title, $body, $studentIds, NotificationType::TeacherSend->value, $post->id);
             return true;

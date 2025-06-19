@@ -3,12 +3,14 @@
 namespace App\Repositories;
 
 use App\Exceptions\ModelNotFoundByIdException;
+use App\Supports\Log;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
 
 abstract class EloquentRepository implements EloquentRepositoryInterface
 {
+    use Log;
     protected $model;
     public function __construct()
     {
@@ -39,7 +41,7 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
     /**
      * @return \Illuminate\Database\Eloquent\Model |false
      */
-    public function update($id, array $data):bool
+    public function update($id, array $data): bool
     {
         $model = $this->model->find($id);
         if ($model) {
@@ -119,6 +121,7 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
             DB::commit();
             return true;
         } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
             DB::rollBack();
             return false;
         }
