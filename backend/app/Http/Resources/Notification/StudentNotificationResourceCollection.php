@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Resources\Post;
+namespace App\Http\Resources\Notification;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PostResourceCollection extends ResourceCollection
+class StudentNotificationResourceCollection extends ResourceCollection
 {
     public function toArray(Request $request)
     {
         return [
-            'posts' => $this->collection->map(function ($item) {
-                return new PostResource($item);
+            'notifications' => $this->collection->map(function ($item) {
+                return new StudentNotificationResource($item);
             }),
             'links' => [
                 'first' => $this->url(1),

@@ -7,6 +7,7 @@ interface EloquentRepositoryInterface
 
     public function create(array $data); //tạo instance mới
     public function delete($id); //xóa vĩnh viễn instance theo id
+    public function deleteByConditions(array $conditions); //xóa vĩnh viễn nhiều instance theo điều kiện
 
     public function firstOrCreate(array $conditions); //tìm kiếm một instance nếu không có thì tạo bản ghi mới
     public function findOrFailById($id); //tìm một instance theo id, nếu không có trả về lỗi 404
@@ -22,7 +23,10 @@ interface EloquentRepositoryInterface
 
     /** tìm kiếm danh sách có điều kiện, lọc, eager load $relations, (limit và page) để phân trang*/
     public function getList(array $filter = [], array $order = [], array $relations = [], $limit = null, $page = null, array $orFilter = []);
+
     public function update($id, array $data); //cập nhật giá trị trong mảng data theo id
     public function updateOrCreateById($id, array $resource): object|bool; //cập nhật giá trị trong mảng theo id, nếu không có instance theo id thì tạo mới
     public function updateOrCreate(array $conditions, array $resource); // cập nhật giá trị của instance tìm theo mảng, nếu không có thì tạo mới
+
+    public function where(array $conditions); //lấy danh sách instance theo điều kiện
 }

@@ -49,12 +49,13 @@ export const updateSummaryScore = (summaryId: number, scoreType: number, score: 
     });
 }
 
-export const deleteGradeColumn = (courseSectionId: number|null, gradeTypeId: number, attempt: number) => {
+export const deleteGradeColumn = (courseSectionId: number | null, gradeTypeId: number, attempt: number, type: string) => {
     return axiosTeacherInstance.delete('/grades', {
         data: {
             course_section_id: courseSectionId,
             grade_type_id: gradeTypeId,
-            attempt: attempt
+            attempt: attempt,
+            type: type
         }
 
     })

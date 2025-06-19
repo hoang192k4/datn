@@ -16,6 +16,7 @@ class ServiceServiceProvider extends ServiceProvider
         'App\Services\CourseSectionAttendance\CourseSectionAttendanceServiceInterface' => 'App\Services\CourseSectionAttendance\CourseSectionAttendanceService',
         'App\Services\Grade\GradeServiceInterface' => 'App\Services\Grade\GradeService',
         'App\Services\CourseSectionGrade\CourseSectionGradeServiceInterface' => 'App\Services\CourseSectionGrade\CourseSectionGradeService',
+        'App\Services\Post\PostServiceInterface' => 'App\Services\Post\PostService',
     ];
     /**
      * Register any application services.

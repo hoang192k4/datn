@@ -67,6 +67,7 @@ Route::controller(App\Http\Controllers\Notification\NotificationController::clas
         Route::post('/', 'sendNotifications'); //api gửi thông báo
         Route::post('/send-to-course-section', 'sendNotificationToCourseSection'); //api gửi thông báo đến lớp
         Route::get('/', 'getMyNotifications'); //api lấy danh sách thông báo theo người dùng đăng nhập
+        Route::delete('/{id}', 'destroy'); //api xóa thông báo
     });
 
 Route::controller(App\Http\Controllers\Notification\StudentNotificationController::class)
@@ -75,10 +76,27 @@ Route::controller(App\Http\Controllers\Notification\StudentNotificationControlle
         Route::post('/', 'sendFeedbackToTeacher'); //api gửi fb của sinh viên
     });
 
+Route::prefix('me')->group(function () {
+    Route::controller(App\Http\Controllers\Student\MyStudentController::class)
+        ->group(function () {
+            Route::get('/students', 'getMyStudents'); //api lấy danh sách sinh viên mà giáo viên đang dạy (có limit)
+        });
+
+    Route::controller(App\Http\Controllers\Post\MyPostController::class)
+        ->group(function () {
+            Route::get('/posts', 'getPostByTeacherId'); //api lấy danh sách bài viết của giáo viên
+        });
+
+    Route::controller(App\Http\Controllers\Notification\TeacherNotificationController::class)
+        ->group(function () {
+            Route::get('/students/notifications', 'getNotificationSendStudentByTeacher');
+        });
+});
+
 Route::controller(App\Http\Controllers\Post\PostController::class)
     ->prefix('posts')
     ->group(function () {
-        Route::get('/', 'getPostByTeacherSlug'); //api lấy danh sách thông báo post theo slug teacher
+        Route::delete('/{id}', 'destroy');
     });
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')

@@ -49,7 +49,7 @@ const GradeColumnManagerModal: React.FC<Props> = ({
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const response = await deleteGradeColumn(courseSectionId, gradeTypeId, attempt);
+                    const response = await deleteGradeColumn(courseSectionId, gradeTypeId, attempt, 'delete');
                     if (response.status) {
                         toast.success('Xóa cột điểm thành công!');
                         setGradeColumnManage(prev => ({
@@ -66,6 +66,39 @@ const GradeColumnManagerModal: React.FC<Props> = ({
 
 
     }
+
+    const handleUpdateVisibility = (gradeTypeId: any, attempt: any, type: string) => {
+        Swal.fire({
+            title: "Bạn chắc chắn muốn " + (type === PublicStatus.Public ? "hiển thị" : "ẩn") + " cột điểm này?",
+            text: "Điểm sẽ " + (type === PublicStatus.Public ? "hiển thị" : "ẩn") + " cho sinh viên!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Vâng, hãy " + (type === PublicStatus.Public ? "hiển thị" : "ẩn đi") + "!",
+            cancelButtonText: "Hủy"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await deleteGradeColumn(courseSectionId, gradeTypeId, attempt, type);
+                    if (response.status) {
+                        toast.success('Cập nhật cột điểm thành công!');
+                        setGradeColumnManage(prev => ({
+                            ...prev,
+                            [gradeTypeId]: prev[gradeTypeId].map(item => {
+                                if (item.attempt === attempt) {
+                                    return { ...item, scoreVisibility: type };
+                                }
+                                return item;
+                            })
+                        }));
+                        fetchGradesNoLoading();
+                    }
+                } catch (error) {
+                }
+            }
+        });
+    }
     return (
 
         <div
@@ -77,7 +110,9 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                 <div className="custom-modal-content">
                     <div className="custom-modal-header">
                         <h5 className="custom-modal-title">Quản lý cột điểm</h5>
-                        <button type="button" className="custom-btn-close" onClick={onClose}>×</button>
+                        <button type="button" className="custom-btn custom-btn-secondary" onClick={onClose}>
+                            Đóng
+                        </button>
                     </div>
                     <div className="custom-modal-body">
                         <table className="custom-table">
@@ -95,7 +130,7 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                                             <td>{column.typeName} - {column.attempt}</td>
                                             <td className="text-center">
                                                 <button
-                                                    onClick={() => { }}
+                                                    onClick={() => handleUpdateVisibility(gradeTypeId, column.attempt, column.scoreVisibility === PublicStatus.Public ? PublicStatus.Private : PublicStatus.Public)}
                                                     className={`custom-btn custom-btn-sm ${column.scoreVisibility ? 'custom-btn-success' : 'custom-btn-secondary'}`}
                                                 >
                                                     {column.scoreVisibility === PublicStatus.Public ? 'Hiển thị' : 'Ẩn'}
@@ -116,9 +151,7 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                         </table>
                     </div>
                     <div className="custom-modal-footer">
-                        <button type="button" className="custom-btn custom-btn-secondary" onClick={onClose}>
-                            Đóng
-                        </button>
+
                     </div>
                 </div>
             </div>

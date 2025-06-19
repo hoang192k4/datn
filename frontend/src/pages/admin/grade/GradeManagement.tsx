@@ -10,7 +10,7 @@ import GradeColumnManagerModal from './GradeColumnManagerModal';
 import { addGradeColumnToCourseSection, createGrade, getGradeTypes, getStudentByCourseSectionId, updateGradeById, updateSummaryScore } from '../../../services/gradeStudentService';
 import Swal from 'sweetalert2';
 import { SummaryGrade } from '../../../enums/SummaryGrade';
-import { Evaluation, type EvaluationKey } from '../../../enums/Evaluation';
+import { Evaluation } from '../../../enums/Evaluation';
 
 
 interface GradeType {
@@ -46,7 +46,7 @@ interface Student {
     exam2_score?: number;
     final_score?: number;
     note: string;
-    evaluation: EvaluationKey;
+    evaluation: string | any;
   };
 }
 
@@ -190,8 +190,8 @@ const GradeManagement: React.FC = () => {
           total += Math.max(counts[typeId], grade.attempt);
         });
       });
-      total = total + 9;
     });
+    total += 9;
     setGradeColumn(column);
     setGradeTypeCounts(counts);
     setGradeTypeOrder(order);
@@ -523,9 +523,8 @@ const GradeManagement: React.FC = () => {
       }
     });
 
-
     cells.push(
-      <td key="avg" className="gm-table-cell gm-cell-centerl">{summary?.avg_score || '-'}</td>,
+      <td key="avg" className="gm-table-cell gm-cell-center">{summary?.avg_score || '-'}</td>,
       <td key="exam1" className="gm-table-cell gm-cell-center">
         {renderEditableCell('exam1_score', student.id, summary?.exam1_score, null, null, null, summary?.id)}
       </td>,
@@ -534,7 +533,7 @@ const GradeManagement: React.FC = () => {
       </td>,
       <td key="final" className="gm-table-cell gm-cell-center">{summary?.final_score || '-'}</td>,
       <td key="evaluation" className="gm-table-cell gm-cell-center">
-        {Evaluation[summary.evaluation]}
+        {Evaluation[summary?.evaluation as keyof typeof Evaluation]}
       </td>,
       <td key="notes" className="gm-table-cell">
         {renderEditableCell('notes', student.id, summary?.note)}
@@ -634,7 +633,7 @@ const GradeManagement: React.FC = () => {
             </div>
             <div className="gm-control-group">
               <div className="search-container">
-                <input type="text" placeholder="Tìm kiếm..." onChange={handleChangeSearchInput} />
+                <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={handleChangeSearchInput} />
                 <span className="icon">🔍</span>
               </div>
             </div>
