@@ -9,9 +9,14 @@ class CourseSectionAttendanceRequest extends BaseRequest
     public function methodPost()
     {
         return [
-            'date' => 'required|date',
-            'course_section_id' => 'required|min:1|exists:course_sections,id|integer',
+            'session_id' =>'required|exists:sessions,id',
             'attendance' => 'required'
+        ];
+    }
+
+    public function methodGet(){
+        return [
+            'course_section_id' => 'min:1|exists:course_sections,id|integer|required',
         ];
     }
 }

@@ -1,3 +1,4 @@
+import type { StudentStatus } from "../enums/StudentStatus"
 
 export interface StudentForm {
     name: string,
@@ -7,5 +8,6 @@ export interface StudentForm {
     address: string,
     gender: string,
     major: string,
-    status: string
+    status: StudentStatus
 }
+

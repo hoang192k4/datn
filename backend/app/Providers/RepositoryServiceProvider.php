@@ -21,6 +21,7 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Subject\SubjectRepositoryInterface' => 'App\Repositories\Subject\SubjectRepository',
         'App\Repositories\Chapter\ChapterRepositoryInterface' => 'App\Repositories\Chapter\ChapterRepository',
         'App\Repositories\Lecture\LectureRepositoryInterface' => 'App\Repositories\Lecture\LectureRepository',
+        'App\Repositories\Session\SessionRepositoryInterface' => 'App\Repositories\Session\SessionRepository',
     ];
 
     /**

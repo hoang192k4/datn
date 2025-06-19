@@ -5,7 +5,7 @@ import LoginPage from "../pages/Login/LoginPage";
 import HomePage from "../pages/home/HomePage";
 import TeacherLayout from "../components/layout/TeacherLayout";
 import { TeacherRoute } from "./TeacherRoute";
-import TeacherPage from "../pages/home/TeacherPage";
+/* import TeacherPage from "../pages/home/TeacherPage"; */
 import DocumentPage from "../pages/document/DocumentPage";
 import ClassPage from "../pages/Class/ClassPage";
 import SchedulePage from "../pages/schedule/SchedulePage";
@@ -23,7 +23,7 @@ const AppRoutes = () => {
         <Routes>
             {/* Route public */}
             <Route element={<MainLayout />}>
-                <Route path="/:slug" element={<TeacherPage />} />
+                {/* <Route path="/:slug" element={<TeacherPage />} /> */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dang-nhap" element={isAuthencation && role === null ? <Navigate to="/sinh-vien" replace /> :
                     isAuthencation && role !== null ? <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> : < LoginPage />} />
