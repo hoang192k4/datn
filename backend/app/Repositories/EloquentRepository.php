@@ -188,4 +188,26 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
     {
         return $this->model->firstOrCreate($conditions);
     }
+
+    public function where(array $conditions)
+    {
+        $query = $this->model->query();
+
+        foreach ($conditions as $key => $value) {
+            $query->where($key, $value);
+        }
+
+        return $query->get();
+    }
+
+    public function deleteByConditions(array $conditions)
+    {
+        $query = $this->model->query();
+
+        foreach ($conditions as $key => $value) {
+            $query->where($key, $value);
+        }
+
+        return $query->delete();
+    }
 }

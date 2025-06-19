@@ -9,3 +9,4 @@ export const getCourseSectionByTeacher = (key: any, page: number | null = null) 
         }
     });
 }
+

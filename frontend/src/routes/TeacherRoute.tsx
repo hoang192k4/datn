@@ -7,6 +7,7 @@ import TeacherProfile from "../pages/admin/profile/TeacherProfile";
 import AttendancePage from "../pages/admin/attendance/AttendancePage";
 import Grade from "../pages/admin/grade/GradeManagement";
 import NotificationPage from "../pages/Notification/NotificationPage";
+import Notification from "../pages/admin/notification/Notification";
 
 export const TeacherRoute = [
     {
@@ -43,8 +44,8 @@ export const TeacherRoute = [
     },
 
     {
-        'path': 'thong-bao',
-        'element': <NotificationPage />
+        'path': 'thong-bao/danh-sach',
+        'element': <Notification />
     },
     {
         'path': 'diem',

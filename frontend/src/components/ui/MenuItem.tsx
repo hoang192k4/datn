@@ -28,7 +28,7 @@ const MenuItem = ({ url, children, icon, className = "", onClick, subItems }: Me
             </Link>
 
             {subItems && subItems.length > 0 && (
-                <div className="dropdown-menu">
+                <div className="sidebar-dropdown-menu">
                     {subItems.map((subItem, index) => (
                         <Link
                             key={index}
