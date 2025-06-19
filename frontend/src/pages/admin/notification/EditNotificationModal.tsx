@@ -32,7 +32,7 @@ interface FormValues {
 
 type OptionType = { value: string; label: string };
 
-const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, onSuccessTeacher, onSuccessStudent }) => {
+const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, onSuccessTeacher, onSuccessStudent }) => {
     const [createLoading, setCreateLoading] = useState<boolean>(false);
     const [target, setTarget] = useState<string>(targetConstant.courseSection); // Default to students
     const { register, handleSubmit, formState: { errors }, control } = useForm<FormValues>({
@@ -339,4 +339,4 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
 
 
 
-export default NotificationModal;
+export default EditNotificationModal;

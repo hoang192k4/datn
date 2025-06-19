@@ -5,37 +5,63 @@ import { Tabs, TabList, TabPanel, Tab } from 'react-tabs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import 'react-tabs/style/react-tabs.css';
-import { getMyNotifications } from '../../../services/notificationService';
+import { deleteNotification, deletePost, getMyNotifications, getStudentNotifications } from '../../../services/notificationService';
 import type { Paginate } from '../../../types/paginate';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import { Loading } from '../../../components/ui/Loading';
-import CreateNotificationModal from './CreateNotificationModal'
-import { PublicStatus } from '../../../enums/PublicStatus';
+import CreateNotificationModal from './CreateNotificationModal';
+import NotificationItem from './NotificationItem';
+import StudentNotificationItem from './StudentNotificationItem';
+
+import Swal from 'sweetalert2';
 
 interface NotificationCourseSection {
-    id: string;
+    id: number;
     title: string;
     content: string;
     created_at: string;
     teacher: string;
-    course_section_name: string;
+    course_section: CourseSection;
     status: string;
+}
+
+
+interface CourseSection {
+    id: number,
+    name: string,
+}
+interface Student {
+    id: string,
+    name: string,
+    student_code: string
+}
+interface StudentNotification {
+    id: number,
+    title: string,
+    content: string,
+    created_at: string,
+    sender: string,
+    from: string,
+    status: string,
+    student: Student
 }
 
 const Notification: React.FC = () => {
     const [notifications, setNotifications] = useState<NotificationCourseSection[]>([]);
-
-
+    const [studentNotifications, setStudentNotifications] = useState<StudentNotification[]>([]);
+    const [studentNotifyPaginate, setStudentNotifyPaginate] = useState<Paginate>();
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [filterType, setFilterType] = useState<string>('all');
     const [paginate, setPaginate] = useState<Paginate>();
     const [loading, setLoading] = useState<boolean>(false);
+    const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false);
     const [isOpenCreateModal, setIsOpenCreateModal] = useState<boolean>(false);
 
 
     useEffect(() => {
         fetchMyNotifications({ page: 1, limit: 10 });
+        fetchStudentNotifications({});
     }, []);
     const fetchMyNotifications = async ({ page, limit }: Paginate) => {
         try {
@@ -49,7 +75,6 @@ const Notification: React.FC = () => {
                 setPaginate(paginate);
             }
 
-
         } catch (error: any) {
 
         } finally {
@@ -57,7 +82,83 @@ const Notification: React.FC = () => {
         }
     }
 
+    const fetchStudentNotifications = async ({ page, limit }: Paginate) => {
+        try {
+            setLoadingStudentNotify(true);
+            const response = await getStudentNotifications({ page, limit });
+            if (response.status === HttpStatus.SUCCESS) {
+                const notifications = response.data.data.notifications;
+                const paginate = response.data.data.meta;
+                setStudentNotifications(notifications);
+                setStudentNotifyPaginate(paginate);
+            }
 
+
+        } catch (error: any) {
+
+        } finally {
+            setLoadingStudentNotify(false);
+        }
+    }
+
+
+    const handleDeleteNotification = async (id: number) => {
+        Swal.fire({
+            title: 'Bạn chắc chắn xóa thông báo này!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Vâng, hãy xóa!"
+        }).then(async (results) => {
+            if (results.isConfirmed) {
+                try {
+                    const response = await deleteNotification(id);
+                    if (response.status === HttpStatus.SUCCESS) {
+                        Swal.fire({
+                            title: 'Xóa thông báo thành công',
+                            icon: 'success',
+                        });
+                        setStudentNotifications(prev => prev.filter(item => item.id !== id));
+                    }
+                } catch (error: any) {
+
+                }
+            }
+        })
+
+    }
+
+
+    const handleDeletePost = async (id: number) => {
+        Swal.fire({
+            title: 'Bạn chắc chắn xóa thông báo này!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Vâng, hãy xóa!"
+        }).then(async (results) => {
+            if (results.isConfirmed) {
+                try {
+                    const response = await deletePost(id);
+                    if (response.status === HttpStatus.SUCCESS) {
+                        Swal.fire({
+                            title: 'Xóa thông báo thành công',
+                            icon: 'success',
+                        });
+                        setNotifications(prev => prev.filter(item => item.id !== id));
+                    }
+                } catch (error: any) {
+
+                }
+            }
+        })
+
+
+    }
+
+    
     return (
         <>
             <PageHeader title='Thông Báo' subtitle='Quản lý thông báo của giảng viên' />
@@ -83,7 +184,6 @@ const Notification: React.FC = () => {
                         <Tab>Thông báo đến sinh viên</Tab>
                     </TabList>
                     <TabPanel>
-
 
                         {/* Filters */}
                         <div className="filters">
@@ -125,74 +225,14 @@ const Notification: React.FC = () => {
                         </div>
 
                         {/* Notifications List */}
-                        {loading ? (<Loading />) : notifications.map((notification) => (
+                        {loading ? (<Loading />) : notifications.length === 0 ? <div className="notification-no-item"> Không có thông báo nào</div> : notifications.map((notification) => (
                             <div key={notification.id} className="notification-item">
-                                <div className="notification-content">
-                                    <div className="notification-main">
-                                        <div className="notification-header">
-                                            <h3 className="notification-title">{notification.title}</h3>
-                                            {/* <span className={`badge ${notification.status === 'published' ? 'badge-published' :
-                                        notification.status === 'draft' ? 'badge-draft' : 'badge-archived'
-                                        }`}>
-                                        {notification.status === 'published' ? 'Đã xuất bản' :
-                                            notification.status === 'draft' ? 'Bản nháp' : 'Đã lưu trữ'}
-                                    </span>
-                                    */}
-                                            <span className={`badge ${notification.status === PublicStatus.Public ? 'badge-success' :
-                                                'badge-warning'
-
-                                                }`}>
-                                                {notification.status === PublicStatus.Public ? "Công khai" :
-                                                    "Không công khai"
-                                                }
-                                            </span>
-                                        </div>
-                                        <p className="notification-description">
-                                            {notification.content}
-                                        </p>
-                                        <div className="notification-meta">
-                                            <div className="meta-item">
-                                                <svg className="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                </svg>
-                                                <span>{notification.teacher}</span>
-                                            </div>
-                                            <div className="meta-item">
-                                                <svg className="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
-                                                <span>{notification.created_at}</span>
-                                            </div>
-                                            <div className="meta-item">
-                                                <span><strong>Đối tượng:</strong> {notification.course_section_name}</span>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div className="notification-actions">
-                                        <button className="action-btn view">
-                                            <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        </button>
-                                        <button className="action-btn edit">
-                                            <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                        <button className="action-btn delete">
-                                            <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
+                                <NotificationItem notification={notification} onDelete={() => handleDeletePost(notification.id)} />
                             </div>
                         ))}
 
                         {/* Pagination */}
-                        {paginate ? (<div className="pagination">
+                        {notifications.length === 0 ? <> </> : paginate ? (<div className="pagination">
                             <div className="pagination-info">
                                 Hiển thị <strong> {paginate?.from}</strong> đến <strong> {paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> thông báo
                             </div>
@@ -243,86 +283,30 @@ const Notification: React.FC = () => {
                         </div>
 
                         {/* Notifications List */}
-                        {notifications.map((notification) => (
+                        {loadingStudentNotify ? (<Loading />) : studentNotifications.length === 0 ? <div className="notification-no-item">Không có thông báo nào</div> : studentNotifications.map((notification) => (
                             <div key={notification.id} className="notification-item">
-                                <div className="notification-content">
-                                    <div className="notification-main">
-                                        <div className="notification-header">
-                                            <h3 className="notification-title">{notification.title}</h3>
-                                            {/* <span className={`badge ${notification.status === 'published' ? 'badge-published' :
-                                        notification.status === 'draft' ? 'badge-draft' : 'badge-archived'
-                                        }`}>
-                                        {notification.status === 'published' ? 'Đã xuất bản' :
-                                            notification.status === 'draft' ? 'Bản nháp' : 'Đã lưu trữ'}
-                                    </span>
-                                    <span className={`badge ${notification.type === 'info' ? 'badge-info' :
-                                        notification.type === 'warning' ? 'badge-warning' :
-                                            notification.type === 'success' ? 'badge-success' : 'badge-error'
-                                        }`}>
-                                        {notification.type === 'info' ? 'Thông tin' :
-                                            notification.type === 'warning' ? 'Cảnh báo' :
-                                                notification.type === 'success' ? 'Thành công' : 'Lỗi'}
-                                    </span> */}
-                                        </div>
-                                        <p className="notification-description">
-                                            {notification.content}
-                                        </p>
-                                        <div className="notification-meta">
-                                            <div className="meta-item">
-                                                <svg className="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                </svg>
-                                                <span>{notification.teacher}</span>
-                                            </div>
-                                            <div className="meta-item">
-                                                <svg className="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
-                                                <span>{notification.created_at}</span>
-                                            </div>
-                                            <div className="meta-item">
-                                                <span><strong>Đối tượng:</strong> {notification.course_section_name}</span>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div className="notification-actions">
-                                        <button className="action-btn view">
-                                            <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        </button>
-                                        <button className="action-btn edit">
-                                            <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                        <button className="action-btn delete">
-                                            <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
+                                <StudentNotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
                             </div>
                         ))}
 
                         {/* Pagination */}
-                        <div className="pagination">
-                            <div className="pagination-info">
-                                Hiển thị <strong> {paginate?.from}</strong> đến <strong> {paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> thông báo
+                        {
+                            studentNotifications.length === 0 ? <> </> : <div className="pagination">
+                                <div className="pagination-info">
+                                    Hiển thị <strong> {studentNotifyPaginate?.from}</strong> đến <strong> {studentNotifyPaginate?.to}</strong> trong tổng số <strong>{studentNotifyPaginate?.total}</strong> thông báo
+                                </div>
+                                <div className="pagination-controls">
+                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.previous_page })}>Trước</button>
+                                    <button className="page-btn active">1</button>
+                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.next_page })}>Sau</button>
+                                </div>
                             </div>
-                            <div className="pagination-controls">
-                                <button className="page-btn">Trước</button>
-                                <button className="page-btn active">1</button>
-                                <button className="page-btn">Sau</button>
-                            </div>
-                        </div>
+                        }
+
                     </TabPanel>
                 </Tabs>
             </div >
-            {isOpenCreateModal ? <CreateNotificationModal isOpen={isOpenCreateModal} onClose={() => { setIsOpenCreateModal(false) }} onSuccessTeacher={() => { fetchMyNotifications({ page: 1 }) }} /> : <> </>
+            {isOpenCreateModal ? <CreateNotificationModal isOpen={isOpenCreateModal} onClose={() => { setIsOpenCreateModal(false) }} onSuccessTeacher={() => { fetchMyNotifications({ page: 1 }) }} onSuccessStudent={() => fetchStudentNotifications({ page: 1 })} /> : <> </>
             }
         </>
     )

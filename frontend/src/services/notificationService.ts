@@ -50,3 +50,22 @@ export const sendNotificationToStudent = ({ title, body, receiver_ids }: Notific
         receiver_ids
     });
 }
+
+export const getStudentNotifications = ({ page, limit }: Paginate) => {
+    return axiosTeacherInstance.get('/me/students/notifications', {
+        params: {
+            page,
+            limit
+        }
+    })
+}
+
+export const deletePost = async (id: number) => {
+    const response = await axiosTeacherInstance.delete(`/posts/${id}`);
+    return response.data;
+}
+
+export const deleteNotification = async (id: number) => {
+    const response = await axiosTeacherInstance.delete(`/notifications/${id}`);
+    return response.data;
+}

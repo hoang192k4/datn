@@ -448,3 +448,12 @@
      color: white !important;
      /* Quan trọng để chữ trắng lên */
  }
+
+ .notification-no-item {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100px;
+     padding-top: 10px;
+     text-align: center;
+ }

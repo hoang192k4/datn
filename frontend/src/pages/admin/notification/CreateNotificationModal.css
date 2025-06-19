@@ -468,3 +468,7 @@
  .notification-radio-option-margin{
     margin-top: 10px;
  }
+
+ .notification-error-message{
+    color: red;
+ }
