@@ -15,7 +15,7 @@ class CourseSectionAttendanceRepository extends EloquentRepository implements Co
         return CourseSection::class;
     }
 
-    public function storeAttendanceStudents($sessionId, $attendanceStudents)
+    public function storeAndUpdateAttendanceStudents($sessionId, $attendanceStudents)
     {
         $result = [];
         foreach ($attendanceStudents as $attendanceStudent) {
@@ -41,4 +41,5 @@ class CourseSectionAttendanceRepository extends EloquentRepository implements Co
             'schedules.sessions.attendances.student'
         ])->find($courseSectionId);
     }
+
 }

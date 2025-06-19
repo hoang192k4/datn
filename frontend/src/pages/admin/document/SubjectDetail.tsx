@@ -109,7 +109,7 @@ const SubjectDetail = () => {
         const allValues = getValues();
         const updateValues: Partial<ChapterInstance> = {}
         for (const key in dirtyFields) {
-            updateValues[key as keyof ChapterInstance] = allValues[key as keyof ChapterInstance];
+            (updateValues as any)[key as keyof ChapterInstance] = allValues[key as keyof ChapterInstance];
         }
         if (Object.keys(updateValues).length === 0) {
             Swal.fire({
@@ -251,7 +251,7 @@ const SubjectDetail = () => {
         const updatedValues: Partial<Lecture> = {};
         //Kiểm tra lấy những trường được thay đổi
         for (const key in dirtyFieldsLecture) {
-            updatedValues[key as keyof Lecture] = allValues[key as keyof Lecture];
+            (updatedValues as any)[key as keyof Lecture] = allValues[key as keyof Lecture];
         }
 
         if (Object.keys(updatedValues).length === 0) {

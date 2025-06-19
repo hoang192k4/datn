@@ -45,9 +45,11 @@ Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::clas
 Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
     ->prefix('course-section-attendances')
     ->group(function () {
-        Route::get('/{courseSectionId}/students', 'getStudentsByCourseSection');
-        Route::post('/', 'storeAttendanceStudents');
-        Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection');
+        Route::get('/{courseSectionId}/students', 'getStudentsByCourseSection'); //api lấy danh sách sinh viên của lớp để điểm danh
+        Route::post('/', 'storeAttendanceStudents');    //api thêm mới điểm danh cho sinh viên
+        Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection'); //api lấy danh sách sinh viên đã điểm danh theo lớp
+        Route::get('/sessions', 'getSessionsByCourseSection'); //api lấy danh sách buổi học của lớp đó
+        Route::get('/attendances-session', 'getAttendancesBySession'); //api lấy danh sách điểm danh của lớp học theo buổi đó
     });
 
 
@@ -120,24 +122,24 @@ Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)
 Route::controller(App\Http\Controllers\Subject\SubjectController::class)
     ->prefix('subjects')
     ->group(function () {
-        Route::get('/', 'getSubjectByTeacherId');
-        Route::get('/detail-subject', 'getDetailDocumentBySubjectId');
-        Route::get('/search-subject', 'getListSubjectSearch');
+        Route::get('/', 'getSubjectByTeacherId'); //api lấy danh sách môn học theo giảng viên
+        Route::get('/detail-subject', 'getDetailDocumentBySubjectId'); //api lấy thông tin chi tiết của môn học
+        Route::get('/search-subject', 'getListSubjectSearch'); //api lấy danh sách môn học theo giảng viên
     });
 
 
 Route::controller(App\Http\Controllers\Chapter\ChapterController::class)
     ->prefix('chapters')
     ->group(function () {
-        Route::post('/', 'create');
-        Route::delete('/{chapter}', 'destroy');
-        Route::put('/{chapter}', 'update');
+        Route::post('/', 'create'); //api thêm mới chương
+        Route::delete('/{chapter}', 'destroy'); //api xóa chương
+        Route::put('/{chapter}', 'update'); //api cập nhật chương
     });
 
 Route::controller(App\Http\Controllers\Lecture\LectureController::class)
     ->prefix('lectures')
     ->group(function () {
-        Route::post('/', 'create');
-        Route::delete('/{lecture}', 'destroy');
-        Route::put('/{lecture}', 'update');
+        Route::post('/', 'create'); //api thêm mới bài giảng theo chương
+        Route::delete('/{lecture}', 'destroy'); //api xóa bài giảng
+        Route::put('/{lecture}', 'update'); //api cập nhật bài giảng
     });

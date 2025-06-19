@@ -1,0 +1,286 @@
+.attendance-students {
+    border-radius: 10px;
+    min-height: 600px;
+    padding: 10px 30px;
+    box-shadow: 5px 5px 5px 5px #d1c5c5;
+}
+
+.attendance-table>tbody>tr>td {
+    text-align: center;
+    min-width: 150px;
+}
+
+.attendance-table>tbody>tr:hover {
+    background-color: #eef2ff;
+}
+
+.attendance-table>tbody>tr>td:first-child {
+    min-width: 50px;
+}
+
+.attendance-table-wrapper {
+    overflow: auto;
+    max-height: 900px;
+    margin-top: 10px;
+}
+
+.attendance-table {
+    min-width: 1100px;
+}
+
+.attendance-students-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.attendance-table-wrapper::-webkit-scrollbar {
+    width: 4px;
+}
+
+.attendance-table-wrapper::-webkit-scrollbar-thumb {
+    background-color: #1e3a8a;
+    border-radius: 4px;
+    border: 1px solid grey;
+}
+
+.btn-attendance {
+    color: white;
+    background-color: #1e3a8a;
+    font-size: 14px;
+    padding: 10px 30px;
+    border-radius: 5px;
+    border: none;
+    margin-top: 8px;
+    transition: all 0.3s linear;
+}
+
+.btn-attendance:last-child {
+    margin-left: 4px;
+}
+
+.btn-attendance:hover {
+    cursor: pointer;
+    background-color: #2e26ce;
+}
+
+.attendance-search-student {
+    margin: 4px 0;
+    position: relative;
+    width: 30%;
+}
+
+.attendance-search-student>input {
+    background-color: white;
+    color: #1e3a8a;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    padding-right: 30px;
+}
+
+.attendance-search-student>input:focus {
+    border: 2px solid #2684ff;
+}
+
+.attendance-search-student>svg {
+    position: absolute;
+    border-left: 1px solid #ddd;
+    right: 5px;
+    top: 10px;
+    padding-left: 2px;
+    color: #333;
+    font-size: 20px;
+}
+
+/* Attendance creaete */
+.attendance-form-wrapper {
+    margin-top: 12px;
+    color: #333;
+    cursor: pointer;
+}
+
+.attendance-form-wrapper h1 {
+    color: #1e3a8a;
+}
+
+.attendance-form-wrapper-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.attendance-form-wrapper-left {
+    display: flex;
+    align-items: center;
+}
+.attendance-form-wrapper-left > h2 {
+    color: #1e3a8a;
+}
+.attendance-form-wrapper-left>span {
+    display: flex;
+}
+
+.attendance-form-wrapper-left>span>svg {
+    font-size: 30px;
+    color: #1e3a8a;
+    transition: all 0.3s ease;
+    margin-right: 20px;
+}
+
+.attendance-form-wrapper-left>span>svg:hover {
+    font-size: 34px;
+    border-bottom-style: 1px solid #1e3a8a;
+}
+
+.attendance-form-wrapper-right>select {
+    background-color: white;
+    color: #333;
+    padding: 10px;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px;
+    margin: 4px 0;
+}
+
+.attendance-form-wrapper-right>select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.attendance-form-wrapper-right>select>option {
+    font-size: 15px;
+}
+
+.attendance-form-wrapper-right>select>option:first-child {
+    text-align: center;
+}
+
+.attendance-form-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.attendance-form-wrapper thead {
+    background-color: #1e3a8a;
+    color: white;
+}
+
+.attendance-form-wrapper tbody tr:hover {
+    background-color: #eef2ff;
+}
+
+#attendance-form {
+    overflow: auto;
+    max-height: 900px;
+}
+
+#attendance-form>table>tbody>tr>td {
+    min-width: 150px;
+}
+
+#attendance-form::-webkit-scrollbar {
+    width: 4px;
+}
+
+#attendance-form::-webkit-scrollbar-thumb {
+    background-color: #1e3a8a;
+    border-radius: 4px;
+    border: 1px solid grey;
+}
+
+.attendance-form-wrapper th,
+.attendance-form-wrapper td {
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.attendance-form-wrapper th:first-child,
+.attendance-form-wrapper td:first-child {
+    text-align: left;
+}
+
+.attendance-form-wrapper input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #999;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+
+.attendance-form-wrapper input[type="radio"]:checked {
+    border-color: #1e3a8a;
+    background-color: white;
+}
+
+.attendance-form-wrapper input[type="radio"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 4px;
+    width: 8px;
+    height: 11px;
+    border: solid #1e3a8a;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.attendance-form-wrapper textarea {
+    width: 100%;
+    height: 50px;
+    resize: vertical;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: black;
+    outline: none;
+    background-color: white;
+}
+
+.attendance-form-wrapper button {
+    margin: 1rem 0;
+    padding: 0.75rem 1.5rem;
+    background-color: #1e3a8a;
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.attendance-form-wrapper button:hover {
+    background-color: #3b55c1;
+}
+
+.error-row {
+    background-color: #ffe5e5;
+    border: 1px solid #ff4d4f;
+}
+
+.error-row td {
+    border-color: #e48c8d !important;
+}
