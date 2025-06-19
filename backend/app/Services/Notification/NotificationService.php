@@ -119,7 +119,7 @@ class NotificationService implements NotificationServiceInterface
             ];
         })->toArray();
         $this->repository->inserts($notifications);
-        $deviceTokens = $students->pluck('device_token')->filter()->values();
+        $deviceTokens = $students->pluck('device_token')->filter()->values()->toArray();
 
         $this->firebaseService->sendNotification($deviceTokens, $title, $body, null);
         return true;

@@ -97,6 +97,7 @@ Route::controller(App\Http\Controllers\Post\PostController::class)
     ->prefix('posts')
     ->group(function () {
         Route::delete('/{id}', 'destroy');
+        Route::put('/{id}', 'update');
     });
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')

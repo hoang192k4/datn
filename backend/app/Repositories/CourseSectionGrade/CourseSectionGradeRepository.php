@@ -41,4 +41,3 @@ class CourseSectionGradeRepository extends EloquentRepository implements CourseS
             ->update(['score_visibility' => PublicStatus::Public]) > 0;
     }
 }
-

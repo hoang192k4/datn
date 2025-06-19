@@ -15,6 +15,16 @@ interface NotificationStudent {
     receiver_ids: string[],
 }
 
+
+interface FormValues {
+    title: string;
+    content: string;
+    course_section_id?: OptionType;
+    public?: string;
+    push_notification: string;
+}
+
+type OptionType = { value: string | number; label: string };
 export const getMyNotifications = ({ page, limit }: Paginate) => {
     return axiosTeacherInstance.get('/me/posts', {
         params: {
@@ -67,5 +77,13 @@ export const deletePost = async (id: number) => {
 
 export const deleteNotification = async (id: number) => {
     const response = await axiosTeacherInstance.delete(`/notifications/${id}`);
+    return response.data;
+}
+
+export const updatePost = async (data: FormValues, id: number) => {
+    const response = await axiosTeacherInstance.put(`posts/${id}`, {
+        ...data,
+        course_section_id: data.course_section_id?.value,
+    });
     return response.data;
 }

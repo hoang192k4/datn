@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Exceptions\ModelNotFoundByIdException;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
 
 abstract class EloquentRepository implements EloquentRepositoryInterface
 {
@@ -20,7 +21,7 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
 
     abstract function getModel();
 
-    public function getAll()
+    public function getAll(): Collection
     {
         return $this->model->all();
     }
@@ -30,12 +31,15 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         return $this->model->paginate($limit,  '*', 'page', $page)->appends(['limit' => $limit]);
     }
 
-    public function create(array $data)
+    public function create(array $data): object|bool
     {
         return $this->model->create($data);
     }
 
-    public function update($id, array $data)
+    /**
+     * @return \Illuminate\Database\Eloquent\Model |false
+     */
+    public function update($id, array $data):bool
     {
         $model = $this->model->find($id);
         if ($model) {
@@ -44,7 +48,7 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         return false;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $model = $this->model->find($id);
         if ($model) {
@@ -86,7 +90,7 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
     /**
      * Tìm một instance theo id, nếu không có sẽ bắt lỗi exception
      */
-    public function findOrFailById($id)
+    public function findOrFailById($id): object|bool
     {
         $record = $this->model->find($id);
 
@@ -97,18 +101,17 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         return $record;
     }
 
-    public function updateOrCreate(array $conditions, array $resource)
+    public function updateOrCreate(array $conditions, array $resource): object|bool
     {
         return $this->model->updateOrCreate($conditions, $resource) ?? false;
     }
 
-
-    public function findWithConditions(array $conditions)
+    public function findWithConditions(array $conditions): object|bool
     {
         return $this->model->where($conditions)->first();
     }
 
-    public function inserts(array $data)
+    public function inserts(array $data): bool
     {
         DB::beginTransaction();
         try {
@@ -121,9 +124,9 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         }
     }
 
-    public function findMany($ids)
+    public function findMany($ids): Collection
     {
-        return $this->model->findMany($ids) ?? false;
+        return $this->model->findMany($ids);
     }
 
 
@@ -184,12 +187,12 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
     /**
      * tìm theo điều kiện nếu không có record theo điều kiện thì tạo bản ghi mới
      */
-    public function firstOrCreate(array $conditions)
+    public function firstOrCreate(array $conditions): object
     {
         return $this->model->firstOrCreate($conditions);
     }
 
-    public function where(array $conditions)
+    public function where(array $conditions): Collection
     {
         $query = $this->model->query();
 
@@ -200,7 +203,7 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         return $query->get();
     }
 
-    public function deleteByConditions(array $conditions)
+    public function deleteByConditions(array $conditions): bool
     {
         $query = $this->model->query();
 

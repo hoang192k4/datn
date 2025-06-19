@@ -12,6 +12,7 @@ import { Loading } from '../../../components/ui/Loading';
 import CreateNotificationModal from './CreateNotificationModal';
 import NotificationItem from './NotificationItem';
 import StudentNotificationItem from './StudentNotificationItem';
+import EditNotificationModal from './EditNotificationModal';
 
 import Swal from 'sweetalert2';
 
@@ -55,9 +56,10 @@ const Notification: React.FC = () => {
     const [filterType, setFilterType] = useState<string>('all');
     const [paginate, setPaginate] = useState<Paginate>();
     const [loading, setLoading] = useState<boolean>(false);
-    const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false);
+    const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false)
     const [isOpenCreateModal, setIsOpenCreateModal] = useState<boolean>(false);
-
+    const [isOpenEditModal, setIsOpenEditModal] = useState<boolean>(false);
+    const [editingPost, setEditingPost] = useState<NotificationCourseSection>();
 
     useEffect(() => {
         fetchMyNotifications({ page: 1, limit: 10 });
@@ -158,7 +160,12 @@ const Notification: React.FC = () => {
 
     }
 
-    
+    const handleEdit = (post: NotificationCourseSection) => {
+        setEditingPost(post);
+        setIsOpenEditModal(true);
+    }
+
+
     return (
         <>
             <PageHeader title='Thông Báo' subtitle='Quản lý thông báo của giảng viên' />
@@ -227,7 +234,7 @@ const Notification: React.FC = () => {
                         {/* Notifications List */}
                         {loading ? (<Loading />) : notifications.length === 0 ? <div className="notification-no-item"> Không có thông báo nào</div> : notifications.map((notification) => (
                             <div key={notification.id} className="notification-item">
-                                <NotificationItem notification={notification} onDelete={() => handleDeletePost(notification.id)} />
+                                <NotificationItem notification={notification} onDelete={() => handleDeletePost(notification.id)} onEdit={() => handleEdit(notification)}/>
                             </div>
                         ))}
 
@@ -285,7 +292,7 @@ const Notification: React.FC = () => {
                         {/* Notifications List */}
                         {loadingStudentNotify ? (<Loading />) : studentNotifications.length === 0 ? <div className="notification-no-item">Không có thông báo nào</div> : studentNotifications.map((notification) => (
                             <div key={notification.id} className="notification-item">
-                                <StudentNotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
+                                <StudentNotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} onEdit={() => { }} />
                             </div>
                         ))}
 
@@ -297,7 +304,7 @@ const Notification: React.FC = () => {
                                 </div>
                                 <div className="pagination-controls">
                                     <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.previous_page })}>Trước</button>
-                                    <button className="page-btn active">1</button>
+                                    <button className="page-btn active"> {studentNotifyPaginate?.current_page} </button>
                                     <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.next_page })}>Sau</button>
                                 </div>
                             </div>
@@ -307,6 +314,10 @@ const Notification: React.FC = () => {
                 </Tabs>
             </div >
             {isOpenCreateModal ? <CreateNotificationModal isOpen={isOpenCreateModal} onClose={() => { setIsOpenCreateModal(false) }} onSuccessTeacher={() => { fetchMyNotifications({ page: 1 }) }} onSuccessStudent={() => fetchStudentNotifications({ page: 1 })} /> : <> </>
+            }
+
+            {
+                isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={() => { fetchMyNotifications({ page: 1 }) }} /> : <> </>
             }
         </>
     )

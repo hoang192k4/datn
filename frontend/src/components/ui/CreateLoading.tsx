@@ -1,4 +1,4 @@
-export const CreateLoading = () => {
+export const CreateLoading = ({ title }: any) => {
     return (
         <>
             <style>
@@ -207,7 +207,7 @@ export const CreateLoading = () => {
             <div className="loading-overlay" id="loadingOverlay">
                 <div className="loading-container">
                     <div className="spinner"></div>
-                    <div className="loading-text">Đang tạo thông báo</div>
+                    <div className="loading-text">{title}</div>
                     <div className="loading-subtext">Vui lòng đợi<span className="dots"></span></div>
                 </div>
             </div>

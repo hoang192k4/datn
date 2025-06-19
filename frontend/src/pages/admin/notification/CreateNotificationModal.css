@@ -231,8 +231,12 @@
  }
 
  input[type="checkbox"] {
-     accent-color: #667eea;
+     accent-color: #667eea !important;
      /* Màu xanh tím gradient của bạn */
+
+     background-color: white !important;
+     /* nền ô vuông */
+     border: 1px solid white !important;
  }
 
  .notification-student-checkbox {
@@ -465,10 +469,10 @@
  }
 
 
- .notification-radio-option-margin{
-    margin-top: 10px;
+ .notification-radio-option-margin {
+     margin-top: 10px;
  }
 
- .notification-error-message{
-    color: red;
+ .notification-error-message {
+     color: red;
  }
