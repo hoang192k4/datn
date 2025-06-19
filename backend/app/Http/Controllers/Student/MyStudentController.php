@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Student\MyStudentRequest;
+use App\Http\Resources\Student\StudentNotificationResouceCollection;
 use App\Http\Resources\Student\StudentNotificationResource;
 use App\Http\Resources\Student\StudentNotificationResourceCollection;
 use App\Repositories\Student\StudentRepositoryInterface;
@@ -31,7 +32,7 @@ class MyStudentController extends BaseController
             $key = $data['key'] ?? null;
             $teacherId = $this->getCurrentTeacherId();
             $students = $this->studentRepository->getMyStudents($teacherId, $page, $limit, $key);
-            return $this->jsonResponseSuccess(new StudentNotificationResourceCollection($students));
+            return $this->jsonResponseSuccess(new StudentNotificationResouceCollection($students));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

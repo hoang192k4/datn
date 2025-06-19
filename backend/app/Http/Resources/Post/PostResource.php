@@ -13,7 +13,7 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
-            'course_section_name' => $this->course_section->name,
+            'course_section' => ['id' => $this->course_section->id, 'name' => $this->course_section->name],
             'teacher' => $this->teacher->name,
             'created_at' => format_datetime($this->created_at, 'H:i d-m-Y'),
             'status' => $this->status,

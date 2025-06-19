@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Student;
+namespace App\Http\Resources\Notification;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -10,7 +10,7 @@ class StudentNotificationResourceCollection extends ResourceCollection
     public function toArray(Request $request)
     {
         return [
-            'students' => $this->collection->map(function ($item) {
+            'notifications' => $this->collection->map(function ($item) {
                 return new StudentNotificationResource($item);
             }),
             'links' => [

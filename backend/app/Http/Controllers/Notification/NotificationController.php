@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Notification;
 
+use App\Exceptions\ModelNotFoundByIdException;
 use Exception;
 use App\Models\Notification;
 use App\Http\Controllers\BaseController;
@@ -13,19 +14,23 @@ use App\Http\Requests\Notification\NotificationTestRequest;
 use App\Services\Notification\NotificationServiceInterface;
 use App\Http\Requests\Notification\NotificationStudentsRequest;
 use App\Http\Resources\Notification\NotificationResourceCollection;
+use App\Repositories\Notification\NotificationRepositoryInterface;
 use Illuminate\Auth\AuthenticationException;
 
 class NotificationController extends BaseController
 {
 
     protected $notificationService;
+    protected $notificationRepository;
     public function __construct(
         FirebaseServiceInterface $service,
         NotificationServiceInterface $notificationService,
+        NotificationRepositoryInterface $notificationRepository
 
     ) {
         $this->service = $service;
         $this->notificationService = $notificationService;
+        $this->notificationRepository = $notificationRepository;
         $this->middleware('auth:teacher,student');
     }
 
@@ -75,6 +80,20 @@ class NotificationController extends BaseController
             return $this->jsonResponseSuccess(new NotificationResourceCollection($notifications));
         } catch (AuthenticationException $e) {
             return $this->jsonResponseError($e->getMessage(), 401);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $instance = $this->notificationRepository->findOrFailById($id);
+            $instance->delete();
+            return $this->jsonResponseSuccess();
+        } catch (ModelNotFoundByIdException $e) {
+            return $this->jsonResponseError('Không có instance theo id ' . $id, 404);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

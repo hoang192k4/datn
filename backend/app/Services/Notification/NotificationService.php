@@ -24,6 +24,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Type\Integer;
 
 class NotificationService implements NotificationServiceInterface
 {
@@ -59,6 +60,7 @@ class NotificationService implements NotificationServiceInterface
             $sendTo = $data['send_to'] ?? SendToUserType::All->value;
             $role = $this->getCurrentTeacherRole();
             $currentTeacherId = $this->getCurrentTeacherId();
+
             if ($role === Role::SUBJECT_TEACHER || $role === Role::HOMEROOM_TEACHER)
                 $type = NotificationType::TeacherSend->value;
             else
@@ -98,20 +100,22 @@ class NotificationService implements NotificationServiceInterface
             return false;
         }
     }
-    public function sendNotificationToStudents(string $title, string $body, array $student_ids, string $type)
+
+    public function sendNotificationToStudents(string $title, string $body, array $student_ids, string $type, $postId = 0)
     {
         $teacherId = $this->getCurrentTeacherId();
         $students = $this->studentRepository->findMany($student_ids);
 
         if (count($students) == 0)
             return false;
-        $notifications = $students->map(function ($student) use ($title, $body, $teacherId, $type) {
+        $notifications = $students->map(function ($student) use ($title, $body, $teacherId, $type, $postId) {
             return [
                 'teacher_id' => $teacherId,
                 'student_id' => $student->id,
                 'title' => $title,
                 'content' => $body,
                 'type' => $type,
+                'post_id' => $postId,
             ];
         })->toArray();
         $this->repository->inserts($notifications);
@@ -131,8 +135,8 @@ class NotificationService implements NotificationServiceInterface
             $publicStatus = $data['public_type'] ?? PublicStatus::Public;
             $courseSection = $this->courseSectionRepository->findOrFailById($data['course_section_id']);
             $studentIds = $courseSection->students->pluck('id')->values()->toArray();
-            $this->postRepository->create(['title' => $title, 'content' => $body, 'course_section_id' => $courseSection->id, 'teacher_id' => $teacherSendId, 'status' => $publicStatus]);
-            $this->sendNotificationToStudents($title, $body, $studentIds, NotificationType::TeacherSend->value);
+            $post = $this->postRepository->create(['title' => $title, 'content' => $body, 'course_section_id' => $courseSection->id, 'teacher_id' => $teacherSendId, 'status' => $publicStatus]);
+            $this->sendNotificationToStudents($title, $body, $studentIds, NotificationType::TeacherSend->value, $post->id);
             return true;
         } catch (ModelNotFoundByIdException $e) {
             $this->logError($e->getMessage(), $e);
