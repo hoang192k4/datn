@@ -69,11 +69,12 @@ class SummaryGradeService implements SummaryGradeServiceInterface
 
 
     //cập nhật điểm thi, chuyên cần
-    public function update(Request $request, SummaryGrade $instance): object|bool
+    public function update(Request $request,  $id): object|bool
     {
         DB::beginTransaction();
         try {
             $data = $request->validated();
+            $instance = $this->summaryGradeRepository->findOrFailById($id);
             switch ($data['score_type']) {
                 case SummaryGradeType::Exam1->value:
                     $instance->exam1_score = $data['score'];

@@ -72,7 +72,6 @@ const Notification: React.FC = () => {
             if (response.status === HttpStatus.SUCCESS) {
                 const notifications = response.data.data.posts;
                 const paginate = response.data.data.meta;
-                console.log(notifications, paginate);
                 setNotifications(notifications);
                 setPaginate(paginate);
             }
@@ -234,7 +233,7 @@ const Notification: React.FC = () => {
                         {/* Notifications List */}
                         {loading ? (<Loading />) : notifications.length === 0 ? <div className="notification-no-item"> Không có thông báo nào</div> : notifications.map((notification) => (
                             <div key={notification.id} className="notification-item">
-                                <NotificationItem notification={notification} onDelete={() => handleDeletePost(notification.id)} onEdit={() => handleEdit(notification)}/>
+                                <NotificationItem notification={notification} onDelete={() => handleDeletePost(notification.id)} onEdit={() => handleEdit(notification)} />
                             </div>
                         ))}
 

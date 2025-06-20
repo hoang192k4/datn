@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './GradeManagement.css';
+import 'react-toastify/dist/ReactToastify.css';
 import PageHeader from '../../../components/ui/PageHeader';
-import { getCourseSectionByTeacher } from '../../../services/courseSectionService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import SelectWithPagination from '../../../components/ui/SelectWithPagination';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import GradeColumnManagerModal from './GradeColumnManagerModal';
 import { addGradeColumnToCourseSection, createGrade, getGradeTypes, getStudentByCourseSectionId, updateGradeById, updateSummaryScore } from '../../../services/gradeStudentService';
 import Swal from 'sweetalert2';
 import { SummaryGrade } from '../../../enums/SummaryGrade';
 import { Evaluation } from '../../../enums/Evaluation';
+import { normalizeString } from '../../../utils/stringUtil';
 
 
 interface GradeType {
@@ -21,7 +21,7 @@ interface GradeType {
 interface CourseSection {
   id?: number;
   name: string;
-  students: number;
+  students_total: number;
 }
 
 interface Grade {
@@ -54,14 +54,13 @@ interface gradeTypeCounts {
   [typeId: number]: any;
 }
 
-
 const GradeManagement: React.FC = () => {
   // State management
   const [currentClassId, setCurrentClassId] = useState<number>(0);
+  const [currentCourseSection, setCurrentCourseSection] = useState<CourseSection>({ id: undefined, name: '', students_total: 0 });
   const [gradeTypeCounts, setGradeTypeCounts] = useState<gradeTypeCounts>({});
   const [gradeTypeOrder, setGradeTypeOrder] = useState<number[]>([]);
   const [studentData, setStudentData] = useState<Student[]>([]);
-  const [allClasses, setAllClasses] = useState([]);
   const [selectedGradeType, setSelectedGradeType] = useState<string>('');
   const [gradeLoading, setGradeLoading] = useState(false);
   const [editingCell, setEditingCell] = useState<string | null>(null);
@@ -69,15 +68,18 @@ const GradeManagement: React.FC = () => {
   const [gradeTypes, setGradeTypes] = useState([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState('');
-  const [debouncedKeyword, setDebouncedKeyword] = useState('');
   const [totalColumn, setTotalColumn] = useState<number | undefined | null>(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [gradeColumn, setGradeColumn] = useState([]);
+  // const [debouncedKeyword, setDebouncedKeyword] = useState<string>('');
 
+  const filteredStudents = studentData.filter((student) =>
+    normalizeString(student.name).includes(normalizeString(keyword)) ||
+    normalizeString(student.student_code).includes(normalizeString(keyword))
+  );
 
   // Initialize data
   useEffect(() => {
-    loadCourseSections('');
     loadGradeTypes();
   }, []);
 
@@ -88,20 +90,7 @@ const GradeManagement: React.FC = () => {
       setGradeTypes(gradeTypes);
     }
   }
-  const [loading, setLoading] = useState(false);
-  const loadCourseSections = async (keyWord: string) => {
-    try {
-      setLoading(true);
-      const response = await getCourseSectionByTeacher(keyWord);
-      if (response.status === HttpStatus.SUCCESS) {
-        setAllClasses(response.data.data.course_sections);
-      }
-    } catch (e) {
-      console.log(loading);
-    } finally {
-      setLoading(false);
-    }
-  }
+
 
   // Focus input when editing starts
   useEffect(() => {
@@ -111,21 +100,22 @@ const GradeManagement: React.FC = () => {
     }
   }, [editingCell]);
 
-  const handleClassSelection = (classId: { value: string }) => {
-    if (classId) {
-      setCurrentClassId(parseInt(classId.value));
-      fetchGrades(parseInt(classId.value));
+  const handleClassSelection = (courseSection: { value: string, data: any }) => {
+    if (courseSection) {
+      setCurrentClassId(parseInt(courseSection.value));
+      fetchGrades(parseInt(courseSection.value), undefined);
+      setCurrentCourseSection(courseSection.data);
     }
   };
 
 
 
-  const fetchGrades = async (courseSectionId: any) => {
+  const fetchGrades = async (courseSectionId: any, key: string | undefined) => {
     if (!courseSectionId) return;
 
     try {
       setGradeLoading(true);
-      const response = await getStudentByCourseSectionId(courseSectionId);
+      const response = await getStudentByCourseSectionId(courseSectionId, key);
       if (response.status == HttpStatus.SUCCESS) {
         const students = response.data.data;
         setStudentData(students);
@@ -199,7 +189,6 @@ const GradeManagement: React.FC = () => {
   };
 
   const addGradeColumn = async () => {
-    console.log('selectedGradeType:', selectedGradeType);
     if (!selectedGradeType) {
       toast.warning('Vui lòng chọn loại điểm!');
       return;
@@ -221,7 +210,7 @@ const GradeManagement: React.FC = () => {
       const response = await addGradeColumnToCourseSection(currentClassId, typeId);
       if (response.status === HttpStatus.SUCCESS) {
         toast.success('Thêm cột điểm mới thành công');
-        fetchGradesNoLoading(currentClassId, '');
+        fetchGradesNoLoading(currentClassId);
       }
 
     } catch (e) {
@@ -358,7 +347,7 @@ const GradeManagement: React.FC = () => {
       try {
         const response = await createGrade(currentClassId, gradeTypeId, studentId, score, attempt);
         if (response.status === HttpStatus.SUCCESS) {
-          fetchGradesNoLoading(currentClassId, debouncedKeyword);
+          fetchGradesNoLoading(currentClassId);
         }
       } catch (e) {
 
@@ -370,7 +359,7 @@ const GradeManagement: React.FC = () => {
       if (response.status === HttpStatus.SUCCESS) {
         toast.success("Cập nhật điểm thành công!");
 
-        fetchGradesNoLoading(currentClassId, debouncedKeyword);
+        fetchGradesNoLoading(currentClassId);
 
       }
     } catch (e) {
@@ -407,7 +396,7 @@ const GradeManagement: React.FC = () => {
           toast.success("Cập nhật điểm thi lần 2 thành công!");
         if (examType === SummaryGrade.ATTENDANCE_SCORE)
           toast.success("Cập nhật điểm chuyên cần thành công!");
-        fetchGradesNoLoading(currentClassId, debouncedKeyword);
+        fetchGradesNoLoading(currentClassId);
       }
     } catch (error: any) {
       if (error.response.status) {
@@ -435,10 +424,6 @@ const GradeManagement: React.FC = () => {
       if (grade) return grade || {};
     }
     return {};
-  };
-
-  const getSelectedClassInfo = (): CourseSection => {
-    return allClasses.find((c: any) => c.id === currentClassId) || { name: '', students: 0 };
   };
 
   const renderTableHeaders = () => {
@@ -485,7 +470,7 @@ const GradeManagement: React.FC = () => {
         className="gm-editable-cell"
         onDoubleClick={() => handleCellDoubleClick(cellType, studentId, gradeTypeId, attempt, gradeId, summaryId)}
       >
-        {value || (cellType === 'notes' ? '' : '-')}
+        {(value !== null ? value : '-') || (cellType === 'notes' ? '' : '-')}
       </div>
     );
   };
@@ -544,34 +529,19 @@ const GradeManagement: React.FC = () => {
   };
 
 
-  useEffect(() => {
-    if (currentClassId == null) return;
-    if (!debouncedKeyword || debouncedKeyword.trim() === '') {
-      setDebouncedKeyword('');
-    }
-    const fetchData = async () => {
-      try {
-        setGradeLoading(true);
-        const response = await getStudentByCourseSectionId(currentClassId, debouncedKeyword);
-        if (response.status == HttpStatus.SUCCESS) {
-          setGradeLoading(false);
-          setStudentData(response.data.data);
-        }
+  // useEffect(() => {
+  //   if (currentClassId == 0) return;
+  //   if (!debouncedKeyword || debouncedKeyword.trim() === '') {
+  //     setDebouncedKeyword('');
+  //   }
+  //   fetchGrades(currentClassId, debouncedKeyword);
+  // }, [debouncedKeyword]);
 
-      } catch (error) {
-        console.error('Lỗi khi gọi API:', error);
-
-      }
-    }
-    fetchData()
-  }, [debouncedKeyword]);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedKeyword(keyword)
-    }, 500);
-    return () => clearTimeout(handler)
-  }, [keyword]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setDebouncedKeyword(keyword);
+  //   }, 500)
+  // }, [keyword]);
 
   const handleChangeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
@@ -595,8 +565,8 @@ const GradeManagement: React.FC = () => {
           <div className="gm-grade-header">
             <div className="gm-selected-class-info">
               <div className="gm-class-details">
-                <h3>{getSelectedClassInfo()?.name}</h3>
-                <p>{getSelectedClassInfo()?.students} sinh viên</p>
+                <h3>{currentCourseSection?.name}</h3>
+                <p>{currentCourseSection?.students_total} sinh viên</p>
               </div>
             </div>
 
@@ -654,11 +624,11 @@ const GradeManagement: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {studentData.length > 0 ? (studentData.map((student: Student, index) => (
+                  {filteredStudents.length > 0 ? filteredStudents.map((student: Student, index) => (
                     <tr key={student.id}>
                       {renderStudentRow(student, index)}
                     </tr>
-                  ))) : (<tr style={{ width: "100%", textAlign: 'center', gridColumn: 1 / -1 }} > <td colSpan={totalColumn ?? undefined}>Không tìm thấy sinh viên phù hợp</td> </tr>)}
+                  )) : (<tr style={{ width: "100%", textAlign: 'center', gridColumn: 1 / -1 }} > <td colSpan={totalColumn ?? undefined} style={{ textAlign: 'center' }}>Không tìm thấy sinh viên phù hợp</td> </tr>)}
                 </tbody>
               </table>
             )}

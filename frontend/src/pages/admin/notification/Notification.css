@@ -65,7 +65,7 @@
  .search-container {
      flex: 1;
      position: relative;
-     min-width: 300px;
+     min-width: 250px;
  }
 
  .search-input {

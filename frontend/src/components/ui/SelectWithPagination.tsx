@@ -4,6 +4,7 @@ import { getCourseSectionByTeacher } from '../../services/courseSectionService'
 
 const SelectWithPagination = ({ handleClassSelection }: any) => {
     const [value, setValue] = useState(null);
+
     const customComponents = {
         LoadingIndicator: () => null, // ẩn loading spinner
     };
@@ -15,6 +16,7 @@ const SelectWithPagination = ({ handleClassSelection }: any) => {
                 options: data.course_sections.map((cls: any) => ({
                     label: `${cls.name} - ${cls.students_total} sinh viên`,
                     value: cls.id,
+                    data: cls
                 })),
                 hasMore: data.meta.current_page < data.meta.total_pages, // bạn cần trả về từ API
                 additional: {
