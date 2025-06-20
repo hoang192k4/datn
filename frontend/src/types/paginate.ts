@@ -8,4 +8,5 @@ export interface Paginate {
     to?: number | null | undefined;
     total?: number | null | undefined;
     total_pages?: number | null | undefined;
+    key?:string;
 }

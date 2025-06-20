@@ -13,4 +13,5 @@ interface NotificationServiceInterface
     public function sendNotificationToAllTeacher($teacherSendId, string $title, string $body, string $type);
     public function sendNotificationToAllStudent($teacherSendId, string $title, string $body, string $type);
     public function getMyNotifications(Request $request);
+    public function update(Request $request, $id): bool;
 }

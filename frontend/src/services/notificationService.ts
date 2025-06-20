@@ -24,12 +24,20 @@ interface FormValues {
     push_notification: string;
 }
 
+
+interface StudentFormValues {
+    title: string;
+    content: string;
+    push_notification: string;
+}
+
 type OptionType = { value: string | number; label: string };
-export const getMyNotifications = ({ page, limit }: Paginate) => {
+export const getMyNotifications = ({ page, limit, key }: Paginate) => {
     return axiosTeacherInstance.get('/me/posts', {
         params: {
             limit,
-            page
+            page,
+            key
         }
     });
 }
@@ -85,5 +93,14 @@ export const updatePost = async (data: FormValues, id: number) => {
         ...data,
         course_section_id: data.course_section_id?.value,
     });
+    return response.data;
+}
+
+export const updateStudentNotification = async (data: StudentFormValues, id: number) => {
+    const response = await axiosTeacherInstance.put(`/notifications/${id}`,
+        {
+            ...data
+        }
+    );
     return response.data;
 }

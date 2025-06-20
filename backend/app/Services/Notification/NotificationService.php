@@ -279,4 +279,29 @@ class NotificationService implements NotificationServiceInterface
             return false;
         }
     }
+
+
+    public function update(Request $request, $id): bool
+    {
+        try {
+            $data = $request->validated();
+
+            $pushNotification = $data['push_notification'] ?? null;
+            if ($pushNotification) {
+                unset($data['push_notification']);
+            }
+            $isUpdate = $this->repository->update($id, $data);
+
+            if (!$isUpdate) {
+                return false;
+            }
+
+            $instance = $this->repository->find($id);
+            $this->sendNotificationToStudents($instance->title, $instance->content, array($instance->student_id), NotificationType::TeacherSend->value);
+            return true;
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
 }

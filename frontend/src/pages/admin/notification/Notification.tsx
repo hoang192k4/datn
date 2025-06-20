@@ -15,6 +15,7 @@ import StudentNotificationItem from './StudentNotificationItem';
 import EditNotificationModal from './EditNotificationModal';
 
 import Swal from 'sweetalert2';
+import EditStudentNotificationModal from './EditStudentNotificationModal';
 
 interface NotificationCourseSection {
     id: number;
@@ -60,15 +61,21 @@ const Notification: React.FC = () => {
     const [isOpenCreateModal, setIsOpenCreateModal] = useState<boolean>(false);
     const [isOpenEditModal, setIsOpenEditModal] = useState<boolean>(false);
     const [editingPost, setEditingPost] = useState<NotificationCourseSection>();
+    const [keywordPost, setKeywordPost] = useState<string>('');
+    const [keywordPostDebounce, setKeywordPostDebounce] = useState<string>('');
+    const [editStudentNotification, setEditStudentNotification] = useState<StudentNotification>();
+    const [isOpenStudentNotificationModal, setIsOpenStudentNotificationModal] = useState<boolean>(false);
+
 
     useEffect(() => {
-        fetchMyNotifications({ page: 1, limit: 10 });
+        fetchMyNotifications({ page: 1, limit: 10, key: keywordPost });
         fetchStudentNotifications({});
     }, []);
-    const fetchMyNotifications = async ({ page, limit }: Paginate) => {
+
+    const fetchMyNotifications = async ({ page, limit, key }: Paginate) => {
         try {
             setLoading(true);
-            const response = await getMyNotifications({ page, limit });
+            const response = await getMyNotifications({ page, limit, key });
             if (response.status === HttpStatus.SUCCESS) {
                 const notifications = response.data.data.posts;
                 const paginate = response.data.data.meta;
@@ -102,7 +109,6 @@ const Notification: React.FC = () => {
         }
     }
 
-
     const handleDeleteNotification = async (id: number) => {
         Swal.fire({
             title: 'Bạn chắc chắn xóa thông báo này!',
@@ -129,7 +135,6 @@ const Notification: React.FC = () => {
         })
 
     }
-
 
     const handleDeletePost = async (id: number) => {
         Swal.fire({
@@ -163,6 +168,26 @@ const Notification: React.FC = () => {
         setEditingPost(post);
         setIsOpenEditModal(true);
     }
+
+    const handleStudentNotificationEdit = (notification: StudentNotification) => {
+        console.log(notification);
+        setEditStudentNotification(notification);
+        setIsOpenStudentNotificationModal(true);
+    }
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setKeywordPostDebounce(keywordPost);
+        }, 300);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [keywordPost]);
+
+    useEffect(() => {
+        fetchMyNotifications({ key: keywordPostDebounce });
+    }, [keywordPostDebounce]);
 
 
     return (
@@ -200,8 +225,8 @@ const Notification: React.FC = () => {
                                         type="text"
                                         className="search-input"
                                         placeholder="Tìm kiếm thông báo..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        value={keywordPost}
+                                        onChange={(e) => setKeywordPost(e.target.value)}
 
                                     />
                                     <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
@@ -243,9 +268,9 @@ const Notification: React.FC = () => {
                                 Hiển thị <strong> {paginate?.from}</strong> đến <strong> {paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> thông báo
                             </div>
                             <div className="pagination-controls">
-                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.previous_page, limit: 10 })}>Trước</button>
+                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.previous_page, limit: 10, key: keywordPostDebounce })}>Trước</button>
                                 <button className="page-btn active">{paginate?.current_page}</button>
-                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.next_page, limit: 10 })}>Sau</button>
+                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.next_page, limit: 10, key: keywordPostDebounce })}>Sau</button>
                             </div>
                         </div>) : (<div> </div>)}
 
@@ -291,7 +316,7 @@ const Notification: React.FC = () => {
                         {/* Notifications List */}
                         {loadingStudentNotify ? (<Loading />) : studentNotifications.length === 0 ? <div className="notification-no-item">Không có thông báo nào</div> : studentNotifications.map((notification) => (
                             <div key={notification.id} className="notification-item">
-                                <StudentNotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} onEdit={() => { }} />
+                                <StudentNotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} onEdit={() => { handleStudentNotificationEdit(notification) }} />
                             </div>
                         ))}
 
@@ -318,8 +343,12 @@ const Notification: React.FC = () => {
             {
                 isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={() => { fetchMyNotifications({ page: 1 }) }} /> : <> </>
             }
+            {
+                isOpenStudentNotificationModal ? <EditStudentNotificationModal isOpen={isOpenStudentNotificationModal} onClose={() => { setIsOpenStudentNotificationModal(false) }} onSuccess={() => fetchStudentNotifications({})} notification={editStudentNotification} /> : <> </>
+            }
         </>
+
+
     )
 }
-
 export default Notification;

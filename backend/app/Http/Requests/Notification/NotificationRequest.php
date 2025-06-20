@@ -28,4 +28,13 @@ class NotificationRequest extends BaseRequest
             'type' => [new Enum(NotificationType::class), 'nullable']
         ];
     }
+
+    public function methodPut()
+    {
+        return [
+            'title' => ['string', 'nullable'],
+            'content' => ['string', 'nullable'],
+            'push_notification' => ['in:true,false'],
+        ];
+    }
 }

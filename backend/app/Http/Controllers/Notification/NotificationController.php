@@ -99,4 +99,22 @@ class NotificationController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
+
+
+    public function update(NotificationRequest $request, $id)
+    {
+        try {
+            $this->notificationRepository->findOrFailById($id);
+            $isUpdated = $this->notificationService->update($request, $id);
+            if (!$isUpdated) {
+                return $this->jsonResponseError();
+            }
+            return $this->jsonResponseSuccess();
+        } catch (ModelNotFoundByIdException $e) {
+            return $this->jsonResponseError('Không có instance theo id ' . $id, 404);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
 }

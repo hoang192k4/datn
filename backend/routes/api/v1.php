@@ -68,6 +68,7 @@ Route::controller(App\Http\Controllers\Notification\NotificationController::clas
         Route::post('/send-to-course-section', 'sendNotificationToCourseSection'); //api gửi thông báo đến lớp
         Route::get('/', 'getMyNotifications'); //api lấy danh sách thông báo theo người dùng đăng nhập
         Route::delete('/{id}', 'destroy'); //api xóa thông báo
+        Route::put('/{id}', 'update');
     });
 
 Route::controller(App\Http\Controllers\Notification\StudentNotificationController::class)

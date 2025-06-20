@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Post;
 use App\Enums\PublicStatus;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Post\PostRequest;
+use App\Http\Requests\Search\SearchRequest;
 use App\Http\Resources\Post\PostResourceCollection;
 use App\Repositories\Teacher\TeacherRepositoryInterface;
 use App\Traits\AuthTeacherApi;
@@ -21,15 +22,17 @@ class MyPostController extends BaseController
         $this->teacherRepository = $teacherRepository;
         $this->middleware('auth:teacher', ['except' => ['getPostByTeacherSlug']]);
     }
-    public function getPostByTeacherId()
+    public function getPostByTeacherId(SearchRequest $request)
     {
         try {
             $teacherId = $this->getCurrentTeacherId();
-            $limit = request()->get('limit', 10);
-            $page = request()->get('page', 1);
+            $data = $request->validated();
+            $limit = $data['limit'] ?? 10;
+            $page = $data['page'] ?? 1;
+            $key = $data['key'] ?? null;
             $teacher = $this->teacherRepository->findOrFailById($teacherId);
 
-            $posts = $teacher->posts()->orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page)->appends(['limit' => $limit]);
+            $posts = $teacher->posts()->where('title', 'like', '%' . $key . '%')->orWhere('content', 'like', '%' . $key . '%')->orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page)->appends(['limit' => $limit]);
 
             if (!$posts)
                 return $this->jsonResponseError();
