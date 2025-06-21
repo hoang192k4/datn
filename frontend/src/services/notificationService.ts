@@ -32,12 +32,13 @@ interface StudentFormValues {
 }
 
 type OptionType = { value: string | number; label: string };
-export const getMyNotifications = ({ page, limit, key }: Paginate) => {
+export const getMyNotifications = ({ page, limit, key }: Paginate, status: '' | 'public' | 'private' | string) => {
     return axiosTeacherInstance.get('/me/posts', {
         params: {
             limit,
             page,
-            key
+            key,
+            status
         }
     });
 }
@@ -69,11 +70,13 @@ export const sendNotificationToStudent = ({ title, body, receiver_ids }: Notific
     });
 }
 
-export const getStudentNotifications = ({ page, limit }: Paginate) => {
+export const getStudentNotifications = ({ page, limit, key }: Paginate, status: string) => {
     return axiosTeacherInstance.get('/me/students/notifications', {
         params: {
             page,
-            limit
+            limit,
+            key,
+            status
         }
     })
 }

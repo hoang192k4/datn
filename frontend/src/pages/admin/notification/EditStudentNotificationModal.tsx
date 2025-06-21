@@ -42,7 +42,6 @@ const EditStudentNotificationModal: React.FC<NotificationModalProps> = ({ isOpen
     const [createLoading, setCreateLoading] = useState<boolean>(false);
     const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({});
 
-    console.log(notification);
     useEffect(() => {
         if (notification) {
             reset({

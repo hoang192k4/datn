@@ -476,3 +476,81 @@
  .notification-error-message {
      color: red;
  }
+
+
+ @media (max-width: 640px) {
+     .notification-modal-container {
+         position: fixed;
+         top: 0;
+         left: 0;
+         right: 0;
+         bottom: 0;
+         margin: 0;
+         padding: 16px;
+         border-radius: 0;
+         max-width: 100%;
+         height: 100%;
+         overflow-y: auto;
+     }
+
+     .notification-modal-body {
+         gap: 16px;
+     }
+
+     .notification-target-options {
+         flex-direction: column;
+         gap: 12px;
+     }
+
+     .notification-text-input,
+     .notification-textarea-input {
+         font-size: 16px;
+         padding: 14px 16px;
+     }
+
+     .notification-form-label {
+         font-size: 15px;
+     }
+
+     .notification-submit-btn,
+     .notification-cancel-btn {
+         font-size: 16px;
+         padding: 14px;
+         width: 100%;
+     }
+
+     .notification-modal-footer {
+         flex-direction: column-reverse;
+         gap: 8px;
+         margin-top: 16px;
+         padding-top: 16px;
+     }
+
+     .notification-radio-option {
+         gap: 8px;
+     }
+
+     .notification-radio-text {
+         font-size: 15px;
+     }
+
+     .notification-dropdown-trigger {
+         font-size: 15px;
+         padding: 12px 14px;
+     }
+
+     .notification-class-option,
+     .notification-student-option {
+         padding: 10px 14px;
+     }
+
+     .notification-class-name,
+     .notification-student-name {
+         font-size: 15px;
+     }
+
+     .notification-class-code,
+     .notification-student-code {
+         font-size: 12px;
+     }
+ }

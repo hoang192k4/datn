@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Post;
 use App\Enums\PublicStatus;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Post\PostRequest;
+use App\Http\Requests\Post\PostSearchRequest;
 use App\Http\Requests\Search\SearchRequest;
 use App\Http\Resources\Post\PostResourceCollection;
 use App\Repositories\Teacher\TeacherRepositoryInterface;
@@ -22,7 +23,7 @@ class MyPostController extends BaseController
         $this->teacherRepository = $teacherRepository;
         $this->middleware('auth:teacher', ['except' => ['getPostByTeacherSlug']]);
     }
-    public function getPostByTeacherId(SearchRequest $request)
+    public function getPostByTeacherId(PostSearchRequest $request)
     {
         try {
             $teacherId = $this->getCurrentTeacherId();
@@ -30,12 +31,17 @@ class MyPostController extends BaseController
             $limit = $data['limit'] ?? 10;
             $page = $data['page'] ?? 1;
             $key = $data['key'] ?? null;
+            $status = $data['status'] ?? null;
             $teacher = $this->teacherRepository->findOrFailById($teacherId);
 
-            $posts = $teacher->posts()->where('title', 'like', '%' . $key . '%')->orWhere('content', 'like', '%' . $key . '%')->orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page)->appends(['limit' => $limit]);
+            $posts = $teacher->posts();
+            if (!is_null($status)) {
+                $posts->where('status', $status);
+            }
+            $posts = $posts->where(function ($query) use ($key) {
+                $query->where('title', 'like', '%' . $key . '%')->orWhere('content', 'like', '%' . $key . '%');
+            })->orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page)->appends(['limit' => $limit]);
 
-            if (!$posts)
-                return $this->jsonResponseError();
             return $this->jsonResponseSuccess(new PostResourceCollection($posts));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

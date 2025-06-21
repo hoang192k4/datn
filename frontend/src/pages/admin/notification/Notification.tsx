@@ -52,9 +52,8 @@ const Notification: React.FC = () => {
     const [notifications, setNotifications] = useState<NotificationCourseSection[]>([]);
     const [studentNotifications, setStudentNotifications] = useState<StudentNotification[]>([]);
     const [studentNotifyPaginate, setStudentNotifyPaginate] = useState<Paginate>();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState<string>('all');
-    const [filterType, setFilterType] = useState<string>('all');
+    const [filterStatus, setFilterStatus] = useState<string>('');
+    const [filterStudentStatus, setFilterStudentStatus] = useState<string>('');
     const [paginate, setPaginate] = useState<Paginate>();
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false)
@@ -65,17 +64,18 @@ const Notification: React.FC = () => {
     const [keywordPostDebounce, setKeywordPostDebounce] = useState<string>('');
     const [editStudentNotification, setEditStudentNotification] = useState<StudentNotification>();
     const [isOpenStudentNotificationModal, setIsOpenStudentNotificationModal] = useState<boolean>(false);
-
+    const [keywordNotification, setKeywordNotification] = useState<string>('');
+    const [keywordNotificationDebounce, setKeywordNotificationDebounce] = useState<string>('');
 
     useEffect(() => {
-        fetchMyNotifications({ page: 1, limit: 10, key: keywordPost });
-        fetchStudentNotifications({});
+        fetchMyNotifications({ page: 1, limit: 10, key: keywordPost }, filterStatus);
+        fetchStudentNotifications({}, filterStudentStatus);
     }, []);
 
-    const fetchMyNotifications = async ({ page, limit, key }: Paginate) => {
+    const fetchMyNotifications = async ({ page, limit, key }: Paginate, status: string) => {
         try {
             setLoading(true);
-            const response = await getMyNotifications({ page, limit, key });
+            const response = await getMyNotifications({ page, limit, key }, filterStatus);
             if (response.status === HttpStatus.SUCCESS) {
                 const notifications = response.data.data.posts;
                 const paginate = response.data.data.meta;
@@ -90,10 +90,10 @@ const Notification: React.FC = () => {
         }
     }
 
-    const fetchStudentNotifications = async ({ page, limit }: Paginate) => {
+    const fetchStudentNotifications = async ({ page, limit, key }: Paginate, status: string) => {
         try {
             setLoadingStudentNotify(true);
-            const response = await getStudentNotifications({ page, limit });
+            const response = await getStudentNotifications({ page, limit, key }, status);
             if (response.status === HttpStatus.SUCCESS) {
                 const notifications = response.data.data.notifications;
                 const paginate = response.data.data.meta;
@@ -186,9 +186,22 @@ const Notification: React.FC = () => {
     }, [keywordPost]);
 
     useEffect(() => {
-        fetchMyNotifications({ key: keywordPostDebounce });
-    }, [keywordPostDebounce]);
+        fetchMyNotifications({ key: keywordPostDebounce }, filterStatus);
+    }, [keywordPostDebounce, filterStatus]);
 
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setKeywordNotificationDebounce(keywordNotification);
+        }, 300);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [keywordNotification]);
+
+    useEffect(() => {
+        fetchStudentNotifications({ key: keywordNotificationDebounce }, filterStudentStatus);
+    }, [keywordNotificationDebounce, filterStudentStatus]);
 
     return (
         <>
@@ -236,21 +249,9 @@ const Notification: React.FC = () => {
                                     value={filterStatus}
                                     onChange={(e) => setFilterStatus(e.target.value)}
                                 >
-                                    <option value="all">Tất cả trạng thái</option>
-                                    <option value="published">Đã xuất bản</option>
-                                    <option value="draft">Bản nháp</option>
-                                    <option value="archived">Đã lưu trữ</option>
-                                </select>
-                                <select
-                                    className="filter-select"
-                                    value={filterType}
-                                    onChange={(e) => setFilterType(e.target.value)}
-                                >
-                                    <option value="all">Tất cả loại</option>
-                                    <option value="info">Thông tin</option>
-                                    <option value="warning">Cảnh báo</option>
-                                    <option value="success">Thành công</option>
-                                    <option value="error">Lỗi</option>
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="public">Công khai</option>
+                                    <option value="private">Không công khai</option>
                                 </select>
                             </div>
                         </div>
@@ -268,9 +269,9 @@ const Notification: React.FC = () => {
                                 Hiển thị <strong> {paginate?.from}</strong> đến <strong> {paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> thông báo
                             </div>
                             <div className="pagination-controls">
-                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.previous_page, limit: 10, key: keywordPostDebounce })}>Trước</button>
+                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.previous_page, limit: 10, key: keywordPostDebounce }, filterStatus)}>Trước</button>
                                 <button className="page-btn active">{paginate?.current_page}</button>
-                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.next_page, limit: 10, key: keywordPostDebounce })}>Sau</button>
+                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.next_page, limit: 10, key: keywordPostDebounce }, filterStatus)}>Sau</button>
                             </div>
                         </div>) : (<div> </div>)}
 
@@ -284,32 +285,21 @@ const Notification: React.FC = () => {
                                         type="text"
                                         className="search-input"
                                         placeholder="Tìm kiếm thông báo..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        value={keywordNotification}
+                                        onChange={(e) => setKeywordNotification(e.target.value)}
                                     />
                                     <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
                                 </div>
                                 <select
                                     className="filter-select"
-                                    value={filterStatus}
-                                    onChange={(e) => setFilterStatus(e.target.value)}
+                                    value={filterStudentStatus}
+                                    onChange={(e) => setFilterStudentStatus(e.target.value)}
                                 >
-                                    <option value="all">Tất cả trạng thái</option>
-                                    <option value="published">Đã xuất bản</option>
-                                    <option value="draft">Bản nháp</option>
-                                    <option value="archived">Đã lưu trữ</option>
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="read">Đã đọc</option>
+                                    <option value="unread">Chưa đọc</option>
                                 </select>
-                                <select
-                                    className="filter-select"
-                                    value={filterType}
-                                    onChange={(e) => setFilterType(e.target.value)}
-                                >
-                                    <option value="all">Tất cả loại</option>
-                                    <option value="info">Thông tin</option>
-                                    <option value="warning">Cảnh báo</option>
-                                    <option value="success">Thành công</option>
-                                    <option value="error">Lỗi</option>
-                                </select>
+
                             </div>
                         </div>
 
@@ -327,9 +317,9 @@ const Notification: React.FC = () => {
                                     Hiển thị <strong> {studentNotifyPaginate?.from}</strong> đến <strong> {studentNotifyPaginate?.to}</strong> trong tổng số <strong>{studentNotifyPaginate?.total}</strong> thông báo
                                 </div>
                                 <div className="pagination-controls">
-                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.previous_page })}>Trước</button>
+                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.previous_page }, filterStudentStatus)}>Trước</button>
                                     <button className="page-btn active"> {studentNotifyPaginate?.current_page} </button>
-                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.next_page })}>Sau</button>
+                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.next_page }, filterStudentStatus)}>Sau</button>
                                 </div>
                             </div>
                         }
@@ -337,14 +327,14 @@ const Notification: React.FC = () => {
                     </TabPanel>
                 </Tabs>
             </div >
-            {isOpenCreateModal ? <CreateNotificationModal isOpen={isOpenCreateModal} onClose={() => { setIsOpenCreateModal(false) }} onSuccessTeacher={() => { fetchMyNotifications({ page: 1 }) }} onSuccessStudent={() => fetchStudentNotifications({ page: 1 })} /> : <> </>
+            {isOpenCreateModal ? <CreateNotificationModal isOpen={isOpenCreateModal} onClose={() => { setIsOpenCreateModal(false) }} onSuccessTeacher={() => { fetchMyNotifications({ page: 1 }, filterStatus) }} onSuccessStudent={() => fetchStudentNotifications({ page: 1 }, filterStudentStatus)} /> : <> </>
             }
 
             {
-                isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={() => { fetchMyNotifications({ page: 1 }) }} /> : <> </>
+                isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={() => { fetchMyNotifications({ page: 1 }, filterStatus) }} /> : <> </>
             }
             {
-                isOpenStudentNotificationModal ? <EditStudentNotificationModal isOpen={isOpenStudentNotificationModal} onClose={() => { setIsOpenStudentNotificationModal(false) }} onSuccess={() => fetchStudentNotifications({})} notification={editStudentNotification} /> : <> </>
+                isOpenStudentNotificationModal ? <EditStudentNotificationModal isOpen={isOpenStudentNotificationModal} onClose={() => { setIsOpenStudentNotificationModal(false) }} onSuccess={() => fetchStudentNotifications({}, filterStudentStatus)} notification={editStudentNotification} /> : <> </>
             }
         </>
 

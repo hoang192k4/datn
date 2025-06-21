@@ -1,3 +1,4 @@
+import { ReadStatus } from "../../../enums/ReadStatus";
 
 interface StudentNotification {
     id: number,
@@ -22,25 +23,17 @@ interface Props {
 }
 
 const StudentNotificationItem: React.FC<Props> = ({ notification, onDelete, onEdit }) => {
+    console.log(notification);
     return (
         <div className="notification-content">
             <div className="notification-main">
                 <div className="notification-header">
                     <h3 className="notification-title">{notification.title}</h3>
-                    {/* <span className={`badge ${notification.status === 'published' ? 'badge-published' :
-                                        notification.status === 'draft' ? 'badge-draft' : 'badge-archived'
-                                        }`}>
-                                        {notification.status === 'published' ? 'Đã xuất bản' :
-                                            notification.status === 'draft' ? 'Bản nháp' : 'Đã lưu trữ'}
-                                    </span>
-                                    <span className={`badge ${notification.type === 'info' ? 'badge-info' :
-                                        notification.type === 'warning' ? 'badge-warning' :
-                                            notification.type === 'success' ? 'badge-success' : 'badge-error'
-                                        }`}>
-                                        {notification.type === 'info' ? 'Thông tin' :
-                                            notification.type === 'warning' ? 'Cảnh báo' :
-                                                notification.type === 'success' ? 'Thành công' : 'Lỗi'}
-                                    </span> */}
+                    <span className={`badge ${notification.status === 'read' ? 'badge-success' :
+                        'badge-warning'
+                        }`}>
+                        {notification.status == ReadStatus.Read ? 'Đã đọc' : 'Chưa đọc'}
+                    </span>
                 </div>
                 <p className="notification-description">
                     {notification.content}

@@ -37,7 +37,7 @@ interface FormValues {
     title: string;
     content: string;
     course_section_id?: OptionType;
-    status?: string;
+    status?: string|boolean;
     push_notification: string;
     id: number;
 }
@@ -47,8 +47,6 @@ type OptionType = { value: string | number; label: string };
 const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, notification, onSuccess }) => {
     const [createLoading, setCreateLoading] = useState<boolean>(false);
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FormValues>({});
-
-    console.log(notification);
 
     useEffect(() => {
         if (notification) {
@@ -60,7 +58,7 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
                     label: notification.course_section.name,
                     value: notification.course_section.id
                 },
-                status: notification.status
+                status: notification.status === "private",
             })
         }
     }, [notification, reset]);
@@ -205,7 +203,6 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
                         <label className="notification-radio-option notification-radio-option-margin">
                             <input
                                 type="checkbox"
-                                value="private"
                                 className="notification-radio-input"
                                 {...register("status", { required: false })}
                             />
