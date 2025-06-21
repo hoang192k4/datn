@@ -1,4 +1,5 @@
 import axiosTeacherInstance from "../config/axiosTeacher"
+import type { NotificationType } from "../enums/NotificationType";
 import type { Paginate } from "../types/paginate";
 
 
@@ -105,5 +106,14 @@ export const updateStudentNotification = async (data: StudentFormValues, id: num
             ...data
         }
     );
+    return response.data;
+}
+
+export const getNotifications = async ({ limit, page, key }: Paginate, type: NotificationType | null) => {
+    const response = await axiosTeacherInstance.get('/notifications', {
+        params: {
+            limit, page, key, type
+        }
+    });
     return response.data;
 }

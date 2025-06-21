@@ -25,7 +25,8 @@ class NotificationRequest extends BaseRequest
         return [
             'limit' => ['integer', 'min:1'],
             'page' => ['integer', 'min:1'],
-            'type' => [new Enum(NotificationType::class), 'nullable']
+            'type' => [new Enum(NotificationType::class), 'nullable'],
+            'key' => 'string|nullable',
         ];
     }
 

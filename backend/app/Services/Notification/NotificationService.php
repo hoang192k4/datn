@@ -226,13 +226,13 @@ class NotificationService implements NotificationServiceInterface
             $data = $request->validated();
             $limit = $data['limit'] ?? 10;
             $page =  $data['page'] ?? 1;
-
+            $key = $data['key'] ?? null;
             $type =  isset($data['type']) == null ? NotificationType::AdminSend : $data['type'];
 
             $currentUserId = getCurrentUserId();
             $guard = getCurrentGuard();
             if ($guard == Guard::TEACHER)
-                $notifications = $this->repository->getList(['teacher_receive_id' => $currentUserId, 'type' =>  $type], ['created_at' => 'desc'], ['teacher'], $limit, $page);
+                $notifications = $this->repository->getList(['teacher_receive_id' => $currentUserId, 'type' =>  $type], ['created_at' => 'desc'], ['teacher'], $limit, $page, ['title' => ['like', $key], 'content' => ['like', $key]]);
             if ($guard == Guard::STUDENT) {
                 $notifications = $this->repository->getList(['student_id' => $currentUserId, 'type' => ['!=', NotificationType::StudentSend]], ['created_at' => 'desc'], ['teacher'], $limit, $page);
             }
