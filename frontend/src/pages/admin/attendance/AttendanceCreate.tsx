@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import {
     createUpdateAttendances, getListAttendancesBySession,
-    getListSessionsByCourseSection, getListStudentByCourseSection
+    getListStudentByCourseSection
 } from "../../../services/attendanceService";
 import Loadding from "../../../components/ui/Loadding";
-import type { StudentAttendace, AttendanceForm } from "../../../types/attendance";
+import type { StudentAttendace, AttendanceForm, SessionAttendance } from "../../../types/attendance";
 import { useForm } from "react-hook-form";
 import { IoMdArrowRoundBack } from "react-icons/io";
-import type { SessionStatus } from "../../../enums/SessionStatus";
 import Swal from "sweetalert2";
 import type { AttendanceStatus } from "../../../enums/AttendanceStatus";
 import { FaSearch } from "react-icons/fa";
@@ -15,16 +14,8 @@ interface AttendanceProps {
     classId: number,
     currentClassName?: string,
     action: 'default' | 'update' | 'create';
+    listSession: SessionAttendance[];
     setAction: React.Dispatch<React.SetStateAction<'default' | 'update' | 'create'>>;
-}
-interface Session {
-    id: number,
-    study_week: number,
-    study_date: string,
-    start_time: string,
-    end_time: string,
-    status: SessionStatus,
-    schedule_id: number
 }
 
 interface AttendanceUpdate {
@@ -40,9 +31,8 @@ interface AttendancesSession {
     session_study_date: string,
     attendances?: AttendanceUpdate[]
 }
-const AttendanceCreate = ({ classId, currentClassName, setAction, action }: AttendanceProps) => {
+const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSession }: AttendanceProps) => {
     const [loadingAttendanceCreate, setLoadingAttendanceCreate] = useState(false);
-    const [listSession, setListSession] = useState<Session[]>([]);
     const [listStudent, setListStudent] = useState<StudentAttendace>();
     const { register, handleSubmit, formState: { errors }, reset } = useForm<AttendanceForm>();
     const [listAttendances, setListAttendances] = useState<AttendancesSession>();
@@ -62,15 +52,10 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action }: Atte
         } finally { setLoadingAttendanceCreate(false); }
     }
 
-    const fetchListSession = async (courseSectionId: number) => {
-        const res = await getListSessionsByCourseSection(courseSectionId);
-        setListSession(res.data.sessions);
-    }
 
     useEffect(() => {
         if (action === 'create')
             feactListStudent();
-        fetchListSession(classId);
     }, [classId]);
 
     const handleSubmitAttendance = async (data: any) => {
@@ -121,7 +106,7 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action }: Atte
                     <div className="attendance-form-wrapper-right">
                         <select {...register("session_id", { required: "Vui lòng chọn buổi điểm danh" })} value={defaultSeclect} onChange={(e: any) => handleSelectSession(e.target.value)} >
                             <option value="">--Chọn buổi điểm danh--</option>
-                            {listSession.flat()?.map((session: Session, index: number) => {
+                            {listSession.flat()?.map((session: SessionAttendance, index: number) => {
                                 const sessionDate = new Date(session.study_date);
                                 const today = new Date();
                                 today.setHours(0, 0, 0, 0);

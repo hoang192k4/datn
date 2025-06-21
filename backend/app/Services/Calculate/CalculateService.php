@@ -4,8 +4,11 @@ namespace App\Services\Calculate;
 
 use App\Enums\GradeWeight;
 use App\Models\Student;
+use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
+use App\Repositories\CourseSectionAttendance\CourseSectionAttendanceRepositoryInterface;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface;
+use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use App\Supports\Log;
 use Exception;
 
@@ -13,13 +16,16 @@ class CalculateService implements CalculateServiceInterface
 {
     use Log;
     protected $summaryGradeRepository;
+    protected $attendanceRepository;
     protected $studentRepository;
     public function __construct(
         SummaryGradeRepositoryInterface $summaryGradeRepository,
-        StudentRepositoryInterface $studentRepository
+        StudentRepositoryInterface $studentRepository,
+        CourseSectionAttendanceRepositoryInterface $attendanceRepository,
     ) {
         $this->summaryGradeRepository = $summaryGradeRepository;
         $this->studentRepository = $studentRepository;
+        $this->attendanceRepository = $attendanceRepository;
     }
 
     public function calculateAverageExam($student, $courseSectionId)
@@ -44,8 +50,11 @@ class CalculateService implements CalculateServiceInterface
         return $finalScore ?? 0;
     }
 
-    public function calculateAttendanceScore(Student $student, $courseSectionId): int
+    public function calculateAttendanceScore($studentId, $courseSectionId): int
     {
-        return 0;
+        $totalAttendanceByCourseSection = $this->attendanceRepository->totalAttendanceStudentByCourseSection($studentId, $courseSectionId);
+        $totalSessionByCourseSection = $this->attendanceRepository->totalSessionByCourseSection($courseSectionId);
+        $attendanceScore = 10 - ($totalSessionByCourseSection - $totalAttendanceByCourseSection);
+        return $attendanceScore;
     }
 }

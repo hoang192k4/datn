@@ -6,7 +6,6 @@ import ChangePasswrod from "../pages/admin/profile/ChangePassword";
 import TeacherProfile from "../pages/admin/profile/TeacherProfile";
 import AttendancePage from "../pages/admin/attendance/AttendancePage";
 import Grade from "../pages/admin/grade/GradeManagement";
-import NotificationPage from "../pages/Notification/NotificationPage";
 import Notification from "../pages/admin/notification/Notification";
 
 export const TeacherRoute = [

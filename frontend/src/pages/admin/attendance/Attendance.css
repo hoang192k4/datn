@@ -121,9 +121,11 @@
     display: flex;
     align-items: center;
 }
-.attendance-form-wrapper-left > h2 {
+
+.attendance-form-wrapper-left>h2 {
     color: #1e3a8a;
 }
+
 .attendance-form-wrapper-left>span {
     display: flex;
 }
@@ -283,4 +285,82 @@
 
 .error-row td {
     border-color: #e48c8d !important;
+}
+
+/* Popup xuất nhập điểm danh */
+/* CSS popup-export-import */
+.popup-export-import {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-export-import>div {
+    position: relative;
+    background-color: #fff;
+    width: 500px;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    min-width: 300px;
+    max-width: 90%;
+    text-align: center;
+}
+
+.popup-export-import>div>h2 {
+    color: #1e3a8a;
+}
+
+.popup-export-import>div>p {
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+    margin: 8px 0;
+}
+
+.btn-attendance-cancel {
+    color: black;
+    background-color: white;
+    border-radius: 5px;
+    margin-left: 50px;
+    font-size: 14px;
+    padding: 10px 30px;
+    border: 1px solid #999;
+    transition: all 0.3s linear;
+    cursor: pointer;
+}
+.btn-attendance-cancel:hover {
+    background-color: #999;
+    color: white;
+}
+.popup-export-import select {
+    background-color: white;
+    color: black;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    width: 100%;
+    border: 1px solid #ccc;
+    outline: none;
+}
+.popup-export-import select:focus {
+    border: 2px solid #2684ff;
+}
+
+/* Style input file */
+.popup-export-import input[type="file"] {
+    display: block;
+    width: 100%;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
 }

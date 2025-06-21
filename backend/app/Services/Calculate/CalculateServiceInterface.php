@@ -8,5 +8,5 @@ interface CalculateServiceInterface
 {
     public function calculateAverageExam($student, $courseSectionId);
     public function calculateFinalScore($summaryGrade);
-    public function calculateAttendanceScore(Student $student, $courseSectionId):int;
+    public function calculateAttendanceScore($studentId, $courseSectionId):int;
 }

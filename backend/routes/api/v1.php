@@ -50,6 +50,9 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
         Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection'); //api lấy danh sách sinh viên đã điểm danh theo lớp
         Route::get('/sessions', 'getSessionsByCourseSection'); //api lấy danh sách buổi học của lớp đó
         Route::get('/attendances-session', 'getAttendancesBySession'); //api lấy danh sách điểm danh của lớp học theo buổi đó
+
+        Route::get('/export-template/{session_id}','exportTemplateAttendance');
+        Route::post('/import-attendances','importAttendances');
     });
 
 
@@ -143,3 +146,4 @@ Route::controller(App\Http\Controllers\Lecture\LectureController::class)
         Route::delete('/{lecture}', 'destroy'); //api xóa bài giảng
         Route::put('/{lecture}', 'update'); //api cập nhật bài giảng
     });
+
