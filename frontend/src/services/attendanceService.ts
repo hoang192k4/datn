@@ -42,3 +42,24 @@ export const getListAttendancesBySession = async (sessionId: number) => {
     })
     return response.data;
 }
+
+export const exportTemplateAttendance = async (sessionId: number) => {
+    const response = await axiosTeacherInstance.get(`/course-section-attendances/export-template/${sessionId}`,
+        {
+            responseType: 'blob'
+        }
+    );
+    return response;
+}
+
+export const importAttendance = async (formData: FormData) => {
+    const response = await axiosTeacherInstance.post('/course-section-attendances/import-attendances',
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+    );
+    return response.data;
+}

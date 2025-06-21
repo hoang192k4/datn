@@ -126,4 +126,30 @@
 }
 
 /* style responsive mobible */
-@media (max-width: 576px) {}
+@media (max-width: 576px) {
+      .navbar {
+        padding: 5px 20px !important;
+        height: 100px !important;
+      }
+      .logo {
+        width: 80% !important;
+      }
+      .nav-right {
+        width: 100% !important;
+      }
+
+      .nav-user {
+        width: 100% !important;
+      }
+
+      .user-dropdown {
+        width: 100% !important;
+      }
+      .main-content {
+        margin-top: 40px !important;
+      }
+
+      .sidebar {
+        margin-top: 30px !important;
+      }
+}

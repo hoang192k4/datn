@@ -1,4 +1,5 @@
 import type { AttendanceStatus } from "../enums/AttendanceStatus";
+import type { SessionStatus } from "../enums/SessionStatus";
 import type { StudentStatus } from "../enums/StudentStatus";
 
 
@@ -22,4 +23,14 @@ export interface StudentAttendace {
     graduation_date: string,
     major: string,
     status: StudentStatus
+}
+
+export interface SessionAttendance {
+    id: number,
+    study_week: number,
+    study_date: string,
+    start_time: string,
+    end_time: string,
+    status: SessionStatus,
+    schedule_id: number
 }

@@ -2,28 +2,42 @@
 
 namespace App\Services\CourseSectionAttendance;
 
-use App\Enums\Student\StudentStatus;
+use Exception;
+use App\Supports\Log;
 use App\Models\Session;
-use App\Models\CourseSection;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\CourseSection;
+use App\Traits\AuthTeacherApi;
+use Illuminate\Support\Facades\DB;
+use App\Enums\Student\StudentStatus;
+use App\Services\Calculate\CalculateServiceInterface;
+use App\Repositories\Session\SessionRepositoryInterface;
+use App\Repositories\Student\StudentRepositoryInterface;
+use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use App\Services\CourseSectionAttendance\CourseSectionAttendanceServiceInterface;
 use App\Repositories\CourseSectionAttendance\CourseSectionAttendanceRepositoryInterface;
-use App\Repositories\Session\SessionRepositoryInterface;
-use App\Supports\Log;
-use App\Traits\AuthTeacherApi;
-use Exception;
-use Illuminate\Support\Facades\DB;
 
 class CourseSectionAttendanceService implements CourseSectionAttendanceServiceInterface
 {
     use Log, AuthTeacherApi;
     protected $repository;
     protected $sessionRepository;
-
-    public function __construct(CourseSectionAttendanceRepositoryInterface $repository, SessionRepositoryInterface $sessionRepository)
-    {
+    protected $calculateService;
+    protected $summaryGradeService;
+    protected $studentRepository;
+    public function __construct(
+        CourseSectionAttendanceRepositoryInterface $repository,
+        SessionRepositoryInterface $sessionRepository,
+        CalculateServiceInterface $calculateService,
+        StudentRepositoryInterface $studentRepository,
+        SummaryGradeServiceInterface $summaryGradeService
+    ) {
         $this->repository = $repository;
         $this->sessionRepository = $sessionRepository;
+        $this->calculateService = $calculateService;
+        $this->studentRepository = $studentRepository;
+        $this->summaryGradeService = $summaryGradeService;
     }
 
     public function storeAttendanceStudents(Request $request)
@@ -36,7 +50,17 @@ class CourseSectionAttendanceService implements CourseSectionAttendanceServiceIn
             if ($sessionId == null)
                 return false;
             DB::commit();
-            return $this->repository->storeAndUpdateAttendanceStudents($sessionId, $attendanceStudents);
+            $result =  $this->repository->storeAndUpdateAttendanceStudents($sessionId, $attendanceStudents);
+            if (!$result)
+                return false;
+            $courseSectionId = $this->sessionRepository->find($sessionId)->schedule->course_section_id;
+            $students = collect($attendanceStudents)->map(function ($attendance) {
+                return   $attendance['student_id'];
+            })->toArray();
+            foreach ($students as $student) {
+                $this->attendanceScore($student, $courseSectionId);
+            }
+            return $result;
         } catch (\Exception $e) {
             $this->logError($e->getMessage(), $e);
             Db::rollBack();
@@ -57,6 +81,9 @@ class CourseSectionAttendanceService implements CourseSectionAttendanceServiceIn
                             if ($attendance->student->status !== StudentStatus::Active)
                                 continue;
 
+                            $studentAttendance = $this->repository->totalAttendanceStudentByCourseSection($attendance->student->id, $courseSectionId);
+                            $totalSessionAttendance = $this->repository->totalSessionByCourseSection($courseSectionId);
+
                             $studentId = $attendance->student->id;
                             $studentName = $attendance->student->name;
                             $studentCode = $attendance->student->student_code;
@@ -65,6 +92,7 @@ class CourseSectionAttendanceService implements CourseSectionAttendanceServiceIn
                             $studentData[$studentId]['id'] = $studentId;
                             $studentData[$studentId]['name'] = $studentName;
                             $studentData[$studentId]['student_code'] = $studentCode;
+                            $studentData[$studentId]['attendance_score'] = $studentAttendance . "/" . $totalSessionAttendance;
                             $studentData[$studentId]['attendance'][] = [
                                 'session_id' => $sessionId,
                                 'session_date' => $session->study_date,
@@ -116,6 +144,34 @@ class CourseSectionAttendanceService implements CourseSectionAttendanceServiceIn
             if (!$session)
                 return false;
             return $session;
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
+    public function attendanceScore($studentId, $courseSectionId)
+    {
+        try {
+            $attendanceScore = $this->calculateService->calculateAttendanceScore($studentId, $courseSectionId);
+            $isUpdateGrade = $this->summaryGradeService->updateAttendanceSore($courseSectionId, $studentId, $attendanceScore);
+            if (!$isUpdateGrade)
+                return false;
+            return true;
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
+    public function getFileNameExportAttendance($sessionId)
+    {
+        try {
+            $session = $this->sessionRepository->find($sessionId);
+            $studyDate = $session->study_date;
+            $courseSectionName = $session->schedule->course_section->name;
+            $handleCourseName = Str::slug($courseSectionName,'_');
+            return "diem_danh_lop_".$handleCourseName."_".$studyDate.".xlsx";
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;
