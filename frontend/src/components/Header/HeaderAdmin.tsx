@@ -5,9 +5,12 @@ import { teacherLogout } from '../../services/authTeacherService';
 import { logout } from '../../store/slices/authSlice';
 import { getInitials } from '../../utils/stringUtil';
 import { HttpStatus } from '../../enums/HttpStatus';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loadding from '../ui/Loadding';
+import { messaging } from '../../config/firebase';
+import { onMessage } from 'firebase/messaging';
+import { ToastContainer, toast } from 'react-toastify';
 const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const [loadingLogout, setLoadingLogout] = useState(false);
     const toggleUserDropdown = () => {
@@ -33,13 +36,35 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             setLoadingLogout(false);
         }
     }
+
+
+    useEffect(() => {
+        const unsubscribe = onMessage(messaging, (payload) => {
+            console.log('🔔 Thông báo mới:', payload);
+
+            toast.info(payload.notification?.title)
+        });
+
+        return () => {
+            unsubscribe(); // Clean up khi component bị hủy
+        };
+    }, []);
     return (
         <header>
+            <ToastContainer/> 
             {loadingLogout && <Loadding />}
             <nav className="navbar">
                 <button className="mobile-toggle" onClick={toggleSidebar}>☰</button>
                 <div className="logo"><Link to="dashboard">Khoa Công Nghệ Thông Tin</Link></div>
                 <div className="nav-right">
+                    <div className="notification-bell">
+                        <Link to="thong-bao/khoa-va-sinh-vien">
+                            <svg className="bell-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C13.1 2 14 2.9 14 4C14 4.78 13.64 5.47 13.06 5.85C15.84 6.82 18 9.38 18 12.5V16L20 18V19H4V18L6 16V12.5C6 9.38 8.16 6.82 10.94 5.85C10.36 5.47 10 4.78 10 4C10 2.9 10.9 2 12 2ZM12 22C13.11 22 14 21.11 14 20H10C10 21.11 10.89 22 12 22Z" />
+                            </svg>
+                            <span className="notification-badge">5</span>
+                        </Link>
+                    </div>
                     <div className="nav-user" onClick={toggleUserDropdown}>
                         <div className="user-avatar">{user && getInitials(user.name)}</div>
                         <span>{user && user.name}</span>

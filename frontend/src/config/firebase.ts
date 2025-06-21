@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getMessaging } from 'firebase/messaging';
+import { getMessaging, onMessage } from 'firebase/messaging';
+import { useEffect } from 'react';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDEcA7HvlFJ68Otqr4xjckQu2c11iEY9Zo",
@@ -18,4 +19,4 @@ export const messaging = getMessaging(app);
 
 export const VAPID_KEY = "BC5hCaXURA0hYpAX0qR_9IhakOjgYghkAIN0bSkutxWcsmLxtG821P4XDKc-GLq2ThzXC_msqb9h9fVIbKksA3E";
 
- 
+
