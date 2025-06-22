@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-    createUpdateAttendances, getListAttendancesBySession,
-    getListStudentByCourseSection
+    createUpdateAttendances, getListAttendancesBySession
 } from "../../../services/attendanceService";
 import Loadding from "../../../components/ui/Loadding";
 import type { StudentAttendace, AttendanceForm, SessionAttendance } from "../../../types/attendance";
@@ -10,6 +9,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import Swal from "sweetalert2";
 import type { AttendanceStatus } from "../../../enums/AttendanceStatus";
 import { FaSearch } from "react-icons/fa";
+import { getListStudentByCourseSection } from "../../../services/courseSectionService";
 interface AttendanceProps {
     classId: number,
     currentClassName?: string,
@@ -33,7 +33,7 @@ interface AttendancesSession {
 }
 const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSession }: AttendanceProps) => {
     const [loadingAttendanceCreate, setLoadingAttendanceCreate] = useState(false);
-    const [listStudent, setListStudent] = useState<StudentAttendace>();
+    const [listStudent, setListStudent] = useState<StudentAttendace[]>([]);
     const { register, handleSubmit, formState: { errors }, reset } = useForm<AttendanceForm>();
     const [listAttendances, setListAttendances] = useState<AttendancesSession>();
     const [defaultSeclect, setDefaultSelect] = useState<number>();
@@ -136,9 +136,9 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
                         </thead>
                         <tbody>
                             {action === 'create' ?
-                                listStudent && Object.values(listStudent)?.filter(student => student.name.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()) ||
+                                listStudent && listStudent?.filter(student => student.name.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()) ||
                                     student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()))
-                                    .map((student, index) => (
+                                    ?.map((student, index) => (
                                         <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
                                             <td>{student.student_code}</td>
                                             <td>{student.name}<input type="hidden" {...register(`attendances.${index}.student_id`, {

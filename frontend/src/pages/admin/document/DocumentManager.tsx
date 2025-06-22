@@ -25,7 +25,6 @@ const DocumentManager = () => {
         getListSubjects();
     }, []);
 
-    console.log()
     return (
         <>
             {loadingGetData && <Loadding />}
