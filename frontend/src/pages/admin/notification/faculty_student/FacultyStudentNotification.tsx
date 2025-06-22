@@ -168,19 +168,13 @@ const FacultyStudentNotification: React.FC = () => {
                         <svg className="header-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-5 5-5-5h5V12h5v5z" />
                         </svg>
-                        <h1 className="header-title">Thông Báo</h1>
+                        <h1 className="header-title">Thông Báo Từ Khoa Và Sinh Viên</h1>
                     </div>
-                    <button className="btn-primary"  >
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Tạo thông báo mới
-                    </button>
                 </div>
                 <Tabs>
                     <TabList>
                         <Tab>Thông báo từ khoa</Tab>
-                        <Tab>Thông báo từ sinh viên</Tab>
+                        <Tab>Phản hồi từ sinh viên</Tab>
                     </TabList>
                     <TabPanel>
                         {/* Filters */}

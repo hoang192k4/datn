@@ -15,8 +15,8 @@ interface EloquentRepositoryInterface
     public function findOrFailById($id): object|bool; //tìm một instance theo id, nếu không có trả về lỗi 404
     public function find($id): object|bool; //tìm một instance theo id
     public function findMany($ids): Collection; //danh sách các instance theo danh sách id
-    public function findWithRelation($id, array $relation): object|bool; //tìm một instance và eager loading relation
-    public function findWithConditions(array $conditions): object|bool; //tìm một instance với mảng điều kiện
+    public function findWithRelation($id, array $relation): ?object; //tìm một instance và eager loading relation
+    public function findWithConditions(array $conditions): ?object; //tìm một instance với mảng điều kiện
 
     public function inserts(array $data): bool; //thêm nhiều dòng dữ liệu cùng lúc
 

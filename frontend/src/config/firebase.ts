@@ -1,7 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getMessaging, onMessage } from 'firebase/messaging';
-import { useEffect } from 'react';
-
+import { getMessaging } from 'firebase/messaging';
 const firebaseConfig = {
     apiKey: "AIzaSyDEcA7HvlFJ68Otqr4xjckQu2c11iEY9Zo",
     authDomain: "datn-52547.firebaseapp.com",

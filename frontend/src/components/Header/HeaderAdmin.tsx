@@ -51,7 +51,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     }, []);
     return (
         <header>
-            <ToastContainer/> 
+            <ToastContainer />
             {loadingLogout && <Loadding />}
             <nav className="navbar">
                 <button className="mobile-toggle" onClick={toggleSidebar}>☰</button>

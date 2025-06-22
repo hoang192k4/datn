@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Exceptions\ModelNotFoundByIdException;
 use App\Http\Requests\Grade\GradeRequest;
+use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
 use App\Repositories\Grade\GradeRepositoryInterface;
 use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use Illuminate\Validation\ValidationException;
@@ -18,13 +19,16 @@ class GradeService implements GradeServiceInterface
 
     protected $summaryGradeSerivce;
     protected $repository;
+    protected $courseSectionRepository;
 
     public function __construct(
         GradeRepositoryInterface $repository,
         SummaryGradeServiceInterface $summaryGradeService,
+        CourseSectionRepositoryInterface $courseSectionRepository,
     ) {
         $this->repository = $repository;
         $this->summaryGradeSerivce = $summaryGradeService;
+        $this->courseSectionRepository = $courseSectionRepository;
     }
 
     public function updateOrCreate(Request $request, $id): object|bool
@@ -57,5 +61,10 @@ class GradeService implements GradeServiceInterface
         }
     }
 
-
+    public function getFileNameExportGrade($courseSectionId): string
+    {
+        $courseSection = $this->courseSectionRepository->find($courseSectionId);
+        $slug = generate_slug($courseSection->name, '_');
+        return "bang_diem_" . $slug . ".xlsx";
+    }
 }

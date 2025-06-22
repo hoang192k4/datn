@@ -33,6 +33,8 @@ Route::controller(App\Http\Controllers\Grade\GradeController::class)
         Route::post('/', 'create'); // api tạo điểm mới
         Route::put('/{id}', 'updateOrCreateGrade'); //api cập nhật điểm
         Route::delete('/', 'deleteGradeColumn'); //api xóa cột điểm (xóa tất cả điểm trong cột)
+        Route::get('/export', 'export');
+        Route::post('/import', 'import');
     });
 
 Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::class)
@@ -50,6 +52,9 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
         Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection'); //api lấy danh sách sinh viên đã điểm danh theo lớp
         Route::get('/sessions', 'getSessionsByCourseSection'); //api lấy danh sách buổi học của lớp đó
         Route::get('/attendances-session', 'getAttendancesBySession'); //api lấy danh sách điểm danh của lớp học theo buổi đó
+
+        Route::get('/export-template/{session_id}', 'exportTemplateAttendance');
+        Route::post('/import-attendances', 'importAttendances');
     });
 
 

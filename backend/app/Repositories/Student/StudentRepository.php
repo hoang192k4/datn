@@ -25,6 +25,27 @@ class StudentRepository extends EloquentRepository implements StudentRepositoryI
     }
 
 
+    public function getStudentsWithGradesAndSummaryByCourseSection($courseSectionId)
+    {
+        return $this->model
+            ->select('id', 'name', 'student_code') // lấy đủ để export
+            ->where('status', StudentStatus::Active)
+            ->whereHas('grades', function ($query) use ($courseSectionId) {
+                $query->where('course_section_id', $courseSectionId);
+            })
+            ->with([
+                'grades' => function ($query) use ($courseSectionId) {
+                    $query->where('course_section_id', $courseSectionId)
+                        ->with('grade_type:id,code,weight'); // lấy code để đặt tên cột
+                },
+                'summary_grades' => function ($query) use ($courseSectionId) {
+                    $query->where('course_section_id', $courseSectionId);
+                }
+            ])
+            ->orderBy('student_code')
+            ->get();
+    }
+
     public function getMyStudents($teacherId, $page, $limit, $key)
     {
         $students = $this->model->whereHas('course_sections', function ($query) use ($teacherId) {

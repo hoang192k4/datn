@@ -9,4 +9,6 @@ interface CourseSectionAttendanceRepositoryInterface extends EloquentRepositoryI
 {
     public function storeAndUpdateAttendanceStudents($session_id, $attendanceStudents);
     public function getAllAttendanceByCourseSection(string $courseSectionId);
+    public function totalAttendanceStudentByCourseSection($studentId, $courseSectionId);
+    public function totalSessionByCourseSection($courseSectionId);
 }

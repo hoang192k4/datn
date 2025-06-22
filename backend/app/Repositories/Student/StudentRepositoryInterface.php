@@ -8,4 +8,5 @@ interface StudentRepositoryInterface extends EloquentRepositoryInterface
 {
     public function getStudentsAndGradesBycourseSectionId($courseSectionId);
     public function getMyStudents($teacherId, $page, $limit, $key);
+    public function getStudentsWithGradesAndSummaryByCourseSection($courseSectionId);
 }

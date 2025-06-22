@@ -60,3 +60,23 @@ export const deleteGradeColumn = (courseSectionId: number | null, gradeTypeId: n
 
     })
 }
+
+export const exportExcel = async (courseSectionId: number) => {
+    return await axiosTeacherInstance.get('/grades/export', {
+        params: {
+            course_section_id: courseSectionId
+        },
+        responseType: 'blob'
+    });
+}
+
+export const importGradeExcel = async (formData: FormData) => {
+    const response = await axiosTeacherInstance.post('/grades/import',
+        formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }
+    );
+    return response.data;
+} 

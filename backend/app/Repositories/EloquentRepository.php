@@ -73,10 +73,9 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
      *  @param id
      * @return object|false
      */
-    public function findWithRelation($id, array $relation): object|bool
+    public function findWithRelation($id, array $relation): ?object
     {
-        $instance = $this->model->with($relation)->find($id);
-        return $instance ?? false;
+        return $this->model->with($relation)->find($id);
     }
 
     /**
@@ -108,7 +107,7 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
         return $this->model->updateOrCreate($conditions, $resource) ?? false;
     }
 
-    public function findWithConditions(array $conditions): object|bool
+    public function findWithConditions(array $conditions): ?object
     {
         return $this->model->where($conditions)->first();
     }
