@@ -150,3 +150,10 @@ Route::controller(App\Http\Controllers\Lecture\LectureController::class)
         Route::delete('/{lecture}', 'destroy'); //api xóa bài giảng
         Route::put('/{lecture}', 'update'); //api cập nhật bài giảng
     });
+
+
+Route::controller(App\Http\Controllers\Student\StudentController::class)
+    ->prefix('students')
+    ->group(function () {
+        Route::post('/', 'create'); //api thêm mới sinh viên
+    });
