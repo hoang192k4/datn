@@ -38,16 +38,6 @@ class AttendanceController extends BaseController
         $this->repository = $repository;
         $this->middleware('auth:teacher');
     }
-    public function getStudentsByCourseSection(string $courseSectionId)
-    {
-        $listStudent = $this->repository->find($courseSectionId)->students->where('status', StudentStatus::Active);
-        $studentJson = $listStudent->filter(function ($item) {
-            return $item->status === StudentStatus::Active;
-        })->map(function ($item) {
-            return new StudentResource($item);
-        });
-        return $this->jsonResponseSuccess($studentJson);
-    }
 
     public function storeAttendanceStudents(CourseSectionAttendanceRequest $request)
     {

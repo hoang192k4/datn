@@ -114,6 +114,10 @@
         width: 100% !important;
     }
 
+    .class-card {
+        width: 100% !important;
+    }
+
     .subject-detail-buttons {
         display: flex;
         flex-wrap: wrap;

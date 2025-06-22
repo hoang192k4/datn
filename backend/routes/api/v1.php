@@ -47,14 +47,13 @@ Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::clas
 Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
     ->prefix('course-section-attendances')
     ->group(function () {
-        Route::get('/{courseSectionId}/students', 'getStudentsByCourseSection'); //api lấy danh sách sinh viên của lớp để điểm danh
         Route::post('/', 'storeAttendanceStudents');    //api thêm mới điểm danh cho sinh viên
         Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection'); //api lấy danh sách sinh viên đã điểm danh theo lớp
         Route::get('/sessions', 'getSessionsByCourseSection'); //api lấy danh sách buổi học của lớp đó
         Route::get('/attendances-session', 'getAttendancesBySession'); //api lấy danh sách điểm danh của lớp học theo buổi đó
-
-        Route::get('/export-template/{session_id}', 'exportTemplateAttendance');
-        Route::post('/import-attendances', 'importAttendances');
+        Route::get('/export-template/{session_id}', 'exportTemplateAttendance'); //api xuất danh sách điểm danh theo buổi
+        Route::post('/import-attendances', 'importAttendances'); //api nhập danh sách điểm danh
+ 
     });
 
 
@@ -117,6 +116,7 @@ Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::cl
     ->prefix('course-sections')
     ->group(function () {
         Route::get('/', 'getCourseSectionByTeacher'); //api lấy dánh sách lớp học phần theo teacher đăng nhập
+        Route::get('/{courseSectionId}/students', 'getStudentsByCourseSection'); //api lấy danh sách sinh viên của lớp
     });
 
 Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)
@@ -150,6 +150,7 @@ Route::controller(App\Http\Controllers\Lecture\LectureController::class)
         Route::delete('/{lecture}', 'destroy'); //api xóa bài giảng
         Route::put('/{lecture}', 'update'); //api cập nhật bài giảng
     });
+ 
 
 
 Route::controller(App\Http\Controllers\Student\StudentController::class)
@@ -157,3 +158,4 @@ Route::controller(App\Http\Controllers\Student\StudentController::class)
     ->group(function () {
         Route::post('/', 'create'); //api thêm mới sinh viên
     });
+ 
