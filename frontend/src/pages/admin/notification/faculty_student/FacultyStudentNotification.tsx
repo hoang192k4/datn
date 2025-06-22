@@ -113,8 +113,9 @@ const FacultyStudentNotification: React.FC = () => {
                             title: 'Xóa thông báo thành công',
                             icon: 'success',
                         });
-                        setStudentNotifications(prev => prev.filter(item => item.id !== id));
-                        setNotifications(prev => prev.filter(item => item.id !== id));
+                        fetchStudentNotifications({ page: 1 }, NotificationType.StudentSend);
+                        fetchNotifications({ page: 1 }, NotificationType.AdminSend);
+
                     }
                 } catch (error: any) {
 
