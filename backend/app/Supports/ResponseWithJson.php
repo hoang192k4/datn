@@ -16,7 +16,7 @@ trait ResponseWithJson
      *
      * @return JsonResponse
      */
-    protected function jsonResponseSuccess(mixed $data = null, string $message = '', int $status = 200):JsonResponse
+    protected function jsonResponseSuccess(mixed $data = null, string $message = '', int $status = 200): JsonResponse
     {
         return response()->json([
             'status' => $status,
@@ -33,7 +33,7 @@ trait ResponseWithJson
      *
      * @return JsonResponse
      */
-    protected function jsonResponseSuccessNoData(string $message = '', int $status = 200):JsonResponse
+    protected function jsonResponseSuccessNoData(string $message = '', int $status = 200): JsonResponse
     {
         return response()->json([
             'status' => $status,
@@ -48,11 +48,21 @@ trait ResponseWithJson
      *
      * @return JsonResponse
      */
-    protected function jsonResponseError(string $message = '', int $status = 400):JsonResponse
+    protected function jsonResponseError(string $message = '', int $status = 400): JsonResponse
     {
         return response()->json([
             'status' => $status,
             'message' => $message ?: 'Thực hiện không thành công'
+        ], $status);
+    }
+
+
+    protected function jsonResponseErrorValidate(string $message = '', int $status = 400, array $errors = []): JsonResponse
+    {
+        return response()->json([
+            'status' => $status,
+            'message' => $message ?: 'Thực hiện không thành công',
+            'errors' => $errors,
         ], $status);
     }
 }

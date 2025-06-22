@@ -1,4 +1,5 @@
 import axiosTeacherInstance from "../config/axiosTeacher"
+import type { NotificationType } from "../enums/NotificationType";
 import type { Paginate } from "../types/paginate";
 
 
@@ -15,11 +16,30 @@ interface NotificationStudent {
     receiver_ids: string[],
 }
 
-export const getMyNotifications = ({ page, limit }: Paginate) => {
+
+interface FormValues {
+    title: string;
+    content: string;
+    course_section_id?: OptionType;
+    public?: string;
+    push_notification: string;
+}
+
+
+interface StudentFormValues {
+    title: string;
+    content: string;
+    push_notification: string;
+}
+
+type OptionType = { value: string | number; label: string };
+export const getMyNotifications = ({ page, limit, key }: Paginate, status: '' | 'public' | 'private' | string) => {
     return axiosTeacherInstance.get('/me/posts', {
         params: {
             limit,
-            page
+            page,
+            key,
+            status
         }
     });
 }
@@ -51,11 +71,13 @@ export const sendNotificationToStudent = ({ title, body, receiver_ids }: Notific
     });
 }
 
-export const getStudentNotifications = ({ page, limit }: Paginate) => {
+export const getStudentNotifications = ({ page, limit, key }: Paginate, status: string) => {
     return axiosTeacherInstance.get('/me/students/notifications', {
         params: {
             page,
-            limit
+            limit,
+            key,
+            status
         }
     })
 }
@@ -67,5 +89,31 @@ export const deletePost = async (id: number) => {
 
 export const deleteNotification = async (id: number) => {
     const response = await axiosTeacherInstance.delete(`/notifications/${id}`);
+    return response.data;
+}
+
+export const updatePost = async (data: FormValues, id: number) => {
+    const response = await axiosTeacherInstance.put(`posts/${id}`, {
+        ...data,
+        course_section_id: data.course_section_id?.value,
+    });
+    return response.data;
+}
+
+export const updateStudentNotification = async (data: StudentFormValues, id: number) => {
+    const response = await axiosTeacherInstance.put(`/notifications/${id}`,
+        {
+            ...data
+        }
+    );
+    return response.data;
+}
+
+export const getNotifications = async ({ limit, page, key }: Paginate, type: NotificationType | null) => {
+    const response = await axiosTeacherInstance.get('/notifications', {
+        params: {
+            limit, page, key, type
+        }
+    });
     return response.data;
 }

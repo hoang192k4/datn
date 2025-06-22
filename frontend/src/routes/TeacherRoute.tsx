@@ -7,6 +7,7 @@ import TeacherProfile from "../pages/admin/profile/TeacherProfile";
 import AttendancePage from "../pages/admin/attendance/AttendancePage";
 import Grade from "../pages/admin/grade/GradeManagement";
 import Notification from "../pages/admin/notification/Notification";
+import FacultyStudentNotification from "../pages/admin/notification/faculty_student/FacultyStudentNotification";
 
 export const TeacherRoute = [
     {
@@ -45,6 +46,10 @@ export const TeacherRoute = [
     {
         'path': 'thong-bao/danh-sach',
         'element': <Notification />
+    },
+    {
+        'path': 'thong-bao/khoa-va-sinh-vien',
+        'element': <FacultyStudentNotification />
     },
     {
         'path': 'diem',

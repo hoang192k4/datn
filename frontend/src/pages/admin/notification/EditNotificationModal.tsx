@@ -1,140 +1,100 @@
-import React, { useState } from 'react';
-import { X, Users, User } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { X, Users } from 'lucide-react';
 import './CreateNotificationModal.css';
 import { useForm, Controller } from 'react-hook-form';
 import { getCourseSectionByTeacher } from '../../../services/courseSectionService';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import type { GroupBase, OptionsOrGroups } from 'react-select';
-import { sendNotificationToCourseSection, getMyStudents, sendNotificationToStudent } from '../../../services/notificationService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import Swal from 'sweetalert2';
 import { CreateLoading } from '../../../components/ui/CreateLoading';
+import { updatePost } from '../../../services/notificationService';
 
 
 
-const targetConstant = { courseSection: 'course_section', student: 'student' };
 
+interface CourseSection {
+    id: number,
+    name: string,
+}
+
+interface NotificationCourseSection {
+    id: number;
+    title: string;
+    content: string;
+    created_at?: string;
+    teacher?: string;
+    course_section: CourseSection;
+    status: string;
+}
 interface NotificationModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSuccessTeacher: () => void;
-    onSuccessStudent: () => void;
+    notification?: NotificationCourseSection;
+    onSuccess: () => void;
 }
 interface FormValues {
-    target: "course_section" | "student";
     title: string;
     content: string;
-    course_section_id?: number;
-    students?: { label: string; value: string }[];
-    public?: string;
-    receiver_ids?: string[];
+    course_section_id?: OptionType;
+    status?: string|boolean;
+    push_notification: string;
+    id: number;
 }
 
-type OptionType = { value: string; label: string };
+type OptionType = { value: string | number; label: string };
 
-const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, onSuccessTeacher, onSuccessStudent }) => {
+const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, notification, onSuccess }) => {
     const [createLoading, setCreateLoading] = useState<boolean>(false);
-    const [target, setTarget] = useState<string>(targetConstant.courseSection); // Default to students
-    const { register, handleSubmit, formState: { errors }, control } = useForm<FormValues>({
-        defaultValues: {
-            target: "course_section"
-        }
-    })
+    const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FormValues>({});
 
+    useEffect(() => {
+        if (notification) {
+            reset({
+                id: notification.id,
+                title: notification.title,
+                content: notification.content,
+                course_section_id: {
+                    label: notification.course_section.name,
+                    value: notification.course_section.id
+                },
+                status: notification.status === "private",
+            })
+        }
+    }, [notification, reset]);
     if (!isOpen) return null;
 
     const onSubmit = async (data: FormValues) => {
-        if (data.target === targetConstant.courseSection) {
-            try {
-                setCreateLoading(true);
-
-                const res = await sendNotificationToCourseSection({ title: data.title, body: data.content, course_section_id: data.course_section_id, public_type: data.public })
-                if (res.status === HttpStatus.SUCCESS) {
-                    Swal.fire({
-                        title: "Gửi thông báo thành công",
-                        icon: "success",
-                    })
-                    onSuccessTeacher();
-                }
-
-            } catch (error: any) {
-                if (error.response.status === HttpStatus.BAD_REQUEST) {
-                    Swal.fire({
-                        title: "Gửi thông báo thành công thất bại",
-                        icon: "error",
-                    })
-                }
-                if (error.response.status === HttpStatus.INTERNAL_SERVER_ERROR) {
-                    Swal.fire({
-                        title: "Có lỗi trong quá trình gửi thông báo",
-                        icon: "error",
-                    })
-                }
-            } finally {
-                onClose();
-                setCreateLoading(false);
+        data.status = data.status ? 'private' : 'public';
+        try {
+            setCreateLoading(true);
+            const res = await updatePost(data, data.id);
+            if (res.status === HttpStatus.SUCCESS) {
+                Swal.fire({
+                    title: "Cập nhật thông báo thành công",
+                    icon: "success",
+                })
+                onSuccess();
             }
-        }
-        if (data.target === targetConstant.student) {
-            try {
-                setCreateLoading(true);
-
-                const receiverIds = data?.students?.map((student) => student.value);
-                data.receiver_ids = receiverIds;
-
-                const response = await sendNotificationToStudent({ title: data.title, body: data.content, receiver_ids: data?.receiver_ids || [] });
-                if (response.status === HttpStatus.SUCCESS) {
-                    Swal.fire({
-                        title: "Gửi thông báo thành công",
-                        icon: "success",
-                    })
-                    onSuccessStudent();
-                }
-
-            } catch (error: any) {
-                if (error.response.status === HttpStatus.BAD_REQUEST) {
-                    Swal.fire({
-                        title: "Gửi thông báo thất bại",
-                        icon: "error",
-                    })
-                }
-                if (error.response.status === HttpStatus.INTERNAL_SERVER_ERROR) {
-                    Swal.fire({
-                        title: "Gửi thông báo thất bại",
-                        text: "Lỗi hệ thống, vui lòng thử lại sau!",
-                        icon: "error",
-                    })
-                }
-            } finally {
-                onClose();
-                setCreateLoading(false);
+        } catch (error: any) {
+            if (error.response.status === HttpStatus.BAD_REQUEST) {
+                Swal.fire({
+                    title: "Gửi thông báo thất bại",
+                    icon: "error",
+                })
             }
+            if (error.response.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+                Swal.fire({
+                    title: "Có lỗi trong quá trình gửi thông báo",
+                    icon: "error",
+                })
+            }
+        } finally {
+            onClose();
+            setCreateLoading(false);
         }
-    };
+    }
 
-    const loadOptionsStudent = async (
-        search: string,
-        _loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>,
-        { page }: { page: number } = { page: 1 }
-    ): Promise<{
-        options: readonly OptionType[],
-        hasMore: boolean,
-        additional: { page: number }
-    }> => {
-        const res = await getMyStudents(search, page);
-        const data = res.data.data;
-
-        const newOptions = data.students.map((item: any) => ({
-            value: item.id,
-            label: `${item.name} - ${item.student_code}`,
-        }));
-
-        return {
-            options: newOptions,
-            hasMore: page < data.meta.total_pages,
-            additional: { page: page + 1 },
-        };
-    };
 
     const loadOptionsCourseSection = async (
         search: string,
@@ -160,6 +120,7 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
         };
     };
 
+
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -171,7 +132,7 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
                                 <div className="notification-modal-icon">
                                     <Users />
                                 </div>
-                                Tạo thông báo mới
+                                Sửa thông báo
                             </h3>
                             <button
                                 onClick={onClose}
@@ -183,91 +144,31 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
 
                         <div className="notification-modal-body">
                             {/* Chọn đối tượng */}
+
                             <div className="notification-form-group">
                                 <label className="notification-form-label">
-                                    Đối tượng thông báo *
+                                    Chọn lớp *
                                 </label>
-                                <div className="notification-target-options">
-                                    <label className="notification-radio-option">
-                                        <input
-                                            type="radio"
-                                            value="course_section"
+                                <Controller
+                                    name="course_section_id"
+                                    control={control}
+                                    render={({ field: { onChange, value, ...field } }) => (
 
-                                            className="notification-radio-input"
-                                            {...register("target", { required: true })}
-                                            onChange={() => setTarget(targetConstant.courseSection)}
+                                        <AsyncPaginate<OptionType, GroupBase<OptionType>, { page: number } >
+                                            {...field}
+                                            value={value}
+                                            onChange={(option) => onChange(option)}
+                                            loadOptions={loadOptionsCourseSection}
+                                            placeholder="Chọn lớp"
+                                            isClearable
+                                            loadingMessage={() => "Đang tải..."}
+                                            noOptionsMessage={() => "Không có dữ liệu"}
+                                            debounceTimeout={500}
                                         />
-                                        <div className="notification-radio-content">
-                                            <Users className="notification-radio-icon" />
-                                            <span className="notification-radio-text">Lớp</span>
-                                        </div>
-                                    </label>
-                                    <label className="notification-radio-option">
-                                        <input
-                                            type="radio"
-                                            value="student"
-
-                                            className="notification-radio-input"
-                                            {...register("target", { required: true })}
-                                            onChange={() => setTarget(targetConstant.student)}
-                                        />
-                                        <div className="notification-radio-content">
-                                            <User className="notification-radio-icon" />
-                                            <span className="notification-radio-text">Sinh viên</span>
-                                        </div>
-                                    </label>
-                                </div>
+                                    )}
+                                />
                             </div>
 
-                            {/* Chọn lớp hoặc sinh viên */}
-                            {target === 'course_section' ? (
-                                <div className="notification-form-group">
-                                    <label className="notification-form-label">
-                                        Chọn lớp *
-                                    </label>
-                                    <Controller
-                                        key={target}
-                                        name="course_section_id"
-                                        control={control}
-                                        render={({ field: { onChange, value, ...field } }) => (
-                                            <AsyncPaginate<OptionType, GroupBase<OptionType>, { page: number } >
-                                                {...field}
-
-                                                onChange={(option) => onChange(option?.value)}
-                                                loadOptions={loadOptionsCourseSection}
-                                                placeholder="Chọn lớp"
-                                                isClearable
-                                                loadingMessage={() => "Đang tải..."}
-                                                noOptionsMessage={() => "Không có dữ liệu"}
-                                                debounceTimeout={500}
-
-                                            />
-                                        )}
-                                    />
-                                </div>
-                            ) : (
-                                <div className="notification-form-group">
-                                    <label className="notification-form-label">
-                                        Chọn sinh viên *
-                                    </label>
-                                    <Controller name="students"
-                                        key={target}
-                                        control={control}
-                                        render={({ field: { onChange, value, ...field } }) => (
-                                            <AsyncPaginate<OptionType, GroupBase<OptionType>, { page: number }, true>
-                                                {...field}
-                                                isMulti
-                                                onChange={(option) => onChange(option)}
-                                                loadOptions={loadOptionsStudent}
-                                                additional={{ page: 1 }}
-                                                placeholder="Tìm sinh viên..."
-                                                noOptionsMessage={() => "Không tìm thấy sinh viên"}
-                                                loadingMessage={() => "Đang tải..."}
-                                                debounceTimeout={500}
-
-                                            />)} />
-                                </div>
-                            )}
 
                             {/* Tiêu đề */}
                             <div className="notification-form-group">
@@ -298,19 +199,30 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
                                 {errors.title && <span className="notification-error-message">* Bắt buộc</span>}
                             </div>
                         </div>
-                        {target === 'course_section' ? (
-                            <label className="notification-radio-option notification-radio-option-margin">
-                                <input
-                                    type="radio"
-                                    value="private"
-                                    className="notification-radio-input"
-                                    {...register("public", { required: false })}
-                                />
-                                <div className="notification-radio-content">
-                                    <span className="notification-radio-text">Không hiển thị trên trang chủ</span>
-                                </div>
-                            </label>
-                        ) : <></>}
+
+                        <label className="notification-radio-option notification-radio-option-margin">
+                            <input
+                                type="checkbox"
+                                className="notification-radio-input"
+                                {...register("status", { required: false })}
+                            />
+                            <div className="notification-radio-content">
+                                <span className="notification-radio-text">Không hiển thị trên trang chủ</span>
+                            </div>
+                        </label>
+
+
+                        <label className="notification-radio-option notification-radio-option-margin">
+                            <input
+                                type="checkbox"
+                                value="true"
+                                className="notification-radio-input"
+                                {...register("push_notification", { required: false })}
+                            />
+                            <div className="notification-radio-content">
+                                <span className="notification-radio-text">Gửi lại thông báo đẩy</span>
+                            </div>
+                        </label>
                         {/* Buttons */}
                         <div className="notification-modal-footer">
                             <button
@@ -324,7 +236,7 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
                                 type="submit"
                                 className="notification-submit-btn"
                             >
-                                Tạo thông báo
+                                Cập nhật thông báo
                             </button>
                         </div>
                     </div>
@@ -332,11 +244,10 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
 
                 </div>
             </form>
-            {createLoading ? <CreateLoading /> : <> </>}
+            {createLoading ? <CreateLoading title="Đang cập nhật thông báo" /> : <> </>}
         </>
     );
-};
-
+}
 
 
 export default EditNotificationModal;

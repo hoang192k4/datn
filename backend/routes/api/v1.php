@@ -33,6 +33,8 @@ Route::controller(App\Http\Controllers\Grade\GradeController::class)
         Route::post('/', 'create'); // api tạo điểm mới
         Route::put('/{id}', 'updateOrCreateGrade'); //api cập nhật điểm
         Route::delete('/', 'deleteGradeColumn'); //api xóa cột điểm (xóa tất cả điểm trong cột)
+        Route::get('/export', 'export');
+        Route::post('/import', 'import');
     });
 
 Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::class)
@@ -49,9 +51,9 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
         Route::get('/{courseSectionId}/attendances', 'getAllAttendanceByCourseSection'); //api lấy danh sách sinh viên đã điểm danh theo lớp
         Route::get('/sessions', 'getSessionsByCourseSection'); //api lấy danh sách buổi học của lớp đó
         Route::get('/attendances-session', 'getAttendancesBySession'); //api lấy danh sách điểm danh của lớp học theo buổi đó
-
         Route::get('/export-template/{session_id}', 'exportTemplateAttendance'); //api xuất danh sách điểm danh theo buổi
         Route::post('/import-attendances', 'importAttendances'); //api nhập danh sách điểm danh
+ 
     });
 
 
@@ -70,6 +72,7 @@ Route::controller(App\Http\Controllers\Notification\NotificationController::clas
         Route::post('/send-to-course-section', 'sendNotificationToCourseSection'); //api gửi thông báo đến lớp
         Route::get('/', 'getMyNotifications'); //api lấy danh sách thông báo theo người dùng đăng nhập
         Route::delete('/{id}', 'destroy'); //api xóa thông báo
+        Route::put('/{id}', 'update');
     });
 
 Route::controller(App\Http\Controllers\Notification\StudentNotificationController::class)
@@ -99,6 +102,7 @@ Route::controller(App\Http\Controllers\Post\PostController::class)
     ->prefix('posts')
     ->group(function () {
         Route::delete('/{id}', 'destroy');
+        Route::put('/{id}', 'update');
     });
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')
@@ -146,3 +150,12 @@ Route::controller(App\Http\Controllers\Lecture\LectureController::class)
         Route::delete('/{lecture}', 'destroy'); //api xóa bài giảng
         Route::put('/{lecture}', 'update'); //api cập nhật bài giảng
     });
+ 
+
+
+Route::controller(App\Http\Controllers\Student\StudentController::class)
+    ->prefix('students')
+    ->group(function () {
+        Route::post('/', 'create'); //api thêm mới sinh viên
+    });
+ 

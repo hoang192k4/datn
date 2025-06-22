@@ -12,8 +12,10 @@ import { Loading } from '../../../components/ui/Loading';
 import CreateNotificationModal from './CreateNotificationModal';
 import NotificationItem from './NotificationItem';
 import StudentNotificationItem from './StudentNotificationItem';
+import EditNotificationModal from './EditNotificationModal';
 
 import Swal from 'sweetalert2';
+import EditStudentNotificationModal from './EditStudentNotificationModal';
 
 interface NotificationCourseSection {
     id: number;
@@ -50,27 +52,29 @@ const Notification: React.FC = () => {
     const [notifications, setNotifications] = useState<NotificationCourseSection[]>([]);
     const [studentNotifications, setStudentNotifications] = useState<StudentNotification[]>([]);
     const [studentNotifyPaginate, setStudentNotifyPaginate] = useState<Paginate>();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterStatus, setFilterStatus] = useState<string>('all');
-    const [filterType, setFilterType] = useState<string>('all');
+    const [filterStatus, setFilterStatus] = useState<string>('');
+    const [filterStudentStatus, setFilterStudentStatus] = useState<string>('');
     const [paginate, setPaginate] = useState<Paginate>();
     const [loading, setLoading] = useState<boolean>(false);
-    const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false);
+    const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false)
     const [isOpenCreateModal, setIsOpenCreateModal] = useState<boolean>(false);
+    const [isOpenEditModal, setIsOpenEditModal] = useState<boolean>(false);
+    const [editingPost, setEditingPost] = useState<NotificationCourseSection>();
+    const [keywordPost, setKeywordPost] = useState<string>('');
+    const [keywordPostDebounce, setKeywordPostDebounce] = useState<string>('');
+    const [editStudentNotification, setEditStudentNotification] = useState<StudentNotification>();
+    const [isOpenStudentNotificationModal, setIsOpenStudentNotificationModal] = useState<boolean>(false);
+    const [keywordNotification, setKeywordNotification] = useState<string>('');
+    const [keywordNotificationDebounce, setKeywordNotificationDebounce] = useState<string>('');
+    const [page, setPage] = useState<number | null | undefined>(1);
 
-
-    useEffect(() => {
-        fetchMyNotifications({ page: 1, limit: 10 });
-        fetchStudentNotifications({});
-    }, []);
-    const fetchMyNotifications = async ({ page, limit }: Paginate) => {
+    const fetchMyNotifications = async ({ page, limit, key }: Paginate, status: string) => {
         try {
             setLoading(true);
-            const response = await getMyNotifications({ page, limit });
+            const response = await getMyNotifications({ page, limit, key }, status);
             if (response.status === HttpStatus.SUCCESS) {
                 const notifications = response.data.data.posts;
                 const paginate = response.data.data.meta;
-                console.log(notifications, paginate);
                 setNotifications(notifications);
                 setPaginate(paginate);
             }
@@ -82,10 +86,10 @@ const Notification: React.FC = () => {
         }
     }
 
-    const fetchStudentNotifications = async ({ page, limit }: Paginate) => {
+    const fetchStudentNotifications = async ({ page, limit, key }: Paginate, status: string) => {
         try {
             setLoadingStudentNotify(true);
-            const response = await getStudentNotifications({ page, limit });
+            const response = await getStudentNotifications({ page, limit, key }, status);
             if (response.status === HttpStatus.SUCCESS) {
                 const notifications = response.data.data.notifications;
                 const paginate = response.data.data.meta;
@@ -100,7 +104,6 @@ const Notification: React.FC = () => {
             setLoadingStudentNotify(false);
         }
     }
-
 
     const handleDeleteNotification = async (id: number) => {
         Swal.fire({
@@ -128,7 +131,6 @@ const Notification: React.FC = () => {
         })
 
     }
-
 
     const handleDeletePost = async (id: number) => {
         Swal.fire({
@@ -158,7 +160,47 @@ const Notification: React.FC = () => {
 
     }
 
-    
+    const handleEdit = (post: NotificationCourseSection) => {
+        setEditingPost(post);
+        setIsOpenEditModal(true);
+    }
+
+    const handleStudentNotificationEdit = (notification: StudentNotification) => {
+        setEditStudentNotification(notification);
+        setIsOpenStudentNotificationModal(true);
+    }
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setKeywordPostDebounce(keywordPost);
+            setPage(1);
+        }, 300);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [keywordPost]);
+
+    useEffect(() => {
+        fetchMyNotifications({ key: keywordPostDebounce, page: page }, filterStatus);
+    }, [keywordPostDebounce, filterStatus, page]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setKeywordNotificationDebounce(keywordNotification);
+
+        }, 300);
+
+        return () => {
+            clearTimeout(handler);
+        };
+
+    }, [keywordNotification]);
+
+    useEffect(() => {
+        fetchStudentNotifications({ key: keywordNotificationDebounce }, filterStudentStatus);
+    }, [keywordNotificationDebounce, filterStudentStatus]);
+
     return (
         <>
             <PageHeader title='Thông Báo' subtitle='Quản lý thông báo của giảng viên' />
@@ -194,8 +236,8 @@ const Notification: React.FC = () => {
                                         type="text"
                                         className="search-input"
                                         placeholder="Tìm kiếm thông báo..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        value={keywordPost}
+                                        onChange={(e) => setKeywordPost(e.target.value)}
 
                                     />
                                     <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
@@ -205,21 +247,9 @@ const Notification: React.FC = () => {
                                     value={filterStatus}
                                     onChange={(e) => setFilterStatus(e.target.value)}
                                 >
-                                    <option value="all">Tất cả trạng thái</option>
-                                    <option value="published">Đã xuất bản</option>
-                                    <option value="draft">Bản nháp</option>
-                                    <option value="archived">Đã lưu trữ</option>
-                                </select>
-                                <select
-                                    className="filter-select"
-                                    value={filterType}
-                                    onChange={(e) => setFilterType(e.target.value)}
-                                >
-                                    <option value="all">Tất cả loại</option>
-                                    <option value="info">Thông tin</option>
-                                    <option value="warning">Cảnh báo</option>
-                                    <option value="success">Thành công</option>
-                                    <option value="error">Lỗi</option>
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="public">Công khai</option>
+                                    <option value="private">Không công khai</option>
                                 </select>
                             </div>
                         </div>
@@ -227,7 +257,7 @@ const Notification: React.FC = () => {
                         {/* Notifications List */}
                         {loading ? (<Loading />) : notifications.length === 0 ? <div className="notification-no-item"> Không có thông báo nào</div> : notifications.map((notification) => (
                             <div key={notification.id} className="notification-item">
-                                <NotificationItem notification={notification} onDelete={() => handleDeletePost(notification.id)} />
+                                <NotificationItem notification={notification} onDelete={() => handleDeletePost(notification.id)} onEdit={() => handleEdit(notification)} />
                             </div>
                         ))}
 
@@ -237,9 +267,9 @@ const Notification: React.FC = () => {
                                 Hiển thị <strong> {paginate?.from}</strong> đến <strong> {paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> thông báo
                             </div>
                             <div className="pagination-controls">
-                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.previous_page, limit: 10 })}>Trước</button>
+                                <button className="page-btn" onClick={() => setPage(paginate?.previous_page)}>Trước</button>
                                 <button className="page-btn active">{paginate?.current_page}</button>
-                                <button className="page-btn" onClick={() => fetchMyNotifications({ page: paginate?.next_page, limit: 10 })}>Sau</button>
+                                <button className="page-btn" onClick={() => setPage(paginate?.next_page)}>Sau</button>
                             </div>
                         </div>) : (<div> </div>)}
 
@@ -253,39 +283,28 @@ const Notification: React.FC = () => {
                                         type="text"
                                         className="search-input"
                                         placeholder="Tìm kiếm thông báo..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        value={keywordNotification}
+                                        onChange={(e) => setKeywordNotification(e.target.value)}
                                     />
                                     <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
                                 </div>
                                 <select
                                     className="filter-select"
-                                    value={filterStatus}
-                                    onChange={(e) => setFilterStatus(e.target.value)}
+                                    value={filterStudentStatus}
+                                    onChange={(e) => setFilterStudentStatus(e.target.value)}
                                 >
-                                    <option value="all">Tất cả trạng thái</option>
-                                    <option value="published">Đã xuất bản</option>
-                                    <option value="draft">Bản nháp</option>
-                                    <option value="archived">Đã lưu trữ</option>
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="read">Đã đọc</option>
+                                    <option value="unread">Chưa đọc</option>
                                 </select>
-                                <select
-                                    className="filter-select"
-                                    value={filterType}
-                                    onChange={(e) => setFilterType(e.target.value)}
-                                >
-                                    <option value="all">Tất cả loại</option>
-                                    <option value="info">Thông tin</option>
-                                    <option value="warning">Cảnh báo</option>
-                                    <option value="success">Thành công</option>
-                                    <option value="error">Lỗi</option>
-                                </select>
+
                             </div>
                         </div>
 
                         {/* Notifications List */}
                         {loadingStudentNotify ? (<Loading />) : studentNotifications.length === 0 ? <div className="notification-no-item">Không có thông báo nào</div> : studentNotifications.map((notification) => (
                             <div key={notification.id} className="notification-item">
-                                <StudentNotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
+                                <StudentNotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} onEdit={() => { handleStudentNotificationEdit(notification) }} />
                             </div>
                         ))}
 
@@ -296,9 +315,9 @@ const Notification: React.FC = () => {
                                     Hiển thị <strong> {studentNotifyPaginate?.from}</strong> đến <strong> {studentNotifyPaginate?.to}</strong> trong tổng số <strong>{studentNotifyPaginate?.total}</strong> thông báo
                                 </div>
                                 <div className="pagination-controls">
-                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.previous_page })}>Trước</button>
-                                    <button className="page-btn active">1</button>
-                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.next_page })}>Sau</button>
+                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.previous_page }, filterStudentStatus)}>Trước</button>
+                                    <button className="page-btn active"> {studentNotifyPaginate?.current_page} </button>
+                                    <button className="page-btn" onClick={() => fetchStudentNotifications({ page: studentNotifyPaginate?.next_page }, filterStudentStatus)}>Sau</button>
                                 </div>
                             </div>
                         }
@@ -306,10 +325,16 @@ const Notification: React.FC = () => {
                     </TabPanel>
                 </Tabs>
             </div >
-            {isOpenCreateModal ? <CreateNotificationModal isOpen={isOpenCreateModal} onClose={() => { setIsOpenCreateModal(false) }} onSuccessTeacher={() => { fetchMyNotifications({ page: 1 }) }} onSuccessStudent={() => fetchStudentNotifications({ page: 1 })} /> : <> </>
+            {isOpenCreateModal ? <CreateNotificationModal isOpen={isOpenCreateModal} onClose={() => { setIsOpenCreateModal(false) }} onSuccessTeacher={() => { fetchMyNotifications({ page: 1 }, filterStatus) }} onSuccessStudent={() => fetchStudentNotifications({ page: 1 }, filterStudentStatus)} /> : <> </>
+            }
+
+            {
+                isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={() => { fetchMyNotifications({ page: 1 }, filterStatus) }} /> : <> </>
+            }
+            {
+                isOpenStudentNotificationModal ? <EditStudentNotificationModal isOpen={isOpenStudentNotificationModal} onClose={() => { setIsOpenStudentNotificationModal(false) }} onSuccess={() => fetchStudentNotifications({}, filterStudentStatus)} notification={editStudentNotification} /> : <> </>
             }
         </>
     )
 }
-
 export default Notification;

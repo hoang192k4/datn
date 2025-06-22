@@ -6,5 +6,5 @@ use App\Repositories\EloquentRepositoryInterface;
 
 interface NotificationRepositoryInterface extends EloquentRepositoryInterface
 {
-    public function getMyTeacherNotificationSendStudent($teacherId, $page, $limit, $key);
+    public function getMyTeacherNotificationSendStudent($teacherId, $page, $limit, $key, $status);
 }

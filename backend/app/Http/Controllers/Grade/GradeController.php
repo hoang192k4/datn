@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Grade;
 
 use App\Enums\GradeWeight;
 use App\Exceptions\ModelNotFoundByIdException;
+use App\Exports\StudentGradesExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CourseSection\CourseSectionGradeRequest;
 use App\Http\Requests\Grade\GradeColumnRequest;
+use App\Http\Requests\Grade\GradeImportRequest;
 use App\Http\Requests\Grade\GradeRequest;
 use App\Http\Resources\Grade\GradeResource;
 use App\Http\Resources\Grade\GradeResourceCollection;
 use App\Http\Resources\Student\StudentGradeResource;
+use App\Imports\StudentGradesImport;
 use App\Models\CourseSection;
 use App\Models\Grade;
 use App\Repositories\CourseSectionGrade\CourseSectionGradeRepositoryInterface;
@@ -22,7 +25,8 @@ use App\Supports\Log;
 use App\Supports\ResponseWithJson;
 use Exception;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GradeController extends BaseController
 {
@@ -111,5 +115,32 @@ class GradeController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
-    public function updateExamScore() {}
+
+    public function export(GradeRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $courseSectionId = $data['course_section_id'];
+            $fileName = $this->gradeService->getFileNameExportGrade($courseSectionId);
+            return Excel::download(new StudentGradesExport($courseSectionId), $fileName);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function import(GradeImportRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $courseSectionId = $data['course_section_id'];
+            Excel::import(new StudentGradesImport($courseSectionId), $request->file('file'));
+            return $this->jsonResponseSuccessNoData();
+        } catch (ValidationException $e) {
+            return $this->jsonResponseErrorValidate('Import thất bại', 422, $e->errors()['import']);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
 }

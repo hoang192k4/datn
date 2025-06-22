@@ -27,7 +27,15 @@ class Student extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'student_code'
+        'student_code',
+        'address',
+        'date_of_birth',
+        'enrollment_date',
+        'gender',
+        'graduation_date',
+        'major_id',
+        'status',
+        'device_token',
     ];
 
     /**
@@ -88,7 +96,7 @@ class Student extends Authenticatable implements JWTSubject
         return $this->hasMany(SummaryGrade::class);
     }
 
-    public function major():BelongsTo
+    public function major(): BelongsTo
     {
         return $this->belongsTo(Major::class);
     }

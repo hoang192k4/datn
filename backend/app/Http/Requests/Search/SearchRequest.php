@@ -12,7 +12,7 @@ class SearchRequest extends BaseRequest
         return [
             'limit' => 'integer|nullable',
             'page' => 'integer|nullable',
-            'key' => 'string|nullable'
+            'key' => 'string|nullable',
         ];
     }
 }

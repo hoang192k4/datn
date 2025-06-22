@@ -37,7 +37,7 @@ class SummaryGradeController extends BaseController
         $this->middleware('role:homeroom_teacher,subject_teacher,faculty_admin,apartment_admin');
     }
 
-    public function update(SummaryGradeRequest $request, SummaryGrade $id)
+    public function update(SummaryGradeRequest $request, $id)
     {
         try {
             $response = $this->service->update($request, $id);
