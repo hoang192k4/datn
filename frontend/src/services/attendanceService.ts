@@ -7,11 +7,6 @@ export const getListAttendanceStudent = async (courseSectionId: number) => {
 }
 
 
-export const getListStudentByCourseSection = async (courseSectionId: number) => {
-    const response = await axiosTeacherInstance.get(`/course-section-attendances/${courseSectionId}/students`);
-    return response.data;
-}
-
 export const createUpdateAttendances = async (sessionId: number, attendance: AttendanceForm) => {
     const response = await axiosTeacherInstance.post('/course-section-attendances',
         { attendance },
