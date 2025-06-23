@@ -20,7 +20,7 @@ class StudentController extends BaseController
     ) {
         $this->studentService = $studentService;
         $this->middleware('auth:teacher');
-        $this->middleware('role:faculty_admin,department_admin');
+        $this->middleware('role:faculty_admin,department_admin')->except('getAllStudents');
     }
 
     public function create(StudentRequest $request)
