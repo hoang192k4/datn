@@ -14,7 +14,6 @@ Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
         Route::post('/update-profile', 'update');
     });
 
-
 Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
     ->prefix('students')
     ->group(function () {
@@ -53,7 +52,7 @@ Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
         Route::get('/attendances-session', 'getAttendancesBySession'); //api lấy danh sách điểm danh của lớp học theo buổi đó
         Route::get('/export-template/{session_id}', 'exportTemplateAttendance'); //api xuất danh sách điểm danh theo buổi
         Route::post('/import-attendances', 'importAttendances'); //api nhập danh sách điểm danh
- 
+
     });
 
 
@@ -152,12 +151,13 @@ Route::controller(App\Http\Controllers\Lecture\LectureController::class)
         Route::delete('/{lecture}', 'destroy'); //api xóa bài giảng
         Route::put('/{lecture}', 'update'); //api cập nhật bài giảng
     });
- 
+
 
 
 Route::controller(App\Http\Controllers\Student\StudentController::class)
     ->prefix('students')
     ->group(function () {
         Route::post('/', 'create'); //api thêm mới sinh viên
+        Route::post('/import', 'importStudentsExcel');
+        Route::get('/', 'getAllStudents');
     });
- 

@@ -332,7 +332,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
 
                 </div>
             </form>
-            {createLoading ? <CreateLoading title="Đang tạo thông báo"/> : <> </>}
+            {createLoading ? <CreateLoading title="Đang tạo thông báo" /> : <> </>}
         </>
     );
 };

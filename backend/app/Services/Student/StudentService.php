@@ -2,6 +2,7 @@
 
 namespace App\Services\Student;
 
+use App\Enums\Student\StudentStatus;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Supports\Log;
 use Exception;
@@ -22,6 +23,22 @@ class StudentService implements StudentServiceInterface
         try {
             $data = $request->validated();
             return $this->studentRepository->create($data);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
+    public function getAllStudents(Request $request)
+    {
+        try {
+            $data = $request->validated();
+            $limit = $data['limit'] ?? 10;
+            $page = $data['page'] ?? 1;
+            $key = $data['key'] ?? null;
+
+            return $this->studentRepository->getList(['status' => StudentStatus::Active], ['student_code' => 'asc'], [], $limit, $page, ['student_code' => ['like', $key], 'name' => ['like', $key]]);
+
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;
