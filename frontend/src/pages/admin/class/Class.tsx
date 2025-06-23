@@ -14,6 +14,7 @@ import { genderText, statusMap } from "../../../utils/studentText";
 import ClassStudentDetail from "./ClassStudentDetail";
 import { FaDeleteLeft } from "react-icons/fa6";
 import Swal from "sweetalert2";
+import SelectWithPaginationStudent from "../../../components/ui/SelectWithPaginationStudent";
 
 const Class = () => {
     const [loading, setLoading] = useState(false);
@@ -21,12 +22,18 @@ const Class = () => {
     const [listCourseSection, setListCourseSection] = useState<CourseSection[]>([]);
     const [currentClassId, setCurrentClassId] = useState<number | null>(null);
     const [studentList, setStudentList] = useState<StudentList[]>([]);
-    const [studentDetail, setStudentDetail] = useState<StudentList[]>([]);
+    const [studentDetail, setStudentDetail] = useState<StudentList>();
     const [currentClassName, setCurrentClassName] = useState<string>('');
     const [keyword, setKeyword] = useState<string>('');
     const [showPopup, setShowPopup] = useState<'show' | 'hide'>('hide');
+    const [showPopupAddStudent, setShowPopupAddStudent] = useState<'show' | 'hide'>('hide');
 
-
+    const hanldeSelected = (selected: { value: number, lable: string, data: any }) => {
+        if (selected.data) {
+            setShowPopupAddStudent('show');
+            setStudentDetail(selected.data);
+        }
+    }
     const handleSelection = (classId: { label: string, value: number }) => {
         setCurrentClassId(classId.value);
         setCurrentClassName(classId.label);
@@ -62,7 +69,7 @@ const Class = () => {
     const handleStudentDetail = async (studentId: number) => {
         const student = studentList.filter(student => student.id === studentId)
         if (student) {
-            setStudentDetail(student);
+            setStudentDetail(student[0]);
             setShowPopup('show');
         }
     }
@@ -91,11 +98,11 @@ const Class = () => {
         }).catch((errors) => {
             if (errors)
                 console.log(errors);
-                Swal.fire({
-                    title: "Hệ thống đang có vấn đề. Vui lòng thử lại!",
-                    icon: "error",
-                    draggable: true
-                });
+            Swal.fire({
+                title: "Hệ thống đang có vấn đề. Vui lòng thử lại!",
+                icon: "error",
+                draggable: true
+            });
         }).finally(() => setLoading(false));
     }
     return (
@@ -109,7 +116,7 @@ const Class = () => {
 
                         <div className="grid">
                             {listCourseSection && listCourseSection?.map(item => (
-                                <ClassCard course_section={item} setAction={setAction}
+                                <ClassCard key={item.id} course_section={item} setAction={setAction}
                                     setCurrentClassId={setCurrentClassId} setCurrentClassName={setCurrentClassName} />
                             ))}
                         </div>
@@ -128,8 +135,12 @@ const Class = () => {
                                 <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={(e) => setKeyword(e.target.value)} />
                                 <FaSearch />
                             </div>
+
                             <div className="gm-class-select">
                                 <SelectWithPagination handleClassSelection={handleSelection} />
+                            </div>
+                            <div>
+                                <SelectWithPaginationStudent hanldeSelected={hanldeSelected} />
                             </div>
                         </div>
                         <div className="class-student-main">
@@ -149,7 +160,7 @@ const Class = () => {
                                     {studentList && studentList.length > 1 ? studentList.filter(item => item.student_code.toLowerCase().includes(keyword) ||
                                         normalizeString(item.name).includes(normalizeString(keyword)))
                                         .map((student, index) => (
-                                            <tr key={index} onClick={() => handleStudentDetail(student.id)}>
+                                            <tr key={student.id} onClick={() => handleStudentDetail(student.id)}>
                                                 <td>{++index}</td>
                                                 <td>{student.student_code}</td>
                                                 <td>{student.name}</td>
@@ -159,7 +170,7 @@ const Class = () => {
                                                 <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
                                             </tr>
                                         )) :
-                                        <tr><td colSpan={6} style={{ textAlign: 'center' }}>Không có sinh viên nào</td></tr>
+                                        <tr><td colSpan={7} style={{ textAlign: 'center' }}>Không có sinh viên nào</td></tr>
                                     }
                                 </tbody>
                             </table>
@@ -167,8 +178,12 @@ const Class = () => {
                     </>
                 }
             </div>
+            {showPopupAddStudent === 'show' && <ClassStudentDetail student={studentDetail}
+                setShowPopupAddStudent={setShowPopupAddStudent} showBtnAddStudent={true}
+                currentClassId={currentClassId} fetchStudentList={fetchStudentList} />}
 
-            {showPopup === 'show' && <ClassStudentDetail student={studentDetail[0]} setShowPopup={setShowPopup} />}
+            {showPopup === 'show' && <ClassStudentDetail currentClassId={currentClassId}
+                student={studentDetail} setShowPopup={setShowPopup} showBtnAddStudent={false} />}
         </>
     )
 }

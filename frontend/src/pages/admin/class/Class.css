@@ -137,6 +137,7 @@
 
 .class-student-main>table>tbody>tr>td:last-child {
     text-align: center;
+    width: 50px;
 }
 
 .class-student-main>table>tbody>tr>td:last-child div {

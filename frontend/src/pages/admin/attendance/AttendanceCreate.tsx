@@ -115,7 +115,7 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
                                 const isFuture = action === 'create' ? sessionDate >= today :
                                     action === 'update' && sessionDate <= today
                                 return (
-                                    <option value={session.id} disabled={!isFuture}>Buổi {index + 1} - {session.study_date}</option>
+                                    <option key={session.id} value={session.id} disabled={!isFuture}>Buổi {index + 1} - {session.study_date}</option>
                                 )
                             })}
                         </select>
