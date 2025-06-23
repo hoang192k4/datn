@@ -15,12 +15,20 @@ export const getListStudentByCourseSection = async (courseSectionId: number) => 
     return response.data;
 }
 
-export const detachStudentByCourseSection = async (studentId:number,courseSectionId: number) => {
-    const response = await axiosTeacherInstance.delete('/course-sections/detach-student',{
-        params:{
+export const detachStudentByCourseSection = async (studentId: number, courseSectionId: number) => {
+    const response = await axiosTeacherInstance.delete('/course-sections/detach-student', {
+        params: {
             student_id: studentId,
             course_section_id: courseSectionId
         }
+    });
+    return response.data;
+}
+
+export const attachStudentByCourseSection = async (studentId: number, courseSectionId: number) => {
+    const response = await axiosTeacherInstance.post('/course-sections/attach-student', {
+            student_id: studentId,
+            course_section_id: courseSectionId
     });
     return response.data;
 }

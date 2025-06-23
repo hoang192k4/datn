@@ -220,7 +220,7 @@ const AttendancePage = () => {
                             <div className="gm-class-select">
                                 <SelectWithPagination handleClassSelection={handleSelection} />
                                 <button className="btn-attendance" onClick={() => setAction('update')}>Chỉnh sửa điểm danh</button>
-                                <button className="btn-attendance" onClick={() => setAction('create')}>Thêm điểm danh</button>
+                                <button className="btn-attendance btn-attendance-right" onClick={() => setAction('create')}>Thêm điểm danh</button>
                             </div>
                         </div>
                         <div className="attendance-table-wrapper">

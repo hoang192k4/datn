@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import MainLayout from "../components/layout/MainLayout";
-import LoginPage from "../pages/login/LoginPage";
+import LoginPage from "../pages/Login/LoginPage";
 import HomePage from "../pages/home/HomePage";
 import TeacherLayout from "../components/layout/TeacherLayout";
 import { TeacherRoute } from "./TeacherRoute";
