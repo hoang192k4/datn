@@ -38,10 +38,16 @@ class StudentService implements StudentServiceInterface
             $key = $data['key'] ?? null;
 
             return $this->studentRepository->getList(['status' => StudentStatus::Active], ['student_code' => 'asc'], [], $limit, $page, ['student_code' => ['like', $key], 'name' => ['like', $key]]);
-
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;
         }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $data = $request->validated();
+        $this->studentRepository->findOrFailById($id);
+        return $this->studentRepository->update($id, $data);
     }
 }

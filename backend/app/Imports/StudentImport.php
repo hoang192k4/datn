@@ -41,7 +41,6 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
                 empty($row['mssv']) ||
                 empty($row['ho_ten']) ||
                 empty($row['email']) ||
-                empty($row['mat_khau']) ||
                 empty($row['ngay_sinh']) ||
                 empty($row['dia_chi']) ||
                 empty($row['ngay_nhap_hoc']) ||

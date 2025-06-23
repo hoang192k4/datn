@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Exceptions\ModelNotFoundByIdException;
 use Exception;
 use App\Imports\StudentImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -38,6 +39,21 @@ class StudentController extends BaseController
         }
     }
 
+    public function update(StudentRequest $request, $id)
+    {
+        try {
+            $isUpdated = $this->studentService->update($request, $id);
+            if (!$isUpdated)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccess();
+        } catch (ModelNotFoundByIdException $e) {
+            return $this->jsonResponseError('Không tìm thấy instance theo id ' . $id);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
     public function getAllStudents(SearchRequest $request)
     {
         try {
@@ -48,6 +64,9 @@ class StudentController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
+
+
+
 
     public function importStudentsExcel(StudentImportRequest $request)
     {

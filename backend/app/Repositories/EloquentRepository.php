@@ -215,4 +215,6 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
 
         return $query->delete();
     }
+
+    
 }
