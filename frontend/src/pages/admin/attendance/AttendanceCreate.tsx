@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import type { AttendanceStatus } from "../../../enums/AttendanceStatus";
 import { FaSearch } from "react-icons/fa";
 import { getListStudentByCourseSection } from "../../../services/courseSectionService";
+import { normalizeString } from "../../../utils/searchUtil";
 interface AttendanceProps {
     classId: number,
     currentClassName?: string,
@@ -37,7 +38,7 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
     const { register, handleSubmit, formState: { errors }, reset } = useForm<AttendanceForm>();
     const [listAttendances, setListAttendances] = useState<AttendancesSession>();
     const [defaultSeclect, setDefaultSelect] = useState<number>();
-    const [searchKeywordUpdateCreate, setSearchKeywordUpdateCreate] = useState<String>('');
+    const [searchKeywordUpdateCreate, setSearchKeywordUpdateCreate] = useState<string>('');
 
     const feactListStudent = async () => {
         try {
@@ -136,7 +137,7 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
                         </thead>
                         <tbody>
                             {action === 'create' ?
-                                listStudent && listStudent?.filter(student => student.name.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()) ||
+                                listStudent && listStudent?.filter(student => normalizeString(student.name).includes(normalizeString(searchKeywordUpdateCreate)) ||
                                     student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()))
                                     ?.map((student, index) => (
                                         <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
@@ -158,7 +159,7 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
                                     )) :
                                 action === 'update' &&
                                 listAttendances?.attendances?.filter(student => student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()) ||
-                                    student.student_name.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()))
+                                    normalizeString(student.student_name).includes(normalizeString(searchKeywordUpdateCreate)))
                                     .map((attendance, index) => (
                                         <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
                                             <td>{attendance.student_code}</td>

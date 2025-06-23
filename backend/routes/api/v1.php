@@ -113,6 +113,8 @@ Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::cl
     ->group(function () {
         Route::get('/', 'getCourseSectionByTeacher'); //api lấy dánh sách lớp học phần theo teacher đăng nhập
         Route::get('/{courseSectionId}/students', 'getStudentsByCourseSection'); //api lấy danh sách sinh viên của lớp
+        Route::delete('/detach-student','detachStudentByCourseSection');
+        Route::post('/attach-student','attachStudentByCourseSection');
     });
 
 Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)

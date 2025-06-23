@@ -37,4 +37,38 @@ class CourseSectionService implements CourseSectionServiceInterface
             return false;
         }
     }
+
+    public function detachStudentByCourseSection(Request $request)
+    {
+        try {
+            $data = $request->validated();
+            $courseSectionId = $data['course_section_id'];
+            $studentId = $data['student_id'];
+            $courseSection = $this->courseSectionRepository->find($courseSectionId);
+            $result = $courseSection->students()->detach([$studentId]);
+            if (!$result)
+                return false;
+            return true;
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
+    public function attachStudentByCourseSection(Request $request)
+    {
+        try {
+            $data = $request->validated();
+            $courseSectionId = $data['course_section_id'];
+            $studentId = $data['student_id'];
+            $courseSection = $this->courseSectionRepository->find($courseSectionId);
+            $result = $courseSection->students()->syncWithoutDetaching([$studentId]);
+            if (!$result)
+                return false;
+            return true;
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
 }

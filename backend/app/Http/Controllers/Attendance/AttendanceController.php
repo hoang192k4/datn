@@ -104,7 +104,7 @@ class AttendanceController extends BaseController
     public function importAttendances(AttendanceFileRequest $request)
     {
         try {
-            Excel::import(new AttendanceImport(), $request->file('file'));
+            Excel::import(new AttendanceImport($this->service), $request->file('file'));
             return $this->jsonResponseSuccessNoData('Đã thêm điểm danh thành công!');
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

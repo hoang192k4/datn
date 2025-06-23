@@ -127,33 +127,89 @@
     .subject-detail-btn {
         width: 100%;
     }
+
+    /* popup student detail class */
+    .course-section-popup-content {
+        flex-direction: column !important;
+        width: 95% !important;
+        max-height: 600px !important;
+        overflow: auto !important; 
+    }
+
+    .course-section-popup-content::-webkit-scrollbar {
+        width: 4px !important;
+    }
+
+    .course-section-popup-content::-webkit-scrollbar-thumb {
+        background-color: #1e3a8a !important;
+        border-radius: 4px !important;
+        border: 1px solid grey !important;
+    }
+
+    .course-section-popup-left,
+    .course-section-popup-right {
+        width: 100% !important;
+        border-right: none !important;
+        border-bottom: 1px solid #ccc !important;
+    }
+
+    .course-section-popup-left {
+        padding: 20px !important;
+    }
+
+    .course-section-popup-avatar {
+        width: 80px !important;
+        height: 80px !important;
+        font-size: 24px !important;
+    }
+
+    .course-section-popup-student-name {
+        font-size: 18px !important;
+    }
+
+    .course-section-popup-student-id {
+        font-size: 14px !important;
+    }
+
+    .course-section-popup-info-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .course-section-popup-close-btn {
+        top: 10px !important;
+        right: 12px !important;
+        font-size: 20px !important;
+    }
 }
 
 /* style responsive mobible */
 @media (max-width: 576px) {
-      .navbar {
+    .navbar {
         padding: 5px 20px !important;
         height: 100px !important;
-      }
-      .logo {
+    }
+
+    .logo {
         width: 80% !important;
-      }
-      .nav-right {
-        width: 100% !important;
-      }
+    }
 
-      .nav-user {
+    .nav-right {
         width: 100% !important;
-      }
+    }
 
-      .user-dropdown {
+    .nav-user {
         width: 100% !important;
-      }
-      .main-content {
+    }
+
+    .user-dropdown {
+        width: 100% !important;
+    }
+
+    .main-content {
         margin-top: 40px !important;
-      }
+    }
 
-      .sidebar {
+    .sidebar {
         margin-top: 30px !important;
-      }
+    }
 }

@@ -8,6 +8,7 @@ import { FaSearch } from "react-icons/fa";
 import Swal from "sweetalert2";
 import Loadding from "../../../components/ui/Loadding";
 import type { SessionAttendance } from "../../../types/attendance";
+import { normalizeString } from "../../../utils/searchUtil";
 
 interface Attendance {
     session_id: number,
@@ -50,11 +51,12 @@ const AttendancePage = () => {
     }
     const fetchAttendance = async (courseSectionId: number) => {
         try {
+            setLoadingAttendancePage(true);
             const res = await getListAttendanceStudent(courseSectionId);
             setListStudentAttendance(res.data);
         } catch (errors) {
             console.log(errors);
-        }
+        } finally { setLoadingAttendancePage(false); }
 
     };
 
@@ -151,7 +153,6 @@ const AttendancePage = () => {
             })
         } finally { setLoadingAttendancePage(false); }
     }
-
     return <>
         {loadingAttendancePage && <Loadding />}
         <PageHeader title="📅 Quản lý điểm danh" subtitle="Hệ thống quản lý điểm danh của từng lớp học" />
@@ -239,8 +240,8 @@ const AttendancePage = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Object.values(listStudentAttendance).filter(student =>
-                                        student.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+                                    {Object.values(listStudentAttendance).length > 0 ? Object.values(listStudentAttendance).filter(student =>
+                                        normalizeString(student.name).includes(normalizeString(searchKeyword)) ||
                                         student.student_code.toLowerCase().includes(searchKeyword.toLowerCase()))
                                         .map((student, index) => (
                                             <tr key={student.id}>
@@ -259,7 +260,8 @@ const AttendancePage = () => {
                                                 ))}
                                                 <td>{student.attendance_score}</td>
                                             </tr>
-                                        ))
+                                        )) :
+                                        <tr><td colSpan={3}>không có sinh viên nào</td></tr>
                                     }
                                 </tbody>
                             </table>

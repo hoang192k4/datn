@@ -3,14 +3,34 @@ import PageHeader from "../../../components/ui/PageHeader"
 import './Class.css';
 import ClassCard from "./ClassCard";
 import Loadding from "../../../components/ui/Loadding";
-import { getCourseSectionByTeacher } from "../../../services/courseSectionService";
+import { detachStudentByCourseSection, getCourseSectionByTeacher, getListStudentByCourseSection } from "../../../services/courseSectionService";
 import type { CourseSection } from "../../../types/courseSecion";
-
+import type { StudentList } from "../../../types/student";
+import SelectWithPagination from "../../../components/ui/SelectWithPagination";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { FaSearch } from "react-icons/fa";
+import { normalizeString } from "../../../utils/searchUtil";
+import { genderText, statusMap } from "../../../utils/studentText";
+import ClassStudentDetail from "./ClassStudentDetail";
+import { FaDeleteLeft } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 const Class = () => {
     const [loading, setLoading] = useState(false);
+    const [action, setAction] = useState<'default' | 'student_list'>('default');
     const [listCourseSection, setListCourseSection] = useState<CourseSection[]>([]);
+    const [currentClassId, setCurrentClassId] = useState<number | null>(null);
+    const [studentList, setStudentList] = useState<StudentList[]>([]);
+    const [studentDetail, setStudentDetail] = useState<StudentList[]>([]);
+    const [currentClassName, setCurrentClassName] = useState<string>('');
+    const [keyword, setKeyword] = useState<string>('');
+    const [showPopup, setShowPopup] = useState<'show' | 'hide'>('hide');
 
+
+    const handleSelection = (classId: { label: string, value: number }) => {
+        setCurrentClassId(classId.value);
+        setCurrentClassName(classId.label);
+    }
     const fetchCourseSection = async () => {
         try {
             setLoading(true);
@@ -23,20 +43,132 @@ const Class = () => {
     useEffect(() => {
         fetchCourseSection();
     }, [])
-    console.log(listCourseSection);
+
+    const fetchStudentList = async (courseSectionId: number) => {
+        try {
+            setLoading(true);
+            const res = await getListStudentByCourseSection(courseSectionId);
+            if (res)
+                setStudentList(res.data);
+        } catch (errors) {
+            console.log(errors);
+        } finally { setLoading(false); }
+    }
+    useEffect(() => {
+        if (currentClassId)
+            fetchStudentList(currentClassId)
+    }, [currentClassId])
+
+    const handleStudentDetail = async (studentId: number) => {
+        const student = studentList.filter(student => student.id === studentId)
+        if (student) {
+            setStudentDetail(student);
+            setShowPopup('show');
+        }
+    }
+    const handleDeleteStudent = (studentId: number) => {
+        Swal.fire({
+            title: "Bạn có thật sự muốn xóa sinh viên này ra khỏi lớp?",
+            showCancelButton: true,
+            icon: "question",
+            confirmButtonColor: "#10b981",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Hủy",
+            confirmButtonText: "Đồng ý",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                if (currentClassId) {
+                    const res = await detachStudentByCourseSection(studentId, currentClassId);
+                    Swal.fire({
+                        title: res.message,
+                        icon: "success",
+                        draggable: true
+                    });
+                    setStudentList((prev) => prev.filter(student => student.id !== studentId));
+                }
+            }
+        }).catch((errors) => {
+            if (errors)
+                console.log(errors);
+                Swal.fire({
+                    title: "Hệ thống đang có vấn đề. Vui lòng thử lại!",
+                    icon: "error",
+                    draggable: true
+                });
+        }).finally(() => setLoading(false));
+    }
     return (
         <>
             {loading && <Loadding />}
             <PageHeader title="📚 Quản lý lớp học" subtitle="Hệ thống quản lý lớp học, danh sách sinh viên" />
             <div className="class-container">
-                <h2>Danh Sách Lớp Học</h2>
+                {action === 'default' ?
+                    <>
+                        <h2>Danh Sách Lớp Học</h2>
 
-                <div className="grid">
-                    {listCourseSection && listCourseSection?.map(item => (
-                        <ClassCard  course_section={item}/>
-                    ))}
-                </div>
+                        <div className="grid">
+                            {listCourseSection && listCourseSection?.map(item => (
+                                <ClassCard course_section={item} setAction={setAction}
+                                    setCurrentClassId={setCurrentClassId} setCurrentClassName={setCurrentClassName} />
+                            ))}
+                        </div>
+                    </> :
+                    action === 'student_list' &&
+                    <>
+                        <div className="class-students-header">
+                            <div className="students-top">
+                                <span onClick={() => setAction('default')}><IoMdArrowRoundBack /></span>
+                                <div>
+                                    <h2>Danh Sách Sinh Viên</h2>
+                                    <p style={{ fontSize: '18px', fontWeight: '600', color: '#2e3b8c', padding: '4px 0' }}>lớp {currentClassName && currentClassName}</p>
+                                </div>
+                            </div>
+                            <div className="class-search-student">
+                                <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={(e) => setKeyword(e.target.value)} />
+                                <FaSearch />
+                            </div>
+                            <div className="gm-class-select">
+                                <SelectWithPagination handleClassSelection={handleSelection} />
+                            </div>
+                        </div>
+                        <div className="class-student-main">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>MSSV</th>
+                                        <th>Họ và Tên</th>
+                                        <th>Email</th>
+                                        <th>Giới Tính</th>
+                                        <th>Tình trạng</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {studentList && studentList.length > 1 ? studentList.filter(item => item.student_code.toLowerCase().includes(keyword) ||
+                                        normalizeString(item.name).includes(normalizeString(keyword)))
+                                        .map((student, index) => (
+                                            <tr key={index} onClick={() => handleStudentDetail(student.id)}>
+                                                <td>{++index}</td>
+                                                <td>{student.student_code}</td>
+                                                <td>{student.name}</td>
+                                                <td>{student.email}</td>
+                                                <td>{genderText[student.gender]}</td>
+                                                <td>{statusMap[student.status]}</td>
+                                                <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
+                                            </tr>
+                                        )) :
+                                        <tr><td colSpan={6} style={{ textAlign: 'center' }}>Không có sinh viên nào</td></tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
+                }
             </div>
+
+            {showPopup === 'show' && <ClassStudentDetail student={studentDetail[0]} setShowPopup={setShowPopup} />}
         </>
     )
 }
