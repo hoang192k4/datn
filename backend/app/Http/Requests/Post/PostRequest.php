@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Enums\PublicStatus;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class PostRequest extends BaseRequest
 {
@@ -12,6 +14,17 @@ class PostRequest extends BaseRequest
             'slug' => ['required', 'string'],
             'limit' => 'nullable|min:1|integer',
             'page' => 'nullable|min:1|integer'
+        ];
+    }
+
+    public function methodPut()
+    {
+        return [
+            'title' => ['nullable', 'string'],
+            'content' => ['nullable', 'string'],
+            'course_section_id' => ['nullable', 'exists:course_sections,id'],
+            'push_notification' => ['nullable', 'in:true,1'],
+            'status' => ['nullable', new Enum(PublicStatus::class)],
         ];
     }
 }

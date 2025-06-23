@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Notification;
 
 use Exception;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Notification\NotificationSearchRequest;
 use App\Http\Requests\Search\SearchRequest;
 use App\Http\Resources\Notification\StudentNotificationResourceCollection;
 use App\Repositories\Notification\NotificationRepositoryInterface;
@@ -20,7 +21,7 @@ class TeacherNotificationController extends BaseController
         $this->middleware('auth:teacher');
     }
 
-    public function getNotificationSendStudentByTeacher(SearchRequest $request)
+    public function getNotificationSendStudentByTeacher(NotificationSearchRequest $request)
     {
         try {
             $teacherId = $this->getCurrentTeacherId();
@@ -28,8 +29,9 @@ class TeacherNotificationController extends BaseController
             $limit = $data['limit'] ?? 10;
             $page = $data['page'] ?? 1;
             $key = $data['key'] ?? null;
+            $status = $data['status'] ?? null;
 
-            $notifications = $this->notificationRepository->getMyTeacherNotificationSendStudent($teacherId, $page, $limit, $key);
+            $notifications = $this->notificationRepository->getMyTeacherNotificationSendStudent($teacherId, $page, $limit, $key, $status);
 
             return $this->jsonResponseSuccess(new StudentNotificationResourceCollection($notifications));
         } catch (Exception $e) {

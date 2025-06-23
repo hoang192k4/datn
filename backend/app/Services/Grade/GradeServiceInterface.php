@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 interface GradeServiceInterface
 {
-    public function updateOrCreate(Request $request, $id):object|bool;
-       public function create(Request $request):object|bool;
+    public function updateOrCreate(Request $request, $id): object|bool;
+    public function create(Request $request): object|bool;
+     public function getFileNameExportGrade($courseSectionId):string;
 }

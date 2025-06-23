@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging } from 'firebase/messaging';
-
 const firebaseConfig = {
     apiKey: "AIzaSyDEcA7HvlFJ68Otqr4xjckQu2c11iEY9Zo",
     authDomain: "datn-52547.firebaseapp.com",
@@ -18,4 +17,4 @@ export const messaging = getMessaging(app);
 
 export const VAPID_KEY = "BC5hCaXURA0hYpAX0qR_9IhakOjgYghkAIN0bSkutxWcsmLxtG821P4XDKc-GLq2ThzXC_msqb9h9fVIbKksA3E";
 
- 
+

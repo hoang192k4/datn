@@ -20,7 +20,9 @@ class NotificationResourceCollection extends ResourceCollection
                 'next' => $this->nextPageUrl(),
             ],
             'meta' => [
+                'previous_page' => $this->currentPage() > 1 ? $this->currentPage() - 1 : null,
                 'current_page' => $this->currentPage(),
+                'next_page' => $this->currentPage() < $this->lastPage() ? $this->currentPage() + 1 : null,
                 'from' => $this->firstItem(),
                 'to' => $this->lastItem(),
                 'limit' => $this->perPage(),

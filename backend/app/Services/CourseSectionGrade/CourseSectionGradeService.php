@@ -2,6 +2,7 @@
 
 namespace App\Services\CourseSectionGrade;
 
+use App\Enums\Student\StudentStatus;
 use Exception;
 use Illuminate\Http\Request;
 use App\Repositories\Grade\GradeRepositoryInterface;
@@ -32,6 +33,7 @@ class CourseSectionGradeService implements CourseSectionGradeServiceInterface
         $key = $request->validated()['key'] ?? '';
         $courseSection = $this->repository->findWithRelation($id, ['students', 'grades']);
         return $courseSection->students()
+            ->where('status', StudentStatus::Active)
             ->where(function ($query) use ($key) {
                 $query->where('student_code', 'like', "%$key%")
                     ->orWhere('name', 'like', "%$key%");

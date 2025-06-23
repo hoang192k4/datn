@@ -7,6 +7,11 @@ use App\Http\Requests\BaseRequest;
 class GradeRequest extends BaseRequest
 {
 
+
+    public function methodGet()
+    {
+        return ['course_section_id' => 'exists:course_sections,id|required'];
+    }
     public function methodPost()
     {
         return [

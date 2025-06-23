@@ -7,6 +7,7 @@ use App\Enums\Notification\NotificationType;
 use App\Enums\PublicStatus;
 use App\Enums\Role;
 use App\Enums\SendToUserType;
+use App\Enums\Student\StudentStatus;
 use App\Exceptions\ModelNotFoundByIdException;
 use App\Models\Student;
 use App\Models\Teacher;
@@ -101,10 +102,10 @@ class NotificationService implements NotificationServiceInterface
         }
     }
 
-    public function sendNotificationToStudents(string $title, string $body, array $student_ids, string $type, $postId = 0)
+    public function sendNotificationToStudents(string $title, string $body, array $studentIds, string $type, $postId = 0)
     {
         $teacherId = $this->getCurrentTeacherId();
-        $students = $this->studentRepository->findMany($student_ids);
+        $students = $this->studentRepository->findMany($studentIds);
 
         if (count($students) == 0)
             return false;
@@ -118,8 +119,10 @@ class NotificationService implements NotificationServiceInterface
                 'post_id' => $postId,
             ];
         })->toArray();
-        $this->repository->inserts($notifications);
-        $deviceTokens = $students->pluck('device_token')->filter()->values();
+
+        $isTrue = $this->repository->inserts($notifications);
+
+        $deviceTokens = $students->pluck('device_token')->filter()->values()->toArray();
 
         $this->firebaseService->sendNotification($deviceTokens, $title, $body, null);
         return true;
@@ -134,7 +137,7 @@ class NotificationService implements NotificationServiceInterface
             $body = $data['body'];
             $publicStatus = $data['public_type'] ?? PublicStatus::Public;
             $courseSection = $this->courseSectionRepository->findOrFailById($data['course_section_id']);
-            $studentIds = $courseSection->students->pluck('id')->values()->toArray();
+            $studentIds = $courseSection->students->where('status', StudentStatus::Active)->pluck('id')->values()->toArray();
             $post = $this->postRepository->create(['title' => $title, 'content' => $body, 'course_section_id' => $courseSection->id, 'teacher_id' => $teacherSendId, 'status' => $publicStatus]);
             $this->sendNotificationToStudents($title, $body, $studentIds, NotificationType::TeacherSend->value, $post->id);
             return true;
@@ -223,13 +226,13 @@ class NotificationService implements NotificationServiceInterface
             $data = $request->validated();
             $limit = $data['limit'] ?? 10;
             $page =  $data['page'] ?? 1;
-
+            $key = $data['key'] ?? null;
             $type =  isset($data['type']) == null ? NotificationType::AdminSend : $data['type'];
 
             $currentUserId = getCurrentUserId();
             $guard = getCurrentGuard();
             if ($guard == Guard::TEACHER)
-                $notifications = $this->repository->getList(['teacher_receive_id' => $currentUserId, 'type' =>  $type], ['created_at' => 'desc'], ['teacher'], $limit, $page);
+                $notifications = $this->repository->getList(['teacher_receive_id' => $currentUserId, 'type' =>  $type], ['created_at' => 'desc'], ['teacher'], $limit, $page, ['title' => ['like', $key], 'content' => ['like', $key]]);
             if ($guard == Guard::STUDENT) {
                 $notifications = $this->repository->getList(['student_id' => $currentUserId, 'type' => ['!=', NotificationType::StudentSend]], ['created_at' => 'desc'], ['teacher'], $limit, $page);
             }
@@ -270,6 +273,31 @@ class NotificationService implements NotificationServiceInterface
             $deviceTokens = $teachers->pluck('device_token')->values();
 
             $this->firebaseService->sendNotification($deviceTokens, $title, $body, null);
+            return true;
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
+    }
+
+
+    public function update(Request $request, $id): bool
+    {
+        try {
+            $data = $request->validated();
+
+            $pushNotification = $data['push_notification'] ?? null;
+            if ($pushNotification) {
+                unset($data['push_notification']);
+            }
+            $isUpdate = $this->repository->update($id, $data);
+
+            if (!$isUpdate) {
+                return false;
+            }
+
+            $instance = $this->repository->find($id);
+            $this->sendNotificationToStudents($instance->title, $instance->content, array($instance->student_id), NotificationType::TeacherSend->value);
             return true;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

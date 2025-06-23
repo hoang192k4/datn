@@ -3,18 +3,30 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Student\StudentRequest;
+use App\Services\Student\StudentServiceInterface;
+use Exception;
 
 class StudentController extends BaseController
 {
-    public function __construct()
-    {
-        $this->middleware('auth:teacher');
+    protected $studentService;
+    public function __construct(
+        StudentServiceInterface $studentService,
+    ) {
+        $this->studentService = $studentService;
     }
 
-    public function getAllStudent()
+    public function create(StudentRequest $request)
     {
-        
+        try {
+            $student = $this->studentService->create($request);
+            if (!$student) {
+                return $this->jsonResponseError();
+            }
+            return $this->jsonResponseSuccess();
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
     }
 }

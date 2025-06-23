@@ -65,4 +65,21 @@ class PostController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
+
+    public function update(PostRequest $request, $id)
+    {
+        try {
+            $this->postRepository->findOrFailById($id);
+            $isUpdate = $this->postService->update($request, $id);
+            if (!$isUpdate) {
+                return $this->jsonResponseError();
+            }
+            return $this->jsonResponseSuccess();
+        } catch (ModelNotFoundByIdException $e) {
+            return $this->jsonResponseError('Không có resource thuộc id này', 404);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
 }

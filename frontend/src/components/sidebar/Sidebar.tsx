@@ -56,12 +56,11 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         },
         {
             icon: "📢",
-            url: "thong-bao",
+            url: "thong-bao/danh-sach",
             label: "Thông Báo",
             subItems: [
                 { icon: "📋", url: "thong-bao/danh-sach", label: "Danh Sách TB" },
-                { icon: "📝", url: "thong-bao/khoa", label: "Thông Báo Từ Khoa" },
-                { icon: "📝", url: "thong-bao/sinh-vien", label: "Phản Hồi Từ Sinh Viên" },
+                { icon: "📝", url: "thong-bao/khoa-va-sinh-vien", label: "Thông Báo Từ Khoa & Sinh Viên" },
             ]
         },
     ];

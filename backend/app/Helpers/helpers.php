@@ -21,9 +21,9 @@ if (!function_exists('format_date')) {
 }
 
 if (!function_exists('generate_slug')) {
-    function generate_slug($string)
+    function generate_slug($string, $key = '-')
     {
-        return Str::slug($string, '-');
+        return Str::slug($string, $key);
     }
 }
 
