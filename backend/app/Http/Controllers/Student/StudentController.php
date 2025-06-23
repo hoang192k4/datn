@@ -11,6 +11,7 @@ use App\Http\Requests\Student\StudentRequest;
 use App\Services\Student\StudentServiceInterface;
 use App\Http\Requests\Student\StudentImportRequest;
 use App\Http\Resources\Student\StudentResourceCollection;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class StudentController extends BaseController
 {
@@ -47,12 +48,15 @@ class StudentController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
+
     public function importStudentsExcel(StudentImportRequest $request)
     {
         try {
             $request->validated();
             Excel::import(new StudentImport(), $request->file('file'));
             return $this->jsonResponseSuccessNoData();
+        } catch (ValidationException $e) {
+            return $this->jsonResponseErrorValidate('Thêm không thành công', 422, $e->failures());
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

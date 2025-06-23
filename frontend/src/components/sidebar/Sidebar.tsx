@@ -1,6 +1,7 @@
 import './Sidebar.css';
 import { useState } from 'react';
 import MenuItem from '../ui/MenuItem';
+import { useSelector } from 'react-redux';
 
 interface SubMenuItem {
     icon: string;
@@ -17,7 +18,8 @@ interface MenuItemData {
 
 const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
+    const role = useSelector((state: any) => state.auth.user?.role);
+    console.log(role);
     const menuItems: MenuItemData[] = [
         {
             icon: "📊",

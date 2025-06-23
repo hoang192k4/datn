@@ -10,15 +10,16 @@ enum StudentStatus: string
     case DroppedOut  = 'dropped_out';
     case Pending = 'pending';
 
-    public static function fromVietnamese(self|string $case): string
+    public static function fromVietnamese(string $case): string|null
     {
-        $value = $case instanceof self ? $case->value : trim($case);
-        return match ($value) {
+
+        return match (trim($case)) {
             'Đang học'      => self::Active->value,
             'Đã tốt nghiệp' => self::Graduated->value,
             'Bị đình chỉ'   => self::Suspended->value,
             'Bỏ học'        => self::DroppedOut->value,
             'Chờ duyệt'     => self::Pending->value,
+            default => null,
         };
     }
 }

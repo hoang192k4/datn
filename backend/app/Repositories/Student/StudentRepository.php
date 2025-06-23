@@ -59,4 +59,10 @@ class StudentRepository extends EloquentRepository implements StudentRepositoryI
         }
         return $students->where('status', StudentStatus::Active)->paginate($limit, ['*'], 'page', $page);
     }
+
+    public function upsert(array $data, array $uniqueBy)
+    {
+        $this->model->upsert($data, $uniqueBy);
+    }
+
 }
