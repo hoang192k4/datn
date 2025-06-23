@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Student;
 
 use App\Enums\Gender;
+use App\Enums\Student\StudentStatus;
 use App\Http\Requests\BaseRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -20,6 +21,9 @@ class StudentRequest extends BaseRequest
             'address' => 'required|string',
             'gender' => [new Enum(Gender::class), 'required'],
             'enrollment_date' => ['date', 'required'],
+            'graduated_date' => ['date', 'nullable'],
+            'status' => ['nullable', new Enum(StudentStatus::class)],
+            'major_id' => ['nullable', 'exists:majors,id'],
         ];
     }
 
@@ -34,6 +38,8 @@ class StudentRequest extends BaseRequest
             'gender' => ['nullable', new Enum(Gender::class)],
             'enrollment_data' => ['date', 'nullable'],
             'graduated_date' => ['nullable', 'date'],
+            'major_id' => ['nullable', 'exists:majors,id'],
+            'status' => ['nullable', new Enum(StudentStatus::class)],
         ];
     }
 }
