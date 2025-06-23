@@ -1,18 +1,30 @@
 import type { CourseSection } from "../../../types/courseSecion"
 
-interface PropsClass{
-    course_section:CourseSection
+interface PropsClass {
+    course_section: CourseSection,
+    setAction: React.Dispatch<React.SetStateAction<'default' | 'student_list'>>,
+    setCurrentClassId: React.Dispatch<React.SetStateAction<number | null>>,
+    setCurrentClassName: React.Dispatch<React.SetStateAction<string>>,
 }
 
-const ClassCard = (props : PropsClass) => {
+const ClassCard = (props: PropsClass) => {
+    const handleStudentList = (courseSectionId: number, name: string, studentTotal: number) => {
+        props.setAction('student_list');
+        props.setCurrentClassId(courseSectionId);
+        props.setCurrentClassName(name + '- ' + studentTotal + ' sinh viên');
+    }
     return (
         <>
             <div className="class-card">
                 <h3>Lớp học: {props.course_section.name}</h3>
-                <div className="class-card-subject">Môn học: {props.course_section.subject}</div>
-                <p>Tống số sinh viên : {props.course_section.students_total}</p>
+                <div className="class-card-subject">
+                    Môn học: {props.course_section.subject}
+                    <span> (Tổng số sinh viên : {props.course_section.students_total})</span>
+                </div>
                 <p>Ngày bắt đầu: {props.course_section.start_date}</p>
-                <button>Xem danh sách sinh viên</button>
+                <p>{props.course_section.semester}</p>
+                <p>Phòng học: {props.course_section.classroom}</p>
+                <button onClick={() => handleStudentList(props.course_section.id, props.course_section.name, props.course_section.students_total)}>Xem danh sách sinh viên</button>
             </div>
         </>
     )

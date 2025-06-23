@@ -15,3 +15,4 @@ export interface CourseSection {
     subject: string,
     week_total: number
 }
+
