@@ -38,7 +38,10 @@ class CalculateService implements CalculateServiceInterface
             $totalScore += $grade->score * $grade->grade_type->weight;
             $totalWeights += $grade->grade_type->weight;
         }
-        return $totalScore / $totalWeights ?? 0;
+
+        if ($totalWeights === 0)
+            return 0;
+        return $totalScore / $totalWeights;
     }
 
     public function calculateFinalScore($summaryGrade)

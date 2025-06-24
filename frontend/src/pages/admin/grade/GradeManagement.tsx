@@ -454,7 +454,8 @@ const GradeManagement: React.FC = () => {
     ));
   };
 
-  const renderEditableCell = (cellType: any, studentId: any, value: any, gradeTypeId: any = null, attempt: number | null = null, gradeId = null, summaryId: number | null = null) => {
+  const renderEditableCell = (cellType: any, studentId: any, value: any = null, gradeTypeId: any = null, attempt: number | null = null, gradeId = null, summaryId: number | null = null) => {
+    console.log(value, typeof value);
     const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}-${gradeId || ''}-${summaryId || ''}`;
     const isEditing = editingCell === cellKey;
 
