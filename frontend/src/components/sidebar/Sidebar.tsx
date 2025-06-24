@@ -7,12 +7,14 @@ interface SubMenuItem {
     icon: string;
     url: string;
     label: string;
+    roles: string[];
 }
 
 interface MenuItemData {
     icon: string;
     url: string;
     label: string;
+    roles: string[];
     subItems?: SubMenuItem[];
 }
 
@@ -25,47 +27,65 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             icon: "📊",
             url: "dashboard",
             label: "Dashboard",
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
         {
             icon: "👥",
             url: "sinh-vien",
             label: "Danh Sách Sinh Viên",
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
         {
             icon: "📚",
             url: "lop-hoc",
             label: "Lớp Học",
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
         },
         {
             icon: "📝",
             url: "diem",
             label: "Quản Lý Điểm",
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
         },
         {
             icon: "📅",
             url: "thoi-khoa-bieu",
             label: "Thời Khóa Biểu",
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
         {
             icon: "📁",
             url: "tai-lieu",
             label: "Tài Liệu",
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
         {
             icon: "📅",
             url: "diem-danh",
             label: "Quản Lý Điểm Danh",
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
         {
             icon: "📢",
             url: "thong-bao/danh-sach",
             label: "Thông Báo",
             subItems: [
-                { icon: "📋", url: "thong-bao/danh-sach", label: "Danh Sách TB" },
-                { icon: "📝", url: "thong-bao/khoa-va-sinh-vien", label: "Thông Báo Từ Khoa & Sinh Viên" },
-            ]
+                { icon: "📋", url: "thong-bao/danh-sach", label: "Danh Sách TB", roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"] },
+                { icon: "📝", url: "thong-bao/khoa-va-sinh-vien", label: "Thông Báo Từ Khoa & Sinh Viên", roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"] },
+            ],
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
     ];
+
+
+    const filteredMenuItems = menuItems.filter(item =>
+        !item.roles || item.roles.includes(role)
+    ).map(item => ({
+        ...item,
+        subItems: item.subItems?.filter(sub =>
+            !sub.roles || sub.roles.includes(role)
+        )
+    }));
 
     return (
         <>
@@ -76,7 +96,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                     <div className="sidebar-subtitle">Hệ thống quản lý học tập</div>
                 </div>
                 <nav className="sidebar-menu">
-                    {menuItems.map((item, index) => (
+                    {filteredMenuItems.map((item, index) => (
                         <MenuItem
                             url={item.url}
                             key={index}
