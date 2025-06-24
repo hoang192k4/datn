@@ -16,4 +16,12 @@ enum Gender: string
             default => null,
         };
     }
+
+    public static function getDescription(self $gender): string
+    {
+        return match ($gender) {
+            self::Male => 'Nam',
+            self::Female => 'Nữ',
+        };
+    }
 }

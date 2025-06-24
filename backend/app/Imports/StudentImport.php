@@ -6,6 +6,8 @@ use App\Enums\Gender;
 use App\Enums\Student\StudentStatus;
 use App\Models\Major;
 use App\Repositories\Student\StudentRepositoryInterface;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -32,9 +34,7 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
      */
     public function collection(Collection $rows)
     {
-
         $students = [];
-
 
         foreach ($rows as $row) {
             if (
@@ -43,23 +43,24 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
                 empty($row['email']) ||
                 empty($row['ngay_sinh']) ||
                 empty($row['dia_chi']) ||
-                empty($row['ngay_nhap_hoc']) ||
+                empty($row['thoi_gian_nhap_hoc']) ||
                 empty($row['nganh_hoc']) ||
                 empty($row['gioi_tinh'])
             ) {
 
                 continue;
             }
+
             $data = [
                 'student_code' => trim($row['mssv']),
                 'name' => trim($row['ho_ten']),
                 'email' => trim($row['email']),
                 'password' => $this->password,
-                'date_of_birth' => trim(Date::excelToDateTimeObject($row['ngay_sinh'])->format('Y-m-d')),
+                'date_of_birth' => Carbon::parse(trim($row['ngay_sinh']))->format('Y-m-d'),
                 'address' => trim($row['dia_chi']),
-                'enrollment_date' => Date::excelToDateTimeObject(trim($row['ngay_nhap_hoc']))->format('Y-m-d'),
+                'enrollment_date' => Carbon::parse(trim($row['thoi_gian_nhap_hoc']))->format('Y-m-d'),
                 'major_id' => $this->majorMap[$row['nganh_hoc']] ?? null,
-                'status' => StudentStatus::fromVietnamese($row['tinh_trang'] ?? '') ?? StudentStatus::Active,
+                'status' => StudentStatus::fromVietnamese($row['trang_thai'] ?? '') ?? StudentStatus::Active,
                 'gender' => Gender::fromVietnamese($row['gioi_tinh']),
             ];
             $students[] = $data;
@@ -80,9 +81,9 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             '*.mssv'          => 'required|string',
             '*.ho_ten'        => 'required|string',
             '*.email'         => 'required|email',
-            '*.ngay_sinh'     => 'required',
+            '*.ngay_sinh'     => 'required|string|date_format:Y-m-d',
             '*.dia_chi'       => 'required|string',
-            '*.ngay_nhap_hoc' => 'required',
+            '*.thoi_gian_nhap_hoc' => 'required|string|date_format:Y-m-d',
             '*.nganh_hoc'     => 'required|string',
             '*.gioi_tinh' => 'required|string',
         ];
@@ -105,7 +106,7 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             '*.mssv.string' => 'Cột MSSV phải là chuỗi.',
             '*.email.required' => 'Cột email là bắt buộc.',
             '*.ngay_sinh.required' => 'Cột ngày sinh là bắt buộc.',
-            '*.ngay_nhap_hoc.required' => 'Cột ngày nhập học là bắt buộc.',
+            '*.thoi_gian_nhap_hoc.required' => 'Cột ngày nhập học là bắt buộc.',
         ];
     }
 }

@@ -161,4 +161,5 @@ Route::controller(App\Http\Controllers\Student\StudentController::class)
         Route::put('/{id}', 'update'); //api sửa sinh viên
         Route::post('/import', 'importStudentsExcel');
         Route::get('/', 'getAllStudents');
+        Route::get('/export', 'exportStudentsExcel');
     });

@@ -41,20 +41,15 @@ class SummaryGradeService implements SummaryGradeServiceInterface
     //cập nhật điểm trung bình kiểm tra, điểm tổng kết, đánh giá
     public function updateSummaryGrade($studentId, $courseSectionId)
     {
-        try {
-            $student = $this->studentRepository->findOrFailById($studentId);
-            //tính điểm trung bình kiểm tra
-            $avgScore = $this->calculateService->calculateAverageExam($student, $courseSectionId);
-            $summaryGrade = $this->summaryGradeRepository->updateOrCreate(['student_id' => $student->id, 'course_section_id' => $courseSectionId], ['avg_score' => $avgScore]);
-            $finalScore = $this->calculateService->calculateFinalScore($summaryGrade);
-            $summaryGrade->final_score = $finalScore;
-            $summaryGrade->evaluation = $this->getEvaluation($finalScore);
-            $summaryGrade->save();
-            return true;
-        } catch (Exception $e) {
-            $this->logError($e->getMessage(), $e);
-            return false;
-        }
+        $student = $this->studentRepository->findOrFailById($studentId);
+        //tính điểm trung bình kiểm tra
+        $avgScore = $this->calculateService->calculateAverageExam($student, $courseSectionId);
+        $summaryGrade = $this->summaryGradeRepository->updateOrCreate(['student_id' => $student->id, 'course_section_id' => $courseSectionId], ['avg_score' => $avgScore]);
+        $finalScore = $this->calculateService->calculateFinalScore($summaryGrade);
+        $summaryGrade->final_score = $finalScore;
+        $summaryGrade->evaluation = $this->getEvaluation($finalScore);
+        $summaryGrade->save();
+        return true;
     }
 
     public function updateSummaryGrades($courseSectionId)

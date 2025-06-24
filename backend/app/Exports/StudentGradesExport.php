@@ -7,13 +7,14 @@ use App\Models\GradeType;
 use App\Repositories\Student\StudentRepositoryInterface;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Mockery\Loader\EvalLoader;
 
-class StudentGradesExport implements FromArray, WithHeadings, WithStyles
+class StudentGradesExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSize
 {
 
     protected $courseSectionId;
@@ -92,7 +93,7 @@ class StudentGradesExport implements FromArray, WithHeadings, WithStyles
     public function headings(): array
     {
 
-        $base = ['STT', 'MSSV', 'TenSV', 'chuyen_can'];
+        $base = ['STT', 'MSSV', 'Họ Tên', 'Chuyên Cần'];
 
         $dynamic = [];
         foreach ($this->gradeTypes as $type) {
@@ -102,8 +103,7 @@ class StudentGradesExport implements FromArray, WithHeadings, WithStyles
             }
         }
 
-
-        $summaryCols = ['tbkt', 'thi_lan_1', 'thi_lan_2', 'tong_ket', 'danh_gia', 'ghi_chu'];
+        $summaryCols = ['Trung Bình Kiểm Tra', 'Thi Lần 1', 'Thi Lần 2', 'Tổng Kết', 'Đánh Giá', 'Ghi chú'];
 
         return array_merge($base, $dynamic, $summaryCols);
     }
@@ -136,14 +136,18 @@ class StudentGradesExport implements FromArray, WithHeadings, WithStyles
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow())
-            ->getBorders()->getAllBorders()->setBorderStyle('thin');
+        $highestColumn = $sheet->getHighestColumn();
+        $highestRow = $sheet->getHighestRow();
 
-        $sheet->getStyle('A1:' . $sheet->getHighestColumn() . $sheet->getHighestRow())
-            ->getAlignment()->setHorizontal('center');
+        // Căn giữa toàn bộ
+        $sheet->getStyle("A1:{$highestColumn}{$highestRow}")
+            ->getAlignment()
+            ->setHorizontal('center')
+            ->setVertical('center');
 
+        // Tô đậm header
         return [
-            'A1:' . $sheet->getHighestColumn() . '1' => [
+            "A1:{$highestColumn}1" => [
                 'font' => [
                     'bold' => true,
                 ],
