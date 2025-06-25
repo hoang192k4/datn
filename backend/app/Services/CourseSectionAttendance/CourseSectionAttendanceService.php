@@ -122,59 +122,39 @@ class CourseSectionAttendanceService implements CourseSectionAttendanceServiceIn
 
     public function getSessionsByCourseSection(Request $request)
     {
-        try {
-            $data = $request->validated();
-            $courseSectionId = $data['course_section_id'];
-            $result = $this->repository->find($courseSectionId);
-            if (!$result)
-                return false;
-            return $result;
-        } catch (Exception $e) {
-            $this->logError($e->getMessage(), $e);
+        $data = $request->validated();
+        $courseSectionId = $data['course_section_id'];
+        $result = $this->repository->find($courseSectionId);
+        if (!$result)
             return false;
-        }
+        return $result;
     }
 
     public function getAttendancesBySession(Request $request)
     {
-        try {
-            $data = $request->validated();
-            $sessionId = $data['session_id'];
-            $session = $this->sessionRepository->find($sessionId);
-            if (!$session)
-                return false;
-            return $session;
-        } catch (Exception $e) {
-            $this->logError($e->getMessage(), $e);
+        $data = $request->validated();
+        $sessionId = $data['session_id'];
+        $session = $this->sessionRepository->find($sessionId);
+        if (!$session)
             return false;
-        }
+        return $session;
     }
 
     public function attendanceScore($studentId, $courseSectionId)
     {
-        try {
-            $attendanceScore = $this->calculateService->calculateAttendanceScore($studentId, $courseSectionId);
-            $isUpdateGrade = $this->summaryGradeService->updateAttendanceSore($courseSectionId, $studentId, $attendanceScore);
-            if (!$isUpdateGrade)
-                return false;
-            return true;
-        } catch (Exception $e) {
-            $this->logError($e->getMessage(), $e);
+        $attendanceScore = $this->calculateService->calculateAttendanceScore($studentId, $courseSectionId);
+        $isUpdateGrade = $this->summaryGradeService->updateAttendanceSore($courseSectionId, $studentId, $attendanceScore);
+        if (!$isUpdateGrade)
             return false;
-        }
+        return true;
     }
 
     public function getFileNameExportAttendance($sessionId)
     {
-        try {
-            $session = $this->sessionRepository->find($sessionId);
-            $studyDate = $session->study_date;
-            $courseSectionName = $session->schedule->course_section->name;
-            $handleCourseName = Str::slug($courseSectionName,'_');
-            return "diem_danh_lop_".$handleCourseName."_".$studyDate.".xlsx";
-        } catch (Exception $e) {
-            $this->logError($e->getMessage(), $e);
-            return false;
-        }
+        $session = $this->sessionRepository->find($sessionId);
+        $studyDate = $session->study_date;
+        $courseSectionName = $session->schedule->course_section->name;
+        $handleCourseName = Str::slug($courseSectionName, '_');
+        return "diem_danh_lop_" . $handleCourseName . "_" . $studyDate . ".xlsx";
     }
 }

@@ -37,6 +37,7 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading
                 'major_id' => optional(Major::where('name', $row['nganh_hoc'])->first())->id,
                 'status' => StudentStatus::fromVietnamese($row['tinh_trang']),
             ];
+            dd($data);
             $this->studentRepository->updateOrCreate([
                 'student_code' => $row['mssv']
             ], $data);

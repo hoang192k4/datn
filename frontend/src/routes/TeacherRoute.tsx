@@ -55,4 +55,5 @@ export const TeacherRoute = [
         'path': 'diem',
         'element': <Grade />
     },
+    
 ];

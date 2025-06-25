@@ -5,8 +5,28 @@
     box-shadow: 5px 5px 5px 5px #d1c5c5;
 }
 
-.class-container>h2 {
-    margin: 5px 0;
+.list-course-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.list-course-section> div >select {
+    background-color: white;
+    color: #1e3a8a;
+    padding: 8px 4px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin:0 4px;
+    outline: none;
+    padding-right: 30px;
+}
+.list-course-section> div >select>option:first-child{
+    text-align: center;
 }
 
 .class-container .class-card {
@@ -64,7 +84,7 @@
     font-size: 30px;
     color: #1e3a8a;
     transition: all 0.3s ease;
-    margin-right: 20px;
+    margin-right: 6px;
 }
 
 .class-students-header .students-top>span>svg:hover {
@@ -75,8 +95,9 @@
 .class-search-student {
     margin: 4px 0;
     position: relative;
-    width: 30%;
+    width: 20%;
 }
+
 
 .class-search-student>input {
     background-color: white;
@@ -103,6 +124,15 @@
     padding-left: 2px;
     color: #333;
     font-size: 20px;
+}
+
+.class-search {
+    width: 250px;
+    min-width: 250px !important;
+}
+
+.class-add-student {
+    width: 300px;
 }
 
 .class-student-main {
