@@ -13,8 +13,9 @@ use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface;
 use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StudentGradesImport implements ToCollection
+class StudentGradesImport implements ToCollection, WithHeadingRow
 {
     protected $courseSectionId;
     protected $gradeTypeMap;
@@ -46,13 +47,10 @@ class StudentGradesImport implements ToCollection
 
     public function collection(Collection $rows)
     {
-        $headers = $rows->first()->toArray();
-        $rows->shift(); // remove header row
-
         foreach ($rows as $rowIndex => $row) {
-            $data = $row->toArray();
-            $studentCode = $data[1] ?? null;
+            $row = $row->toArray(); // Vì row là Row object, nên cần toArray()
 
+            $studentCode = $row['mssv'] ?? null;
             if (!$studentCode) continue;
 
             $student = $this->studentRepository->findWithConditions(['student_code' => $studentCode]);
@@ -61,12 +59,11 @@ class StudentGradesImport implements ToCollection
                 continue;
             }
 
-            foreach ($headers as $index => $header) {
-                $key = Str::upper(trim($header));
-                $value = $data[$index] ?? null;
+            foreach ($row as $header => $value) {
+                $key = Str::upper(trim($header)); // CHUYEN_CAN, KTHS1_1, etc.
 
-                if (in_array($key, ['stt', 'mssv', 'tensv'])) {
-                    continue; // bỏ qua các cột không xử lý
+                if (in_array($key, ['STT', 'MSSV', 'HO_TEN'])) {
+                    continue;
                 }
 
                 // 1. Summary fields
@@ -74,7 +71,7 @@ class StudentGradesImport implements ToCollection
                     $field = $this->columnMap[$key];
 
                     if (in_array($field, ['attendance_score', 'avg_score', 'exam1_score', 'exam2_score', 'final_score'])) {
-                        if (!is_numeric($value) || $value < 1 || $value > 10) {
+                        if (!is_numeric($value) || $value < 0 || $value > 10) {
                             $this->errors[] = "Điểm không hợp lệ '$value' (SV: $studentCode, cột: $header, dòng " . ($rowIndex + 2) . ")";
                             continue;
                         }
@@ -90,9 +87,9 @@ class StudentGradesImport implements ToCollection
                     continue;
                 }
 
-                // 2. Grade chi tiết theo kiểu điểm và lần chấm (KTHS1_1, KTHS2_2, ...)
+                // 2. Grade chi tiết
                 if (preg_match('/^([A-Z0-9]+)_([0-9]+)$/', $key, $matches)) {
-                    [$full, $gradeTypeCode, $attempt] = $matches;
+                    [, $gradeTypeCode, $attempt] = $matches;
                     if (!isset($this->gradeTypeMap[$gradeTypeCode])) {
                         $this->errors[] = "Không xác định được loại điểm '$gradeTypeCode' (cột: $header, dòng " . ($rowIndex + 2) . ")";
                         continue;
@@ -100,7 +97,7 @@ class StudentGradesImport implements ToCollection
 
                     if ($value === null || $value === '') continue;
 
-                    if (!is_numeric($value) || $value < 1 || $value > 10) {
+                    if (!is_numeric($value) || $value < 0 || $value > 10) {
                         $this->errors[] = "Điểm không hợp lệ '$value' (SV: $studentCode, cột: $header, dòng " . ($rowIndex + 2) . ")";
                         continue;
                     }
@@ -122,6 +119,7 @@ class StudentGradesImport implements ToCollection
         if (count($this->errors)) {
             throw ValidationException::withMessages(['import' => $this->errors]);
         }
+
         $this->summaryGradeService->updateSummaryGrades($this->courseSectionId);
     }
 }

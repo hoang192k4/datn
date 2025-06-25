@@ -158,8 +158,10 @@ Route::controller(App\Http\Controllers\Student\StudentController::class)
     ->prefix('students')
     ->group(function () {
         Route::post('/', 'create'); //api thêm mới sinh viên
+        Route::put('/{id}', 'update'); //api sửa sinh viên
         Route::post('/import', 'importStudentsExcel');
         Route::get('/', 'getAllStudents');
+        Route::get('/export', 'exportStudentsExcel');
     });
 
 

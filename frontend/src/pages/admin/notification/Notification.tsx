@@ -16,6 +16,7 @@ import EditNotificationModal from './EditNotificationModal';
 
 import Swal from 'sweetalert2';
 import EditStudentNotificationModal from './EditStudentNotificationModal';
+import { NotificationType } from '../../../enums/NotificationType';
 
 interface NotificationCourseSection {
     id: number;
@@ -123,6 +124,7 @@ const Notification: React.FC = () => {
                             icon: 'success',
                         });
                         setStudentNotifications(prev => prev.filter(item => item.id !== id));
+                        fetchStudentNotifications({ page: 1 }, filterStudentStatus);
                     }
                 } catch (error: any) {
 
@@ -150,6 +152,7 @@ const Notification: React.FC = () => {
                             icon: 'success',
                         });
                         setNotifications(prev => prev.filter(item => item.id !== id));
+                        fetchMyNotifications({ page: 1 }, filterStatus);
                     }
                 } catch (error: any) {
 
