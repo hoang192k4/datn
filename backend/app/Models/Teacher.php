@@ -31,6 +31,9 @@ class Teacher extends Authenticatable implements JWTSubject
         'address',
         'gender',
         'slug',
+        'role_id',
+        'teacher_code',
+        'status'
     ];
 
     protected $slugFrom = 'name';         // Cột nguồn để tạo slug

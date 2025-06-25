@@ -9,7 +9,7 @@ class AttendanceFileRequest extends BaseRequest
     public function methodPost()
     {
         return [
-            'file' => 'required|file|mimes:xlsx'
+             'file' => ['required', 'file', 'mimes:xlsx,xls']
         ];
     }
 }

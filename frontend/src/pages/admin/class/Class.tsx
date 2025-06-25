@@ -27,6 +27,8 @@ const Class = () => {
     const [keyword, setKeyword] = useState<string>('');
     const [showPopup, setShowPopup] = useState<'show' | 'hide'>('hide');
     const [showPopupAddStudent, setShowPopupAddStudent] = useState<'show' | 'hide'>('hide');
+    const [selectedYear, setSelectedYear] = useState<string>('');
+    const [selectedSemester, setSelectedSemester] = useState<string>('');
 
     const hanldeSelected = (selected: { value: number, lable: string, data: any }) => {
         if (selected.data) {
@@ -34,10 +36,12 @@ const Class = () => {
             setStudentDetail(selected.data);
         }
     }
+
     const handleSelection = (classId: { label: string, value: number }) => {
         setCurrentClassId(classId.value);
         setCurrentClassName(classId.label);
     }
+
     const fetchCourseSection = async () => {
         try {
             setLoading(true);
@@ -47,9 +51,36 @@ const Class = () => {
             console.log(errors);
         } finally { setLoading(false); }
     }
+
     useEffect(() => {
         fetchCourseSection();
     }, [])
+
+    const yearOptions = Array.from(
+        new Set(
+            listCourseSection.map(item =>
+                new Date(item.start_date).getFullYear()
+            )
+        )
+    ).sort((yearA, yearB) => yearB - yearA);
+
+    const semesterOptions = Array.from(
+        new Set(
+            listCourseSection.map(item => (
+                item.semester
+            ))
+        )
+    ).sort((semesterA, semesterB) => {
+        const tmpA = parseInt(semesterA.replace(/\D/g, '')); // Lấy số trong chuỗi
+        const tmpB = parseInt(semesterB.replace(/\D/g, ''));
+        return tmpA - tmpB;
+    })
+
+    const filterCourseSection = listCourseSection && listCourseSection.filter((courseSection) => {
+        const yearMatch = selectedYear === '' || new Date(courseSection.start_date).getFullYear() === parseInt(selectedYear);
+        const semesterMatch = selectedSemester === '' || courseSection.semester === selectedSemester;
+        return yearMatch && semesterMatch;
+    })
 
     const fetchStudentList = async (courseSectionId: number) => {
         try {
@@ -61,10 +92,6 @@ const Class = () => {
             console.log(errors);
         } finally { setLoading(false); }
     }
-    useEffect(() => {
-        if (currentClassId)
-            fetchStudentList(currentClassId)
-    }, [currentClassId])
 
     const handleStudentDetail = async (studentId: number) => {
         const student = studentList.filter(student => student.id === studentId)
@@ -73,6 +100,7 @@ const Class = () => {
             setShowPopup('show');
         }
     }
+
     const handleDeleteStudent = (studentId: number) => {
         Swal.fire({
             title: "Bạn có thật sự muốn xóa sinh viên này ra khỏi lớp?",
@@ -105,6 +133,12 @@ const Class = () => {
             });
         }).finally(() => setLoading(false));
     }
+
+    useEffect(() => {
+        if (currentClassId)
+            fetchStudentList(currentClassId)
+    }, [currentClassId])
+
     return (
         <>
             {loading && <Loadding />}
@@ -112,13 +146,51 @@ const Class = () => {
             <div className="class-container">
                 {action === 'default' ?
                     <>
-                        <h2>Danh Sách Lớp Học</h2>
+                        <div className="list-course-section">
+                            <h2>Danh sách lớp học</h2>
+                            <div>
+                                <select onChange={(e: any) => setSelectedSemester(e.target.value)}>
+                                    <option value="">--Lọc theo học kỳ--</option>
+                                    {semesterOptions.map(semester => (
+                                        <option key={semester} value={semester}>{semester}</option>
+                                    ))}
+                                </select>
+                                <select onChange={(e: any) => setSelectedYear(e.target.value)}>
+                                    <option value="">--Lọc theo năm--</option>
+                                    {yearOptions.map(year => (
+                                        <option key={year} value={year}>{year}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
 
                         <div className="grid">
-                            {listCourseSection && listCourseSection?.map(item => (
-                                <ClassCard key={item.id} course_section={item} setAction={setAction}
-                                    setCurrentClassId={setCurrentClassId} setCurrentClassName={setCurrentClassName} />
-                            ))}
+                            {/* (
+                                listCourseSection && selectedYear !== '' ?
+                                    (
+                                        selectedSemester !== '' ?
+                                            (
+                                                listCourseSection.filter(item => new Date(item.start_date).getFullYear() === parseInt(selectedYear) && item.semester === selectedSemester)
+                                            ) :
+                                            listCourseSection.filter(item => new Date(item.start_date).getFullYear() === parseInt(selectedYear))
+                                    ) :
+                                    (
+                                        selectedSemester !== '' ?
+                                            (
+                                                listCourseSection.filter(item => item.semester === selectedSemester)
+                                            ) :
+                                            listCourseSection
+                                    )
+                            ) */
+                                filterCourseSection.length > 0 ?
+                                    filterCourseSection?.map(item => (
+                                        <ClassCard key={item.id} course_section={item} setAction={setAction}
+                                            setCurrentClassId={setCurrentClassId} setCurrentClassName={setCurrentClassName} />
+                                    )) :
+                                    <div style={{ textAlign: 'center', color: '#888', marginTop: '1.5rem' }}>
+                                        <strong>Không có lớp học nào phù hợp với tiêu chí đã chọn.</strong>
+                                    </div>
+                            }
                         </div>
                     </> :
                     action === 'student_list' &&
@@ -136,10 +208,10 @@ const Class = () => {
                                 <FaSearch />
                             </div>
 
-                            <div className="gm-class-select">
+                            <div className="gm-class-select class-search">
                                 <SelectWithPagination handleClassSelection={handleSelection} />
                             </div>
-                            <div>
+                            <div className="class-add-student">
                                 <SelectWithPaginationStudent hanldeSelected={hanldeSelected} />
                             </div>
                         </div>

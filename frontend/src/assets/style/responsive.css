@@ -12,6 +12,19 @@
     .attendance-search-student {
         width: 100% !important;
     }
+     /* reposive class component  */
+    .class-search-student {
+        width: 40% !important;
+    }
+
+    .class-search {
+        width: 40% !important;
+        margin: 0 8px;
+    }
+
+    .class-add-student {
+        width: 50% !important;
+    }
 }
 
 /* style responsive table */
@@ -133,7 +146,7 @@
         flex-direction: column !important;
         width: 95% !important;
         max-height: 600px !important;
-        overflow: auto !important; 
+        overflow: auto !important;
     }
 
     .course-section-popup-content::-webkit-scrollbar {
@@ -180,7 +193,22 @@
         right: 12px !important;
         font-size: 20px !important;
     }
+
+    /* reposive class component  */
+    .class-search-student {
+        width: 100% !important;
+    }
+
+    .class-search {
+        width: 100% !important;
+        margin: 6px 0 !important;
+    }
+
+    .class-add-student {
+        width: 100% !important;
+    }
 }
+
 
 /* style responsive mobible */
 @media (max-width: 576px) {
@@ -212,4 +240,6 @@
     .sidebar {
         margin-top: 30px !important;
     }
+
+
 }

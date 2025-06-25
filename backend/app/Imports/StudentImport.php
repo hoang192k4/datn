@@ -63,7 +63,6 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
                 'status' => StudentStatus::fromVietnamese($row['trang_thai'] ?? '') ?? StudentStatus::Active,
                 'gender' => Gender::fromVietnamese($row['gioi_tinh']),
             ];
-            $students[] = $data;
         }
 
         $this->studentRepository->upsert($students, ['student_code', 'email']);
