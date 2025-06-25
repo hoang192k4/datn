@@ -1,4 +1,5 @@
 import type { CourseSection } from "../../../types/courseSecion"
+import { formatDayMonthYear } from "../../../utils/stringUtil";
 
 interface PropsClass {
     course_section: CourseSection,
@@ -21,7 +22,7 @@ const ClassCard = (props: PropsClass) => {
                     Môn học: {props.course_section.subject}
                     <span> (Tổng số sinh viên : {props.course_section.students_total})</span>
                 </div>
-                <p>Ngày bắt đầu: {props.course_section.start_date}</p>
+                <p>Ngày bắt đầu: {formatDayMonthYear(props.course_section.start_date)}</p>
                 <p>{props.course_section.semester}</p>
                 <p>Phòng học: {props.course_section.classroom}</p>
                 <button onClick={() => handleStudentList(props.course_section.id, props.course_section.name, props.course_section.students_total)}>Xem danh sách sinh viên</button>

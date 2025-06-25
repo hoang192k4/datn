@@ -108,7 +108,7 @@ class AttendanceController extends BaseController
             return $this->jsonResponseSuccessNoData('Đã thêm điểm danh thành công!');
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
-            return $this->jsonResponseError('Tệp nhập điểm không hợp lệ');
+            return $this->jsonResponseError('Không thể nhập dữ liệu. Vui lòng kiểm tra lại các cột và nội dung', 400);
         }
     }
 }

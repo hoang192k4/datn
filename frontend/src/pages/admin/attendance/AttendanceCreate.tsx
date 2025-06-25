@@ -83,7 +83,6 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
                 setLoadingAttendanceCreate(true);
                 const res = await getListAttendancesBySession(sessionId);
                 setListAttendances(res.data);
-                console.log(res.data);
                 setDefaultSelect(sessionId);
                 reset(res.data);
             } catch (errors) {

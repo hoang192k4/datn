@@ -44,7 +44,7 @@ const SelectWithPaginationStudent = ({ hanldeSelected }: any) => {
                     hanldeSelected(selected);
                 }}
                 components={customComponents}
-                placeholder="-- Tìm sinh viên thêm vào lớp học --"
+                placeholder="-- Thêm sinh viên vào lớp học --"
                 additional={{
                     page: 1,
                 }}
