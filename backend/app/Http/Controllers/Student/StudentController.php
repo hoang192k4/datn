@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Student;
 
-use App\Exceptions\ModelNotFoundByIdException;
-use App\Exports\StudentsExport;
 use Exception;
 use App\Imports\StudentImport;
+use App\Exports\StudentsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Search\SearchRequest;
-use App\Http\Requests\Student\StudentExportRequest;
 use App\Http\Requests\Student\StudentRequest;
+use App\Exceptions\ModelNotFoundByIdException;
+use Illuminate\Validation\ValidationException;
 use App\Services\Student\StudentServiceInterface;
+use App\Http\Requests\Student\StudentExportRequest;
 use App\Http\Requests\Student\StudentImportRequest;
-use App\Http\Resources\Student\StudentResourceCollection;
 use App\Repositories\Student\StudentRepositoryInterface;
-use Maatwebsite\Excel\Validators\ValidationException;
+use App\Http\Resources\Student\StudentResourceCollection;
+
 
 class StudentController extends BaseController
 {
@@ -82,7 +83,7 @@ class StudentController extends BaseController
             Excel::import(new StudentImport(), $request->file('file'));
             return $this->jsonResponseSuccessNoData();
         } catch (ValidationException $e) {
-            return $this->jsonResponseErrorValidate('Thêm không thành công', 422, $e->failures());
+            return $this->jsonResponseErrorValidate('Thêm không thành công', 422, $e->errors());
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);
