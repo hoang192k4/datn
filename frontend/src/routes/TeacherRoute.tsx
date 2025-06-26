@@ -66,5 +66,5 @@ export const TeacherRoute = [
         'element': <Grade />,
         roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
     },
-    
+
 ];
