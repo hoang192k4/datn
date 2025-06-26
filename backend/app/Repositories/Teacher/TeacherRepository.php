@@ -19,4 +19,8 @@ class TeacherRepository extends EloquentRepository implements TeacherRepositoryI
         $teacher->save();
         return $teacher->status;
     }
+    public function upsert(array $data, array $uniqueBy)
+    {
+        $this->model->upsert($data, $uniqueBy);
+    }
 }
