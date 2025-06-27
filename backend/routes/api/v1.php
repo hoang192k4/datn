@@ -171,6 +171,13 @@ Route::controller(App\Http\Controllers\Teacher\TeacherController::class)
         Route::post('/', 'create'); //api thêm giảng viên
         Route::put('/{teacher}', 'update'); //api sửa thông tin giảng viên
         Route::patch('/{teacher}', 'updateStatus'); // api cập nhật trạng thái giảng viên
-        Route::get('/','getAllTeachers'); //api lấy danh sách và tìm kiếm giảng viên
-        Route::post('/import','importTeachersExcel');
+        Route::get('/', 'getAllTeachers'); //api lấy danh sách và tìm kiếm giảng viên
+        Route::post('/import', 'importTeachersExcel');
+    });
+
+
+Route::controller(App\Http\Controllers\Major\MajorController::class)
+    ->prefix('majors')
+    ->group(function () {
+        Route::get('/', 'index'); //api lấy danh sách ngành học
     });

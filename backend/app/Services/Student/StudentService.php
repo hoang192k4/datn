@@ -36,8 +36,14 @@ class StudentService implements StudentServiceInterface
             $limit = $data['limit'] ?? 10;
             $page = $data['page'] ?? 1;
             $key = $data['key'] ?? null;
+            $status = $data['status'] ?? null;
 
-            return $this->studentRepository->getList(['status' => StudentStatus::Active], ['student_code' => 'asc'], [], $limit, $page, ['student_code' => ['like', $key], 'name' => ['like', $key]]);
+            $filter = [];
+            if (!is_null($status)) {
+                $filter['status'] = $status;
+            }
+
+            return $this->studentRepository->getList($filter, ['student_code' => 'desc'], [], $limit, $page, ['student_code' => ['like', $key], 'name' => ['like', $key]]);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;

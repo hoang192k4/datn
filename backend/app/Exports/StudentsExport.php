@@ -109,7 +109,7 @@ class StudentsExport implements FromCollection, WithHeadings, WithMapping, WithE
                     $statusValidation->setErrorStyle(\PhpOffice\PhpSpreadsheet\Cell\DataValidation::STYLE_STOP);
                     $statusValidation->setAllowBlank(true);
                     $statusValidation->setShowDropDown(true);
-                    $statusValidation->setFormula1('"Đang học,Đã tốt nghiệp,Bị đình chỉ,Bảo lưu,Bỏ học"');
+                    $statusValidation->setFormula1('"Đang học,Đã tốt nghiệp,Bị đình chỉ,Bảo lưu,Thôi học"');
                 }
 
                 // ✅ Căn giữa tất cả các ô từ A1 đến E[cuối]

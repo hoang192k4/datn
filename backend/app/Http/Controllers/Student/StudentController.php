@@ -62,7 +62,7 @@ class StudentController extends BaseController
         }
     }
 
-    public function getAllStudents(SearchRequest $request)
+    public function getAllStudents(StudentRequest $request)
     {
         try {
             $students = $this->studentService->getAllStudents($request);
@@ -72,9 +72,6 @@ class StudentController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
-
-
-
 
     public function importStudentsExcel(StudentImportRequest $request)
     {
