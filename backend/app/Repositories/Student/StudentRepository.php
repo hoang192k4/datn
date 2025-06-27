@@ -65,4 +65,12 @@ class StudentRepository extends EloquentRepository implements StudentRepositoryI
         $this->model->upsert($data, $uniqueBy);
     }
 
+    public function getAllIndexed()
+    {
+        return $this->model->all()->keyBy('student_code')->toArray();
+    }
+    public function getEmailMap()
+    {
+        return $this->model->pluck('id', 'email')->toArray();
+    }
 }

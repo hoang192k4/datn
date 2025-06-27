@@ -2,19 +2,20 @@
 
 namespace App\Imports;
 
-use App\Enums\Gender;
-use App\Enums\Student\StudentStatus;
-use App\Models\Major;
-use App\Repositories\Student\StudentRepositoryInterface;
-use Carbon\Carbon;
 use Exception;
+use Carbon\Carbon;
+use App\Enums\Gender;
+use App\Models\Major;
 use Illuminate\Support\Collection;
+use App\Enums\Student\StudentStatus;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use App\Repositories\Student\StudentRepositoryInterface;
+
 
 class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, WithValidation
 {
@@ -34,9 +35,16 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
      */
     public function collection(Collection $rows)
     {
+
+        $existingStudents = $this->studentRepository->getAllIndexed();
+        $existingEmails = $this->studentRepository->getEmailMap();
+
+        $conflicts = [];;
+
         $students = [];
 
-        foreach ($rows as $row) {
+        foreach ($rows as $index => $row) {
+            if (collect($row)->filter()->isEmpty()) continue;
             if (
                 empty($row['mssv']) ||
                 empty($row['ho_ten']) ||
@@ -51,10 +59,44 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
                 continue;
             }
 
+
+            $studentCode = trim($row['mssv']);
+            $email = trim($row['email']);
+            $student = $existingStudents[$studentCode] ?? null;
+
+
+            if ($student) {
+                $emailChanged = $email !== $student['email'];
+                if ($emailChanged && isset($existingEmails[$email]) && $existingEmails[$email] !== $student['id']) {
+                    // Email đã dùng bởi người khác
+                    $conflicts[] =  "Dòng " . ($index + 1) . " với mssv $studentCode có email $email đã được dùng bởi sinh viên khác";
+                    //  [
+                    //         'row' => $index + 1,
+                    //         'mssv' => $studentCode,
+                    //         'email' => $email,
+                    //         'message' => 'Email đã được dùng bởi sinh viên khác.'
+                    //     ];
+
+                    continue;
+                }
+            } else {
+                // Nếu là thêm mới nhưng email đã được dùng
+                if (isset($existingEmails[$email])) {
+                    $conflicts[] = $conflicts[] =  "Dòng " . ($index + 1) . " với mssv $studentCode có email $email đã được dùng bởi sinh viên khác";
+                    // [
+                    //     'row' => $index + 1,
+                    //     'mssv' => $studentCode,
+                    //     'email' => $email,
+                    //     'message' => 'Email đã tồn tại. Không thể thêm sinh viên mới.'
+                    // ];
+                    continue;
+                }
+            }
+
             $data = [
-                'student_code' => trim($row['mssv']),
+                'student_code' => $studentCode,
                 'name' => trim($row['ho_ten']),
-                'email' => trim($row['email']),
+                'email' => $email,
                 'password' => $this->password,
                 'date_of_birth' => Carbon::parse(trim($row['ngay_sinh']))->format('Y-m-d'),
                 'address' => trim($row['dia_chi']),
@@ -63,9 +105,14 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
                 'status' => StudentStatus::fromVietnamese($row['trang_thai'] ?? '') ?? StudentStatus::Active,
                 'gender' => Gender::fromVietnamese($row['gioi_tinh']),
             ];
-            $students[]=$data;
+            $students[] = $data;
         }
-        $this->studentRepository->upsert($students, ['student_code', 'email']);
+
+        $this->studentRepository->upsert($students, ['student_code']);
+
+        if (count($conflicts)) {
+            throw ValidationException::withMessages($conflicts);
+        }
     }
 
     public function chunkSize(): int

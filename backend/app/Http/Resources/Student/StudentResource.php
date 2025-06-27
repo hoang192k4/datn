@@ -24,6 +24,7 @@ class StudentResource extends JsonResource
             'enrollment_date' => $this->enrollment_date,
             'graduation_date' => $this->graduation_date,
             'major' => optional($this->major)->name,
+            'major_id' => $this->major_id,
             'status' => $this->status,
         ];
     }

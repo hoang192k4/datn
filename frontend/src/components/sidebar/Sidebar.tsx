@@ -39,13 +39,16 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             icon: "📚",
             url: "lop-hoc",
             label: "Lớp Học",
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
+            // roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
+            roles: ["subject_teacher"]
         },
         {
             icon: "📝",
             url: "diem",
             label: "Quản Lý Điểm",
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
+            // roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
+            roles: ["subject_teacher"]
+
         },
         {
             icon: "📅",
@@ -57,13 +60,15 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             icon: "📁",
             url: "tai-lieu",
             label: "Tài Liệu",
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            // roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            roles: ["subject_teacher"]
         },
         {
             icon: "📅",
             url: "diem-danh",
             label: "Quản Lý Điểm Danh",
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            // roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            roles: ["subject_teacher"]
         },
         {
             icon: "📢",
