@@ -171,6 +171,13 @@ Route::controller(App\Http\Controllers\Teacher\TeacherController::class)
         Route::post('/', 'create'); //api thêm giảng viên
         Route::put('/{teacher}', 'update'); //api sửa thông tin giảng viên
         Route::patch('/{teacher}', 'updateStatus'); // api cập nhật trạng thái giảng viên
-        Route::get('/','getAllTeachers'); //api lấy danh sách và tìm kiếm giảng viên
-        Route::post('/import','importTeachersExcel');
+        Route::get('/', 'getAllTeachers'); //api lấy danh sách và tìm kiếm giảng viên
+        Route::post('/import', 'importTeachersExcel'); // api import file excel
+        Route::get('/export', 'getTeacherListByStatus'); // api export
+    });
+
+Route::controller(App\Http\Controllers\Role\RoleController::class)
+    ->prefix('roles')
+    ->group(function () {
+        Route::get('/', 'getRoles'); //api lấy danh sách vai trò
     });

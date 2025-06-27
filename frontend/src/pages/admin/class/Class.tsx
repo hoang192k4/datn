@@ -10,11 +10,12 @@ import SelectWithPagination from "../../../components/ui/SelectWithPagination";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaSearch } from "react-icons/fa";
 import { normalizeString } from "../../../utils/searchUtil";
-import { genderText, statusMap } from "../../../utils/studentText";
+import { statusMap } from "../../../utils/studentText";
 import ClassStudentDetail from "./ClassStudentDetail";
 import { FaDeleteLeft } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import SelectWithPaginationStudent from "../../../components/ui/SelectWithPaginationStudent";
+import { genderMap } from "../../../utils/genderMap";
 
 const Class = () => {
     const [loading, setLoading] = useState(false);
@@ -143,19 +144,19 @@ const Class = () => {
         <>
             {loading && <Loadding />}
             <PageHeader title="📚 Quản lý lớp học" subtitle="Hệ thống quản lý lớp học, danh sách sinh viên" />
-            <div className="class-container">
+            <div className="class-container box-container">
                 {action === 'default' ?
                     <>
                         <div className="list-course-section">
                             <h2>Danh sách lớp học</h2>
                             <div>
-                                <select onChange={(e: any) => setSelectedSemester(e.target.value)}>
+                                <select className="select-filter reposive-select-mb" onChange={(e: any) => setSelectedSemester(e.target.value)} value={selectedSemester}>
                                     <option value="">--Lọc theo học kỳ--</option>
                                     {semesterOptions.map(semester => (
                                         <option key={semester} value={semester}>{semester}</option>
                                     ))}
                                 </select>
-                                <select onChange={(e: any) => setSelectedYear(e.target.value)}>
+                                <select className="select-filter reposive-select-mb" onChange={(e: any) => setSelectedYear(e.target.value)} value={selectedYear}>
                                     <option value="">--Lọc theo năm--</option>
                                     {yearOptions.map(year => (
                                         <option key={year} value={year}>{year}</option>
@@ -164,24 +165,8 @@ const Class = () => {
                             </div>
                         </div>
 
-                        <div className="grid">
-                            {/* (
-                                listCourseSection && selectedYear !== '' ?
-                                    (
-                                        selectedSemester !== '' ?
-                                            (
-                                                listCourseSection.filter(item => new Date(item.start_date).getFullYear() === parseInt(selectedYear) && item.semester === selectedSemester)
-                                            ) :
-                                            listCourseSection.filter(item => new Date(item.start_date).getFullYear() === parseInt(selectedYear))
-                                    ) :
-                                    (
-                                        selectedSemester !== '' ?
-                                            (
-                                                listCourseSection.filter(item => item.semester === selectedSemester)
-                                            ) :
-                                            listCourseSection
-                                    )
-                            ) */
+                        <div className="grid class-scroll">
+                            {
                                 filterCourseSection.length > 0 ?
                                     filterCourseSection?.map(item => (
                                         <ClassCard key={item.id} course_section={item} setAction={setAction}
@@ -200,7 +185,7 @@ const Class = () => {
                                 <span onClick={() => setAction('default')}><IoMdArrowRoundBack /></span>
                                 <div>
                                     <h2>Danh Sách Sinh Viên</h2>
-                                    <p style={{ fontSize: '18px', fontWeight: '600', color: '#2e3b8c', padding: '4px 0' }}>lớp {currentClassName && currentClassName}</p>
+                                    <p style={{ fontSize: '16px', fontWeight: '600', color: '#2e3b8c', padding: '4px 0' }}>Lớp {currentClassName && currentClassName}</p>
                                 </div>
                             </div>
                             <div className="class-search-student">
@@ -237,7 +222,7 @@ const Class = () => {
                                                 <td>{student.student_code}</td>
                                                 <td>{student.name}</td>
                                                 <td>{student.email}</td>
-                                                <td>{genderText[student.gender]}</td>
+                                                <td>{genderMap[student.gender]}</td>
                                                 <td>{statusMap[student.status]}</td>
                                                 <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
                                             </tr>

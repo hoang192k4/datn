@@ -1,0 +1,476 @@
+.teacher-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.teacher_header_btn {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 4px;
+}
+
+.teacher-manager-list {
+    overflow: auto;
+    max-height: 1000px;
+    margin-top: 10px;
+}
+
+.teacher-manager-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.teacher-manager-list::-webkit-scrollbar-thumb {
+    background-color: #1e3a8a;
+    border-radius: 4px;
+    border: 1px solid grey;
+}
+
+.teacher-table {
+    min-width: 900px;
+    text-align: center;
+}
+
+.teacher-table>tbody>tr>td {
+    padding: 10px;
+}
+
+.teacher-table>thead>tr>th:nth-child(1) {
+    width: 140px;
+    min-width: 140px;
+}
+
+.teacher-table>thead>tr>th:nth-child(6),
+.teacher-table>thead>tr>th:nth-child(8) {
+    width: 120px;
+    min-width: 120px;
+}
+
+.teacher-table>tbody>tr>td:nth-child(6),
+.teacher-table>tbody>tr>td:nth-child(7),
+.teacher-table>tbody>tr>td:nth-child(8) {
+    text-align: center;
+}
+
+.teacher-table>thead>tr>th:nth-child(7) {
+    width: 160px;
+    min-width: 160px;
+}
+
+.teacher-table>thead>tr>th:nth-child(2),
+.teacher-table>thead>tr>th:nth-child(4),
+.teacher-table>tbody>tr>td:nth-child(3) {
+    width: 200px;
+    min-width: 200px;
+}
+
+.teacher-table>tbody>tr>td:last-child {
+    text-align: center;
+    width: 150px;
+    min-width: 150px;
+}
+
+.btn-teacher {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s linear;
+}
+
+.btn-teacher:hover {
+    filter: brightness(1.1);
+    transform: scale(1.03);
+}
+
+.edit-teacher {
+    margin-left: 10px;
+    background-color: #1e3a8a;
+}
+
+.teacher-table>tbody>tr {
+    transition: background-color 0.3s linear;
+}
+
+.teacher-table>tbody>tr:hover {
+    background-color: #d9dff1;
+    cursor: pointer;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    display: inline-block;
+    transition: all 0.3s linear;
+}
+
+.status-active {
+    background-color: #28a745;
+}
+
+.status-inactive {
+    background-color: #6c757d;
+}
+
+.role-badge {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 20px;
+    color: white;
+    display: inline-block;
+    transition: all 0.3s linear;
+    text-transform: uppercase;
+}
+
+/* Mỗi vai trò 1 màu riêng */
+.faculty_admin {
+    background-color: #d9534f;
+}
+
+.subject_teacher {
+    background-color: #5bc0de;
+}
+
+.homeroom_teacher {
+    background-color: #f0ad4e;
+}
+
+.department_admin {
+    background-color: #6f42c1;
+}
+
+.status-badge:hover {
+    filter: brightness(1.1);
+    transform: scale(1.03);
+}
+
+.role-badge:hover {
+    filter: brightness(1.1);
+    transform: scale(1.03);
+}
+
+.teacher-pagination {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+/* form update create */
+.teacher-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.teacher-modal-box {
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    overflow: auto;
+    max-height: 90vh;
+    width: 40%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.teacher-modal-box h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #1e3a8a;
+}
+
+.teacher-modal-box label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.teacher-modal-box input,
+.teacher-modal-box select {
+    width: 100%;
+    padding: 10px 8px;
+    margin-top: 4px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+}
+
+.teacher-modal-box input:focus {
+    border: 2px solid #2684ff;
+}
+
+.teacher-modal-box select:focus {
+    border: 2px solid #2684ff;
+}
+
+.teacher-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-save {
+    background-color: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    padding: 12px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.form-teacher {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.form-teacher>label {
+    width: calc(50% - 10px);
+}
+
+/* popup import teacher */
+
+.teacher-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.teacher-modal-content {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: auto;
+    max-width: 600px;
+    padding: 20px;
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+.teacher-modal-content h2 {
+    color: #1e3a8a;
+}
+
+.close-btn {
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+
+.drop-zone {
+    border: 2px dashed #4a90e2;
+    border-radius: 8px;
+    padding: 50px 0;
+    text-align: center;
+    cursor: pointer;
+    margin: 15px 0;
+
+}
+
+.drop-zone:hover {
+    background-color: #f0f9ff;
+}
+
+.drop-zone button {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.drop-zone button:hover {
+    background: #3a78c2;
+}
+
+.note {
+    font-size: 12px;
+    color: #666;
+}
+
+.template-note {
+    background: #fff7e0;
+    border-left: 4px solid #f0c000;
+    padding: 10px;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+.template-note strong {
+    color: #92400e;
+    font-size: 16px;
+}
+
+.template-note ul {
+    padding-left: 16px;
+    margin: 6px 0 0 0;
+    font-size: 14px;
+    color: #a16207;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.button-group button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button-group button:first-child {
+    background: #ccc;
+}
+
+.button-group button:last-child {
+    background: #4a90e2;
+    padding: 10px 20px;
+    color: white;
+}
+
+.button-group button:last-child:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* popup export teacher */
+.teacher-modal-export {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    overflow: auto;
+    /* Cho phép cuộn nếu modal content cao hơn màn hình */
+}
+
+.teacher-modal-content-export {
+    background: #fff;
+    border-radius: 0.75rem;
+    max-width: 480px;
+    width: 100%;
+    padding: 1.5rem;
+    position: relative;
+    animation: fadeInUp 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.teacher-modal-content-export h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #1e3a8a;
+}
+
+.teacher-modal-content-export label {
+    font-size: 0.95rem;
+    color: #333;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.teacher-modal-content-export select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+    font-size: 0.95rem;
+    transition: border 0.2s;
+}
+
+.teacher-modal-content-export select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

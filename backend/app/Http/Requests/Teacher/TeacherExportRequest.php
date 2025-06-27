@@ -2,20 +2,17 @@
 
 namespace App\Http\Requests\Teacher;
 
-use App\Http\Requests\BaseRequest;
 use App\Enums\Teacher\TeacherStatus;
+use App\Http\Requests\BaseRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class MyTeacherRequest extends  BaseRequest
+class TeacherExportRequest extends BaseRequest
 {
     public function methodGet()
     {
         return [
-            'limit' => 'integer|nullable',
-            'page' => 'integer|nullable',
-            'key' => 'string|nullable',
             'status' => [new Enum(TeacherStatus::class), 'nullable'],
-            'role' => 'exists:roles,name|nullable'
+            'role_id' => ['exists:teachers,role_id', 'nullable']
         ];
     }
 }

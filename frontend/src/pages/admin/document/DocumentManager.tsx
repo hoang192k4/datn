@@ -31,7 +31,7 @@ const DocumentManager = () => {
             <PageHeader title="📁 Quản lý tài liệu"
                 subtitle="Hệ thống quản lý tài liệu của từng môn học" />
 
-            <div className="subject">
+            <div className="subject box-container">
                 <h2>Danh Sách Môn Học</h2>
 
                 <div className="grid">

@@ -3,8 +3,11 @@
 namespace App\Http\Requests\Teacher;
 
 use App\Enums\Gender;
-use App\Enums\Teacher\TeacherStatus;
+use App\Models\Teacher;
 use App\Http\Requests\BaseRequest;
+use App\Enums\Teacher\TeacherStatus;
+use Illuminate\Support\Facades\Hash;
+use App\Traits\AuthTeacherApi;
 use Illuminate\Validation\Rules\Enum;
 
 class TeacherRequest extends BaseRequest
@@ -19,7 +22,6 @@ class TeacherRequest extends BaseRequest
             'date_of_birth' => 'date|required',
             'address' => 'required|string|max:255',
             'gender' => [new Enum(Gender::class), 'required'],
-            'status' => [new Enum(TeacherStatus::class), 'required'],
             'role_id' => "required|exists:roles,id"
         ];
     }
@@ -33,9 +35,29 @@ class TeacherRequest extends BaseRequest
             'password' => 'max:255|string',
             'date_of_birth' => 'date',
             'address' => 'string|max:255',
+            'password_current' => 'string|max:255',
+            'password_update' => 'string|max:255',
             'gender' => [new Enum(Gender::class)],
-            'status' => [new Enum(TeacherStatus::class)],
             'role_id' => "exists:roles,id"
+        ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $password = $this['password_current'];
+            if ($this->teacher && $password && !Hash::check($password, $this->teacher->password)) {
+                $validator->errors()->add('password', 'Mật khẩu không đúng. Vui lòng nhập đúng mật khẩu');
+            }
+        });
+    }
+
+    public function messages()
+    {
+        return [
+            'teacher_code' => 'Mã giảng viên đã tồn tại vui lòng nhập mã khác!',
+            'email.unique' => 'Email đã tồn tại vui lòng nhập email khác',
+            'email.email' => 'Email không đúng định dạng'
         ];
     }
 }

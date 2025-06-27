@@ -8,6 +8,7 @@ import AttendancePage from "../pages/admin/attendance/AttendancePage";
 import Grade from "../pages/admin/grade/GradeManagement";
 import Notification from "../pages/admin/notification/Notification";
 import FacultyStudentNotification from "../pages/admin/notification/faculty_student/FacultyStudentNotification";
+import TeacherManager from "../pages/admin/teacher/TeacherManager";
 
 export const TeacherRoute = [
     {
@@ -65,6 +66,11 @@ export const TeacherRoute = [
         'path': 'diem',
         'element': <Grade />,
         roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+    },
+    {
+        'path': 'giang-vien',
+        'element': <TeacherManager />,
+        roles: ["faculty_admin", "department_admin"],
     },
 
 ];

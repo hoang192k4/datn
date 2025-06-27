@@ -12,7 +12,8 @@
     .attendance-search-student {
         width: 100% !important;
     }
-     /* reposive class component  */
+
+    /* reposive class component  */
     .class-search-student {
         width: 40% !important;
     }
@@ -207,6 +208,10 @@
     .class-add-student {
         width: 100% !important;
     }
+
+    .teacher-modal-box {
+        width: 90% !important;
+    }
 }
 
 
@@ -241,5 +246,11 @@
         margin-top: 30px !important;
     }
 
-
+    .reposive-select-mb {
+        width: 100% !important;
+        margin: 4px 0 !important;
+    }
+    .teacher-modal-box {
+        height: 80% !important;
+    }
 }

@@ -4,6 +4,7 @@
       margin-bottom: 8px;
       padding: 0 6px;
     }
+
     /* grade page */
     .grade-page {
       min-height: 600px;
@@ -115,4 +116,9 @@
       to {
         transform: rotate(360deg);
       }
+    }
+
+
+    table>tbody>tr>td:first-child{
+      text-align: center;
     }

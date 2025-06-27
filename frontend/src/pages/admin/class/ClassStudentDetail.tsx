@@ -2,7 +2,8 @@ import Swal from "sweetalert2";
 import { attachStudentByCourseSection } from "../../../services/courseSectionService";
 import type { StudentList } from "../../../types/student";
 import { formatDayMonthYear, getInitials } from "../../../utils/stringUtil";
-import { genderText, statusMap } from "../../../utils/studentText";
+import { statusMap } from "../../../utils/studentText";
+import { genderMap } from "../../../utils/genderMap";
 
 interface PropClass {
     student?: StudentList,
@@ -76,7 +77,7 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent, setShowP
                         <div className="course-section-popup-info-grid">
                             <div className="course-section-popup-info-item">
                                 <div className="label">Giới tính</div>
-                                <div className="value">{student?.gender && genderText[student?.gender]}</div>
+                                <div className="value">{student?.gender && genderMap[student?.gender]}</div>
                             </div>
                             <div className="course-section-popup-info-item">
                                 <div className="label">Ngày sinh</div>

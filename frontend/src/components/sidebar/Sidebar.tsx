@@ -21,7 +21,6 @@ interface MenuItemData {
 const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const role = useSelector((state: any) => state.auth.user?.role);
-    console.log(role);
     const menuItems: MenuItemData[] = [
         {
             icon: "📊",
@@ -74,6 +73,12 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                 { icon: "📝", url: "thong-bao/khoa-va-sinh-vien", label: "Thông Báo Từ Khoa & Sinh Viên", roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"] },
             ],
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+        },
+          {
+            icon: "📁",
+            url: "giang-vien",
+            label: "Quản lý giảng viên",
+            roles: ["faculty_admin", "department_admin"],
         },
     ];
 

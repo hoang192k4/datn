@@ -1,10 +1,5 @@
-import { Gender } from "../enums/Gender"
 import { StudentStatus } from "../enums/StudentStatus"
 
-export const genderText = {
-    [Gender.Male]: 'Nam',
-    [Gender.Female]: 'Nữ'
-}
 export const statusMap = {
     [StudentStatus.Active]: 'Đang học',
     [StudentStatus.Graduated]: 'Đã tốt nghiệp',
