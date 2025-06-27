@@ -14,6 +14,7 @@ use App\Repositories\Teacher\TeacherRepositoryInterface;
 use App\Services\Teacher\TeacherServiceInterface;
 use Exception;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Validators\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TeacherController extends BaseController
@@ -81,11 +82,14 @@ class TeacherController extends BaseController
     public function importTeachersExcel(TeacherImportRequest $request)
     {
         try {
+            $request->validated();
             Excel::import(new TeacherImport($this->repository), $request->file('file'));
             return $this->jsonResponseSuccessNoData();
+        } catch (ValidationException $e) {
+            return $this->jsonResponseErrorValidate('Thêm không thành công', 422, $e->failures());
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
-            return $this->jsonResponseError('Không thể nhập dữ liệu. Vui lòng kiểm tra lại các cột và nội dung', 400);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
 }
