@@ -14,9 +14,10 @@ import { toast, ToastContainer } from "react-toastify";
 import StudentModal from "./StdentModal";
 import type { Major } from "../../../types/major";
 import { getMajors } from "../../../services/majorService";
-import { FaCloudUploadAlt } from "react-icons/fa";
+import { FaCloudUploadAlt, FaDownload } from "react-icons/fa";
 import ImportStudentModal from "./ImportStudentModal";
-import { Trophy } from "lucide-react";
+import { Loading } from "../../../components/ui/Loading/Loading";
+import ExportStudentsModal from "./ExportStudentModal";
 
 
 
@@ -35,6 +36,11 @@ const StudentManagement = () => {
     const [majors, setMajors] = useState<Major[]>();
     const [statusModal, setStatusModal] = useState<"create" | "update">("update");
     const [importModal, setImportModal] = useState<boolean>(false);
+    const [importLoading, setImportLoading] = useState<boolean>(false);
+    const [exportStudent, setExportStudent] = useState<boolean>(false);
+    const [createLoading, setCreateLoading] = useState(false);
+    const [updateLoading, setUpdateLoading] = useState(false);
+
 
     const fetchStudents = async (key: string, page: number, filter: string) => {
         try {
@@ -119,7 +125,6 @@ const StudentManagement = () => {
             const disposition = response.headers['content-disposition'];
             const match = disposition && disposition.match(/filename="?(.+)"?/);
             const filename = match ? match[1] : 'export.xlsx';
-
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
@@ -128,10 +133,7 @@ const StudentManagement = () => {
             link.click();
             link.remove();
             window.URL.revokeObjectURL(url);
-            Swal.fire({
-                title: "Xuất file danh sách sinh viên thành công",
-                icon: 'success'
-            })
+            toast.success('Xuất danh sách sinh viên thành công!');
         } catch (error) {
             toast.warning('Lỗi khi xuất danh sách sinh viên');
         }
@@ -151,6 +153,7 @@ const StudentManagement = () => {
     const handleSubmit = async (student: any) => {
         if (statusModal === "update") {
             try {
+                setUpdateLoading(true);
                 const response = await updateStudent(student);
                 if (response.status === HttpStatus.SUCCESS) {
                     Swal.fire({
@@ -168,21 +171,30 @@ const StudentManagement = () => {
                         .map((msg: string) => `<p>${msg}</p>`)
                         .join('');
                     Swal.fire({
-                        title: "Cập nhật thông tin thất bại",
+                        title: "Cập nhật thông tin sinh viên thất bại",
                         html: html,
                         icon: "error",
                     })
                 }
+
+                if (error.response.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+                    Swal.fire({
+                        title: "Hệ thống có mỗi chút lỗi, vui lòng thử lại sau!",
+                        icon: "error",
+                    })
+                }
+            } finally {
+                setUpdateLoading(false);
             }
         }
 
         if (statusModal === "create") {
             try {
-                console.log(student);
+                setCreateLoading(true);
                 const response = await createStudent(student);
                 if (response.status === HttpStatus.SUCCESS) {
                     Swal.fire({
-                        title: "Cập nhật thông tin thành công!",
+                        title: "Thêm thông tin sinh viên thành công!",
                         icon: "success",
                     })
                     fetchStudents(keyWordDebounce, page, filterStatus);
@@ -190,23 +202,33 @@ const StudentManagement = () => {
             } catch (error: any) {
                 if (error.response.status === HttpStatus.BAD_REQUEST) {
                     const messageValidate: any[] = error.response.data.message_validate;
-                    console.log(messageValidate);
+
                     const html = Object.values(messageValidate)
                         .flat() // lấy tất cả lỗi con trong từng trường
                         .map((msg: string) => `<p>${msg}</p>`)
                         .join('');
                     Swal.fire({
-                        title: "Cập nhật thông tin thất bại",
+                        title: "Thêm thông tin thất bại",
                         html: html,
                         icon: "error",
                     })
                 }
+
+                if (error.response.status === HttpStatus.INTERNAL_SERVER_ERROR) {
+                    Swal.fire({
+                        title: "Hệ thống có mỗi chút lỗi, vui lòng thử lại sau!",
+                        icon: "error",
+                    })
+                }
+            } finally {
+                setCreateLoading(false);
             }
         }
     }
 
     const handleUpload = async (file: File) => {
         try {
+            setImportLoading(true);
             const formData = new FormData();
             formData.append('file', file);
 
@@ -216,13 +238,29 @@ const StudentManagement = () => {
                     title: 'Thêm sinh viên với excel thành công!',
                     icon: 'success',
                 });
+                fetchStudents('', 1, '');
             }
         } catch (error: any) {
-
+            if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+                const errors = error.response.data.errors;
+                const html = errors.map((err: any) => `<li> ${err}</li>`).join('');
+                Swal.fire({
+                    title: 'Import sinh viên thất bại!',
+                    icon: 'error',
+                    text: error.response.data.errors,
+                    html: `<ul> ${html}</ul>`
+                })
+            }
+        } finally {
+            setImportModal(false);
+            setImportLoading(false);
         }
     }
     return (
         <>
+            {updateLoading ? <Loading title="Đang cập nhật sinh viên" /> : <> </>}
+            {createLoading ? <Loading title="Đang thêm sinh viên" /> : <> </>}
+            {importLoading ? <Loading title="Đang import sinh viên" /> : <> </>}
             <ToastContainer />
             <PageHeader title="Quản lí sinh viên" subtitle="Hệ thống quản lí sinh viên" />
             <div className="gm-grade-section">
@@ -231,7 +269,6 @@ const StudentManagement = () => {
                     <div className="gm-selected-class-info">
                         <div className="gm-class-details">
                             <h3>Danh Sách Sinh Viên</h3>
-                            <p> sinh viên</p>
                         </div>
                     </div>
 
@@ -246,11 +283,8 @@ const StudentManagement = () => {
                             <FaCloudUploadAlt />
                             Import
                         </button>
-
-                        <button className="btn-export">
-                            <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
+                        <button className="btn-export" onClick={() => setExportStudent(true)}>
+                            <FaDownload />
                             Export
                         </button>
                     </div>
@@ -381,7 +415,7 @@ const StudentManagement = () => {
             </div>
 
             {<StudentModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={(data) => { handleSubmit(data); setModalOpen(false) }} initialData={selectedStudent} majors={majors} />}
-
+            <ExportStudentsModal isOpen={exportStudent} isClose={() => setExportStudent(false)} onExport={(status) => { handleExportExcel(status) }} />
             <ImportStudentModal isOpen={importModal} onClose={() => setImportModal(false)} onImport={handleUpload} />
         </>
     )

@@ -27,13 +27,16 @@ enum StudentStatus: string
 
     public static function getDesciption(self|string $status): string
     {
+        if (is_string($status)) {
+            $status = self::tryFrom($status); // convert string về enum
+        }
         return match ($status) {
             self::Active => 'Đang học',
             self::DroppedOut => 'Thôi học',
             self::Suspended => 'Bị đình chỉ',
             self::Pending => 'Chờ duyệt',
             self::Graduated => 'Đã tốt nghiệp',
-            self::Deferment => 'Bảo lưu'
+            self::Deferment => 'Bảo lưu',
         };
     }
 }

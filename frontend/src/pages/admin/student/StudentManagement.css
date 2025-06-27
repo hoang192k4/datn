@@ -393,7 +393,6 @@
 
 .search-icon {
     position: absolute;
-    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: #6c757d;
@@ -727,4 +726,124 @@
 .import-modal__btn.cancel {
     background-color: #f0f0f0;
     color: #333;
+}
+
+
+/* export*/
+.export-button {
+    padding: 10px 18px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.export-button:hover {
+    background-color: #0056b3;
+}
+
+/* Overlay nền mờ */
+.modal__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+/* Hộp modal chính */
+.modal__container {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    width: 400px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Tiêu đề */
+.modal__title {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+/* Nhóm label + select */
+.modal__field {
+    margin-bottom: 20px;
+}
+
+.modal__label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #555;
+}
+
+.modal__select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: border 0.3s;
+}
+
+.modal__select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Nút hành động */
+.modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal__button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.modal__button--export {
+    background-color: #28a745;
+    color: white;
+}
+
+.modal__button--export:hover {
+    background-color: #218838;
+}
+
+.modal__button--cancel {
+    background-color: #dc3545;
+    color: white;
+}
+
+.modal__button--cancel:hover {
+    background-color: #c82333;
+}
+
+/* Hiệu ứng nhẹ khi xuất hiện modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }

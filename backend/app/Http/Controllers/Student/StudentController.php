@@ -92,7 +92,8 @@ class StudentController extends BaseController
         try {
             $data = $request->validated();
             $status = $data['status'] ?? null;
-            return Excel::download(new StudentsExport($this->studentRepository, $status), 'danh-sach-sinh-vien.xlsx');
+            $fileName = $this->studentService->getFileExportName($status);
+            return Excel::download(new StudentsExport($this->studentRepository, $status), $fileName);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

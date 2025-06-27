@@ -69,23 +69,26 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
                 $emailChanged = $email !== $student['email'];
                 if ($emailChanged && isset($existingEmails[$email]) && $existingEmails[$email] !== $student['id']) {
                     // Email đã dùng bởi người khác
-                    $conflicts[] = [
-                        'row' => $index + 1,
-                        'mssv' => $studentCode,
-                        'email' => $email,
-                        'message' => 'Email đã được dùng bởi sinh viên khác.'
-                    ];
+                    $conflicts[] =  "Dòng " . ($index + 1) . " với mssv $studentCode có email $email đã được dùng bởi sinh viên khác";
+                    //  [
+                    //         'row' => $index + 1,
+                    //         'mssv' => $studentCode,
+                    //         'email' => $email,
+                    //         'message' => 'Email đã được dùng bởi sinh viên khác.'
+                    //     ];
+
                     continue;
                 }
             } else {
                 // Nếu là thêm mới nhưng email đã được dùng
                 if (isset($existingEmails[$email])) {
-                    $conflicts[] = [
-                        'row' => $index + 1,
-                        'mssv' => $studentCode,
-                        'email' => $email,
-                        'message' => 'Email đã tồn tại. Không thể thêm sinh viên mới.'
-                    ];
+                    $conflicts[] = $conflicts[] =  "Dòng " . ($index + 1) . " với mssv $studentCode có email $email đã được dùng bởi sinh viên khác";
+                    // [
+                    //     'row' => $index + 1,
+                    //     'mssv' => $studentCode,
+                    //     'email' => $email,
+                    //     'message' => 'Email đã tồn tại. Không thể thêm sinh viên mới.'
+                    // ];
                     continue;
                 }
             }
@@ -108,7 +111,7 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
         $this->studentRepository->upsert($students, ['student_code']);
 
         if (count($conflicts)) {
-            throw ValidationException::withMessages(['import' => $conflicts]);
+            throw ValidationException::withMessages($conflicts);
         }
     }
 

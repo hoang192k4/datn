@@ -56,4 +56,13 @@ class StudentService implements StudentServiceInterface
         $this->studentRepository->findOrFailById($id);
         return $this->studentRepository->update($id, $data);
     }
+
+    public function getFileExportName($status)
+    {
+        if ($status) {
+            $statusName = generate_slug(StudentStatus::getDesciption($status), '_');
+            return 'danh_sach_sinh_vien_' . $statusName . '.xlsx';
+        }
+        return 'danh_sach_sinh_vien.xlsx';
+    }
 }

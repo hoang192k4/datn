@@ -102,9 +102,16 @@ const ImportStudentModal: React.FC<Props> = ({ isOpen, onClose, onImport }) => {
                     <strong>Lưu ý về template Excel:</strong>
                     <ul>
                         <li>Cột A: STT (số thứ tự)</li>
-                        <li>Cột B: Họ tên sinh viên</li>
-                        <li>Cột C: MSSV (mã sinh viên)</li>
-                        <li>Các cột tiếp theo: dữ liệu mở rộng</li>
+                        <li>Cột B: MSSV (mã sinh viên)</li>
+                        <li>Cột C: Họ Tên</li>
+                        <li>Cột D: Email</li>
+                        <li>Cột E: Ngày sinh (cần đúng định dạng chuỗi Y-m-d)</li>
+                        <li>Cột F: Giới tính (Nam, Nữ)</li>
+                        <li>Cột G: Địa chỉ</li>
+                        <li>Cột H: Thời gian nhập học (cần đúng định dạng chuỗi Y-m-d)</li>
+                        <li>Cột I: Thời gian tốt nghiệp (cần đúng định dạng chuỗi Y-m-d)</li>
+                        <li>Cột J: Ngành học</li>
+                        <li>Cột K: Trạng thái (Đang học, Đã tốt nghiệp, Bị đình chỉ, Thôi học, Bảo lưu)</li>
                         <li>File phải có định dạng <b>.xlsx</b> hoặc <b>.xls</b></li>
                     </ul>
                 </div>
