@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\Schedule\ScheduleRequest;
 use App\Services\Schedule\ScheduleServiceInterface;
 use Exception;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class ScheduleController extends BaseController
@@ -25,9 +26,11 @@ class ScheduleController extends BaseController
             if (!$isCreated)
                 return $this->jsonResponseError();
             return $this->jsonResponseSuccess();
+        } catch (ValidationException $e) {
+            return $this->jsonResponseErrorValidate('Thực hiện không thành công', 422, $e->errors());
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
-            return $this->jsonResponseError('Lỗi hệ thống', 400);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
 }

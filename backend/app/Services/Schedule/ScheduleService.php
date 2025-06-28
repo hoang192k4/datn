@@ -2,6 +2,7 @@
 
 namespace App\Services\Schedule;
 
+use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
 use App\Repositories\Schedule\ScheduleRepositoryInterface;
 use App\Repositories\Session\SessionRepositoryInterface;
 use App\Supports\Log;
@@ -9,6 +10,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class ScheduleService implements ScheduleServiceInterface
@@ -16,39 +18,45 @@ class ScheduleService implements ScheduleServiceInterface
     use Log;
     protected $scheduleRepository;
     protected $sessionRepository;
+    protected $courseSectionRepository;
     public function __construct(
         ScheduleRepositoryInterface $scheduleRepository,
-        SessionRepositoryInterface $sessionRepository
+        SessionRepositoryInterface $sessionRepository,
+        CourseSectionRepositoryInterface $courseSectionRepository,
     ) {
         $this->scheduleRepository = $scheduleRepository;
         $this->sessionRepository = $sessionRepository;
+        $this->courseSectionRepository = $courseSectionRepository;
     }
 
     public function create(Request $request)
     {
         DB::beginTransaction();
-        try {
-            $data = $request->validated();
-            $periodNumber = $data['period_number'];
-            $periodStart = $data['period_start'];
-            $periodEnd = $periodStart + $periodNumber - 1;
-
-            $schedule = $this->scheduleRepository->create([...$data, 'period_end' => $periodEnd]);
-
-            $sessions = $this->generateSessionsFromSchedule($schedule);
-            $isSessionsCreated = $this->sessionRepository->inserts($sessions);
-
-            if (!$isSessionsCreated) {
-                DB::rollBack();
-                return false;
-            }
-            DB::commit();
-            return true;
-        } catch (Throwable $e) {
-            $this->logError($e->getMessage(), $e);
-            DB::rollBack();
-            throw new Exception($e);
+        $data = $request->validated();
+        $periodNumber = $data['period_number'];
+        $periodStart = $data['period_start'];
+        $periodEnd = $periodStart + $periodNumber - 1;
+        $courseSectionId = $data['course_section_id'];
+        $courseSection = $this->courseSectionRepository->find($courseSectionId);
+        if ($this->checkScheduleConflict([...$data, 'start_date' => $courseSection->start_date, 'end_date' => $courseSection->end_date, 'period_end' => $periodEnd])) {
+            throw ValidationException::withMessages(['period_start' => 'Phòng học đã bị trùng lịch với lớp khác trong khung giờ này']);
         }
+
+        if ($this->checkCourseSectionClassroomConflict([...$data, 'period_end' => $periodEnd])) {
+            throw ValidationException::withMessages(['period_start' => 'Lớp học phần đã có lịch học vào thời gian này (có thể ở phòng khác)']);
+        }
+
+        $schedule = $this->scheduleRepository->create([...$data, 'period_end' => $periodEnd]);
+
+        $sessions = $this->generateSessionsFromSchedule($schedule);
+        $isSessionsCreated = $this->sessionRepository->inserts($sessions);
+
+        if (!$isSessionsCreated) {
+            DB::rollBack();
+            return false;
+        }
+        DB::commit();
+        return true;
     }
 
     protected function getWeekDayDatesFromStart(string $startDate, int $targetWeekday, int $weeks)
@@ -95,5 +103,45 @@ class ScheduleService implements ScheduleServiceInterface
         }
 
         return $sessions;
+    }
+
+
+    public function checkScheduleConflict(array $data): bool
+    {
+        $periodStart = $data['period_start'];
+        $periodEnd = $data['period_end'];
+        $startDate = $data['start_date'];
+        $endDate = $data['end_date'];
+
+        $isConflict = $this->scheduleRepository->hasConflict(
+            dayOfWeek: $data['day_of_week'],
+            periodStart: $periodStart,
+            periodEnd: $periodEnd,
+            classroomId: $data['classroom_id'],
+            startDate: $startDate,
+            endDate: $endDate,
+            excludeScheduleId: $data['id'] ?? null // nếu là update thì truyền id vào
+        );
+        if ($isConflict) {
+            return true;
+        }
+        return false;
+    }
+
+    public function checkCourseSectionClassroomConflict(array $data)
+    {
+        $periodStart = $data['period_start'];
+        $periodEnd = $data['period_end'];
+        $isConflict = $this->scheduleRepository->hasCourseSectionConflict(
+            courseSectionId: $data['course_section_id'],
+            dayOfWeek: $data['day_of_week'],
+            periodStart: $periodStart,
+            periodEnd: $periodEnd,
+            excludeScheduleId: $data['id'] ?? null // nếu là update thì truyền id vào
+        );
+        if ($isConflict) {
+            return true;
+        }
+        return false;
     }
 }
