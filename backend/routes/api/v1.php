@@ -187,4 +187,5 @@ Route::controller(App\Http\Controllers\Schedule\ScheduleController::class)
     ->prefix('schedules')
     ->group(function () {
         Route::post('/', 'create'); //api thêm lịch học
+        Route::put('/{id}', 'update'); //api đổi lịch học
     });

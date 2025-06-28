@@ -22,6 +22,18 @@ class ScheduleRequest extends BaseRequest
         ];
     }
 
+    public function methodPut()
+    {
+        return [
+            'course_section_id' => ['nullable', 'exists:course_sections,id'],
+            'day_of_week' => ['nullable', new Enum(DayOfWeek::class)],
+            'session' => ['nullable', new Enum(SessionStatus::class)],
+            'period_start' => ['nullable', 'between:1,12', 'integer'],
+            'period_number' => ['nullable', 'integer', 'min:1', 'max:12'],
+            'classroom_id' => ['nullable', 'exists:classrooms,id']
+        ];
+    }
+
     public function withValidator(Validator $validator)
     {
         $validator->after(function () use ($validator) {

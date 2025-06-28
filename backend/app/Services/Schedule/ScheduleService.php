@@ -59,6 +59,84 @@ class ScheduleService implements ScheduleServiceInterface
         return true;
     }
 
+
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $data = $request->validated();
+
+            $schedule = $this->scheduleRepository->findOrFailById($id);
+
+            $originalDayOfWeek = $schedule->day_of_week;
+            $originalPeriodStart = $schedule->period_start;
+            $originalPeriodEnd = $schedule->period_end;
+            $originalCourseSectionId = $schedule->course_section_id;
+
+            $schedule->day_of_week = $data['day_of_week'] ?? $schedule->day_of_week;
+            $schedule->period_start = $data['period_start'] ?? $schedule->period_start;
+            $schedule->period_number = $data['period_number'] ?? $schedule->period_number;
+            $schedule->period_end =  $schedule->period_start + $schedule->period_number - 1;
+            $schedule->course_section_id = $data['course_section_id'] ?? $schedule->course_section_id;
+            $schedule->classroom_id = $data['classroom_id'] ?? $schedule->classroom_id;
+            $schedule->session = $data['session'] ?? $schedule->session;
+            $schedule->save();
+
+            $isSessionRelatedChanged =
+                $originalDayOfWeek !== $schedule->day_of_week ||
+                $originalPeriodStart !== $schedule->period_start ||
+                $originalPeriodEnd !== $schedule->period_end ||
+                $originalCourseSectionId !== $schedule->course_section_id;
+
+            if ($isSessionRelatedChanged) {
+                if ($this->checkScheduleConflict([
+                    'period_start' => $schedule->period_start,
+                    'period_end' => $schedule->period_end,
+                    'start_date' => $schedule->course_section->start_date,
+                    'end_date' => $schedule->course_section->end_date,
+                    'day_of_week' => $schedule->day_of_week->value,
+                    'classroom_id' => $schedule->classroom_id,
+                    'id' => $schedule->id
+                ])) {
+                    DB::rollBack();
+                    throw ValidationException::withMessages(['period_start' => 'Phòng học đã bị trùng lịch với lớp khác trong khung giờ này']);
+                }
+
+                if ($this->checkCourseSectionClassroomConflict([
+                    'period_start' => $schedule->period_start,
+                    'period_end' => $schedule->period_end,
+                    'course_section_id' => $schedule->course_section_id,
+                    'day_of_week' => $schedule->day_of_week->value,
+                    'id' => $schedule->id,
+                ])) {
+                    DB::rollBack();
+                    throw ValidationException::withMessages(['period_start' => 'Lớp học phần đã có lịch học vào thời gian này (có thể ở phòng khác)']);
+                }
+
+                // Cập nhật lại danh sách phiên học tương ứng với lịch
+                $this->updateSessions($schedule);
+            }
+            DB::commit();
+            return true;
+        } catch (Throwable $e) {
+            $this->logError($e->getMessage(), $e);
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    protected function updateSessions($schedule)
+    {
+        $schedule->sessions()->delete();
+        $sessions = $this->generateSessionsFromSchedule($schedule);
+        $isSessionsCreated = $this->sessionRepository->inserts($sessions);
+
+        if (!$isSessionsCreated)
+            return false;
+        return true;
+    }
+
+
     protected function getWeekDayDatesFromStart(string $startDate, int $targetWeekday, int $weeks)
     {
         $start = Carbon::parse($startDate);
