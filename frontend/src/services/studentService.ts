@@ -1,4 +1,3 @@
-import axios from "axios";
 import axiosTeacherInstance from "../config/axiosTeacher"
 import type { StudentForm } from "../types/student";
 

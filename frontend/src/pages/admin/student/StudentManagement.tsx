@@ -113,7 +113,7 @@ const StudentManagement = () => {
         return pages;
     };
 
-    const statusOptions = Object.entries(StudentStatus).map(([key, value]) => ({
+    const statusOptions = Object.entries(StudentStatus).map(([_key, value]) => ({
         label: statusMap[value],
         value: value
     }));
@@ -273,7 +273,7 @@ const StudentManagement = () => {
                     </div>
 
                     <div className="gm-grade-actions">
-                        <button className="btn-primary" onClick={handleCreateStudent}>Thêm sinh viên</button>
+                        <button className="btn-primary-student" onClick={handleCreateStudent}>Thêm sinh viên</button>
                     </div>
                 </div>
                 <div className="gm-grade-controls">

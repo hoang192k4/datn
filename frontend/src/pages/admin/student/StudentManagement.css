@@ -1,4 +1,4 @@
-.btn-primary {
+.btn-primary-student {
     margin: 0 auto;
     background-color: #4a5ba6;
     color: white;
@@ -12,12 +12,12 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.btn-primary:hover {
+.btn-primary-student:hover {
     background-color: #3d4a91;
     box-shadow: 0 2px 4px rgba(74, 91, 166, 0.3);
 }
 
-.btn-primary:active {
+.btn-primary-student:active {
     background-color: #323f7a;
     transform: translateY(1px);
 }

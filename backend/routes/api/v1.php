@@ -181,3 +181,10 @@ Route::controller(App\Http\Controllers\Major\MajorController::class)
     ->group(function () {
         Route::get('/', 'index'); //api lấy danh sách ngành học
     });
+
+
+Route::controller(App\Http\Controllers\Schedule\ScheduleController::class)
+    ->prefix('schedules')
+    ->group(function () {
+        Route::post('/', 'create'); //api thêm lịch học
+    });
