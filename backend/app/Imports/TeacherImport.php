@@ -40,8 +40,8 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
         $role = [
             'GVBM' => Role::SUBJECT_TEACHER,
             'GVCN' => Role::HOMEROOM_TEACHER,
-            'CAPKHOA' => Role::FACULTY_ADMIN,
-            'CAPBOMON' => Role::DEPARTMENT_ADMIN
+            'QTKHOA' => Role::FACULTY_ADMIN,
+            'QTBOMON' => Role::DEPARTMENT_ADMIN
         ];
         $teachers = [];
 
@@ -88,7 +88,7 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             '*.email'       => 'required|email',
             '*.ngay_sinh'   => 'required',
             '*.dia_chi'     => 'required|string',
-            '*.vai_tro'     => 'required|string|in:GVBM,GVCN,CAPKHOA,CAPBOMON',
+            '*.vai_tro'     => 'required|string|in:GVBM,GVCN,QTKHOA,QTBOMON',
             '*.gioi_tinh'   => 'required|string|in:Nam,Nữ',
         ];
     }

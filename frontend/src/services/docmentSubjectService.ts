@@ -3,7 +3,7 @@ import type { ChapterInstance, Lecture } from "../types/documentSubject";
 
 
 export const getSubjetsByTeacher = async () => {
-    return await axiosTeacherInstance.get('/subjects');
+    return await axiosTeacherInstance.get('/me/subjects');
 }
 
 
@@ -31,13 +31,13 @@ export const createChapter = async (subjectId: number, title: string, position: 
 }
 
 
-export const deleteChapter = async (chapterId:number) => {
+export const deleteChapter = async (chapterId: number) => {
     return await axiosTeacherInstance.delete(`/chapters/${chapterId}`);
 }
 
 
-export const updateChapter = async (subjectId:number, chapterId:number, data: Partial<ChapterInstance>) => {
-    return await axiosTeacherInstance.put(`/chapters/${chapterId}`,{
+export const updateChapter = async (subjectId: number, chapterId: number, data: Partial<ChapterInstance>) => {
+    return await axiosTeacherInstance.put(`/chapters/${chapterId}`, {
         ...data,
         subject_id: subjectId
     })
@@ -59,5 +59,15 @@ export const updateLecture = async (id: number, chapterId: number, data: Partial
         ...data,
         chapter_id: chapterId
     });
+}
+
+export const getListSubjects = async (keyword: string | null = null, page: number | null = null) => {
+    const response = await axiosTeacherInstance.get('/subjects', {
+        params: {
+            key: keyword,
+            page
+        }
+    });
+    return response.data;
 }
 

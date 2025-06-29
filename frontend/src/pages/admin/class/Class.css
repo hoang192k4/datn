@@ -1,4 +1,4 @@
-.class-container {
+.box-container {
     border-radius: 10px;
     min-height: 600px;
     padding: 10px 30px;
@@ -12,8 +12,12 @@
     margin-bottom: 8px;
     flex-wrap: wrap;
 }
+.class-scroll {
+    max-height: 800px;
+    overflow: auto;
+}
 
-.list-course-section> div >select {
+.select-filter {
     background-color: white;
     color: #1e3a8a;
     padding: 8px 4px;
@@ -25,7 +29,7 @@
     outline: none;
     padding-right: 30px;
 }
-.list-course-section> div >select>option:first-child{
+.select-filter>option:first-child{
     text-align: center;
 }
 
@@ -136,7 +140,6 @@
 }
 
 .class-student-main {
-    min-height: 200px;
     overflow: auto;
     max-height: 900px;
     margin-top: 10px;

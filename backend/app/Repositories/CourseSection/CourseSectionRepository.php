@@ -11,4 +11,5 @@ class CourseSectionRepository extends EloquentRepository implements CourseSectio
     {
         return CourseSection::class;
     }
+
 }

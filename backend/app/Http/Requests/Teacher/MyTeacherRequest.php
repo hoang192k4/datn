@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Teacher;
 
 use App\Http\Requests\BaseRequest;
+use App\Enums\Teacher\TeacherStatus;
+use Illuminate\Validation\Rules\Enum;
 
 class MyTeacherRequest extends  BaseRequest
 {
@@ -11,7 +13,9 @@ class MyTeacherRequest extends  BaseRequest
         return [
             'limit' => 'integer|nullable',
             'page' => 'integer|nullable',
-            'key' => 'string|nullable'
+            'key' => 'string|nullable',
+            'status' => [new Enum(TeacherStatus::class), 'nullable'],
+            'role' => 'exists:roles,name|nullable'
         ];
     }
 }

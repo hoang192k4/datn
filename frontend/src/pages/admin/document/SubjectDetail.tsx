@@ -40,7 +40,7 @@ const SubjectDetail = () => {
             setDataDocument(documentDetail.data);
         } catch (errors: any) {
             if(errors.status === HttpStatus.FORBIDDEN)
-                navigate('/khong-tim-thay-duong-dan');
+                navigate('/403');
         } finally { setLoadingGetDocumentDetail(false) }
     }
     const getListSubject = async () => {
@@ -59,7 +59,7 @@ const SubjectDetail = () => {
         setFilteredSubjects(result);
     };
 
-    const debouncedFilter = useMemo(() => debounce(filterSubjects, 400), [listSubject]);
+    const debouncedFilter = useMemo(() => debounce(filterSubjects, 400), []);
 
     useEffect(() => {
         debouncedFilter(query);

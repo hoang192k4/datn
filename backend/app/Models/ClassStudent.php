@@ -12,7 +12,7 @@ class ClassStudent extends Model
     //
     use HasFactory;
 
-    protected $table = 'classes';
+    protected $table = 'class_student';
     protected function casts():array
     {
         return [
