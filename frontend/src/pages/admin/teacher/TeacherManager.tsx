@@ -187,7 +187,7 @@ const TeacherManager = () => {
             {loadingTeacher && <Loadding />}
             <PageHeader title="Quản lý giảng viên" subtitle="Hệ thống quản lý giảng viên" />
             <div className="box-container">
-                <div className="teacher-header">
+                <div className="box-header">
                     <h2>Danh sách giảng viên</h2>
                     <div className="teacher_header_btn">
                         <button className="btn-attendance" onClick={() => setShowPopupImport(true)}>Nhập DS Giảng Viên</button>
@@ -195,7 +195,7 @@ const TeacherManager = () => {
                         <button className="btn-attendance" type="button" onClick={handleShowPopup}>Thêm Mới Giảng Viên</button>
                     </div>
                 </div>
-                <div className="teacher-header">
+                <div className="box-header">
                     <div className="class-search-student">
                         <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={(e) => { handleSearch(e.target.value, selectedStatus, selectedRole); setKeyword(e.target.value) }} />
                         <FaSearch />
@@ -260,8 +260,8 @@ const TeacherManager = () => {
                                         </span>
                                     </td>
                                     <td>
-                                        <button className={`btn-teacher  ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`} onClick={() => handleToggeStatus(teacher.id)}>{teacher.status === StatusActiveInactive.Active ? <FaLockOpen /> : <FaLock />}</button>
-                                        <button className="btn-teacher edit-teacher" onClick={() => handleFetchDataTeacher(teacher.id)}><FaEdit /></button>
+                                        <button className={`btn-admin  ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`} onClick={() => handleToggeStatus(teacher.id)}>{teacher.status === StatusActiveInactive.Active ? <FaLockOpen /> : <FaLock />}</button>
+                                        <button className="btn-admin edit-btn-dmin" onClick={() => handleFetchDataTeacher(teacher.id)}><FaEdit /></button>
                                     </td>
                                 </tr>
                             )) :
@@ -271,7 +271,7 @@ const TeacherManager = () => {
                             }
                         </tbody>
                     </table>
-                    <div className="teacher-pagination">
+                    <div className="pagination-container-admin">
                         <div className="pagination-controls">
                             <button className="page-btn" onClick={() => meta?.previous_page != null && fetchTeacherList(keyword, meta.previous_page, selectedStatus, selectedRole)} disabled={!meta?.previous_page}>
                                 Trang trước
@@ -286,8 +286,8 @@ const TeacherManager = () => {
             </div>
             {/* form create update teacher */}
             {actionTeacher &&
-                <div className="teacher-modal-overlay" onClick={() => setActionTeacher('')}>
-                    <div className="teacher-modal-box" onClick={(e) => e.stopPropagation()}>
+                <div className="form-modal-overlay" onClick={() => setActionTeacher('')}>
+                    <div className="form-modal-box" onClick={(e) => e.stopPropagation()}>
                         <h3>{actionTeacher === 'update' ? 'Cập nhật' : 'Thêm mới'} giảng viên</h3>
                         <form>
                             <label>
@@ -307,7 +307,7 @@ const TeacherManager = () => {
                                 {errors.email && <p className="error-message">{errors.email.message}</p>}
                             </label>
                             {actionTeacher == 'create' &&
-                                <div className="form-teacher">
+                                <div className="form-flex">
                                     <label>
                                         Mã GV:
                                         <input type="text" {...register("teacher_code", { required: "Vui lòng nhập mã giảng viên" })} />
@@ -320,7 +320,7 @@ const TeacherManager = () => {
                                     </label>
                                 </div>
                             }
-                            <div className="form-teacher">
+                            <div className="form-flex">
                                 <label>
                                     Ngày sinh:
                                     <input type="date" {...register("date_of_birth", { required: "Vui lòng chọn ngày sinh" })} />
@@ -339,7 +339,7 @@ const TeacherManager = () => {
                                 <input type="text" {...register("address", { required: "Vui lòng nhập địa chỉ" })} />
                                 {errors.address && <p className="error-message">{errors.address.message}</p>}
                             </label>
-                            <div className={actionTeacher === 'update' ? 'form-teacher' : ''}>
+                            <div className={actionTeacher === 'update' ? 'form-flex' : ''}>
                                 {actionTeacher === 'update' &&
                                     <label>
                                         Mã GV:
@@ -356,7 +356,7 @@ const TeacherManager = () => {
                                 </label>
                             </div>
                             {actionTeacher === 'update' &&
-                                <div className="form-teacher">
+                                <div className="form-flex">
                                     <label>
                                         Mật khẩu cũ:
                                         <input type="text" {...register("password_current")} />
@@ -379,7 +379,7 @@ const TeacherManager = () => {
                             }
 
 
-                            <div className="teacher-modal-actions">
+                            <div className="form-modal-actions">
                                 <button type="button" className="btn-save" onClick={handleSubmit(actionTeacher === 'update' ? handleUpdateTeacher : handleCreateTeacher)}>
                                     {actionTeacher === 'create' ? 'Thêm mới giảng viên' : 'Cập nhật'}
                                 </button>

@@ -11,4 +11,10 @@ class SummaryGradeRepository extends EloquentRepository implements SummaryGradeR
     {
         return SummaryGrade::class;
     }
+
+    public function findByStudentSubject($studentId, $subjectId)
+    {
+        return $this->model->where('student_id', $studentId)
+            ->where('subject_id', $subjectId)->orderByDesc('attempt')->first();
+    }
 }

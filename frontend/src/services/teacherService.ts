@@ -7,7 +7,8 @@ export const getListRole = async () => {
     return response.data;
 }
 
-export const getListTeacher = async (key: string, page: number | null = null, status: StatusActiveInactive | null, role: string | null) => {
+export const getListTeacher = async (key: string | null = null, page: number | null = null,
+    status: StatusActiveInactive | null = null, role: string | null = null) => {
     const response = await axiosTeacherInstance.get('/teachers', {
         params: {
             key,

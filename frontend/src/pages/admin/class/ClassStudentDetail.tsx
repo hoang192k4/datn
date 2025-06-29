@@ -113,7 +113,7 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent, setShowP
                             </div>
                             {showBtnAddStudent &&
                                 <div className="course-section-popup-info-item">
-                                    <button className="btn-attendance" onClick={() => handleAddStudentByCourseSection(student?.id)}>Thêm mới sinh viên</button>
+                                    <button className="btn-attendance" onClick={() => handleAddStudentByCourseSection(student?.id)}>Thêm sinh viên</button>
                                 </div>
                             }
                         </div>

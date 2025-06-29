@@ -16,7 +16,7 @@ class CourseSection extends Model
 
     protected $table = 'course_sections';
 
-    protected $fillable = ['id', 'name', 'start_date', 'end_date', 'week_total', 'class_id', 'classroom_id', 'teacher_id', 'subject_id', 'semester_id'];
+    protected $fillable = ['id', 'name', 'start_date', 'end_date', 'week_total', 'class_id', 'classroom_id', 'teacher_id', 'subject_id', 'semester_id','status'];
 
     protected function casts(): array
     {
@@ -32,7 +32,7 @@ class CourseSection extends Model
 
     public function class(): BelongsTo
     {
-        return $this->belongsTo(ClassStudent::class, 'class_id');
+        return $this->belongsTo(CustomClass::class, 'class_id');
     }
 
     public function classroom(): BelongsTo

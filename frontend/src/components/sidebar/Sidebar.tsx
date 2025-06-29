@@ -74,10 +74,16 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             ],
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
-          {
+        {
             icon: "📁",
             url: "giang-vien",
             label: "Quản lý giảng viên",
+            roles: ["faculty_admin", "department_admin"],
+        },
+        {
+            icon: "📁",
+            url: "lop-hoc-phan",
+            label: "Quản lý lớp học phần",
             roles: ["faculty_admin", "department_admin"],
         },
     ];

@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Resources\CourseSection;
+namespace App\Http\Resources\Subject;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class CourseSectionResourceCollection extends ResourceCollection
+class SubjectResourceCollection extends ResourceCollection
 {
     public function toArray(Request $request)
     {
         return [
-            'course_sections' => $this->collection->map(function ($item) {
-                return new CourseSectionResource($item);
+            'subjects' => $this->collection->map(function ($item) {
+                return new SubjectItemResource($item);
             }),
             'links' => [
                 'first' => $this->url(1),

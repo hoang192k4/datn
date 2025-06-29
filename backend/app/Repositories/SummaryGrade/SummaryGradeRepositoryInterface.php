@@ -6,5 +6,5 @@ use App\Repositories\EloquentRepositoryInterface;
 
 interface SummaryGradeRepositoryInterface extends EloquentRepositoryInterface
 {
-
+    public function findByStudentSubject($studentId, $subjectId);
 }

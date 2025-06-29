@@ -1,4 +1,4 @@
-.teacher-header {
+.box-header {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -72,7 +72,7 @@
     min-width: 150px;
 }
 
-.btn-teacher {
+.btn-admin {
     background-color: #28a745;
     color: white;
     padding: 10px 20px;
@@ -83,12 +83,12 @@
     transition: all 0.3s linear;
 }
 
-.btn-teacher:hover {
+.btn-admin:hover {
     filter: brightness(1.1);
     transform: scale(1.03);
 }
 
-.edit-teacher {
+.edit-btn-dmin {
     margin-left: 10px;
     background-color: #1e3a8a;
 }
@@ -158,14 +158,14 @@
     transform: scale(1.03);
 }
 
-.teacher-pagination {
+.pagination-container-admin {
     display: flex;
     justify-content: center;
     margin-bottom: 4px;
 }
 
 /* form update create */
-.teacher-modal-overlay {
+.form-modal-overlay {
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.4);
@@ -175,7 +175,7 @@
     z-index: 1000;
 }
 
-.teacher-modal-box {
+.form-modal-box {
     background: #fff;
     padding: 24px;
     border-radius: 8px;
@@ -186,20 +186,20 @@
     animation: fadeIn 0.2s ease-in-out;
 }
 
-.teacher-modal-box h3 {
+.form-modal-box h3 {
     margin-top: 0;
     margin-bottom: 10px;
     color: #1e3a8a;
 }
 
-.teacher-modal-box label {
+.form-modal-box label {
     display: block;
     margin-bottom: 12px;
     font-size: 14px;
 }
 
-.teacher-modal-box input,
-.teacher-modal-box select {
+.form-modal-box input,
+.form-modal-box select {
     width: 100%;
     padding: 10px 8px;
     margin-top: 4px;
@@ -209,15 +209,15 @@
     outline: none;
 }
 
-.teacher-modal-box input:focus {
+.form-modal-box input:focus {
     border: 2px solid #2684ff;
 }
 
-.teacher-modal-box select:focus {
+.form-modal-box select:focus {
     border: 2px solid #2684ff;
 }
 
-.teacher-modal-actions {
+.form-modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
@@ -254,13 +254,13 @@
     }
 }
 
-.form-teacher {
+.form-flex {
     display: flex;
     justify-content: space-between;
     gap: 10px;
 }
 
-.form-teacher>label {
+.form-flex>label {
     width: calc(50% - 10px);
 }
 

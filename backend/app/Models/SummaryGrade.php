@@ -6,6 +6,7 @@ use App\Enums\PublicStatus;
 use App\Enums\Evaluation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SummaryGrade extends Model
 {
@@ -19,5 +20,10 @@ class SummaryGrade extends Model
             'avaluation' => Evaluation::class,
             'status' => PublicStatus::class,
         ];
+    }
+
+    public function course_section(): BelongsTo
+    {
+        return $this->belongsTo(CourseSection::class);
     }
 }
