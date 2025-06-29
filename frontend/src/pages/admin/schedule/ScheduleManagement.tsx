@@ -7,6 +7,7 @@ import { HttpStatus } from '../../../enums/HttpStatus';
 import type { Paginate } from '../../../types/paginate';
 import debounce from 'lodash.debounce';
 import { Loading } from '../../../components/ui/Loading';
+import ScheduleModal from './ScheduleModal';
 
 
 
@@ -14,8 +15,6 @@ const ScheduleManagement: React.FC = () => {
 
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [inputSearch, setInputSearch] = useState<string>("");
-    const [showAddForm, setShowAddForm] = useState<boolean>(false);
-    const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [filterDay, setFilterDay] = useState<string>("");
     const [filterSession, setFilterSession] = useState<string>("");
@@ -23,6 +22,7 @@ const ScheduleManagement: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [filterSemester, setFilterSemester] = useState<string>("");
     const [loading, setLoading] = useState(false);
+    const [scheduleModal, setScheduleModal] = useState(false);
 
     const sessionMap = {
         morning: "Sáng",
@@ -75,10 +75,11 @@ const ScheduleManagement: React.FC = () => {
     useEffect(() => {
         fetchSchedules(searchTerm, filterSession, filterDay, page, filterSemester);
     }, [page, filterDay, filterSession, searchTerm, filterSemester]);
+
+
     return (
         <>
             <PageHeader title="📅 Quản lý thời khóa biểu" subtitle="Quản lý lịch học của các lớp trong trường" />
-
             <div className="schedule-container">
                 <div className="schedule-wrapper">
                     {/* Header */}
@@ -88,6 +89,7 @@ const ScheduleManagement: React.FC = () => {
                         </div>
                         <button
                             className="add-button"
+                            onClick={() => setScheduleModal(true)}
                         >
                             ➕ Thêm lịch học
                         </button>
@@ -230,7 +232,7 @@ const ScheduleManagement: React.FC = () => {
                         )}
                     </div>
 
-                    {/* Statistics */}
+                    {/* Statistics
                     <div className="stats-grid">
                         <div className="stat-card">
                             <div className="stat-icon">📅</div>
@@ -269,9 +271,10 @@ const ScheduleManagement: React.FC = () => {
                                 </p>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
+            <ScheduleModal isOpen={scheduleModal} onClose={() => setScheduleModal(false)} onSubmit={() => { }} />
         </>
     );
 };

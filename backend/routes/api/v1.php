@@ -190,3 +190,9 @@ Route::controller(App\Http\Controllers\Schedule\ScheduleController::class)
         Route::post('/', 'create'); //api thêm lịch học
         Route::put('/{id}', 'update'); //api đổi lịch học
     });
+
+Route::controller(App\Http\Controllers\Classroom\ClassroomController::class)
+    ->prefix('classrooms')
+    ->group(function () {
+        Route::get('/', 'index');
+    });
