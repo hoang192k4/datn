@@ -8,8 +8,11 @@ use Illuminate\Validation\Rules\Enum;
 
 class StudentImportRequest extends BaseRequest
 {
+
+
     public function methodPost()
     {
+
         return [
             'file' => ['required', 'file', 'mimes:xlsx,xls'],
         ];

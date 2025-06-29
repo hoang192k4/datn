@@ -16,7 +16,6 @@ import EditNotificationModal from './EditNotificationModal';
 
 import Swal from 'sweetalert2';
 import EditStudentNotificationModal from './EditStudentNotificationModal';
-import { NotificationType } from '../../../enums/NotificationType';
 
 interface NotificationCourseSection {
     id: number;
@@ -97,7 +96,6 @@ const Notification: React.FC = () => {
                 setStudentNotifications(notifications);
                 setStudentNotifyPaginate(paginate);
             }
-
 
         } catch (error: any) {
 

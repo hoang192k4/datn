@@ -2,6 +2,7 @@ import type { Gender } from "../enums/Gender"
 import { StudentStatus } from "../enums/StudentStatus"
 
 export interface StudentForm {
+    id: number;
     name: string,
     student_code: string,
     email: string,
@@ -9,7 +10,8 @@ export interface StudentForm {
     address: string,
     gender: Gender,
     major: string,
-    status: StudentStatus
+    status: StudentStatus,
+    major_id: number,
 }
 
 
@@ -26,5 +28,6 @@ export interface StudentList {
     enrollment_date: string,
     graduation_date: string | null,
     major: string,
+    major_id: number,
     status: StudentStatus
 }

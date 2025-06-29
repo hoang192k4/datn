@@ -207,3 +207,10 @@ Route::controller(App\Http\Controllers\Class\ClassController::class)
     ->group(function () {
         Route::get('/', 'getListClasses'); //api lấy danh sách lớp chủ quản có keywrod kèm paginate
     });
+
+
+Route::controller(App\Http\Controllers\Major\MajorController::class)
+    ->prefix('majors')
+    ->group(function () {
+        Route::get('/', 'index'); //api lấy danh sách ngành học
+    });
