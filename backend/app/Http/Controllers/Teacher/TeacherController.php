@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Exports\TeacherExport;
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Teacher\MyTeacherRequest;
+use App\Http\Requests\Teacher\TeacherExportRequest;
 use App\Http\Requests\Teacher\TeacherImportRequest;
 use App\Http\Requests\Teacher\TeacherRequest;
 use App\Http\Resources\Teacher\TeacherResourceCollection;
@@ -84,9 +85,20 @@ class TeacherController extends BaseController
         try {
             $request->validated();
             Excel::import(new TeacherImport($this->repository), $request->file('file'));
-            return $this->jsonResponseSuccessNoData();
+            return $this->jsonResponseSuccessNoData('Import danh sách giảng viên thành công!');
         } catch (ValidationException $e) {
-            return $this->jsonResponseErrorValidate('Thêm không thành công', 422, $e->failures());
+            return $this->jsonResponseErrorValidate('Import không thành công!', 422, $e->failures());
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function getTeacherListByStatus(TeacherExportRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            return Excel::download(new TeacherExport($data), 'danh_sach_giang_vien.xlsx');
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

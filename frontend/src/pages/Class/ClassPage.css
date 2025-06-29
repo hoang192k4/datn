@@ -44,7 +44,7 @@
     }
 
     .student-table-container th, td {
-      padding: 1rem;
+      padding: 10px;
       text-align: left;
       border-bottom: 1px solid #ddd;
     }

@@ -95,6 +95,16 @@ Route::prefix('me')->group(function () {
         ->group(function () {
             Route::get('/students/notifications', 'getNotificationSendStudentByTeacher');
         });
+
+    Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::class)
+        ->group(function () {
+            Route::get('/course-sections', 'getCourseSectionByTeacher'); //api lấy dánh sách lớp học phần theo teacher đăng nhập
+        });
+
+    Route::controller(App\Http\Controllers\Subject\SubjectController::class)
+        ->group(function () {
+            Route::get('/subjects', 'getSubjectByTeacherId'); //api lấy danh sách môn học theo giảng viên
+        });
 });
 
 Route::controller(App\Http\Controllers\Post\PostController::class)
@@ -114,10 +124,13 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
 Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::class)
     ->prefix('course-sections')
     ->group(function () {
-        Route::get('/', 'getCourseSectionByTeacher'); //api lấy dánh sách lớp học phần theo teacher đăng nhập
         Route::get('/{courseSectionId}/students', 'getStudentsByCourseSection'); //api lấy danh sách sinh viên của lớp
-        Route::delete('/detach-student', 'detachStudentByCourseSection');
-        Route::post('/attach-student', 'attachStudentByCourseSection');
+        Route::delete('/detach-student', 'detachStudentByCourseSection'); //api xóa sinh viên khỏi lớp
+        Route::post('/attach-student', 'attachStudentByCourseSection'); //api thêm sinh viên vào lớp
+        Route::post('/', 'create'); //api thêm mới lớp học phần
+        Route::put('/{id}', 'update'); //api cập nhật lớp học phần
+        Route::patch('/{id}', 'updateStatus'); //api cập nhật trạng thái lớp học phần
+        Route::get('/', 'getCourseSectionByFilter'); //api lấy danh sách lọc theo status, key , học kì, năm
     });
 
 Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)
@@ -130,9 +143,9 @@ Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)
 Route::controller(App\Http\Controllers\Subject\SubjectController::class)
     ->prefix('subjects')
     ->group(function () {
-        Route::get('/', 'getSubjectByTeacherId'); //api lấy danh sách môn học theo giảng viên
         Route::get('/detail-subject', 'getDetailDocumentBySubjectId'); //api lấy thông tin chi tiết của môn học
         Route::get('/search-subject', 'getListSubjectSearch'); //api lấy danh sách môn học theo giảng viên
+        Route::get('/', 'getListSubjects'); //api lấy danh sách môn học
     });
 
 
@@ -172,7 +185,27 @@ Route::controller(App\Http\Controllers\Teacher\TeacherController::class)
         Route::put('/{teacher}', 'update'); //api sửa thông tin giảng viên
         Route::patch('/{teacher}', 'updateStatus'); // api cập nhật trạng thái giảng viên
         Route::get('/', 'getAllTeachers'); //api lấy danh sách và tìm kiếm giảng viên
-        Route::post('/import', 'importTeachersExcel');
+        Route::post('/import', 'importTeachersExcel'); // api import file excel
+        Route::get('/export', 'getTeacherListByStatus'); // api export file excel
+    });
+
+Route::controller(App\Http\Controllers\Role\RoleController::class)
+    ->prefix('roles')
+    ->group(function () {
+        Route::get('/', 'getRoles'); //api lấy danh sách vai trò
+    });
+
+Route::controller(App\Http\Controllers\Semester\SemesterController::class)
+    ->prefix('semesters')
+    ->group(function () {
+        Route::get('/', 'getSemesters'); //api lấy danh sách học kì có keyword kèm paginate
+    });
+
+
+Route::controller(App\Http\Controllers\Class\ClassController::class)
+    ->prefix('classes')
+    ->group(function () {
+        Route::get('/', 'getListClasses'); //api lấy danh sách lớp chủ quản có keywrod kèm paginate
     });
 
 

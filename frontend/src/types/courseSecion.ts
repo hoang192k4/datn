@@ -2,18 +2,22 @@ import type { CourseSectionStatus } from "../enums/CourseSectionStatus"
 
 
 export interface CourseSection {
-    class: string,
-    classroom: string,
-    created_at: string,
-    end_start: string | null
     id: number,
     name: string,
-    semester: string,
     start_date: string,
+    end_date: string,
+    class: string,
+    class_id?: number,
+    teacher: string,
+    teacher_id?: number,
+    subject: string,
+    subject_id?: number,
+    semester: string,
+    semester_id: number,
+    week_total: number,
     status: CourseSectionStatus,
     students_total: number,
-    subject: string,
-    week_total: number
+    created_at: string,
 }
 
 export interface CourseSectionSchedule {

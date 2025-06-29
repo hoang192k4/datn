@@ -5,12 +5,16 @@ namespace App\Http\Controllers\CourseSection;
 use App\Enums\Student\StudentStatus;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CourseSection\CourseRequest;
+use App\Http\Requests\CourseSection\CourseSectionFilterRequest;
+use App\Http\Requests\CourseSection\CourseSectionRequest;
 use App\Http\Requests\CourseSection\CourseSectionStudentRequest;
 use App\Http\Resources\CourseSection\CourseSectionResourceCollection;
 use App\Http\Resources\Student\StudentResource;
+use App\Models\CourseSection;
 use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
 use App\Services\CourseSection\CourseSectionServiceInterface;
 use Exception;
+use Illuminate\Validation\ValidationException;
 
 class CourseSectionController extends BaseController
 {
@@ -27,7 +31,6 @@ class CourseSectionController extends BaseController
     {
         try {
             $courseSections = $this->service->getCourseSectionByTeacher($request);
-
             return $this->jsonResponseSuccess(new CourseSectionResourceCollection($courseSections));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
@@ -69,6 +72,60 @@ class CourseSectionController extends BaseController
             if (!$result)
                 return $this->jsonResponseError();
             return $this->jsonResponseSuccessNoData('Thêm sinh viên vào lớp học phần thành công!');
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function create(CourseSectionRequest $request)
+    {
+        try {
+            $result = $this->service->create($request);
+            if (!$result)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccessNoData();
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function update(CourseSectionRequest $request, $courseSectionId)
+    {
+        try {
+            $result = $this->service->update($request, $courseSectionId);
+            if (!$result)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccessNoData();
+        } catch (ValidationException $e) {
+            return $this->jsonResponseErrorValidate("Thực hiện không thành công", 400, $e->errors());
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function updateStatus(CourseSectionRequest $request, $courseSectionId)
+    {
+        try {
+            $result = $this->service->updateStatus($request, $courseSectionId);
+            if (!$result)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccessNoData();
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function getCourseSectionByFilter(CourseSectionFilterRequest $request)
+    {
+        try {
+            $courseSections = $this->service->getCourseSectionByFilter($request);
+            if (!$courseSections)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccess(new CourseSectionResourceCollection($courseSections));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

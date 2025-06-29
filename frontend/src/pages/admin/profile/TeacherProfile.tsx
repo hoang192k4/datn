@@ -49,7 +49,7 @@ const TeacherProfile = () => {
     }
     return (
         <>
-            {loadingUpdate &&  <Loadding/>}
+            {loadingUpdate && <Loadding />}
             <form className="card-profile" onSubmit={validate(handleSubmit)}>
                 <div className="profile">
                     <div className="avatar-text">{getInitials(teacher.name)}</div>
@@ -80,7 +80,14 @@ const TeacherProfile = () => {
 
                     <div className="detail-profile-item">
                         <label>Email</label>
-                        <input type="email" id="email" {...register("email", { required: "Vui lòng nhập email" })} />
+                        <input type="email" id="email"
+                            {...register("email", {
+                                required: "Vui lòng nhập email",
+                                pattern: {
+                                    value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                                    message: "Email không hợp lệ"
+                                }
+                            })} />
                         {errors.email && <p className="error-message">{errors.email.message}</p>}
                     </div>
 

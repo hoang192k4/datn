@@ -2,73 +2,209 @@
 
 namespace App\Services\CourseSection;
 
+use App\Enums\ClassStudent\ClassStudentStatus;
 use Exception;
 use App\Supports\Log;
 use Illuminate\Http\Request;
 use App\Traits\AuthTeacherApi;
 use App\Enums\CourseSection\CourseSectionStatus;
+use App\Models\ClassStudent;
+use App\Models\CourseSection;
+use App\Models\SummaryGrade;
 use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
-
+use App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class CourseSectionService implements CourseSectionServiceInterface
 {
     use Log;
     protected $courseSectionRepository;
+    protected $summaryGradeRepository;
     use AuthTeacherApi;
     public function __construct(
-        CourseSectionRepositoryInterface $courseSectionRepository
+        CourseSectionRepositoryInterface $courseSectionRepository,
+        SummaryGradeRepositoryInterface $summaryGradeRepository
     ) {
         $this->courseSectionRepository = $courseSectionRepository;
+        $this->summaryGradeRepository = $summaryGradeRepository;
     }
 
     public function getCourseSectionByTeacher(Request $request)
     {
-        try {
-            $currentTeacherId = $this->getCurrentTeacherId();
-
-            $data = $request->validated();
-            $limit = $data['limit'] ?? 10;
-            $page = $data['page'] ?? 1;
-            $key = $request->validated()['key'] ?? null;
-
-            return  $this->courseSectionRepository->getList(['teacher_id' => $currentTeacherId, 'status' => CourseSectionStatus::InProgress, 'name' => ['like', $key]], ['name' => 'asc', 'created_at' => 'desc'], [], $limit, $page);
-        } catch (Exception $e) {
-            $this->logError($e->getMessage(), $e);
-            return false;
-        }
+        $currentTeacherId = $this->getCurrentTeacherId();
+        $data = $request->validated();
+        $limit = $data['limit'] ?? 10;
+        $page = $data['page'] ?? 1;
+        $key = $request->validated()['key'] ?? null;
+        return  $this->courseSectionRepository->getList(
+            ['teacher_id' => $currentTeacherId, 'status' => CourseSectionStatus::InProgress, 'name' => ['like', $key]],
+            ['name' => 'asc', 'created_at' => 'desc'],
+            [],
+            $limit,
+            $page
+        );
     }
 
     public function detachStudentByCourseSection(Request $request)
     {
+        $data = $request->validated();
+        $courseSectionId = $data['course_section_id'];
+        $studentId = $data['student_id'];
+        $courseSection = $this->courseSectionRepository->find($courseSectionId);
+        $result = $courseSection->students()->detach([$studentId]);
+        if (!$result)
+            return false;
+        return true;
+    }
+
+    public function attachStudentByCourseSection(Request $request)
+    {
+        $data = $request->validated();
+        $courseSectionId = $data['course_section_id'];
+        $studentId = $data['student_id'];
+        $courseSection = $this->courseSectionRepository->find($courseSectionId);
+        $result = $courseSection->students()->syncWithoutDetaching([$studentId]);
+        if (!$result)
+            return false;
+        return true;
+    }
+
+    public function handleClassSummaryGrade($classId, $subjectId, $courseSection,)
+    {
+        $query = ClassStudent::query();
+        $studentIds =  $query->where('class_id', $classId)->where('status', ClassStudentStatus::Studying)->pluck('student_id');
+        $courseSection->students()->syncWithoutDetaching($studentIds);
+        $data = [];
+        foreach ($studentIds as $studentId) {
+            $latestSummary =  $this->summaryGradeRepository->findByStudentSubject($studentId, $subjectId);
+
+            if ($latestSummary) {
+                $data[] = [
+                    'student_id' => $studentId,
+                    'subject_id' => $subjectId,
+                    'attempt' => $latestSummary->attempt + 1,
+                    'course_section_id' => $courseSection->id
+                ];
+            } else {
+                $data[] = [
+                    'student_id' => $studentId,
+                    'subject_id' => $subjectId,
+                    'attempt' => 1,
+                    'course_section_id' => $courseSection->id
+                ];
+            }
+        }
+        $this->summaryGradeRepository->inserts($data);
+    }
+
+    public function create(Request $request)
+    {
+        $data = $request->validated();
+        $classId = $data['class_id'] ?? null;
+        $subjectId = $data['subject_id'];
+        $courseSection = $this->courseSectionRepository->create($data);
+        if (!$courseSection)
+            return false;
+        if ($classId)
+            $this->handleClassSummaryGrade($classId, $subjectId, $courseSection);
+        return true;
+    }
+
+    public function update(Request $request, $courseSectionId)
+    {
+        DB::beginTransaction();
         try {
             $data = $request->validated();
-            $courseSectionId = $data['course_section_id'];
-            $studentId = $data['student_id'];
+            $classId = $data['class_id'] ?? null;
             $courseSection = $this->courseSectionRepository->find($courseSectionId);
-            $result = $courseSection->students()->detach([$studentId]);
-            if (!$result)
+            $subjectId = $data['subject_id'] ??  $courseSection->subject_id;
+            if ($courseSection->status !== CourseSectionStatus::InRegister) {
+                throw ValidationException::withMessages(["Lớp học đã diễn ra không thể cập nhật"]);
+            }
+            if ($classId && $classId !== $courseSection->class_id) {
+                $originClassId = $courseSection->class_id;
+
+                $query = ClassStudent::query();
+
+                $studentIds =  $query->where('class_id', $originClassId)
+                    ->where('status', ClassStudentStatus::Studying)->pluck('student_id')->all();
+
+                $courseSection->students()->detach($studentIds);
+                $courseSection->summary_grades()->delete();
+                $this->handleClassSummaryGrade($classId, $subjectId, $courseSection);
+            }
+            if ($subjectId !== $courseSection->subject_id) {
+
+                $summaryGrades = $courseSection->summary_grades;
+                foreach ($summaryGrades as $summaryGrade) {
+                    $studentId = $summaryGrade->student_id;
+
+                    $maxAttempt = $this->summaryGradeRepository->findByStudentSubject($studentId, $subjectId);
+
+                    $newAttempt = $maxAttempt ? $maxAttempt->attempt + 1 : 1;
+                    $summaryGrade->update([
+                        'subject_id' => $subjectId,
+                        'attempt' => $newAttempt,
+                    ]);
+                }
+            }
+            $result = $this->courseSectionRepository->update($courseSectionId, $data);
+            if (!$result) {
+                Db::rollBack();
                 return false;
+            }
+            Db::commit();
             return true;
         } catch (Exception $e) {
+            DB::rollBack();
             $this->logError($e->getMessage(), $e);
             return false;
         }
     }
 
-    public function attachStudentByCourseSection(Request $request)
+    public function updateStatus(Request $request, $courseSectionId)
     {
-        try {
-            $data = $request->validated();
-            $courseSectionId = $data['course_section_id'];
-            $studentId = $data['student_id'];
-            $courseSection = $this->courseSectionRepository->find($courseSectionId);
-            $result = $courseSection->students()->syncWithoutDetaching([$studentId]);
-            if (!$result)
-                return false;
-            return true;
-        } catch (Exception $e) {
-            $this->logError($e->getMessage(), $e);
+        $data = $request->validated();
+        $result = $this->courseSectionRepository->update($courseSectionId, $data);
+        if (!$result)
             return false;
-        }
+        return true;
+    }
+
+    public function getCourseSectionByFilter(Request $request)
+    {
+        $data = $request->validated();
+        $limit = $data['limit'] ?? 10;
+        $page = $data['page'] ?? 1;
+        $key = $data['keyword'] ?? null;
+        $status = $data['status'] ?? null;
+        $semester_id = $data['semester_id'] ?? null;
+        $year = $data['year'] ?? null;
+
+        $query = CourseSection::query();
+
+        if ($status)
+            $query->where('status', $status);
+        if ($semester_id)
+            $query->where('semester_id', $semester_id);
+        if ($year)
+            $query->whereYear('start_date', $year);
+        if ($key)
+            $query->where(function ($q) use ($key) {
+                $q->where('name', 'like', '%' . $key . '%')
+                    ->orWhereHas('subject', function ($q) use ($key) {
+                        $q->where('name', 'like', '%' . $key . '%');
+                    })
+                    ->orWhereHas('teacher', function ($q) use ($key) {
+                        $q->where('name', 'like', '%' . $key . '%');
+                    });
+            });
+
+        $courseSections = $query->orderBy('created_at', 'desc')
+            ->paginate($limit, ['*'], 'page', $page)
+            ->appends(['limit' => $limit]);
+
+        return $courseSections;
     }
 }
