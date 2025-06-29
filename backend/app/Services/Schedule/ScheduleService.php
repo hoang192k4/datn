@@ -222,4 +222,18 @@ class ScheduleService implements ScheduleServiceInterface
         }
         return false;
     }
+
+
+    public function getSchedules(Request $request)
+    {
+        $data = $request->validated();
+        $key = $data['key'] ?? null;
+        $dayOfWeek = $data['day_of_week'] ?? null;
+        $session = $data['session'] ?? null;
+        $page = $data['page'] ?? 1;
+        $limit = $data['limit'] ?? 10;
+        $semester = $data['semester'] ?? null;
+
+        return $this->scheduleRepository->getSchedules($key, $session, $dayOfWeek, $page, $limit, $semester);
+    }
 }

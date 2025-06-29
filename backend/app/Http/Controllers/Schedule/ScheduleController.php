@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Schedule;
 use App\Exceptions\ModelNotFoundByIdException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Schedule\ScheduleRequest;
+use App\Http\Resources\Schedule\ScheduleResource;
+use App\Http\Resources\Schedule\ScheduleResourceCollection;
+use App\Repositories\Schedule\ScheduleRepositoryInterface;
 use App\Services\Schedule\ScheduleServiceInterface;
 use Exception;
 use Illuminate\Validation\ValidationException;
@@ -13,10 +16,13 @@ use Throwable;
 class ScheduleController extends BaseController
 {
     protected $scheduleService;
+    protected $scheduleRepository;
     public function __construct(
-        ScheduleServiceInterface $scheduleService
+        ScheduleServiceInterface $scheduleService,
+        ScheduleRepositoryInterface $scheduleRepository,
     ) {
         $this->scheduleService = $scheduleService;
+        $this->scheduleRepository = $scheduleRepository;
         $this->middleware('auth:teacher');
         $this->middleware('role:faculty_admin,department_admin');
     }
@@ -49,6 +55,17 @@ class ScheduleController extends BaseController
             return $this->jsonResponseErrorValidate('Thực hiện không thành công', 422, $e->errors());
         } catch (Exception $e) {
 
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function index(ScheduleRequest $request)
+    {
+        try {
+            $schedules = $this->scheduleService->getSchedules($request);
+            return $this->jsonResponseSuccess(new ScheduleResourceCollection($schedules));
+        } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }

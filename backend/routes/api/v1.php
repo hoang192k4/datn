@@ -186,6 +186,7 @@ Route::controller(App\Http\Controllers\Major\MajorController::class)
 Route::controller(App\Http\Controllers\Schedule\ScheduleController::class)
     ->prefix('schedules')
     ->group(function () {
+        Route::get('/', 'index'); //api danh sách tkb
         Route::post('/', 'create'); //api thêm lịch học
         Route::put('/{id}', 'update'); //api đổi lịch học
     });

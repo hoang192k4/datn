@@ -9,6 +9,7 @@ import Grade from "../pages/admin/grade/GradeManagement";
 import Notification from "../pages/admin/notification/Notification";
 import FacultyStudentNotification from "../pages/admin/notification/faculty_student/FacultyStudentNotification";
 import StudentManagement from "../pages/admin/student/StudentManagement";
+import ScheduleManagement from "../pages/admin/schedule/ScheduleManagement";
 
 export const TeacherRoute = [
     {
@@ -73,4 +74,10 @@ export const TeacherRoute = [
         'element': <StudentManagement />,
         roles: ["faculty_admin"],
     },
+    {
+        'path': 'thoi-khoa-bieu',
+        'element': <ScheduleManagement />,
+        roles: ["faculty_admin"],
+    },
+
 ];

@@ -51,4 +51,33 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
             })
             ->exists();
     }
+
+
+    public function getSchedules(?string $key = null, $session = null, ?int $dayOfWeek = null, $page, $limit, ?int $semester = null)
+    {
+        return  $this->model->with(['course_section.subject', 'course_section.teacher', 'classroom'])
+            ->when($key, function ($query, $key) {
+                $query->where(function ($q) use ($key) {
+                    $q->whereHas('course_section', function ($q) use ($key) {
+                        $q->where('name', 'like', "%$key%")
+                            ->orWhereHas('subject', fn($q) => $q->where('name', 'like', "%$key%"))
+                            ->orWhereHas('teacher', fn($q) => $q->where('name', 'like', "%$key%"));
+                    })->orWhereHas('classroom', fn($q) => $q->where('name', 'like', "%$key%"));
+                });
+            })
+            ->when($session, function ($query, $session) {
+                $query->where('session', $session);
+            })
+            ->when($dayOfWeek, function ($query, $dayOfWeek) {
+                $query->where('day_of_week', $dayOfWeek);
+            })
+            ->when($semester, function ($query, $semester) {
+                $query->whereHas('course_section', function ($subQuery) use ($semester) {
+                    $subQuery->where('semester_id', $semester);
+                });
+            })
+            ->orderBy('day_of_week')
+            ->orderBy('period_start')
+            ->paginate($limit, ['*'], 'page', $page);
+    }
 }

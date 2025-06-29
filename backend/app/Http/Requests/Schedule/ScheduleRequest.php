@@ -10,6 +10,18 @@ use Illuminate\Validation\Validator;
 
 class ScheduleRequest extends BaseRequest
 {
+    public function methodGet()
+    {
+        return [
+            'key' => ['nullable', 'string'],
+            'day_of_week' => ['nullable', new Enum(DayOfWeek::class)],
+            'session' => ['nullable', new Enum(SessionStatus::class)],
+            'page' => ['nullable', 'numeric', 'min:1'],
+            'limit' => ['nullable', 'numeric', 'min:1'],
+            'semester' => ['nullable', 'exists:semesters,id']
+        ];
+    }
+
     public function methodPost()
     {
         return [
@@ -33,6 +45,7 @@ class ScheduleRequest extends BaseRequest
             'classroom_id' => ['nullable', 'exists:classrooms,id']
         ];
     }
+
 
     public function withValidator(Validator $validator)
     {
