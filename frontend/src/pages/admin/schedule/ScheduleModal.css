@@ -89,3 +89,6 @@
 .schedule-btn-cancel:hover {
     background-color: #4b5563;
 }
+.schedule-error{
+    color: red;
+}

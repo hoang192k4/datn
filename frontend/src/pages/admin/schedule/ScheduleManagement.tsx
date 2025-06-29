@@ -2,14 +2,24 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './ScheduleManagement.css'
 import PageHeader from '../../../components/ui/PageHeader';
 import type { Schedule } from '../../../types/schedule';
-import { getSchedules } from '../../../services/scheduleService';
+import { createSchedule, getSchedules } from '../../../services/scheduleService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import type { Paginate } from '../../../types/paginate';
 import debounce from 'lodash.debounce';
 import { Loading } from '../../../components/ui/Loading';
 import ScheduleModal from './ScheduleModal';
+import Swal from 'sweetalert2';
+import SelectWithPaginationClassroom from '../../../components/ui/SelectWithPaginationClassroom';
+import { Loading as CreateLoading } from '../../../components/ui/loading/Loading'
+import { FileDiff } from 'lucide-react';
 
-
+type ScheduleFormData = {
+    course_section: { value: number | null, label: string | null };
+    day_of_week: string;
+    period_start: number | null;
+    period_number: number | null;
+    classroom: { value: number | null, label: string | null };
+};
 
 const ScheduleManagement: React.FC = () => {
 
@@ -23,6 +33,8 @@ const ScheduleManagement: React.FC = () => {
     const [filterSemester, setFilterSemester] = useState<string>("");
     const [loading, setLoading] = useState(false);
     const [scheduleModal, setScheduleModal] = useState(false);
+    const [filterClassroom, setFilterClassroom] = useState<{ value: number | null, label: string | null }>({ value: null, label: null });
+    const [loadingCreate, setLoadingCreate] = useState(false);
 
     const sessionMap = {
         morning: "Sáng",
@@ -44,10 +56,10 @@ const ScheduleManagement: React.FC = () => {
         { value: 6, label: "Học kỳ 6" },
     ]
 
-    const fetchSchedules = async (key: any, session: any, daysOfWeek: any, page: any, semester: any) => {
+    const fetchSchedules = async (key: any, session: any, daysOfWeek: any, page: any, semester: any, classroomId: any) => {
         try {
             setLoading(true);
-            const response = await getSchedules(key, session, daysOfWeek, page, semester);
+            const response = await getSchedules(key, session, daysOfWeek, page, semester, classroomId);
             if (response.status === HttpStatus.SUCCESS) {
                 const schedules = response.data.schedules;
                 const paginate = response.data.meta;
@@ -62,6 +74,22 @@ const ScheduleManagement: React.FC = () => {
         }
     }
 
+    const fetchScheduleNoLoading = async (key: any, session: any, daysOfWeek: any, page: any, semester: any, classroomId: any) => {
+        try {
+            const response = await getSchedules(key, session, daysOfWeek, page, semester, classroomId);
+            if (response.status === HttpStatus.SUCCESS) {
+                const schedules = response.data.schedules;
+                const paginate = response.data.meta;
+                setSchedules(schedules);
+                setPaginate(paginate);
+            }
+
+        } catch (error) {
+
+        } finally {
+        }
+    }
+
     const handleSearch = useMemo(() => debounce((value: string) => {
         setSearchTerm(value);
     }, 500), []);
@@ -73,12 +101,56 @@ const ScheduleManagement: React.FC = () => {
     }, [handleSearch]);
 
     useEffect(() => {
-        fetchSchedules(searchTerm, filterSession, filterDay, page, filterSemester);
-    }, [page, filterDay, filterSession, searchTerm, filterSemester]);
+        fetchSchedules(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom?.value);
+    }, [page, filterDay, filterSession, searchTerm, filterSemester, filterClassroom]);
 
+
+    console.log(filterClassroom);
+    const handleSubmit = async (data: ScheduleFormData) => {
+        try {
+            setLoadingCreate(true);
+            const response = await createSchedule(data);
+            if (response.status === HttpStatus.SUCCESS) {
+
+                Swal.fire({
+                    title: 'Thêm lịch mới thành công!',
+                    icon: "success"
+                })
+
+                fetchScheduleNoLoading(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom.value);
+            }
+        } catch (error: any) {
+            console.log(error);
+            if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+                const errors = error.response.data.errors.period_start;
+                console.log(errors);
+                const lis = errors.map((e: any) => `<li>${e}</li>`).join('');
+                Swal.fire({
+                    title: 'Thêm lịch không thành công!',
+                    icon: "error",
+                    html: `<ul> ${lis}</ul>`
+                })
+            }
+
+            if (error.response.status === HttpStatus.BAD_REQUEST) {
+                const errors = error.response.data.message_validate;
+                console.log(errors);
+                const allMessages = Object.values(errors).flat();
+                const lis = allMessages.map((message) => `<li> ${message}</li>`).join('');
+                Swal.fire({
+                    title: 'Thêm lịch không thành công!',
+                    icon: "error",
+                    html: `<ul> ${lis}</ul>`
+                })
+            }
+        } finally {
+            setLoadingCreate(false);
+        }
+    }
 
     return (
         <>
+            {loadingCreate ? <CreateLoading title="Đang thêm lịch mới" /> : <> </>}
             <PageHeader title="📅 Quản lý thời khóa biểu" subtitle="Quản lý lịch học của các lớp trong trường" />
             <div className="schedule-container">
                 <div className="schedule-wrapper">
@@ -118,6 +190,8 @@ const ScheduleManagement: React.FC = () => {
                                     <option key={index} value={semester.value}>{semester.label}</option>
                                 ))}
                             </select>
+
+                            <SelectWithPaginationClassroom value={filterClassroom} onChange={(selected) => setFilterClassroom(selected)} />
                             <select
                                 value={filterDay}
                                 onChange={(e) => { setFilterDay(e.target.value); setPage(1) }}
@@ -274,7 +348,7 @@ const ScheduleManagement: React.FC = () => {
                     </div> */}
                 </div>
             </div>
-            <ScheduleModal isOpen={scheduleModal} onClose={() => setScheduleModal(false)} onSubmit={() => { }} />
+            <ScheduleModal isOpen={scheduleModal} onClose={() => setScheduleModal(false)} onSubmit={handleSubmit} />
         </>
     );
 };

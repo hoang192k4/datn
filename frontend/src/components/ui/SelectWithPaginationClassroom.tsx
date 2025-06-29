@@ -44,6 +44,7 @@ const SelectWithPaginationClassroom = ({
 
     return (
         <AsyncPaginate
+            isClearable
             value={value}
             loadOptions={loadOptions}
             onChange={onChange}

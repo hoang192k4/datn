@@ -1,16 +1,15 @@
 import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import './ScheduleModal.css';
-import { Container } from 'lucide-react';
 import SelectWithPaginationClassroom from '../../../components/ui/SelectWithPaginationClassroom';
+import SelectWithPaginationCourseSection from '../../../components/ui/SelectWithPaginationCourseSection';
 
 type ScheduleFormData = {
-    course_section_id: string;
+    course_section: { value: number | null, label: string | null };
     day_of_week: string;
-    session: string;
-    period_start: string;
-    period_number: string;
-    classroom: string;
+    period_start: number | null;
+    period_number: number | null;
+    classroom: { value: number | null, label: string | null };
 };
 
 type Props = {
@@ -29,12 +28,11 @@ const ScheduleModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, defaultValu
         formState: { errors }
     } = useForm<ScheduleFormData>({
         defaultValues: {
-            course_section_id: '',
-            day_of_week: '2',
-            session: 'morning',
-            period_start: '1',
-            period_number: '3',
-            classroom: '',
+
+            day_of_week: '1',
+            period_start: null,
+            period_number: null,
+
         }
     });
 
@@ -60,8 +58,46 @@ const ScheduleModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, defaultValu
                 <form onSubmit={handleSubmit(submitHandler)}>
                     <div className="schedule-form-group">
                         <label>Lớp học phần</label>
-                        <input {...register("course_section_id", { required: true })} />
-                        {errors.course_section_id && <small>Không được bỏ trống</small>}
+                        <Controller
+                            name="course_section"
+                            rules={{ required: 'Vui lòng chọn lớp học phần' }}
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <>
+                                    <SelectWithPaginationCourseSection
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                    />
+                                    {fieldState.error && (
+                                        <small className="schedule-error">{fieldState.error.message}</small>
+
+                                    )}
+                                </>
+                            )}
+                        />
+
+                    </div>
+                    <div className="schedule-form-group">
+                        <label>Phòng học</label>
+                        <Controller
+                            name="classroom"
+                            control={control}
+                            rules={{ required: 'Vui lòng chọn phòng học' }}
+                            render={({ field, fieldState }) => (
+                                <>
+                                    <SelectWithPaginationClassroom
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                    />
+                                    {fieldState.error && (
+                                        <small className="schedule-error">{fieldState.error.message}</small>
+
+                                    )}
+                                </>
+
+                            )}
+                        />
+
                     </div>
 
                     <div className="schedule-form-group">
@@ -77,38 +113,26 @@ const ScheduleModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, defaultValu
                         </select>
                     </div>
 
-                    <div className="schedule-form-group">
+                    {/* <div className="schedule-form-group">
                         <label>Buổi</label>
                         <select {...register("session", { required: true })}>
                             <option value="morning">Sáng</option>
                             <option value="afternoon">Chiều</option>
                         </select>
-                    </div>
+                    </div> */}
 
                     <div className="schedule-form-group">
                         <label>Tiết bắt đầu</label>
                         <input type="number" {...register("period_start", { required: true })} />
+                        {errors.period_start && <small className="schedule-error"> * Vui lòng nhập tiết bắt đầu</small>}
                     </div>
 
                     <div className="schedule-form-group">
                         <label>Số tiết</label>
                         <input type="number" {...register("period_number", { required: true })} />
+                        {errors.period_number && <small className="schedule-error"> * Vui lòng nhập số tiết học</small>}
                     </div>
 
-                    <div className="schedule-form-group">
-                        <label>Phòng học</label>
-                        <Controller
-                            name="classroom"
-                            control={control}
-                            render={({ field }) => (
-                                <SelectWithPaginationClassroom
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                />
-                            )}
-                        />
-
-                    </div>
 
                     <div className="schedule-form-actions">
                         <button type="submit" className="schedule-btn">

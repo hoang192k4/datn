@@ -2,6 +2,7 @@
 
 namespace App\Services\Schedule;
 
+use App\Enums\Schedule\SessionStatus;
 use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
 use App\Repositories\Schedule\ScheduleRepositoryInterface;
 use App\Repositories\Session\SessionRepositoryInterface;
@@ -46,7 +47,12 @@ class ScheduleService implements ScheduleServiceInterface
             throw ValidationException::withMessages(['period_start' => 'Lớp học phần đã có lịch học vào thời gian này (có thể ở phòng khác)']);
         }
 
-        $schedule = $this->scheduleRepository->create([...$data, 'period_end' => $periodEnd]);
+        if ($periodStart <= 6) {
+            $session = SessionStatus::Morning;
+        } else {
+            $session = SessionStatus::Afternoon;
+        }
+        $schedule = $this->scheduleRepository->create([...$data, 'period_end' => $periodEnd, 'session' => $session]);
 
         $sessions = $this->generateSessionsFromSchedule($schedule);
         $isSessionsCreated = $this->sessionRepository->inserts($sessions);
@@ -79,7 +85,12 @@ class ScheduleService implements ScheduleServiceInterface
             $schedule->period_end =  $schedule->period_start + $schedule->period_number - 1;
             $schedule->course_section_id = $data['course_section_id'] ?? $schedule->course_section_id;
             $schedule->classroom_id = $data['classroom_id'] ?? $schedule->classroom_id;
-            $schedule->session = $data['session'] ?? $schedule->session;
+
+            if ($schedule->period_start  <= 6) {
+                $schedule->session = SessionStatus::Morning;
+            } else {
+                $schedule->session = SessionStatus::Afternoon;
+            }
             $schedule->save();
 
             $isSessionRelatedChanged =
@@ -233,7 +244,8 @@ class ScheduleService implements ScheduleServiceInterface
         $page = $data['page'] ?? 1;
         $limit = $data['limit'] ?? 10;
         $semester = $data['semester'] ?? null;
+        $classroomId = $data['classroom_id'] ?? null;
 
-        return $this->scheduleRepository->getSchedules($key, $session, $dayOfWeek, $page, $limit, $semester);
+        return $this->scheduleRepository->getSchedules($key, $session, $dayOfWeek, $page, $limit, $semester, $classroomId);
     }
 }

@@ -18,7 +18,8 @@ class ScheduleRequest extends BaseRequest
             'session' => ['nullable', new Enum(SessionStatus::class)],
             'page' => ['nullable', 'numeric', 'min:1'],
             'limit' => ['nullable', 'numeric', 'min:1'],
-            'semester' => ['nullable', 'exists:semesters,id']
+            'semester' => ['nullable', 'exists:semesters,id'],
+            'classroom_id' => ['nullable', 'exists:classrooms,id']
         ];
     }
 
@@ -27,7 +28,6 @@ class ScheduleRequest extends BaseRequest
         return [
             'course_section_id' => ['required', 'exists:course_sections,id'],
             'day_of_week' => ['required', new Enum(DayOfWeek::class)],
-            'session' => ['required', new Enum(SessionStatus::class)],
             'period_start' => ['required', 'between:1,12', 'integer'],
             'period_number' => ['required', 'integer', 'min:1', 'max:12'],
             'classroom_id' => ['required', 'exists:classrooms,id']
@@ -39,7 +39,6 @@ class ScheduleRequest extends BaseRequest
         return [
             'course_section_id' => ['nullable', 'exists:course_sections,id'],
             'day_of_week' => ['nullable', new Enum(DayOfWeek::class)],
-            'session' => ['nullable', new Enum(SessionStatus::class)],
             'period_start' => ['nullable', 'between:1,12', 'integer'],
             'period_number' => ['nullable', 'integer', 'min:1', 'max:12'],
             'classroom_id' => ['nullable', 'exists:classrooms,id']
@@ -52,9 +51,12 @@ class ScheduleRequest extends BaseRequest
         $validator->after(function () use ($validator) {
             $periodStart = $this['period_start'];
             $periodNumber = $this['period_number'];
+            $periodEnd = $periodStart + $periodNumber - 1;
 
-            if (($periodStart + $periodNumber - 1) > 12) {
-                $validator->errors()->add('period_number', 'Tiết kết thúc không được lớn hơn 12');
+            if ($periodStart <= 6 && $periodEnd > 6) {
+                $validator->errors()->add('period_number', 'Tiết kết thúc buổi sáng không được lớn hơn 6');
+            } else if ($periodStart <= 12 && $periodEnd > 12) {
+                $validator->errors()->add('period_number', 'Tiết kết thúc buổi chiều không được lớn hơn 12');
             }
         });
     }

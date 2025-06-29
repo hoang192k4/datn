@@ -1,5 +1,6 @@
 import { AsyncPaginate } from 'react-select-async-paginate';
-import { getClassrooms } from '../../services/classroomService';
+import { getCourseSectionFilter } from '../../services/courseSectionService';
+import { CourseSectionStatus } from '../../enums/CourseSectionStatus';
 
 const SelectWithPaginationCourseSection = ({
     value,
@@ -16,12 +17,12 @@ const SelectWithPaginationCourseSection = ({
         const page = additional?.page ?? 1;
 
         try {
-            const response = await getClassrooms(search, page);
+            const response = await getCourseSectionFilter(search, null, page, CourseSectionStatus.In_Register, null);
             const data = response.data;
 
             return {
-                options: data.classrooms.map((cls: any) => ({
-                    label: cls.name,
+                options: data.course_sections.map((cls: any) => ({
+                    label: `${cls.name} - ${cls.students_total} sinh viên`,
                     value: cls.id,
                 })),
                 hasMore: data.meta.current_page < data.meta.total_pages,
@@ -44,10 +45,11 @@ const SelectWithPaginationCourseSection = ({
 
     return (
         <AsyncPaginate
+            isClearable
             value={value}
             loadOptions={loadOptions}
             onChange={onChange}
-            placeholder="-- Tìm phòng học --"
+            placeholder="-- Tìm lớp học phần --"
             additional={{ page: 1 }}
             debounceTimeout={500}
             loadingMessage={() => 'Đang tải...'}

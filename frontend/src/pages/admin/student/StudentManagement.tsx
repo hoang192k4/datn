@@ -16,7 +16,7 @@ import type { Major } from "../../../types/major";
 import { getMajors } from "../../../services/majorService";
 import { FaCloudUploadAlt, FaDownload } from "react-icons/fa";
 import ImportStudentModal from "./ImportStudentModal";
-import { Loading } from "../../../components/ui/Loading/Loading";
+import { Loading } from "../../../components/ui/loading/Loading";
 import ExportStudentsModal from "./ExportStudentModal";
 
 

@@ -53,7 +53,7 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     }
 
 
-    public function getSchedules(?string $key = null, $session = null, ?int $dayOfWeek = null, $page, $limit, ?int $semester = null)
+    public function getSchedules(?string $key = null, $session = null, ?int $dayOfWeek = null, $page, $limit, ?int $semester = null, ?int $classroomId = null)
     {
         return  $this->model->with(['course_section.subject', 'course_section.teacher', 'classroom'])
             ->when($key, function ($query, $key) {
@@ -75,6 +75,9 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
                 $query->whereHas('course_section', function ($subQuery) use ($semester) {
                     $subQuery->where('semester_id', $semester);
                 });
+            })
+            ->when($classroomId, function ($query, $classroomId) {
+                $query->where('classroom_id', $classroomId);
             })
             ->orderBy('day_of_week')
             ->orderBy('period_start')
