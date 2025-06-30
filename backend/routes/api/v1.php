@@ -222,6 +222,7 @@ Route::controller(App\Http\Controllers\Schedule\ScheduleController::class)
         Route::get('/', 'index'); //api danh sách tkb
         Route::post('/', 'create'); //api thêm lịch học
         Route::put('/{id}', 'update'); //api đổi lịch học
+        Route::delete('/{id}', 'delete'); //api xóa lịch học
     });
 
 Route::controller(App\Http\Controllers\Classroom\ClassroomController::class)

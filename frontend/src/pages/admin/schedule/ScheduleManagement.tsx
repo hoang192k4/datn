@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './ScheduleManagement.css'
 import PageHeader from '../../../components/ui/PageHeader';
 import type { Schedule } from '../../../types/schedule';
-import { createSchedule, getSchedules, updateSchdedule } from '../../../services/scheduleService';
+import { createSchedule, deleteSchedule, getSchedules, updateSchdedule } from '../../../services/scheduleService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import type { Paginate } from '../../../types/paginate';
 import debounce from 'lodash.debounce';
@@ -13,6 +13,9 @@ import SelectWithPaginationClassroom from '../../../components/ui/SelectWithPagi
 import { Loading as CreateLoading } from '../../../components/ui/loading/Loading'
 
 import { FaEdit, FaTrash } from "react-icons/fa";
+import type { SemesterList } from '../../../types/semester';
+import { getSemesters } from '../../../services/semesterService';
+import { dayOfWeekMap } from '../../../utils/dayOfWeekMap';
 
 type ScheduleFormData = {
     id?: number;
@@ -39,11 +42,13 @@ const ScheduleManagement: React.FC = () => {
     const [loadingCreate, setLoadingCreate] = useState(false);
     const [scheduleSelected, setSchdeuleSelected] = useState<ScheduleFormData | null>(null);
     const [typeModal, setTypeModal] = useState<"create" | "update">("create");
+    const [semesters, setSemesters] = useState<SemesterList[]>([]);
 
     const sessionMap = {
-        morning: "Sáng",
-        afternoon: "Chiều"
+        morning: { label: "Sáng", badge: 'session-morning' },
+        afternoon: { label: "Chiều", badge: 'session-afternoon' }
     }
+
     const daysOfWeek = [{ value: 0, label: "Chủ nhật" }, { value: 1, label: "Thứ 2" }, { value: 2, label: "Thứ 3" }, { value: 3, label: "Thứ 4" }, { value: 4, label: "Thứ 5" }, { value: 5, label: "Thứ 6" }, { value: 6, label: "Thứ 7" }];
     const sessions = [
         { value: 'morning', label: 'Sáng' },
@@ -51,14 +56,13 @@ const ScheduleManagement: React.FC = () => {
         // { value: 'evening', label: 'Tối' }
     ];
 
-    const semesters = [
-        { value: 1, label: "Học kỳ 1" },
-        { value: 2, label: "Học kỳ 2" },
-        { value: 3, label: "Học kỳ 3" },
-        { value: 4, label: "Học kỳ 4" },
-        { value: 5, label: "Học kỳ 5" },
-        { value: 6, label: "Học kỳ 6" },
-    ]
+    useEffect(() => {
+        fetchSemesterList();
+    }, []);
+    const fetchSemesterList = async () => {
+        const res = await getSemesters();
+        setSemesters(res.data);
+    }
 
     const fetchSchedules = async (key: any, session: any, daysOfWeek: any, page: any, semester: any, classroomId: any) => {
         try {
@@ -119,11 +123,9 @@ const ScheduleManagement: React.FC = () => {
                         title: 'Thêm lịch mới thành công!',
                         icon: "success"
                     })
-
                     fetchScheduleNoLoading(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom.value);
                 }
             } catch (error: any) {
-                console.log(error);
                 if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
                     const errors = error.response.data.errors.period_start;
                     console.log(errors);
@@ -137,7 +139,6 @@ const ScheduleManagement: React.FC = () => {
 
                 if (error.response.status === HttpStatus.BAD_REQUEST) {
                     const errors = error.response.data.message_validate;
-                    console.log(errors);
                     const allMessages = Object.values(errors).flat();
                     const lis = allMessages.map((message) => `<li> ${message}</li>`).join('');
                     Swal.fire({
@@ -173,7 +174,6 @@ const ScheduleManagement: React.FC = () => {
                         html: `<ul> ${lis}</ul>`
                     })
                 }
-
                 if (error.response.status === HttpStatus.BAD_REQUEST) {
                     const errors = error.response.data.message_validate;
 
@@ -199,6 +199,41 @@ const ScheduleManagement: React.FC = () => {
         setScheduleModal(true);
     }
 
+    const handleDelete = (id: number) => {
+        Swal.fire({
+            title: "Bạn chắc chắc xóa lịch này?",
+            text: "Bạn sẽ không thể khôi phục dữ liệu sau khi xóa!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Vâng, hãy xóa!",
+            cancelButtonText: "Hủy",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const res = await deleteSchedule(id);
+                    if (res.status === HttpStatus.SUCCESS) {
+                        Swal.fire({
+                            title: 'Xóa lịch thành công',
+                            icon: 'success'
+                        })
+                        fetchScheduleNoLoading(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom.value);
+                    }
+                } catch (error: any) {
+                    if (error.response.status === HttpStatus.BAD_REQUEST) {
+                        const errors = error.response.data.errors;
+                        Swal.fire({
+                            title: 'Xóa không thành công!',
+                            icon: 'warning',
+                            text: errors
+                        })
+                    }
+                }
+            }
+        });
+
+    }
     return (
         <>
             {loadingCreate ? <CreateLoading title="Đang thêm lịch mới" /> : <> </>}
@@ -238,7 +273,7 @@ const ScheduleManagement: React.FC = () => {
                             >
                                 <option value="">Tất cả các kì</option>
                                 {semesters.map((semester, index) => (
-                                    <option key={index} value={semester.value}>{semester.label}</option>
+                                    <option key={index} value={semester.id}>{semester.name}</option>
                                 ))}
                             </select>
 
@@ -266,7 +301,6 @@ const ScheduleManagement: React.FC = () => {
                         </div>
                     </div>
 
-
                     {/* Schedule Table */}
                     <div className="table-container">
                         <div className="table-wrapper">
@@ -286,7 +320,7 @@ const ScheduleManagement: React.FC = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {loading ? <tr> <td colSpan={10}><Loading /> </td></tr> : (
+                                    {loading ? (<tr> <td colSpan={10}><Loading /> </td></tr>) : (
                                         schedules.map((schedule) => (
                                             <tr key={schedule.id} className="table-row">
                                                 <td className="table-cell">
@@ -294,8 +328,8 @@ const ScheduleManagement: React.FC = () => {
                                                 </td>
                                                 <td className="table-cell">{schedule.course_section.subject}</td>
                                                 <td className="table-cell">
-                                                    <span className="badge-day">
-                                                        {daysOfWeek[schedule.day_of_week].label}
+                                                    <span className={`badge-day ${dayOfWeekMap[schedule.day_of_week].bagde}`}>
+                                                        {dayOfWeekMap[schedule.day_of_week].label}
                                                     </span>
                                                 </td>
                                                 <td className="table-cell">
@@ -305,8 +339,8 @@ const ScheduleManagement: React.FC = () => {
                                                     {schedule.start_time} - {schedule.end_time}
                                                 </td>
                                                 <td className="table-cell">
-                                                    <span className="badge-session">
-                                                        {sessionMap[schedule.session]}
+                                                    <span className={`badge-session ${sessionMap[schedule.session].badge}`}>
+                                                        {sessionMap[schedule.session].label}
                                                     </span>
                                                 </td>
                                                 <td className="table-cell">{schedule.classroom.name}</td>
@@ -339,7 +373,8 @@ const ScheduleManagement: React.FC = () => {
                                                 <td className="table-cell">
                                                     <div className="action-buttons">
                                                         <button
-                                                            className="schedule-delete-button student-btn-primary   "
+                                                            className="schedule-delete-button student-btn-primary"
+                                                            onClick={() => handleDelete(schedule.id)}
                                                         >
                                                             <FaTrash />
                                                         </button>
@@ -362,7 +397,7 @@ const ScheduleManagement: React.FC = () => {
                                     </div>
                                 </div>)) : <></>}
 
-                        {schedules.length === 0 && (
+                        {!loading ? (schedules.length === 0 && (
                             <div className="empty-state">
                                 <h3 className="empty-title">Không có lịch học</h3>
                                 <p className="empty-text">
@@ -371,7 +406,7 @@ const ScheduleManagement: React.FC = () => {
                                         "Bắt đầu bằng cách thêm lịch học mới"}
                                 </p>
                             </div>
-                        )}
+                        )) : <> </>}
                     </div>
 
                     {/* Statistics

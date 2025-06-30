@@ -138,7 +138,6 @@ const ScheduleModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, defaultValu
                         {errors.period_number && <small className="schedule-error"> * Vui lòng nhập số tiết học</small>}
                     </div>
 
-
                     <div className="schedule-form-actions">
                         <button type="submit" className="schedule-btn">
                             {defaultValues ? 'Cập nhật' : 'Lưu'}

@@ -42,3 +42,9 @@ export const updateSchdedule = async (data: ScheduleFormData) => {
 
     return response.data;
 }
+
+
+export const deleteSchedule = async (id: number) => {
+    const response = await axiosTeacherInstance.delete(`/schedules/${id}`);
+    return response.data;
+}

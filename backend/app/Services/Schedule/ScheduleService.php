@@ -271,4 +271,20 @@ class ScheduleService implements ScheduleServiceInterface
 
         return $this->scheduleRepository->getSchedules($key, $session, $dayOfWeek, $page, $limit, $semester, $classroomId);
     }
+
+    public function delete($id): bool
+    {
+        $schedule = $this->scheduleRepository->findOrFailById($id);
+        if ($schedule->course_section->status !== CourseSectionStatus::InRegister) {
+            $courseSectionName = $schedule->course_section->name;
+            $status = CourseSectionStatus::getDescription($schedule->course_section->status);
+            throw ValidationException::withMessages(["Lớp học phần $courseSectionName $status, không thể xóa lịch"]);
+        }
+        DB::transaction(function () use ($schedule) {
+            $schedule->sessions()->delete();
+            $schedule->delete();
+        });
+
+        return true;
+    }
 }

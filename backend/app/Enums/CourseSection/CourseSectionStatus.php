@@ -12,7 +12,7 @@ enum CourseSectionStatus: string
     {
         return match ($case) {
             self::InRegister => 'đang mở đăng ký',
-            self::InProgress => 'đang diễn ra',
+            self::InProgress => 'đã diễn ra',
             self::Completed => 'đã hoàn thành',
         };
     }

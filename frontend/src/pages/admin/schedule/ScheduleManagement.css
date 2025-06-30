@@ -194,7 +194,6 @@
   }
 
   .badge-session {
-      background-color: #10b981;
       color: white;
       padding: 2px 8px;
       border-radius: 12px;
@@ -202,13 +201,48 @@
       font-weight: 500;
   }
 
-  .badge-day {
+  .session-morning {
+      background-color: #10b981;
+  }
+
+  .session-afternoon {
       background-color: #f59e0b;
+  }
+
+  .badge-day {
       color: white;
       padding: 2px 8px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 500;
+  }
+
+  .badge-sunday {
+      background-color: #f87171;
+  }
+
+  .badge-monday {
+      background-color: #60a5fa;
+  }
+
+  .badge-tuesday {
+      background-color: #a78bfa;
+  }
+
+  .badge-wednesday {
+      background-color: #fbbf24;
+  }
+
+  .badge-thursday {
+      background-color: #34d399;
+  }
+
+  .badge-friday {
+      background-color: #f472b6;
+  }
+
+  .badge-saturday {
+      background-color: #8b5cf6;
   }
 
   .badge-class {
