@@ -1,5 +1,6 @@
 import axiosTeacherInstance from "../config/axiosTeacher"
 type ScheduleFormData = {
+    id?: number;
     course_section: { value: number | null, label: string | null };
     day_of_week: string;
     period_start: number | null;
@@ -27,6 +28,16 @@ export const createSchedule = async (data: ScheduleFormData) => {
         ...data,
         course_section_id: data.course_section.value,
         classroom_id: data.classroom.value,
+    });
+
+    return response.data;
+}
+
+export const updateSchdedule = async (data: ScheduleFormData) => {
+    const response = await axiosTeacherInstance.put(`/schedules/${data.id}`, {
+        ...data,
+        course_section_id: data.course_section.value,
+        classroom_id: data.classroom.value
     });
 
     return response.data;

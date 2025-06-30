@@ -2,6 +2,8 @@
 
 namespace App\Services\Schedule;
 
+use App\Enums\CourseSection\CourseSectionStatus;
+use App\Enums\DayOfWeek;
 use App\Enums\Schedule\SessionStatus;
 use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
 use App\Repositories\Schedule\ScheduleRepositoryInterface;
@@ -20,6 +22,8 @@ class ScheduleService implements ScheduleServiceInterface
     protected $scheduleRepository;
     protected $sessionRepository;
     protected $courseSectionRepository;
+    protected $periodTimes;
+
     public function __construct(
         ScheduleRepositoryInterface $scheduleRepository,
         SessionRepositoryInterface $sessionRepository,
@@ -28,6 +32,7 @@ class ScheduleService implements ScheduleServiceInterface
         $this->scheduleRepository = $scheduleRepository;
         $this->sessionRepository = $sessionRepository;
         $this->courseSectionRepository = $courseSectionRepository;
+        $this->periodTimes = config('schedule.period_times');
     }
 
     public function create(Request $request)
@@ -40,11 +45,15 @@ class ScheduleService implements ScheduleServiceInterface
         $courseSectionId = $data['course_section_id'];
         $courseSection = $this->courseSectionRepository->find($courseSectionId);
         if ($this->checkScheduleConflict([...$data, 'start_date' => $courseSection->start_date, 'end_date' => $courseSection->end_date, 'period_end' => $periodEnd])) {
-            throw ValidationException::withMessages(['period_start' => 'Phòng học đã bị trùng lịch với lớp khác trong khung giờ này']);
+            $dayOfWeek = DayOfWeek::getDescription($data['day_of_week']);
+            $startTime = $this->periodTimes[$periodStart]['start'];
+            $endTime = $this->periodTimes[$periodStart]['end'];
+
+            throw ValidationException::withMessages(['period_start' => "Phòng học đã bị trùng lịch với lớp khác trong khung giờ $dayOfWeek ($startTime - $endTime)"]);
         }
 
         if ($this->checkCourseSectionClassroomConflict([...$data, 'period_end' => $periodEnd])) {
-            throw ValidationException::withMessages(['period_start' => 'Lớp học phần đã có lịch học vào thời gian này (có thể ở phòng khác)']);
+            throw ValidationException::withMessages(['period_start' => 'Lớp học phần đã có lịch học vào thời gian này (có thể đã có lịch ở phòng khác)']);
         }
 
         if ($periodStart <= 6) {
@@ -74,10 +83,18 @@ class ScheduleService implements ScheduleServiceInterface
 
             $schedule = $this->scheduleRepository->findOrFailById($id);
 
+            if ($schedule->course_section->status !== CourseSectionStatus::InRegister) {
+                $courseSectionName = $schedule->course_section->name;
+                $status = CourseSectionStatus::getDescription($schedule->course_section->status);
+
+                throw ValidationException::withMessages(["Lớp $courseSectionName $status, không thể thay đổi lịch"]);
+            }
+
             $originalDayOfWeek = $schedule->day_of_week;
             $originalPeriodStart = $schedule->period_start;
             $originalPeriodEnd = $schedule->period_end;
             $originalCourseSectionId = $schedule->course_section_id;
+            $originClassroomId = $schedule->classroom_id;
 
             $schedule->day_of_week = $data['day_of_week'] ?? $schedule->day_of_week;
             $schedule->period_start = $data['period_start'] ?? $schedule->period_start;
@@ -85,6 +102,7 @@ class ScheduleService implements ScheduleServiceInterface
             $schedule->period_end =  $schedule->period_start + $schedule->period_number - 1;
             $schedule->course_section_id = $data['course_section_id'] ?? $schedule->course_section_id;
             $schedule->classroom_id = $data['classroom_id'] ?? $schedule->classroom_id;
+
 
             if ($schedule->period_start  <= 6) {
                 $schedule->session = SessionStatus::Morning;
@@ -97,7 +115,8 @@ class ScheduleService implements ScheduleServiceInterface
                 $originalDayOfWeek !== $schedule->day_of_week ||
                 $originalPeriodStart !== $schedule->period_start ||
                 $originalPeriodEnd !== $schedule->period_end ||
-                $originalCourseSectionId !== $schedule->course_section_id;
+                $originalCourseSectionId !== $schedule->course_section_id ||
+                $originClassroomId !== $schedule->classroom_id;
 
             if ($isSessionRelatedChanged) {
                 if ($this->checkScheduleConflict([
@@ -109,8 +128,12 @@ class ScheduleService implements ScheduleServiceInterface
                     'classroom_id' => $schedule->classroom_id,
                     'id' => $schedule->id
                 ])) {
+                    $dayOfWeek = DayOfWeek::getDescription($schedule->day_of_week);
+                    $startTime = $this->periodTimes[$schedule->period_start]['start'];
+                    $endTime = $this->periodTimes[$schedule->period_end]['end'];
+
                     DB::rollBack();
-                    throw ValidationException::withMessages(['period_start' => 'Phòng học đã bị trùng lịch với lớp khác trong khung giờ này']);
+                    throw ValidationException::withMessages(['period_start' => "Phòng học đã bị trùng lịch với lớp khác trong khung giờ $dayOfWeek ($startTime - $endTime)"]);
                 }
 
                 if ($this->checkCourseSectionClassroomConflict([
@@ -121,7 +144,7 @@ class ScheduleService implements ScheduleServiceInterface
                     'id' => $schedule->id,
                 ])) {
                     DB::rollBack();
-                    throw ValidationException::withMessages(['period_start' => 'Lớp học phần đã có lịch học vào thời gian này (có thể ở phòng khác)']);
+                    throw ValidationException::withMessages(['period_start' => 'Lớp học phần đã có lịch học vào thời gian này (có thể đã có lịch ở phòng khác)']);
                 }
 
                 // Cập nhật lại danh sách phiên học tương ứng với lịch

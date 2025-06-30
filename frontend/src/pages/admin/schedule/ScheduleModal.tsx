@@ -5,6 +5,7 @@ import SelectWithPaginationClassroom from '../../../components/ui/SelectWithPagi
 import SelectWithPaginationCourseSection from '../../../components/ui/SelectWithPaginationCourseSection';
 
 type ScheduleFormData = {
+    id?: number;
     course_section: { value: number | null, label: string | null };
     day_of_week: string;
     period_start: number | null;
@@ -27,8 +28,7 @@ const ScheduleModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, defaultValu
         control,
         formState: { errors }
     } = useForm<ScheduleFormData>({
-        defaultValues: {
-
+        defaultValues: defaultValues || {
             day_of_week: '1',
             period_start: null,
             period_number: null,
@@ -39,11 +39,16 @@ const ScheduleModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, defaultValu
     useEffect(() => {
         if (defaultValues) {
             reset(defaultValues);
+        } else {
+            reset({
+                day_of_week: '1',
+                period_start: null,
+                period_number: null,
+            })
         }
     }, [defaultValues, reset]);
 
     const submitHandler = (data: ScheduleFormData) => {
-        console.log(data);
         onSubmit(data);
         onClose();
         reset(); // clear form sau khi submit

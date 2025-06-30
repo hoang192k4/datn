@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './ScheduleManagement.css'
 import PageHeader from '../../../components/ui/PageHeader';
 import type { Schedule } from '../../../types/schedule';
-import { createSchedule, getSchedules } from '../../../services/scheduleService';
+import { createSchedule, getSchedules, updateSchdedule } from '../../../services/scheduleService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import type { Paginate } from '../../../types/paginate';
 import debounce from 'lodash.debounce';
@@ -11,9 +11,11 @@ import ScheduleModal from './ScheduleModal';
 import Swal from 'sweetalert2';
 import SelectWithPaginationClassroom from '../../../components/ui/SelectWithPaginationClassroom';
 import { Loading as CreateLoading } from '../../../components/ui/loading/Loading'
-import { FileDiff } from 'lucide-react';
+
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 type ScheduleFormData = {
+    id?: number;
     course_section: { value: number | null, label: string | null };
     day_of_week: string;
     period_start: number | null;
@@ -35,6 +37,8 @@ const ScheduleManagement: React.FC = () => {
     const [scheduleModal, setScheduleModal] = useState(false);
     const [filterClassroom, setFilterClassroom] = useState<{ value: number | null, label: string | null }>({ value: null, label: null });
     const [loadingCreate, setLoadingCreate] = useState(false);
+    const [scheduleSelected, setSchdeuleSelected] = useState<ScheduleFormData | null>(null);
+    const [typeModal, setTypeModal] = useState<"create" | "update">("create");
 
     const sessionMap = {
         morning: "Sáng",
@@ -104,48 +108,95 @@ const ScheduleManagement: React.FC = () => {
         fetchSchedules(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom?.value);
     }, [page, filterDay, filterSession, searchTerm, filterSemester, filterClassroom]);
 
-
-    console.log(filterClassroom);
     const handleSubmit = async (data: ScheduleFormData) => {
-        try {
-            setLoadingCreate(true);
-            const response = await createSchedule(data);
-            if (response.status === HttpStatus.SUCCESS) {
+        if (typeModal === "create") {
+            try {
+                setLoadingCreate(true);
+                const response = await createSchedule(data);
+                if (response.status === HttpStatus.SUCCESS) {
 
-                Swal.fire({
-                    title: 'Thêm lịch mới thành công!',
-                    icon: "success"
-                })
+                    Swal.fire({
+                        title: 'Thêm lịch mới thành công!',
+                        icon: "success"
+                    })
 
-                fetchScheduleNoLoading(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom.value);
-            }
-        } catch (error: any) {
-            console.log(error);
-            if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
-                const errors = error.response.data.errors.period_start;
-                console.log(errors);
-                const lis = errors.map((e: any) => `<li>${e}</li>`).join('');
-                Swal.fire({
-                    title: 'Thêm lịch không thành công!',
-                    icon: "error",
-                    html: `<ul> ${lis}</ul>`
-                })
-            }
+                    fetchScheduleNoLoading(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom.value);
+                }
+            } catch (error: any) {
+                console.log(error);
+                if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+                    const errors = error.response.data.errors.period_start;
+                    console.log(errors);
+                    const lis = errors.map((e: any) => `<li>${e}</li>`).join('');
+                    Swal.fire({
+                        title: 'Thêm lịch không thành công!',
+                        icon: "warning",
+                        html: `<ul> ${lis}</ul>`
+                    })
+                }
 
-            if (error.response.status === HttpStatus.BAD_REQUEST) {
-                const errors = error.response.data.message_validate;
-                console.log(errors);
-                const allMessages = Object.values(errors).flat();
-                const lis = allMessages.map((message) => `<li> ${message}</li>`).join('');
-                Swal.fire({
-                    title: 'Thêm lịch không thành công!',
-                    icon: "error",
-                    html: `<ul> ${lis}</ul>`
-                })
+                if (error.response.status === HttpStatus.BAD_REQUEST) {
+                    const errors = error.response.data.message_validate;
+                    console.log(errors);
+                    const allMessages = Object.values(errors).flat();
+                    const lis = allMessages.map((message) => `<li> ${message}</li>`).join('');
+                    Swal.fire({
+                        title: 'Thêm lịch không thành công!',
+                        icon: "warning",
+                        html: `<ul> ${lis}</ul>`
+                    })
+                }
+            } finally {
+                setLoadingCreate(false);
             }
-        } finally {
-            setLoadingCreate(false);
         }
+
+        if (typeModal === "update") {
+            try {
+                setLoadingCreate(true);
+                const response = await updateSchdedule(data);
+                if (response.status === HttpStatus.SUCCESS) {
+                    Swal.fire({
+                        title: 'Cập nhật lịch thành công!',
+                        icon: "success"
+                    })
+                    fetchScheduleNoLoading(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom?.value);
+                }
+            } catch (error: any) {
+                if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+                    const errors = error.response.data.errors;
+                    const allMessages = Object.values(errors).flat();
+                    const lis = allMessages.map((message) => `<li> ${message}</li>`).join('');
+                    Swal.fire({
+                        title: 'Cập nhật lịch không thành công!',
+                        icon: "warning",
+                        html: `<ul> ${lis}</ul>`
+                    })
+                }
+
+                if (error.response.status === HttpStatus.BAD_REQUEST) {
+                    const errors = error.response.data.message_validate;
+
+                    const allMessages = Object.values(errors).flat();
+                    const lis = allMessages.map((message) => `<li> ${message}</li>`).join('');
+                    Swal.fire({
+                        title: 'Cập nhật lịch không thành công!',
+                        icon: "warning",
+                        html: `<ul> ${lis}</ul>`
+                    })
+                }
+            } finally {
+                setLoadingCreate(false);
+                setSchdeuleSelected(null);
+            }
+        }
+
+    }
+
+    const handleEdit = (data: ScheduleFormData) => {
+        setSchdeuleSelected(data);
+        setTypeModal("update");
+        setScheduleModal(true);
     }
 
     return (
@@ -161,7 +212,7 @@ const ScheduleManagement: React.FC = () => {
                         </div>
                         <button
                             className="add-button"
-                            onClick={() => setScheduleModal(true)}
+                            onClick={() => { setSchdeuleSelected(null); setScheduleModal(true); setTypeModal("create") }}
                         >
                             ➕ Thêm lịch học
                         </button>
@@ -231,7 +282,7 @@ const ScheduleManagement: React.FC = () => {
                                         <th className="table-header">Phòng</th>
                                         <th className="table-header">Giáo viên</th>
                                         <th className="table-header">Học kỳ</th>
-                                        <th className="table-header">Thao tác</th>
+                                        <th className="table-header" colSpan={2}>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -264,16 +315,33 @@ const ScheduleManagement: React.FC = () => {
                                                 <td className="table-cell">
                                                     <div className="action-buttons">
                                                         <button
-
-                                                            className="edit-button"
+                                                            onClick={() => handleEdit({
+                                                                course_section: {
+                                                                    value: schedule.course_section.id ?? null,
+                                                                    label: schedule.course_section.name ?? null
+                                                                },
+                                                                day_of_week: schedule.day_of_week?.toString() ?? "",
+                                                                period_start: schedule.period_start ?? null,
+                                                                period_number: schedule.period_number ?? null,
+                                                                classroom: {
+                                                                    value: schedule.classroom?.id ?? null,
+                                                                    label: schedule.classroom?.name ?? null
+                                                                },
+                                                                id: schedule.id
+                                                            })}
+                                                            className="schedule-edit-button student-btn-primary"
                                                         >
-
+                                                            <FaEdit />
                                                         </button>
+
+                                                    </div>
+                                                </td>
+                                                <td className="table-cell">
+                                                    <div className="action-buttons">
                                                         <button
-
-                                                            className="delete-button"
+                                                            className="schedule-delete-button student-btn-primary   "
                                                         >
-
+                                                            <FaTrash />
                                                         </button>
                                                     </div>
                                                 </td>
@@ -347,8 +415,8 @@ const ScheduleManagement: React.FC = () => {
                         </div>
                     </div> */}
                 </div>
-            </div>
-            <ScheduleModal isOpen={scheduleModal} onClose={() => setScheduleModal(false)} onSubmit={handleSubmit} />
+            </div >
+            <ScheduleModal isOpen={scheduleModal} onClose={() => { setScheduleModal(false); setSchdeuleSelected(null) }} onSubmit={handleSubmit} defaultValues={scheduleSelected ?? undefined} />
         </>
     );
 };

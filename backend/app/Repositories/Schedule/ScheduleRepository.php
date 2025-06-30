@@ -79,6 +79,7 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
             ->when($classroomId, function ($query, $classroomId) {
                 $query->where('classroom_id', $classroomId);
             })
+            ->orderBy('course_section_id')
             ->orderBy('day_of_week')
             ->orderBy('period_start')
             ->paginate($limit, ['*'], 'page', $page);
