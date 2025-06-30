@@ -25,7 +25,7 @@ const StudentStatusBadge: React.FC<Props> = ({ status }) => {
         }
     };
 
-    return <span className={`badge badge-${status}`}>{getLabel()}</span>;
+    return <span className={`student-badge badge-${status}`}>{getLabel()}</span>;
 };
 
 export default StudentStatusBadge;

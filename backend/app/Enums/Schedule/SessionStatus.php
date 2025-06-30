@@ -6,5 +6,5 @@ enum SessionStatus:string
 {
     //
     case Morning = 'morning';
-    case Affternoon = 'affternoon';
+    case Afternoon = 'afternoon';
 }

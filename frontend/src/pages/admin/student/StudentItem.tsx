@@ -1,6 +1,7 @@
 import type { StudentList } from "../../../types/student";
 import { formatDayMonthYear } from "../../../utils/stringUtil";
-import { genderText } from "../../../utils/studentText";
+
+import { genderMap } from "../../../utils/genderMap";
 import { FaRegEdit } from "react-icons/fa";
 import StudentStatusBadge from "./StudentStatusBadge";
 
@@ -21,12 +22,12 @@ const StudentItem = ({ student, onEdit, setTypeModal, index }: Props) => {
             <td>{student.name}</td>
             <td>{formatDayMonthYear(student.date_of_birth)}</td>
             <td>{student.address}</td>
-            <td>{genderText[student.gender]}</td>
+            <td>{genderMap[student.gender]}</td>
             <td>{formatDayMonthYear(student.enrollment_date)}</td>
             <td>{student.graduation_date ? formatDayMonthYear(student.graduation_date) : 'Chưa tốt nghiệp'}</td>
             <td>{student.major}</td>
             <td> <StudentStatusBadge status={student.status} /></td>
-            <td style={{ textAlign: 'center' }}> <button className="btn-primary" type="button" onClick={() => { onEdit(student); setTypeModal() }}> <FaRegEdit /> </button></td>
+            <td style={{ textAlign: 'center' }}> <button className="btn-primary-student" type="button" onClick={() => { onEdit(student); setTypeModal() }}> <FaRegEdit /> </button></td>
         </>
     );
 }

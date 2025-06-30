@@ -39,7 +39,7 @@ function App() {
         <div className="loading-overlay-layout">
           <div className="spinner-container">
             <div className="spinner-glow"></div>
-            <div className="loading-text">Đang tải lại dữ liệu hệ thống hệ thống...</div>
+            <div className="loading-text">Chào mừng đến với khoa công nghệ thông tin...</div>
           </div>
         </div>
       </>

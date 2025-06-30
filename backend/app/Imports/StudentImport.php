@@ -59,7 +59,6 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
                 continue;
             }
 
-
             $studentCode = trim($row['mssv']);
             $email = trim($row['email']);
             $student = $existingStudents[$studentCode] ?? null;
@@ -107,7 +106,6 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             ];
             $students[] = $data;
         }
-
         $this->studentRepository->upsert($students, ['student_code']);
 
         if (count($conflicts)) {

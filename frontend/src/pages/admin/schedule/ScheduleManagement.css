@@ -1,0 +1,438 @@
+  .schedule-container {
+      min-height: 100vh;
+      background-color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .schedule-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+  }
+
+  .schedule-header {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+  }
+
+  .schedule-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1e293b;
+      margin: 0 0 8px 0;
+  }
+
+  .schedule-subtitle {
+      color: #64748b;
+      margin: 0;
+  }
+
+  .add-button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+  }
+
+  .add-button:hover {
+      background-color: #2563eb;
+  }
+
+  .filters-container,
+  .form-container,
+  .table-container,
+  .stat-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      margin-bottom: 24px;
+  }
+
+  .filters-grid,
+  .form-grid,
+  .stats-grid {
+      display: grid;
+      gap: 16px;
+  }
+
+  .filters-grid {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .form-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .stats-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+  }
+
+  .input-group {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .input-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 4px;
+  }
+
+  .input-field,
+  .select-field,
+  .search-input {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: white;
+      box-sizing: border-box;
+  }
+
+  .input-field:focus,
+  .select-field:focus,
+  .search-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1f2937;
+      margin: 0 0 20px 0;
+  }
+
+  .form-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+  }
+
+  .submit-button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 24px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+  }
+
+  .submit-button:hover {
+      background-color: #2563eb;
+  }
+
+  .cancel-button {
+      background-color: #6b7280;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 24px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+  }
+
+  .cancel-button:hover {
+      background-color: #4b5563;
+  }
+
+  .table-wrapper {
+      overflow-x: auto;
+  }
+
+  .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+  }
+
+  .table-head {
+      background-color: #f8fafc;
+  }
+
+  .table-header,
+  .table-cell {
+      padding: 12px;
+      font-size: 14px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+      color: black;
+  }
+
+  .table-cell {
+      color: #1f2937;
+  }
+
+  .table-row:hover {
+      background-color: #f9fafb;
+  }
+
+  .badge-period {
+      background-color: #3b82f6;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+  }
+
+  .badge-session {
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+  }
+
+  .session-morning {
+      background-color: #10b981;
+  }
+
+  .session-afternoon {
+      background-color: #f59e0b;
+  }
+
+  .badge-day {
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+  }
+
+  .badge-sunday {
+      background-color: #f87171;
+  }
+
+  .badge-monday {
+      background-color: #60a5fa;
+  }
+
+  .badge-tuesday {
+      background-color: #a78bfa;
+  }
+
+  .badge-wednesday {
+      background-color: #fbbf24;
+  }
+
+  .badge-thursday {
+      background-color: #34d399;
+  }
+
+  .badge-friday {
+      background-color: #f472b6;
+  }
+
+  .badge-saturday {
+      background-color: #8b5cf6;
+  }
+
+  .badge-class {
+      background-color: #8b5cf6;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+  }
+
+  .action-buttons {
+      display: flex;
+      gap: 8px;
+  }
+
+  .schedule-edit-button,
+  .schedule-delete-button {
+      background: #4a5ba6;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 8px;
+      color: white;
+      border-radius: 8px;
+      margin: 0 4px;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+  }
+
+  /* Nút Sửa */
+  .schedule-edit-button:hover {
+      background-color: #2563eb;
+      /* xanh lam nhạt hơn */
+      transform: scale(1.05);
+  }
+
+  /* Nút Xoá */
+  .schedule-delete-button:hover {
+      background-color: #dc2626;
+      /* đỏ cảnh báo */
+      transform: scale(1.05);
+  }
+
+
+  .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+  }
+
+  .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+  }
+
+  .empty-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 8px;
+  }
+
+  .empty-text {
+      color: #6b7280;
+      font-size: 14px;
+  }
+
+  .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+  }
+
+  .stat-icon {
+      font-size: 32px;
+  }
+
+  .stat-label {
+      font-size: 14px;
+      color: #6b7280;
+      margin: 0 0 4px 0;
+  }
+
+  .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1f2937;
+      margin: 0;
+  }
+
+  /* pagiante*/
+
+  .student-pagination-container {
+      display: flex;
+      align-items: center;
+      background: white;
+      justify-content: center;
+      margin: 0;
+  }
+
+  .student-pagination {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: white;
+      padding: 8px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e9ecef;
+      width: fit-content;
+  }
+
+  .student-pagination-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid #dee2e6;
+      background: white;
+      color: #495057;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      margin: 0;
+  }
+
+  .student-pagination-btn:hover {
+      background-color: #f8f9fa;
+      border-color: #adb5bd;
+      color: #212529;
+  }
+
+  .student-pagination-btn.active {
+      background-color: #007bff;
+      border-color: #007bff;
+      color: white;
+  }
+
+  .student-pagination-btn.active:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+  }
+
+  .student-pagination-btn.disabled {
+      background-color: #f8f9fa;
+      border-color: #e9ecef;
+      color: #adb5bd;
+      cursor: not-allowed;
+  }
+
+  .student-pagination-btn.disabled:hover {
+      background-color: #f8f9fa;
+      border-color: #e9ecef;
+      color: #adb5bd;
+  }
+
+  .student-pagination-prev,
+  .student-pagination-next {
+      padding: 0 12px;
+      width: auto;
+      min-width: 36px;
+  }
+
+
+
+  /* Responsive */
+  @media (max-width: 768px) {
+      .pagination {
+          gap: 4px;
+          padding: 8px;
+      }
+
+      .pagination-btn {
+          width: 32px;
+          height: 32px;
+          font-size: 13px;
+      }
+
+      .pagination-prev,
+      .pagination-next {
+          padding: 0 8px;
+          min-width: 32px;
+      }
+
+  }

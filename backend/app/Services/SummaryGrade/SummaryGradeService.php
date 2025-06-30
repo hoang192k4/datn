@@ -67,7 +67,6 @@ class SummaryGradeService implements SummaryGradeServiceInterface
         }
     }
 
-
     //cập nhật điểm thi, chuyên cần
     public function update(Request $request,  $id): object|bool
     {
@@ -136,7 +135,7 @@ class SummaryGradeService implements SummaryGradeServiceInterface
     {
         if (($finalScore < 5 && $exam1Score && is_null($exam2Score)) || $exam1Score < 1)
             return SummayryGradeEvaluation::RETEST;
-        if ($finalScore < 5 && $exam2Score)
+        if ($finalScore < 5 && !is_null($exam2Score))
             return SummayryGradeEvaluation::LEARNAGAIN;
         return SummayryGradeEvaluation::PASS;
     }
