@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { StudentStatus } from "../../../enums/StudentStatus";
 import { statusMap } from "../../../utils/studentText";
 import type { Major } from "../../../types/major";
+import Swal from "sweetalert2";
 
 type Props = {
     isOpen: boolean;
@@ -50,6 +51,11 @@ const StudentModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, initialData,
 
             // Nếu không có gì thay đổi thì không gửi
             if (Object.keys(dataToSend).length === 0) {
+                Swal.fire({
+                    title: "Chú ý!",
+                    icon: "warning",
+                    text: "Không có dữ liệu thay đổi khi cập nhật!"
+                })
                 onClose();
                 return;
             }
@@ -131,7 +137,10 @@ const StudentModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, initialData,
                                 <label>Mật khẩu</label>
                                 <input
                                     type="password"
-                                    {...register('password', { required: false })}
+                                    {...register('password', {
+                                        required: false, validate: (value) =>
+                                            !/\s/.test(value) || 'Password không được chứa khoảng trắng'
+                                    })}
                                 />
                                 {errors['password'] && (
                                     <span className="student-modal__error">{(errors as any)['password'].message}</span>
@@ -157,7 +166,10 @@ const StudentModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, initialData,
                                 <label>Mật khẩu</label>
                                 <input
                                     type="password"
-                                    {...register('password', { required: "Bắt buộc" })}
+                                    {...register('password', {
+                                        required: "Bắt buộc", validate: (value) =>
+                                            !/\s/.test(value) || 'Password không được chứa khoảng trắng'
+                                    })}
                                 />
                                 {errors['password'] && (
                                     <span className="student-modal__error">{(errors as any)['password'].message}</span>

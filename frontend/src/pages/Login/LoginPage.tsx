@@ -58,7 +58,10 @@ const LoginPage = () => {
                         </div>
                         <div className="form-group">
                             <label htmlFor="password">Mật Khẩu</label>
-                            <input type="password" id="password" {...register("password", { required: 'Vui lòng nhập passowrd' })} placeholder="Nhập mật khẩu..." onChange={() => setErrorPassword(false)} />
+                            <input type="password" id="password" {...register("password", {
+                                required: 'Vui lòng nhập passowrd', validate: (value) =>
+                                    !/\s/.test(value) || 'Password không được chứa khoảng trắng'
+                            })} placeholder="Nhập mật khẩu..." onChange={() => setErrorPassword(false)} />
                             {errors.password ? <p>{errors.password.message}</p> : errorPassword && <p>Email hoặc mật khẩu không đúng</p>}
                         </div>
                         <div className="form-group">
