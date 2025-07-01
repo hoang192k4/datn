@@ -3,6 +3,7 @@
 namespace App\Repositories\SummaryGrade;
 
 use App\Models\SummaryGrade;
+use Illuminate\Support\Facades\DB;
 use App\Repositories\EloquentRepository;
 
 class SummaryGradeRepository extends EloquentRepository implements SummaryGradeRepositoryInterface
@@ -16,5 +17,30 @@ class SummaryGradeRepository extends EloquentRepository implements SummaryGradeR
     {
         return $this->model->where('student_id', $studentId)
             ->where('subject_id', $subjectId)->orderByDesc('attempt')->first();
+    }
+
+    public function findByStudent($studentId)
+    {
+        $subQuery = DB::table('summary_grades')
+            ->select('subject_id', DB::raw('Max(attempt) as attempt'))
+            ->where('student_id', $studentId)
+            ->groupBy('subject_id');
+
+        $summaryGrades = DB::table('summary_grades as smr')
+            ->join('semesters', 'smr.semester_id', '=', 'semesters.id')
+            ->join('subjects', 'smr.subject_id', '=', 'subjects.id')
+            ->join('course_sections', 'smr.course_section_id', '=', 'course_sections.id')
+            ->joinSub($subQuery, 'subq', function ($join) {
+                $join->on('smr.subject_id', '=', 'subq.subject_id')
+                    ->on('smr.attempt', '=', 'subq.attempt');
+            })
+            ->select([
+                'smr.*',
+                'semesters.name as semester_name',
+                'subjects.name as subject_name',
+                'course_sections.name as course_section_name'
+            ])
+            ->where('smr.student_id', $studentId)->orderBy('smr.semester_id', 'asc')->get();
+        return $summaryGrades;
     }
 }

@@ -140,4 +140,12 @@ class SummaryGradeService implements SummaryGradeServiceInterface
             return SummayryGradeEvaluation::LEARNAGAIN;
         return SummayryGradeEvaluation::PASS;
     }
+
+    public function getSummaryGradesByStudent($studentId)
+    {
+        $summaryGrades =  $this->summaryGradeRepository->findByStudent($studentId);
+        if (!$summaryGrades)
+            return false;
+        return $summaryGrades;
+    }
 }

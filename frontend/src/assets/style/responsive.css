@@ -143,22 +143,6 @@
     }
 
     /* popup student detail class */
-    .course-section-popup-content {
-        flex-direction: column !important;
-        width: 95% !important;
-        max-height: 600px !important;
-        overflow: auto !important;
-    }
-
-    .course-section-popup-content::-webkit-scrollbar {
-        width: 4px !important;
-    }
-
-    .course-section-popup-content::-webkit-scrollbar-thumb {
-        background-color: #1e3a8a !important;
-        border-radius: 4px !important;
-        border: 1px solid grey !important;
-    }
 
     .course-section-popup-left,
     .course-section-popup-right {
@@ -183,10 +167,6 @@
 
     .course-section-popup-student-id {
         font-size: 14px !important;
-    }
-
-    .course-section-popup-info-grid {
-        grid-template-columns: 1fr !important;
     }
 
     .course-section-popup-close-btn {

@@ -9,3 +9,9 @@ export const getListClasses = async (key: string | null = null, page: number | n
     });
     return response.data;
 }
+
+//call api lấy chi tiết tổng kết điêm theo sinh viên 
+export const getSummaryGradesByStudent = async (studentId: number) => {
+    const response = await axiosTeacherInstance.get(`/summary-grades/${studentId}`);
+    return response.data;
+}

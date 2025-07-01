@@ -62,7 +62,6 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
     const handleSubmitAttendance = async (data: any) => {
         if (data.attendances) {
             try {
-                console.log(data);
                 const res = await createUpdateAttendances(data.session_id, data.attendances);
                 if (res) {
                     Swal.fire({

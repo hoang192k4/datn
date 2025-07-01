@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 import { getAllStudents } from "../../services/studentService";
+import { StudentStatus } from "../../enums/StudentStatus";
 
 const SelectWithPaginationStudent = ({ hanldeSelected }: any) => {
     const [value, setValue] = useState(null);
@@ -8,9 +9,9 @@ const SelectWithPaginationStudent = ({ hanldeSelected }: any) => {
         LoadingIndicator: () => null,
     }
 
-    const loadOptionStudents = async (keyword: string, _loadedOptions: any, additional: { page: number } = { page: 1 }): Promise<any> => {
+    const loadOptionStudents = async (keyword: string, _loadedOptions: any, additional: { page: number } = { page: 1 }, status: StudentStatus = StudentStatus.Active): Promise<any> => {
         try {
-            const res = await getAllStudents(keyword, additional.page);
+            const res = await getAllStudents(keyword, additional.page, status);
             const data = res.data;
             return {
                 options: data.students.map((student: any) => ({

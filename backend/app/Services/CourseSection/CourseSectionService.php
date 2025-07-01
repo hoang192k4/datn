@@ -70,7 +70,7 @@ class CourseSectionService implements CourseSectionServiceInterface
         return true;
     }
 
-    public function handleClassSummaryGrade($classId, $subjectId, $courseSection,)
+    public function handleClassSummaryGrade($classId, $subjectId, $courseSection, $semesterId)
     {
         $query = ClassStudent::query();
         $studentIds =  $query->where('class_id', $classId)->where('status', ClassStudentStatus::Studying)->pluck('student_id');
@@ -83,6 +83,7 @@ class CourseSectionService implements CourseSectionServiceInterface
                 $data[] = [
                     'student_id' => $studentId,
                     'subject_id' => $subjectId,
+                    'semester_id' => $semesterId,
                     'attempt' => $latestSummary->attempt + 1,
                     'course_section_id' => $courseSection->id
                 ];
@@ -90,6 +91,7 @@ class CourseSectionService implements CourseSectionServiceInterface
                 $data[] = [
                     'student_id' => $studentId,
                     'subject_id' => $subjectId,
+                    'semester_id' => $semesterId,
                     'attempt' => 1,
                     'course_section_id' => $courseSection->id
                 ];
@@ -103,11 +105,12 @@ class CourseSectionService implements CourseSectionServiceInterface
         $data = $request->validated();
         $classId = $data['class_id'] ?? null;
         $subjectId = $data['subject_id'];
+        $semesterId = $data['semester_id'];
         $courseSection = $this->courseSectionRepository->create($data);
         if (!$courseSection)
             return false;
         if ($classId)
-            $this->handleClassSummaryGrade($classId, $subjectId, $courseSection);
+            $this->handleClassSummaryGrade($classId, $subjectId, $courseSection, $semesterId);
         return true;
     }
 
@@ -119,9 +122,11 @@ class CourseSectionService implements CourseSectionServiceInterface
             $classId = $data['class_id'] ?? null;
             $courseSection = $this->courseSectionRepository->find($courseSectionId);
             $subjectId = $data['subject_id'] ??  $courseSection->subject_id;
+            $semesterId = $data['semester_id'] ?? $courseSection->semester_id;
             if ($courseSection->status !== CourseSectionStatus::InRegister) {
                 throw ValidationException::withMessages(["Lớp học đã diễn ra không thể cập nhật"]);
             }
+
             if ($classId && $classId !== $courseSection->class_id) {
                 $originClassId = $courseSection->class_id;
 
@@ -132,8 +137,9 @@ class CourseSectionService implements CourseSectionServiceInterface
 
                 $courseSection->students()->detach($studentIds);
                 $courseSection->summary_grades()->delete();
-                $this->handleClassSummaryGrade($classId, $subjectId, $courseSection);
+                $this->handleClassSummaryGrade($classId, $subjectId, $courseSection, $semesterId);
             }
+
             if ($subjectId !== $courseSection->subject_id) {
 
                 $summaryGrades = $courseSection->summary_grades;
@@ -146,9 +152,20 @@ class CourseSectionService implements CourseSectionServiceInterface
                     $summaryGrade->update([
                         'subject_id' => $subjectId,
                         'attempt' => $newAttempt,
+                        'semester_id' => $semesterId
                     ]);
                 }
             }
+
+            if ($semesterId !== $courseSection->semester_id) {
+                $summaryGrades = $courseSection->summary_grades;
+                foreach ($summaryGrades as $summaryGrade) {
+                    $summaryGrade->update([
+                        'semester_id' => $semesterId
+                    ]);
+                }
+            }
+
             $result = $this->courseSectionRepository->update($courseSectionId, $data);
             if (!$result) {
                 Db::rollBack();

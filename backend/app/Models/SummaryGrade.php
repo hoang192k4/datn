@@ -12,7 +12,6 @@ class SummaryGrade extends Model
 {
     //
     use HasFactory;
-
     protected $fillable = ['id', 'student_id', 'semester_id', 'subject_id', 'attempt', 'attendance_score', 'avg_score', 'exam1_score', 'exam2_score', 'final_score', 'evaluation', 'note', 'course_section_id', 'created_at', 'updated_at'];
     protected function casts(): array
     {
@@ -25,5 +24,15 @@ class SummaryGrade extends Model
     public function course_section(): BelongsTo
     {
         return $this->belongsTo(CourseSection::class);
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+    public function semester(): BelongsTo
+    {
+        return $this->belongsTo(Semester::class);
     }
 }
