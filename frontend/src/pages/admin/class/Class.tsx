@@ -94,6 +94,8 @@ const Class = () => {
         } finally { setLoading(false); }
     }
 
+  
+
     const handleStudentDetail = async (studentId: number) => {
         const student = studentList.filter(student => student.id === studentId)
         if (student) {
@@ -218,7 +220,7 @@ const Class = () => {
                                         normalizeString(item.name).includes(normalizeString(keyword)))
                                         .map((student, index) => (
                                             <tr key={student.id} onClick={() => handleStudentDetail(student.id)}>
-                                                <td>{++index}</td>
+                                                <td>{index + 1}</td>
                                                 <td>{student.student_code}</td>
                                                 <td>{student.name}</td>
                                                 <td>{student.email}</td>

@@ -1,9 +1,8 @@
 import type { StudentList } from "../../../types/student";
 import { formatDayMonthYear } from "../../../utils/stringUtil";
-
-import { genderMap } from "../../../utils/genderMap";
 import { FaRegEdit } from "react-icons/fa";
 import StudentStatusBadge from "./StudentStatusBadge";
+import { genderMap } from "../../../utils/genderMap";
 
 
 interface Props {

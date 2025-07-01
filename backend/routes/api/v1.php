@@ -40,6 +40,7 @@ Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::clas
     ->prefix('summary-grades')
     ->group(function () {
         Route::put('/{id}', 'update'); //api cập nhật điểm trong summary (cập nhật c.cần, điểm thi)
+        Route::get('/{id}','getSummaryGradesByStudent'); //api xuất toàn bộ điểm số cho sinh viên
     });
 
 

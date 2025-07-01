@@ -229,9 +229,9 @@ const AttendancePage = () => {
                                     <tr>
                                         <th>STT</th>
                                         <th>Thông tin sinh viên</th>
-                                        {listStudentAttendance[0]?.attendance?.map((item, idx) => (
-                                            <th key={idx}>
-                                                Buổi {idx + 1}
+                                        {listStudentAttendance[0]?.attendance?.map((item, index) => (
+                                            <th key={index}>
+                                                Buổi {index + 1}
                                                 <br />
                                                 <small>{new Date(item.session_date).toLocaleDateString()}</small>
                                             </th>

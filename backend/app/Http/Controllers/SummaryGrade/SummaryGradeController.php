@@ -11,6 +11,7 @@ use App\Http\Requests\SummaryGrade\SummaryGradeRequest;
 use App\Http\Resources\Grade\GradeResource;
 use App\Http\Resources\Grade\GradeResourceCollection;
 use App\Http\Resources\Student\StudentGradeResource;
+use App\Http\Resources\SummaryGrade\SummaryGradeByStudentResource;
 use App\Models\CourseSection;
 use App\Models\Grade;
 use App\Models\SummaryGrade;
@@ -44,6 +45,22 @@ class SummaryGradeController extends BaseController
             if (!$response)
                 return $this->jsonResponseError();
             return $this->jsonResponseSuccessNoData();
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function getSummaryGradesByStudent($studentId)
+    {
+        try {
+            $summaryGrades = $this->service->getSummaryGradesByStudent($studentId);
+            if (!$summaryGrades)
+                return $this->jsonResponseError();
+            $result = $summaryGrades->map(function ($summareGrade) {
+                return new SummaryGradeByStudentResource($summareGrade);
+            });
+            return $this->jsonResponseSuccess($result);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);
