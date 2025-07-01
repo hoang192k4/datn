@@ -1,4 +1,5 @@
 import type { CourseSectionStatus } from "../enums/CourseSectionStatus"
+import type { SemesterList } from "./semester";
 
 
 export interface CourseSection {
@@ -27,7 +28,7 @@ export interface CourseSectionSchedule {
     end_date: string;   // ISO format date string
     week_total: number;
     subject: string;
-    semester: string;
+    semester: SemesterList;
     status: string; // tùy enum thực tế bạn có thể thu hẹp hơn
     teacher: string;
     created_at: string;

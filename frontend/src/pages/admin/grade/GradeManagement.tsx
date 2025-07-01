@@ -474,7 +474,6 @@ const GradeManagement: React.FC = () => {
         />
       );
     }
-    console.log(value, cellType);
     return (
       <div
         className="gm-editable-cell"

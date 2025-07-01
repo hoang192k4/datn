@@ -12,9 +12,8 @@ class SemesterResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'start_time' => $this->start_time,
-            'end_time' => $this->end_time,
-            'year' => $this->year,
+            'start_year' => $this->start_year,
+            'end_year' => $this->end_year,
         ];
     }
 }
