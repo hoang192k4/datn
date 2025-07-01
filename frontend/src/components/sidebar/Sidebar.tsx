@@ -31,8 +31,8 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         {
             icon: "👥",
             url: "sinh-vien",
-            label: "Danh Sách Sinh Viên",
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            label: "Quản lý Sinh Viên",
+            roles: ["faculty_admin", "department_admin"],
         },
         {
             icon: "📚",
@@ -47,20 +47,18 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             label: "Quản Lý Điểm",
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
             //roles: ["subject_teacher"]
-
         },
         {
             icon: "📅",
             url: "thoi-khoa-bieu",
             label: "Thời Khóa Biểu",
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            roles: ["faculty_admin", "department_admin"],
         },
         {
-            icon: "📁",
-            url: "tai-lieu",
-            label: "Tài Liệu",
-            // roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
-            roles: ["subject_teacher"]
+            icon: "📅",
+            url: "thoi-khoa-bieu-giang-vien",
+            label: "Thời Khóa Biểu",
+            roles: ["subject_teacher", "homeroom_teacher"],
         },
         {
             icon: "📅",
@@ -68,6 +66,12 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             label: "Quản Lý Điểm Danh",
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
             //roles: ["subject_teacher"]
+        },{
+            icon: "📁",
+            url: "tai-lieu",
+            label: "Tài Liệu",
+            // roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            roles: ["subject_teacher"]
         },
         {
             icon: "📢",
@@ -75,7 +79,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             label: "Thông Báo",
             subItems: [
                 { icon: "📋", url: "thong-bao/danh-sach", label: "Danh Sách TB", roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"] },
-                { icon: "📝", url: "thong-bao/khoa-va-sinh-vien", label: "Thông Báo Từ Khoa & Sinh Viên", roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"] },
+                { icon: "📝", url: "thong-bao/khoa-va-sinh-vien", label: "Thông Báo Từ Khoa & Sinh Viên", roles: ["subject_teacher", "homeroom_teacher"] },
             ],
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },

@@ -38,7 +38,7 @@ class CourseSectionService implements CourseSectionServiceInterface
         $page = $data['page'] ?? 1;
         $key = $request->validated()['key'] ?? null;
         return  $this->courseSectionRepository->getList(
-            ['teacher_id' => $currentTeacherId, 'status' => CourseSectionStatus::InProgress, 'name' => ['like', $key]],
+            ['teacher_id' => $currentTeacherId, 'status' => ['!=', CourseSectionStatus::InRegister], 'name' => ['like', $key]],
             ['name' => 'asc', 'created_at' => 'desc'],
             [],
             $limit,

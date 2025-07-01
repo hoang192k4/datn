@@ -170,14 +170,16 @@
  }
 
  .gm-btn-secondary {
-     background: #f8f9fa;
-     color: #495057;
-     border: 1px solid #dee2e6;
+     background: linear-gradient(135deg, #3b4d99 0%, #2d3a7a 100%);
+     color: rgb(248, 247, 247);
+     border-color: white;
  }
 
  .gm-btn-secondary:hover {
-     background: #e9ecef;
+     background: linear-gradient(135deg, #687ddc 0%, #2f3d82 100%);
+
  }
+
 
  .gm-table-container {
      background: white;
@@ -195,11 +197,12 @@
  }
 
  .gm-table-header {
-     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+     background: linear-gradient(135deg, #35468e 0%, #2d3a7a 100%);
+     color: white;
+     border-color: #363e67;
      padding: 12px 8px;
      text-align: center;
      font-weight: 600;
-     color: #495057;
      border-bottom: 2px solid #dee2e6;
      border-right: 1px solid #dee2e6;
      position: sticky;
@@ -221,7 +224,7 @@
  }
 
  .gm-grade-table tr:hover {
-     background: #f8f9ff;
+     background: wheat;
  }
 
 
@@ -738,7 +741,7 @@
  .search-container .icon {
      position: absolute;
      right: 10px;
-     top: 50%;
+     top: 35%;
      transform: translateY(-50%);
      pointer-events: none;
      color: #888;

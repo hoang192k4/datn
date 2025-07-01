@@ -16,7 +16,7 @@ import type { Major } from "../../../types/major";
 import { getMajors } from "../../../services/majorService";
 import { FaCloudUploadAlt, FaDownload } from "react-icons/fa";
 import ImportStudentModal from "./ImportStudentModal";
-import { Loading } from "../../../components/ui/Loading/Loading";
+import { Loading } from "../../../components/ui/loading/Loading";
 import ExportStudentsModal from "./ExportStudentModal";
 
 
@@ -40,6 +40,7 @@ const StudentManagement = () => {
     const [exportStudent, setExportStudent] = useState<boolean>(false);
     const [createLoading, setCreateLoading] = useState(false);
     const [updateLoading, setUpdateLoading] = useState(false);
+    const [exportLoading, setExportLoading] = useState(false);
 
 
     const fetchStudents = async (key: string, page: number, filter: string) => {
@@ -113,7 +114,7 @@ const StudentManagement = () => {
         return pages;
     };
 
-    const statusOptions = Object.entries(StudentStatus).map(([key, value]) => ({
+    const statusOptions = Object.entries(StudentStatus).map(([_key, value]) => ({
         label: statusMap[value],
         value: value
     }));
@@ -121,6 +122,7 @@ const StudentManagement = () => {
 
     const handleExportExcel = async (status: string | null) => {
         try {
+            setExportLoading(true);
             const response = await exportStudentsExcel(status);
             const disposition = response.headers['content-disposition'];
             const match = disposition && disposition.match(/filename="?(.+)"?/);
@@ -136,6 +138,8 @@ const StudentManagement = () => {
             toast.success('Xuất danh sách sinh viên thành công!');
         } catch (error) {
             toast.warning('Lỗi khi xuất danh sách sinh viên');
+        } finally {
+            setExportLoading(false);
         }
     }
 
@@ -235,7 +239,7 @@ const StudentManagement = () => {
             const response = await importExelStudent(formData);
             if (response.status === HttpStatus.SUCCESS) {
                 Swal.fire({
-                    title: 'Thêm sinh viên với excel thành công!',
+                    title: 'Import excel thành công!',
                     icon: 'success',
                 });
                 fetchStudents('', 1, '');
@@ -261,6 +265,7 @@ const StudentManagement = () => {
             {updateLoading ? <Loading title="Đang cập nhật sinh viên" /> : <> </>}
             {createLoading ? <Loading title="Đang thêm sinh viên" /> : <> </>}
             {importLoading ? <Loading title="Đang import sinh viên" /> : <> </>}
+            {exportLoading ? <Loading title="Đang xuất danh sách sinh viên" /> : <> </>}
             <ToastContainer />
             <PageHeader title="Quản lí sinh viên" subtitle="Hệ thống quản lí sinh viên" />
             <div className="gm-grade-section">
@@ -273,7 +278,7 @@ const StudentManagement = () => {
                     </div>
 
                     <div className="gm-grade-actions">
-                        <button className="btn-primary" onClick={handleCreateStudent}>Thêm sinh viên</button>
+                        <button className="btn-primary-student" onClick={handleCreateStudent}>Thêm sinh viên</button>
                     </div>
                 </div>
                 <div className="gm-grade-controls">
@@ -355,7 +360,8 @@ const StudentManagement = () => {
                         </tbody>
                     </table>
                 </div>
-                <div className="pagination-container">
+
+                {students.length > 0 ? (<div className="pagination-container">
                     <div className="pagination-info">
                         Hiển thị từ <strong>{paginate?.from}</strong> đến <strong>{paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> sinh viên
                     </div>
@@ -410,8 +416,7 @@ const StudentManagement = () => {
                             <button className="go-btn" onClick={() => { setPage(gotoPage) }}>Đi</button>
                         </div>
                     </div>
-                </div>
-
+                </div>) : <> </>}
             </div>
 
             {<StudentModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={(data) => { handleSubmit(data); setModalOpen(false) }} initialData={selectedStudent} majors={majors} />}

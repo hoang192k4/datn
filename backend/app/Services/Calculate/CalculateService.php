@@ -48,7 +48,7 @@ class CalculateService implements CalculateServiceInterface
     {
         $attendanceScore = $summaryGrade->attendance_score ?? 0;
         $avgScore = $summaryGrade->avg_score ?? 0;
-        $examScore = $summaryGrade->exam2_score == 0 ? $summaryGrade->exam1_score : $summaryGrade->exam2_score;
+        $examScore = $summaryGrade->exam2_score ?? $summaryGrade->exam1_score;
         $finalScore = $attendanceScore * 0.1 + $avgScore * 0.4 + $examScore * 0.5;
         return $finalScore ?? 0;
     }

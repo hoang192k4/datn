@@ -35,11 +35,6 @@ class CourseSection extends Model
         return $this->belongsTo(CustomClass::class, 'class_id');
     }
 
-    public function classroom(): BelongsTo
-    {
-        return $this->belongsTo(ClassRoom::class, 'classroom_id');
-    }
-
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);

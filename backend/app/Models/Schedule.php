@@ -14,6 +14,8 @@ class Schedule extends Model
     //
     use HasFactory;
 
+    protected $fillable =  ['id', 'course_section_id', 'period_start', 'period_end', 'period_number', 'session', 'day_of_week', 'classroom_id'];
+
     protected function casts(): array
     {
         return [
@@ -28,8 +30,13 @@ class Schedule extends Model
         return $this->hasMany(Session::class);
     }
 
-    public function course_section():BelongsTo
+    public function course_section(): BelongsTo
     {
         return $this->belongsTo(CourseSection::class);
+    }
+
+    public function classroom(): BelongsTo
+    {
+        return $this->belongsTo(ClassRoom::class);
     }
 }

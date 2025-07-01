@@ -455,7 +455,6 @@ const GradeManagement: React.FC = () => {
   };
 
   const renderEditableCell = (cellType: any, studentId: any, value: any = null, gradeTypeId: any = null, attempt: number | null = null, gradeId = null, summaryId: number | null = null) => {
-    console.log(value, typeof value);
     const cellKey = `${cellType}-${studentId}-${gradeTypeId || ''}-${attempt || ''}-${gradeId || ''}-${summaryId || ''}`;
     const isEditing = editingCell === cellKey;
 
@@ -475,13 +474,13 @@ const GradeManagement: React.FC = () => {
         />
       );
     }
-
+    console.log(value, cellType);
     return (
       <div
         className="gm-editable-cell"
         onDoubleClick={() => handleCellDoubleClick(cellType, studentId, gradeTypeId, attempt, gradeId, summaryId)}
       >
-        {(value !== null ? value : '-') || (cellType === 'notes' ? '' : '-')}
+        {(value === null ? '-' : value)}
       </div>
     );
   };

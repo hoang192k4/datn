@@ -13,6 +13,7 @@ class Session extends Model
     //
     use HasFactory;
 
+    protected $fillable = ['id', 'study_week', 'study_date', 'start_time', 'end_time', 'status', 'schedule_id'];
     protected function casts(): array
     {
         return [

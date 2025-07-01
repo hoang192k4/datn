@@ -26,7 +26,7 @@ const StudentItem = ({ student, onEdit, setTypeModal, index }: Props) => {
             <td>{student.graduation_date ? formatDayMonthYear(student.graduation_date) : 'Chưa tốt nghiệp'}</td>
             <td>{student.major}</td>
             <td> <StudentStatusBadge status={student.status} /></td>
-            <td style={{ textAlign: 'center' }}> <button className="btn-primary" type="button" onClick={() => { onEdit(student); setTypeModal() }}> <FaRegEdit /> </button></td>
+            <td style={{ textAlign: 'center' }}> <button className="btn-primary-student" type="button" onClick={() => { onEdit(student); setTypeModal() }}> <FaRegEdit /> </button></td>
         </>
     );
 }

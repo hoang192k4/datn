@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 class ServiceServiceProvider extends ServiceProvider
 {
     protected array $services = [
+        'App\Services\Schedule\ScheduleServiceInterface' => 'App\Services\Schedule\ScheduleService',
         'App\Services\Student\StudentServiceInterface' => 'App\Services\Student\StudentService',
         'App\Services\CourseSection\CourseSectionServiceInterface' => 'App\Services\CourseSection\CourseSectionService',
         'App\Services\Notification\NotificationServiceInterface' => 'App\Services\Notification\NotificationService',
