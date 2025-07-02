@@ -78,4 +78,14 @@ class TeacherService implements TeacherServiceInterface
             ->appends(['limit' => $limit]);
         return $teacherList;
     }
+
+    public function getTeachersByStudentId(Request $request, $studentId)
+    {
+        $data = $request->validated();
+        $key = $data['key'] ?? null;
+        $limit = $data['limit'] ?? 10;
+        $page = $data['page'] ?? 1;
+
+        return $this->teacherRepository->getTeachersByStudentId($studentId, $page, $limit, $key);
+    }
 }

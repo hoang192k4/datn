@@ -97,7 +97,7 @@ const StudentSchedule: React.FC = () => {
                                 <th className="session-header">
                                     Buổi
                                 </th>
-                                {schedule?.schedule.map((day, index) => (
+                                {schedule?.schedule.map((day, _index) => (
                                     <th key={day.date} className="day-header">
                                         <div>{day.day_name}</div>
                                         <div className="day-date">{day.date}</div>

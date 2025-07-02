@@ -97,4 +97,9 @@ class Teacher extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(CustomClass::class);
     }
+
+    public function course_sections():HasMany
+    {
+        return $this->hasMany(CourseSection::class);
+    }
 }

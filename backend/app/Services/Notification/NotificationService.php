@@ -235,7 +235,7 @@ class NotificationService implements NotificationServiceInterface
             if ($guard == Guard::TEACHER)
                 $notifications = $this->repository->getList(['teacher_receive_id' => $currentUserId, 'type' =>  $type], ['created_at' => 'desc'], ['teacher'], $limit, $page, ['title' => ['like', $key], 'content' => ['like', $key]]);
             if ($guard == Guard::STUDENT) {
-                $notifications = $this->repository->getList(['student_id' => $currentUserId, 'type' => ['!=', NotificationType::StudentSend]], ['created_at' => 'desc'], ['teacher'], $limit, $page);
+                $notifications = $this->repository->getList(['student_id' => $currentUserId, 'type' => ['!=', NotificationType::StudentSend], 'type' => $type], ['created_at' => 'desc'], ['teacher'], $limit, $page, ['title' => ['like', $key], 'content' => ['like', $key]]);
             }
 
             return $notifications;
