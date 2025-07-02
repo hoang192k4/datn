@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Carbon\Carbon;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use App\Traits\AuthstudentApi;
+use App\Traits\AuthStudentApi;
 use App\Services\AuthServiceApi;
 use App\Supports\ResponseWithJson;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -21,7 +21,7 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
  */
 class StudentAuthController extends BaseController
 {
-    use AuthstudentApi, ResponseWithJson;
+    use AuthStudentApi, ResponseWithJson;
     public function __construct()
     {
         $this->middleware('auth:student')->except(['login', 'register', 'refresh']);
