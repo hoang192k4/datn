@@ -47,6 +47,7 @@ class NotificationController extends BaseController
     public function sendNotifications(NotificationRequest $request)
     {
         try {
+            $this->logInfo('thong bao',$request->all());
             $response = $this->notificationService->sendNotifications($request);
             if (!$response)
                 return $this->jsonResponseError();

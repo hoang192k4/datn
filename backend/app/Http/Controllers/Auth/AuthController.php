@@ -108,3 +108,4 @@ class AuthController extends BaseController
             ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $secure, true, false, 'Lax');
     }
 }
+    
