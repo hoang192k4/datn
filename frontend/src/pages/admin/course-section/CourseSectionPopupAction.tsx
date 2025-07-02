@@ -100,6 +100,7 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
             setErrorSubject("Vui lòng chọn môn học");
             return;
         }
+        formData.semester_id = formData.semester.id;
         try {
             setLoadingCourseSection(true);
             const res = await createCourseSection(formData);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import "./Document.css";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
@@ -11,7 +11,6 @@ import { MdDelete, MdSaveAs } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { FaEdit } from "react-icons/fa";
-import debounce from "lodash.debounce";
 import { HttpStatus } from "../../../enums/HttpStatus";
 
 
@@ -39,7 +38,7 @@ const SubjectDetail = () => {
             const documentDetail = await getDetailDocumentBySubjectId(Number(id));
             setDataDocument(documentDetail.data);
         } catch (errors: any) {
-            if(errors.status === HttpStatus.FORBIDDEN)
+            if (errors.status === HttpStatus.FORBIDDEN)
                 navigate('/403');
         } finally { setLoadingGetDocumentDetail(false) }
     }
@@ -52,6 +51,7 @@ const SubjectDetail = () => {
         getListSubject();
     }, [id]);
 
+
     const filterSubjects = (keyword: string) => {
         const result = listSubject.filter((subject) =>
             subject.subject_name.toLowerCase().includes(keyword.toLowerCase())
@@ -59,12 +59,11 @@ const SubjectDetail = () => {
         setFilteredSubjects(result);
     };
 
-    const debouncedFilter = useMemo(() => debounce(filterSubjects, 400), []);
-
     useEffect(() => {
-        debouncedFilter(query);
-        return () => debouncedFilter.cancel();
-    }, [query, debouncedFilter]);
+        if (listSubject.length > 0) {
+            filterSubjects(query);
+        }
+    }, [query, listSubject]);
 
     const handleAddChapter = async (chapter: ChapterInstance) => {
         try {
@@ -291,16 +290,18 @@ const SubjectDetail = () => {
                         <input type="text" value={query} onChange={(e: any) => setQuery(e.target.value)} placeholder="Tìm kiếm môn học"
                             onFocus={() => setShowListSubjectSearch(true)}
                             onBlur={() => setTimeout(() => setShowListSubjectSearch(false), 150)}
-                             />
-                        {showListSubjectSearch && filteredSubjects.length > 0 && (
+                        />
+                        {showListSubjectSearch &&
                             <ul className="suggestion-box">
-                                {filteredSubjects.map((subject) => (
-                                    <li key={subject.id}>
-                                        <Link to={`${url}/${subject.id}`} className="suggestion-link">{subject.subject_name} </Link>
-                                    </li>
-                                ))}
+                                {filteredSubjects.length > 0 ?
+                                    filteredSubjects.map((subject) => (
+                                        <li key={subject.id}>
+                                            <Link to={`${url}/${subject.id}`} className="suggestion-link">{subject.subject_name} </Link>
+                                        </li>
+                                    )) : <li><Link to="#" className="suggestion-link" style={{ color: '#ccc' }}>Không có dữ liệu phù hợp</Link></li>
+                                }
                             </ul>
-                        )}
+                        }
                     </div>
                 </h1>
                 <div className="subject-detail-buttons">
