@@ -41,12 +41,12 @@ export const createCourseSection = async (formData: CourseSection) => {
 }
 
 export const updateCourseSection = async (courseSectionId: number, formData: Partial<CourseSection>) => {
-    const response = await axiosTeacherInstance.put(`/course-sections/${courseSectionId}`, formData);
+    const response = await axiosTeacherInstance.put(`/course-sections/${courseSectionId}`, { ...formData, });
     return response.data;
 }
 
 export const updateCourseSectionStatus = async (courseSectionId: number, status: CourseSectionStatus) => {
-    const response = await axiosTeacherInstance.patch(`/course-sections/${courseSectionId}`,{status});
+    const response = await axiosTeacherInstance.patch(`/course-sections/${courseSectionId}`, { status });
     return response.data;
 }
 

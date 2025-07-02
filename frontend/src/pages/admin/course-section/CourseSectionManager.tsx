@@ -190,7 +190,7 @@ const CourseSectionManager = () => {
                             }} >
                                 <option value="">--Tất Cả Học Kỳ--</option>
                                 {semesterList && semesterList.map(semester => (
-                                    <option key={semester.id} value={semester.id}>{semester.name}</option>
+                                    <option key={semester.id} value={semester.id}>{semester.name} ( {semester.start_year} - {semester.end_year} )</option>
                                 ))}
 
                             </select>
@@ -234,7 +234,12 @@ const CourseSectionManager = () => {
                                     <td>{courseSection.week_total}</td>
                                     <td>{courseSection.class || <small>Chưa cập nhật</small>}</td>
                                     <td>{courseSection.subject || <small>Chưa cập nhật</small>}</td>
-                                    <td>{courseSection.semester || <small>Chưa cập nhật</small>}</td>
+                                    <td>{courseSection.semester.name ?
+                                        <>
+                                            {courseSection.semester.name} <br />
+                                            ( {courseSection.semester.start_year} - {courseSection.semester.end_year} )
+                                        </> :
+                                        <small>Chưa cập nhật</small>}</td>
                                     <td>
                                         <div className="status-dropdown-wrapper" >
                                             <span onClick={() => toggleDropdown(courseSection.id)}

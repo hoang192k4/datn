@@ -50,6 +50,13 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         },
         {
             icon: "📅",
+            url: "diem-danh",
+            label: "Quản Lý Điểm Danh",
+            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            //roles: ["subject_teacher"]
+        },
+        {
+            icon: "📅",
             url: "thoi-khoa-bieu",
             label: "Thời Khóa Biểu",
             roles: ["faculty_admin", "department_admin"],
@@ -59,14 +66,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             url: "thoi-khoa-bieu-giang-vien",
             label: "Thời Khóa Biểu",
             roles: ["subject_teacher", "homeroom_teacher"],
-        },
-        {
-            icon: "📅",
-            url: "diem-danh",
-            label: "Quản Lý Điểm Danh",
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
-            //roles: ["subject_teacher"]
-        },{
+        }, {
             icon: "📁",
             url: "tai-lieu",
             label: "Tài Liệu",

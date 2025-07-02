@@ -37,12 +37,29 @@ class SummaryGradeRepository extends EloquentRepository implements SummaryGradeR
             ->select([
                 'smr.*',
                 'semesters.name as semester_name',
+                'semesters.id as semester_id',
                 'subjects.name as subject_name',
                 'semesters.start_year as start_year',
                 'semesters.end_year as end_year',
                 'course_sections.name as course_section_name'
             ])
-            ->where('smr.student_id', $studentId)->orderBy('semesters.start_year','asc')->get();
-        return $summaryGrades;
+            ->where('smr.student_id', $studentId)->orderBy('semesters.start_year', 'asc')
+            ->orderBy('semesters.start_year', 'asc')
+            ->orderBy('semesters.end_year', 'asc')
+            ->orderBy('semesters.name', 'asc')->get();
+
+        $grouped = $summaryGrades->groupBy('semester_id')->map(function ($items) {
+            $first = $items->first();
+            return (object)[
+                'semester_id' => $first->semester_id,
+                'semester_name' => $first->semester_name,
+                'start_year' => $first->start_year,
+                'end_year' => $first->end_year,
+                'summaries' => $items->map(function ($item) {
+                    return $item;
+                })->values(),
+            ];
+        })->values();
+        return $grouped;
     }
 }

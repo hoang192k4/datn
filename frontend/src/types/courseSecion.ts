@@ -2,6 +2,7 @@ import type { CourseSectionStatus } from "../enums/CourseSectionStatus"
 import type { SemesterList } from "./semester";
 
 
+
 export interface CourseSection {
     id: number,
     name: string,
@@ -13,7 +14,7 @@ export interface CourseSection {
     teacher_id?: number,
     subject: string,
     subject_id?: number,
-    semester: string,
+    semester: SemesterList,
     semester_id: number,
     week_total: number,
     status: CourseSectionStatus,

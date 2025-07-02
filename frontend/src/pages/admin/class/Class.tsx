@@ -53,6 +53,7 @@ const Class = () => {
         } finally { setLoading(false); }
     }
 
+
     useEffect(() => {
         fetchCourseSection();
     }, [])
@@ -66,20 +67,18 @@ const Class = () => {
     ).sort((yearA, yearB) => yearB - yearA);
 
     const semesterOptions = Array.from(
-        new Set(
-            listCourseSection.map(item => (
-                item.semester
-            ))
-        )
-    ).sort((semesterA, semesterB) => {
-        const tmpA = parseInt(semesterA.replace(/\D/g, '')); // Lấy số trong chuỗi
-        const tmpB = parseInt(semesterB.replace(/\D/g, ''));
-        return tmpA - tmpB;
-    })
+        new Map(
+            listCourseSection.map(item => [item.semester.id, item.semester])
+        ).values()
+    ).sort((a, b) => a.id - b.id)
+        .map(sem => ({
+            label: `${sem.name}  ( ${sem.start_year} - ${sem.end_year} )`,
+            value: sem.id,
+        }));
 
     const filterCourseSection = listCourseSection && listCourseSection.filter((courseSection) => {
         const yearMatch = selectedYear === '' || new Date(courseSection.start_date).getFullYear() === parseInt(selectedYear);
-        const semesterMatch = selectedSemester === '' || courseSection.semester === selectedSemester;
+        const semesterMatch = selectedSemester === '' || courseSection.semester.id === Number(selectedSemester);
         return yearMatch && semesterMatch;
     })
 
@@ -155,7 +154,7 @@ const Class = () => {
                                 <select className="select-filter reposive-select-mb" onChange={(e: any) => setSelectedSemester(e.target.value)} value={selectedSemester}>
                                     <option value="">--Lọc theo học kỳ--</option>
                                     {semesterOptions.map(semester => (
-                                        <option key={semester} value={semester}>{semester}</option>
+                                        <option key={semester.value} value={semester.value}>{semester.label}</option>
                                     ))}
                                 </select>
                                 <select className="select-filter reposive-select-mb" onChange={(e: any) => setSelectedYear(e.target.value)} value={selectedYear}>
