@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Carbon\Carbon;
 use App\Models\Student;
 use Illuminate\Http\Request;
-use App\Traits\AuthstudentApi;
+use App\Traits\AuthStudentApi;
 use App\Traits\AuthTeacherApi;
 use App\Services\AuthServiceApi;
 use App\Supports\ResponseWithJson;
@@ -24,7 +24,7 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
  */
 class AuthController extends BaseController
 {
-    use AuthstudentApi, ResponseWithJson, AuthTeacherApi;
+    use AuthStudentApi, ResponseWithJson, AuthTeacherApi;
     public function __construct()
     {
         $this->middleware('auth:teacher,student')->except('refresh');
