@@ -62,6 +62,7 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
     const handleSubmitAttendance = async (data: any) => {
         if (data.attendances) {
             try {
+                setLoadingAttendanceCreate(true);
                 const res = await createUpdateAttendances(data.session_id, data.attendances);
                 if (res) {
                     Swal.fire({
@@ -73,7 +74,7 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
                 }
             } catch (erorrs) {
                 console.log(errors)
-            }
+            } finally { setLoadingAttendanceCreate(false); }
         }
     }
     const handleSelectSession = async (sessionId: number) => {
