@@ -31,11 +31,14 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 class TeacherAuthController extends BaseController
 {
     use AuthTeacherApi, ResponseWithJson;
+
+    protected $secure;
     public function __construct(TeacherRepositoryInterface $repository)
     {
         $this->middleware('auth:teacher')->except(['login', 'register', 'refresh']);
         $this->repository =  $repository;
         $this->middleware('role:faculty_admin,subject_teacher,homeroom_teacher,department_admin')->except(['login', 'register', 'refresh']);
+        $this->secure = config('session.secure');
     }
 
     /**
@@ -185,8 +188,8 @@ class TeacherAuthController extends BaseController
             ->setTTL($refreshTtl)
             ->tokenById($userId);
         $this->logInfo($userId ?? 'Không có ');
-        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl, '/', null, false, true, false, 'Lax');
-        $refreshCookie = Cookie::make('refresh_token', $refreshToken, $refreshTtl, '/', null, false, true, false, 'Lax');
+        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl, '/', null, $this->secure, true, false, 'Lax');
+        $refreshCookie = Cookie::make('refresh_token', $refreshToken, $refreshTtl, '/', null, $this->secure, true, false, 'Lax');
         return response()->json([
             'access_token' => $accessToken,
             'token_type' => 'bearer',

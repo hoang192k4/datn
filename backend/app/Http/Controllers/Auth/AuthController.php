@@ -87,6 +87,7 @@ class AuthController extends BaseController
 
     protected function respondWithTokens($accessToken, $user, $guard)
     {
+        $secure = config('session.secure');
         $accessTtl = (int)config('jwt.ttl'); // phút
         $refreshTtl = (int)config('jwt.refresh_ttl'); // phút
         $userId = $user->id;
@@ -103,7 +104,7 @@ class AuthController extends BaseController
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => $user->name,
         ])
-            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, false, true, false, 'Lax')
-            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, false, true, false, 'Lax');
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $secure, true, false, 'Lax')
+            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $secure, true, false, 'Lax');
     }
 }

@@ -22,9 +22,11 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 class StudentAuthController extends BaseController
 {
     use AuthStudentApi, ResponseWithJson;
+    protected $secure;
     public function __construct()
     {
         $this->middleware('auth:student')->except(['login', 'register', 'refresh']);
+        $this->secure = config('session.secure');
     }
 
     /**
@@ -178,7 +180,7 @@ class StudentAuthController extends BaseController
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => new StudentResource($user),
         ])
-            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, false, true, false, 'Lax')
-            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, false, true, false, 'Lax');
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Lax')
+            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $this->secure, true, false, 'Lax');
     }
 }
