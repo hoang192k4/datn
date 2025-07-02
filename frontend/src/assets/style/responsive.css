@@ -199,7 +199,10 @@
 @media (max-width: 576px) {
     .navbar {
         padding: 5px 20px !important;
-        height: 100px !important;
+    }
+
+    .login-section {
+        margin-top: 70px !important;
     }
 
     .logo {
@@ -230,6 +233,7 @@
         width: 100% !important;
         margin: 4px 0 !important;
     }
+
     .teacher-modal-box {
         height: 80% !important;
     }

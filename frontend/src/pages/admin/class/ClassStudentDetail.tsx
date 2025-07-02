@@ -51,6 +51,7 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
         if (student)
             fetchSummaryGradeByStudent(student.id);
     }, [student])
+
     const handleAddStudentByCourseSection = async (studentId: number | undefined) => {
         Swal.fire({
             title: "Bạn đồng ý thêm sinh viên này vào lớp?",
@@ -88,18 +89,6 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
         })
     }
 
-    const groupedBySemester = summaryGradeByStudent.reduce((acc: any, item) => {
-        const key = item.semester_id;
-        if (!acc[key]) {
-            acc[key] = {
-                semester_name: item.semester_name,
-                year: new Date(item.created_at).getFullYear(),
-                grades: []
-            };
-        }
-        acc[key].grades.push(item);
-        return acc;
-    }, {});
     return (
         <>
 
@@ -167,11 +156,11 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
                     <div className="course-section-summary">
                         {loading ? <Loading /> :
 
-                            Object.values(groupedBySemester).length > 0 ?
+                            summaryGradeByStudent.length > 0 ?
                                 <>
-                                    {Object.values(groupedBySemester).map((group: any, item) => (
+                                    {summaryGradeByStudent.map((semester: any, item) => (
                                         <div key={item}>
-                                            <h3 style={{ marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid #1e3a8a' }}>{group.semester_name} - {group.year}</h3>
+                                            <h3 style={{ marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid #1e3a8a' }}>{semester.name} ( {semester.start_year} - {semester.end_year} )</h3>
                                             <table className="course-section-summary-table">
                                                 <thead>
                                                     <tr>
@@ -187,7 +176,7 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {group.grades.map((smrStudent: any, index: number) => (
+                                                    {semester.summaries.map((smrStudent: any, index: number) => (
                                                         <tr key={smrStudent.id} className={(smrStudent.evaluation === 'poor' ||
                                                             smrStudent.evaluation === 'very_poor') ? 'poor-evaluation' : ''}>
                                                             <td>{index + 1}</td>

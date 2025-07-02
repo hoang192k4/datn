@@ -329,22 +329,22 @@ const StudentManagement = () => {
                     </div>
                 </div>
 
-                <div id="attendance-form" className="gm-table-container">
+                <div className="gm-table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th> #</th>
-                                <th>Mã sinh viên</th>
+                                <th>#</th>
+                                <th>Mã Sinh Viên</th>
                                 <th>Email</th>
-                                <th>Họ tên</th>
-                                <th>Ngày sinh</th>
-                                <th>Địa chỉ</th>
-                                <th>Giới tính</th>
-                                <th>Thời gian nhập học</th>
-                                <th>Thời gian tốt nghiệp</th>
-                                <th>Ngành học</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
+                                <th>Họ Tên</th>
+                                <th>Ngày Sinh</th>
+                                <th>Địa Chỉ</th>
+                                <th>Giới Tính</th>
+                                <th>Thời Gian Nhập Học</th>
+                                <th>Thời Gian Tốt Nghiệp</th>
+                                <th>Ngành Học</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
                             </tr>
                         </thead>
                         <tbody>

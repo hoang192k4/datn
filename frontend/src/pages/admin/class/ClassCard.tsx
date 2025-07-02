@@ -23,8 +23,7 @@ const ClassCard = (props: PropsClass) => {
                     <span> (Tổng số sinh viên : {props.course_section.students_total})</span>
                 </div>
                 <p>Ngày bắt đầu: {formatDayMonthYear(props.course_section.start_date)}</p>
-                <p>{props.course_section.semester}</p>
-                {/* <p>Phòng học: {props.course_section.classroom}</p> */}
+                <p>{props.course_section.semester.name}</p>
                 <button onClick={() => handleStudentList(props.course_section.id, props.course_section.name, props.course_section.students_total)}>Xem danh sách sinh viên</button>
             </div>
         </>

@@ -35,7 +35,7 @@ class TeacherExport implements FromCollection, WithHeadings, WithMapping, Should
 
     public function headings(): array
     {
-        return ['STT', 'Mã Giảng Viên', 'Họ Tên', 'Email', 'Ngày sinh', 'Giới tính', 'Địa chỉ', 'Chức Vụ', 'Trạng thái'];
+        return ['STT', 'Mã Giáo Viên', 'Họ Tên', 'Email', 'Ngày sinh', 'Giới tính', 'Địa chỉ', 'Vai Trò', 'Trạng thái'];
     }
 
     public function map($teacher): array

@@ -70,7 +70,7 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
         }
         else
             reset({
-                semester_id: 1,
+                semester: { id: 1, name: '' },
                 name: '',
                 start_date: '',
                 end_date: '',
@@ -122,20 +122,27 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
             setErrorSubject("Vui lòng chọn môn học");
             return;
         }
-        const allValues = getValues();
-
-        const updateValues: Partial<CourseSection> = {};
+        let allValues = getValues();
+        let updateValues: Partial<CourseSection> = {};
 
         for (const key in allValues) {
             // Bỏ qua các key không cần check
             if (key === 'id' || key === 'created_at') continue;
 
-            const currentValue = allValues[key as keyof CourseSection];
-            const originalValue = selectedCourseSection?.[key as keyof CourseSection];
+            let currentValue = allValues[key as keyof CourseSection];
+            let originalValue = selectedCourseSection?.[key as keyof CourseSection];
 
-            // So sánh, nếu khác mới thêm vào updateValues
-            if (currentValue !== originalValue) {
-                updateValues[key as keyof CourseSection] = currentValue as any;
+            if (key === 'semester') {
+                currentValue = (currentValue as SemesterList).id;
+                originalValue = (originalValue as SemesterList).id;
+
+                if (currentValue !== originalValue) {
+                    (updateValues as any)['semester_id'] = currentValue;
+                }
+            } else {
+                if (currentValue !== originalValue) {
+                    updateValues[key as keyof CourseSection] = currentValue as any;
+                }
             }
         }
 
@@ -146,7 +153,6 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
             });
             return;
         }
-
         try {
             setLoadingCourseSection(true);
             if (courseSectionId) {
@@ -161,6 +167,7 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
                 }
             }
         } catch (errors: any) {
+            console.log(errors);
             Swal.fire({
                 title: errors.response.data.message,
                 text: errors.response.data.errors,
@@ -192,9 +199,11 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
                             </label>
                             <label>
                                 Học Kỳ:
-                                <select {...register("semester_id")}>
+                                <select {...register("semester.id")}>
                                     {semesterList && semesterList.map(item => (
-                                        <option key={item.id} value={item.id}>{item.name}</option>
+                                        <option key={item.id} value={item.id}>
+                                            {item.name} ( {item.start_year} - {item.end_year} )
+                                        </option>
                                     ))}
                                 </select>
                             </label>

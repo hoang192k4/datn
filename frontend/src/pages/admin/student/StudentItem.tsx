@@ -15,8 +15,8 @@ interface Props {
 const StudentItem = ({ student, onEdit, setTypeModal, index }: Props) => {
     return (
         <>
-            <td style={{ textAlign: 'center' }}>{index}</td>
-            <td style={{ textAlign: 'center' }}>{student.student_code}</td>
+            <td>{index}</td>
+            <td>{student.student_code}</td>
             <td>{student.email}</td>
             <td>{student.name}</td>
             <td>{formatDayMonthYear(student.date_of_birth)}</td>
@@ -26,7 +26,7 @@ const StudentItem = ({ student, onEdit, setTypeModal, index }: Props) => {
             <td>{student.graduation_date ? formatDayMonthYear(student.graduation_date) : 'Chưa tốt nghiệp'}</td>
             <td>{student.major}</td>
             <td> <StudentStatusBadge status={student.status} /></td>
-            <td style={{ textAlign: 'center' }}> <button className="btn-primary-student" type="button" onClick={() => { onEdit(student); setTypeModal() }}> <FaRegEdit /> </button></td>
+            <td> <button className="btn-primary-student" type="button" onClick={() => { onEdit(student); setTypeModal() }}> <FaRegEdit /> </button></td>
         </>
     );
 }

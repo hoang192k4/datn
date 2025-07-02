@@ -53,6 +53,7 @@ const Class = () => {
         } finally { setLoading(false); }
     }
 
+
     useEffect(() => {
         fetchCourseSection();
     }, [])
@@ -66,20 +67,18 @@ const Class = () => {
     ).sort((yearA, yearB) => yearB - yearA);
 
     const semesterOptions = Array.from(
-        new Set(
-            listCourseSection.map(item => (
-                item.semester
-            ))
-        )
-    ).sort((semesterA, semesterB) => {
-        const tmpA = parseInt(semesterA.replace(/\D/g, '')); // Lấy số trong chuỗi
-        const tmpB = parseInt(semesterB.replace(/\D/g, ''));
-        return tmpA - tmpB;
-    })
+        new Map(
+            listCourseSection.map(item => [item.semester.id, item.semester])
+        ).values()
+    ).sort((a, b) => a.id - b.id)
+        .map(sem => ({
+            label: `${sem.name}  ( ${sem.start_year} - ${sem.end_year} )`,
+            value: sem.id,
+        }));
 
     const filterCourseSection = listCourseSection && listCourseSection.filter((courseSection) => {
         const yearMatch = selectedYear === '' || new Date(courseSection.start_date).getFullYear() === parseInt(selectedYear);
-        const semesterMatch = selectedSemester === '' || courseSection.semester === selectedSemester;
+        const semesterMatch = selectedSemester === '' || courseSection.semester.id === Number(selectedSemester);
         return yearMatch && semesterMatch;
     })
 
@@ -94,7 +93,7 @@ const Class = () => {
         } finally { setLoading(false); }
     }
 
-  
+
 
     const handleStudentDetail = async (studentId: number) => {
         const student = studentList.filter(student => student.id === studentId)
@@ -155,7 +154,7 @@ const Class = () => {
                                 <select className="select-filter reposive-select-mb" onChange={(e: any) => setSelectedSemester(e.target.value)} value={selectedSemester}>
                                     <option value="">--Lọc theo học kỳ--</option>
                                     {semesterOptions.map(semester => (
-                                        <option key={semester} value={semester}>{semester}</option>
+                                        <option key={semester.value} value={semester.value}>{semester.label}</option>
                                     ))}
                                 </select>
                                 <select className="select-filter reposive-select-mb" onChange={(e: any) => setSelectedYear(e.target.value)} value={selectedYear}>
@@ -185,21 +184,24 @@ const Class = () => {
                         <div className="class-students-header">
                             <div className="students-top">
                                 <span onClick={() => setAction('default')}><IoMdArrowRoundBack /></span>
-                                <div>
-                                    <h2>Danh Sách Sinh Viên</h2>
-                                    <p style={{ fontSize: '16px', fontWeight: '600', color: '#2e3b8c', padding: '4px 0' }}>Lớp {currentClassName && currentClassName}</p>
+                                <div className="box-header">
+                                    <h2 style={{ color: "#2e3b8c" }}>Danh Sách Sinh Viên Lớp {currentClassName && currentClassName}</h2>
                                 </div>
                             </div>
-                            <div className="class-search-student">
-                                <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={(e) => setKeyword(e.target.value)} />
-                                <FaSearch />
-                            </div>
+                            <div className="students-bottom">
+                                <div className="students-bottom-left">
+                                    <div className="class-search-student">
+                                        <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={(e) => setKeyword(e.target.value)} />
+                                        <FaSearch />
+                                    </div>
 
-                            <div className="gm-class-select class-search">
-                                <SelectWithPagination handleClassSelection={handleSelection} />
-                            </div>
-                            <div className="class-add-student">
-                                <SelectWithPaginationStudent hanldeSelected={hanldeSelected} />
+                                    <div className="gm-class-select class-search">
+                                        <SelectWithPagination handleClassSelection={handleSelection} />
+                                    </div>
+                                </div>
+                                <div className="class-add-student">
+                                    <SelectWithPaginationStudent hanldeSelected={hanldeSelected} />
+                                </div>
                             </div>
                         </div>
                         <div className="class-student-main">

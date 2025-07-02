@@ -49,7 +49,7 @@ const TeacherExport: React.FC<PropsExport> = ({ setShowPopupExport, setLoadingTe
                         const value = e.target.value;
                         setSelectedStatus(value ? value : null)
                     }} >
-                        <option value="">-- Chọn Trạng Thái --</option>
+                        <option value="">--Tất Cả Trạng Thái --</option>
                         <option value="active">Hoạt động</option>
                         <option value="inactive">Tạm ngưng</option>
                     </select>
@@ -59,7 +59,7 @@ const TeacherExport: React.FC<PropsExport> = ({ setShowPopupExport, setLoadingTe
                         setSelectedRoleId(value ? Number(value) : null)
                     }} >
 
-                        <option value="">-- Chọn Chức Vụ --</option>
+                        <option value="">-- Tất Cả Chức Vụ --</option>
                         {roleList && roleList.map(role => (
                             <option key={role.id} value={role.id}>{role.title}</option>
                         ))}

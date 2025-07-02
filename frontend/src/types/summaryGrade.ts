@@ -7,6 +7,8 @@ export interface SummaryGradeByStudent {
     subject_id: number,
     subject_name: string,
     attempt: number,
+    start_year: string,
+    end_year: string,
     attendance_score: number | null,
     avg_score: number,
     exam1_score: number | null,

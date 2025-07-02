@@ -86,6 +86,21 @@
     align-items: center;
 }
 
+.students-bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+}
+
+.students-bottom .students-bottom-left {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
 .class-students-header .students-top>span>svg {
     font-size: 30px;
     color: #1e3a8a;
@@ -101,7 +116,6 @@
 .class-search-student {
     margin: 4px 0;
     position: relative;
-    width: 20%;
 }
 
 
