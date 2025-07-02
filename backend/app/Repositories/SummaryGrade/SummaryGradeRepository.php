@@ -38,9 +38,11 @@ class SummaryGradeRepository extends EloquentRepository implements SummaryGradeR
                 'smr.*',
                 'semesters.name as semester_name',
                 'subjects.name as subject_name',
+                'semesters.start_year as start_year',
+                'semesters.end_year as end_year',
                 'course_sections.name as course_section_name'
             ])
-            ->where('smr.student_id', $studentId)->orderBy('smr.semester_id', 'asc')->get();
+            ->where('smr.student_id', $studentId)->orderBy('semesters.start_year','asc')->get();
         return $summaryGrades;
     }
 }

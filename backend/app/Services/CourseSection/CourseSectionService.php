@@ -15,6 +15,7 @@ use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
 use App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use PhpParser\Node\Expr\Throw_;
 
 class CourseSectionService implements CourseSectionServiceInterface
 {
@@ -123,6 +124,7 @@ class CourseSectionService implements CourseSectionServiceInterface
             $courseSection = $this->courseSectionRepository->find($courseSectionId);
             $subjectId = $data['subject_id'] ??  $courseSection->subject_id;
             $semesterId = $data['semester_id'] ?? $courseSection->semester_id;
+
             if ($courseSection->status !== CourseSectionStatus::InRegister) {
                 throw ValidationException::withMessages(["Lớp học đã diễn ra không thể cập nhật"]);
             }
@@ -173,6 +175,8 @@ class CourseSectionService implements CourseSectionServiceInterface
             }
             Db::commit();
             return true;
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             DB::rollBack();
             $this->logError($e->getMessage(), $e);

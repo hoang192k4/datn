@@ -93,7 +93,7 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
         if (!acc[key]) {
             acc[key] = {
                 semester_name: item.semester_name,
-                year: new Date(item.created_at).getFullYear(),
+                year: `${item.start_year} - ${item.end_year}`,
                 grades: []
             };
         }
@@ -171,7 +171,7 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
                                 <>
                                     {Object.values(groupedBySemester).map((group: any, item) => (
                                         <div key={item}>
-                                            <h3 style={{ marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid #1e3a8a' }}>{group.semester_name} - {group.year}</h3>
+                                            <h3 style={{ marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid #1e3a8a' }}>{group.semester_name} ( {group.year} )</h3>
                                             <table className="course-section-summary-table">
                                                 <thead>
                                                     <tr>

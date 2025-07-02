@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use App\Repositories\Teacher\TeacherRepositoryInterface;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
 class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, WithValidation, SkipsEmptyRows
@@ -49,7 +50,7 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             if (
                 empty($row['ma_giao_vien']) ||
                 empty($row['email']) ||
-                empty($row['ho_va_ten']) ||
+                empty($row['ho_ten']) ||
                 empty($row['dia_chi']) ||
                 empty($row['ngay_sinh']) ||
                 empty($row['gioi_tinh']) ||
@@ -61,11 +62,11 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             $data = [
                 'teacher_code' => $row['ma_giao_vien'],
                 'email' => $row['email'],
-                'name' => $row['ho_va_ten'],
-                'slug' => Str::slug($row['ho_va_ten']),
+                'name' => $row['ho_ten'],
+                'slug' => Str::slug($row['ho_ten']),
                 'password' => $this->password,
                 'address' => $row['dia_chi'],
-                'date_of_birth' => Date::excelToDateTimeObject($row['ngay_sinh'])->format('Y-m-d'),
+                'date_of_birth' => Carbon::parse(trim($row['ngay_sinh']))->format('Y-m-d'),
                 'gender' =>  $genderMap[trim($row['gioi_tinh'])] ?? null,
                 'role_id' => optional(ModelsRole::where('name', $role[trim($row['vai_tro'])])->first())->id
             ];
@@ -84,7 +85,7 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
     {
         return [
             '*.ma_giao_vien' => 'required|string',
-            '*.ho_va_ten'   => 'required|string',
+            '*.ho_ten'   => 'required|string',
             '*.email'       => 'required|email',
             '*.ngay_sinh'   => 'required',
             '*.dia_chi'     => 'required|string',
@@ -100,11 +101,11 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             '*.ma_giao_vien.required' => 'Cột Mã Giáo Viên là bắt buộc.',
             '*.email.email'   => 'Email không hợp lệ ở một dòng nào đó.',
             '*.gioi_tinh.required' => 'Cột giới tính là bắt buộc.',
-            '*.ho_va_ten.required' => 'Cột họ và tên là bắt buộc.',
+            '*.ho_ten.required' => 'Cột họ và tên là bắt buộc.',
             '*.dia_chi.required' => 'Cột địa chỉ là bắt buộc.',
             '*.gioi_tinh.string' => 'Cột giới tính phải là chuỗi.',
             '*.vai_tro.string' => 'Cột ngành học phải là chuỗi.',
-            '*.ho_va_ten.string' => 'Cột họ tên phải là chuỗi.',
+            '*.ho_ten.string' => 'Cột họ tên phải là chuỗi.',
             '*.dia_chi.string' => 'Cột địa chỉ phải là chuỗi.',
             '*.ma_giao_vien.string' => 'Cột mã giáo viên phải là chuỗi.',
             '*.email.required' => 'Cột email là bắt buộc.',

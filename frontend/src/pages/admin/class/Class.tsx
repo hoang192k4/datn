@@ -94,7 +94,7 @@ const Class = () => {
         } finally { setLoading(false); }
     }
 
-  
+
 
     const handleStudentDetail = async (studentId: number) => {
         const student = studentList.filter(student => student.id === studentId)
@@ -185,21 +185,24 @@ const Class = () => {
                         <div className="class-students-header">
                             <div className="students-top">
                                 <span onClick={() => setAction('default')}><IoMdArrowRoundBack /></span>
-                                <div>
-                                    <h2>Danh Sách Sinh Viên</h2>
-                                    <p style={{ fontSize: '16px', fontWeight: '600', color: '#2e3b8c', padding: '4px 0' }}>Lớp {currentClassName && currentClassName}</p>
+                                <div className="box-header">
+                                    <h2 style={{ color: "#2e3b8c" }}>Danh Sách Sinh Viên Lớp {currentClassName && currentClassName}</h2>
                                 </div>
                             </div>
-                            <div className="class-search-student">
-                                <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={(e) => setKeyword(e.target.value)} />
-                                <FaSearch />
-                            </div>
+                            <div className="students-bottom">
+                                <div className="students-bottom-left">
+                                    <div className="class-search-student">
+                                        <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={(e) => setKeyword(e.target.value)} />
+                                        <FaSearch />
+                                    </div>
 
-                            <div className="gm-class-select class-search">
-                                <SelectWithPagination handleClassSelection={handleSelection} />
-                            </div>
-                            <div className="class-add-student">
-                                <SelectWithPaginationStudent hanldeSelected={hanldeSelected} />
+                                    <div className="gm-class-select class-search">
+                                        <SelectWithPagination handleClassSelection={handleSelection} />
+                                    </div>
+                                </div>
+                                <div className="class-add-student">
+                                    <SelectWithPaginationStudent hanldeSelected={hanldeSelected} />
+                                </div>
                             </div>
                         </div>
                         <div className="class-student-main">

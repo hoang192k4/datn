@@ -8,7 +8,7 @@
       background: linear-gradient(135deg, #3b4d99 0%, #2d3a7a 100%);
       color: white;
       padding: 0 30px;
-      height: 70px;
+      min-height: 70px;
       display: flex;
       align-items: center;
       justify-content: space-between;

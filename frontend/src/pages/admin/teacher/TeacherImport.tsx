@@ -115,13 +115,13 @@ const TeacherImport = ({ setShowPopupImport, setsetLoadingTeacher, fetchTeacherL
                         <strong>Lưu ý về template Excel:</strong>
                         <ul>
                             <li>Cột A: STT (số thứ tự)</li>
-                            <li>Cột B: Mã Giảng Viên</li>
+                            <li>Cột B: Mã Giáo Viên</li>
                             <li>Cột C: Email</li>
                             <li>Các D: Họ và Tên</li>
                             <li>Các E: Ngày Sinh</li>
                             <li>Các F Giới Tính (Nam hoặc Nữ)</li>
-                            <li>Các G: Địa Chỉ</li>
-                            <li>Các H: Vai trò (GVBM ,GVCM, QTKHOA hoặc QTBOMON)</li>
+                            <li>Các G: Địa Chỉ (Năm-Tháng-Ngày)</li>
+                            <li>Các H: Vai trò (GVBM ,GVCN, QTKHOA hoặc QTBOMON)</li>
                             <li>File phải có định dạng .xlsx hoặc .xls</li>
                         </ul>
                     </div>

@@ -20,6 +20,8 @@ class SummaryGradeByStudentResource extends JsonResource
             'subject_id' => $this->subject_id,
             'subject_name' => $this->subject_name ?? null,
             'attempt' => $this->attempt,
+            'start_year' => $this->start_year,
+            'end_year' => $this->end_year,
             'attendance_score' => $this->attendance_score ? formatScore($this->attendance_score) : null,
             'avg_score' => $this->avg_score ?  formatScore($this->avg_score) : null,
             'exam1_score' => $this->exam1_score ? formatScore($this->exam1_score) : null,
