@@ -128,6 +128,7 @@ class NotificationService implements NotificationServiceInterface
         return true;
     }
 
+
     public function sendNotificationToCourseSection(Request $request)
     {
         try {
@@ -290,6 +291,7 @@ class NotificationService implements NotificationServiceInterface
             if ($pushNotification) {
                 unset($data['push_notification']);
             }
+
             $isUpdate = $this->repository->update($id, $data);
 
             if (!$isUpdate) {
@@ -297,7 +299,10 @@ class NotificationService implements NotificationServiceInterface
             }
 
             $instance = $this->repository->find($id);
-            $this->sendNotificationToStudents($instance->title, $instance->content, array($instance->student_id), NotificationType::TeacherSend->value);
+
+            if ($pushNotification) {
+                $this->sendNotificationToStudents($instance->title, $instance->content, array($instance->student_id), NotificationType::TeacherSend->value);
+            }
             return true;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
