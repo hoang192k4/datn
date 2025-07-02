@@ -128,7 +128,6 @@ const ScheduleManagement: React.FC = () => {
             } catch (error: any) {
                 if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
                     const errors = error.response.data.errors.period_start;
-                    console.log(errors);
                     const lis = errors.map((e: any) => `<li>${e}</li>`).join('');
                     Swal.fire({
                         title: 'Thêm lịch không thành công!',
@@ -273,7 +272,7 @@ const ScheduleManagement: React.FC = () => {
                             >
                                 <option value="">Tất cả các kì</option>
                                 {semesters.map((semester, index) => (
-                                    <option key={index} value={semester.id}>{semester.name}</option>
+                                    <option key={index} value={semester.id}>{`${semester.name} (${semester.start_year} - ${semester.end_year})`}</option>
                                 ))}
                             </select>
 
@@ -324,7 +323,7 @@ const ScheduleManagement: React.FC = () => {
                                         schedules.map((schedule) => (
                                             <tr key={schedule.id} className="table-row">
                                                 <td className="table-cell">
-                                                    <span className="badge-class">{schedule.course_section.name}</span>
+                                                    <span>{schedule.course_section.name}</span>
                                                 </td>
                                                 <td className="table-cell">{schedule.course_section.subject}</td>
                                                 <td className="table-cell">
@@ -345,7 +344,7 @@ const ScheduleManagement: React.FC = () => {
                                                 </td>
                                                 <td className="table-cell">{schedule.classroom.name}</td>
                                                 <td className="table-cell">{schedule.course_section.teacher}</td>
-                                                <td className="table-cell">{schedule.course_section.semester}</td>
+                                                <td className="table-cell" style={{ textWrap: 'balance' }}>{`${schedule.course_section.semester.name} (${schedule.course_section.semester.start_year}-${schedule.course_section.semester.end_year})`}</td>
                                                 <td className="table-cell">
                                                     <div className="action-buttons">
                                                         <button
