@@ -301,8 +301,10 @@ class NotificationService implements NotificationServiceInterface
             $instance = $this->repository->find($id);
 
             if ($pushNotification) {
+                $this->repository->delete($id);
                 $this->sendNotificationToStudents($instance->title, $instance->content, array($instance->student_id), NotificationType::TeacherSend->value);
             }
+
             return true;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
