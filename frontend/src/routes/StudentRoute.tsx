@@ -1,5 +1,6 @@
 import DashboardStudent from "../pages/student/dashboard/DashboardSrudent";
 import StudentProfile from "../pages/student/profile/StudentProfile";
+import StudentSchedule from "../pages/student/schedule/StudentSchedule";
 
 
 export const StudentRoute = [
@@ -14,5 +15,9 @@ export const StudentRoute = [
       {
         'path': 'thong-tin-ca-nhan',
         'element': <StudentProfile/>,
+    },
+    {
+        'path': 'thoi-khoa-bieu',
+        'element': <StudentSchedule/>,
     },
 ]

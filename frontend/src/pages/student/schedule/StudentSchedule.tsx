@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getScheduleByTeacher } from '../../../services/scheduleService';
+import { getScheduleByStudent } from '../../../services/scheduleService';
 import { HttpStatus } from '../../../enums/HttpStatus';
-import './TeacherSchedule.css'
+import '../../admin/schedule/TeacherSchedule.css';
 
 interface Session {
     course_section_name: string;
@@ -30,13 +30,13 @@ interface WeekSchedule {
     schedule: ScheduleItem[];
 }
 
-const TeacherSchedule: React.FC = () => {
+const StudentSchedule: React.FC = () => {
     const [schedule, setSchedule] = useState<WeekSchedule>();
     const [filterDate, setFilterDate] = useState<string | null>(null);
 
     const fetchSchedule = async () => {
         try {
-            const res = await getScheduleByTeacher(filterDate);
+            const res = await getScheduleByStudent(filterDate);
             if (res.status === HttpStatus.SUCCESS) {
               setSchedule(res.data);
             }
@@ -75,7 +75,7 @@ const TeacherSchedule: React.FC = () => {
             <div className="schedule-container">
                 <div className="schedule-header">
                     <div className="header-content">
-                        <h1 className="header-title">THỜI KHÓA BIỂU GIẢNG VIÊN</h1>
+                        <h1 className="header-title">Thời Khóa Biểu</h1>
                         <div className="navigation-controls">
                             <button onClick={() => handleWeekChange('prev')} className="nav-button">
                                 <ChevronLeft color="white" size={20} />
@@ -140,4 +140,4 @@ const TeacherSchedule: React.FC = () => {
     );
 };
 
-export default TeacherSchedule;
+export default StudentSchedule;

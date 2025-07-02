@@ -1,0 +1,175 @@
+ .schedule-container {
+     font-family: Arial, sans-serif;
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 20px;
+     background-color: #f5f7fa;
+     min-height: 100vh;
+ }
+
+ .schedule-header {
+     background: linear-gradient(135deg, #667eea, #764ba2);
+     border-radius: 15px;
+     padding: 20px;
+     margin-bottom: 20px;
+     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+ }
+
+ .header-content {
+     display: flex;
+     justify-content: flex-end;
+     align-items: center;
+     gap: 20px;
+ }
+
+ .header-title {
+     color: white;
+     margin: 0;
+     font-size: 24px;
+     font-weight: bold;
+ }
+
+ .navigation-controls {
+     display: flex;
+     align-items: center;
+     gap: 15px;
+ }
+
+ .nav-button {
+     background: rgba(255, 255, 255, 0.2);
+     border: none;
+     border-radius: 50%;
+     width: 40px;
+     height: 40px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     transition: all 0.3s ease;
+     cursor: pointer;
+ }
+
+ .nav-button:hover {
+     background: rgba(255, 255, 255, 0.3);
+     transform: scale(1.05);
+ }
+
+ .week-range {
+     color: white;
+     font-size: 16px;
+     font-weight: 500;
+     min-width: 100px;
+     text-align: center;
+ }
+
+ .schedule-table-container {
+     background-color: white;
+     border-radius: 15px;
+     overflow: hidden;
+     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+ }
+
+ .schedule-table {
+     width: 100%;
+     border-collapse: collapse;
+     table-layout: fixed;
+ }
+
+ .table-header {
+     background-color: #f8f9fa;
+ }
+
+ .session-header {
+     padding: 15px;
+     text-align: center;
+     font-weight: bold;
+     border-right: 1px solid #dee2e6;
+     border-bottom: 2px solid #dee2e6;
+     background-color: #e8eaf6;
+     color: #3f51b5;
+     width: 150px;
+     min-width: 150px;
+ }
+
+ .day-header {
+     color: #3f51b5;
+     padding: 15px 10px;
+     text-align: center;
+     font-weight: bold;
+     border-bottom: 2px solid #dee2e6;
+     background-color: #f3f4f6;
+     width: calc((100% - 150px) / 7);
+     min-width: 120px;
+ }
+
+ .day-header:not(:last-child) {
+     border-right: 1px solid #dee2e6;
+ }
+
+ .day-date {
+     font-size: 12px;
+     color: #666;
+     font-weight: normal;
+     margin-top: 5px;
+ }
+
+ .session-type-cell {
+     padding: 20px 15px;
+     text-align: center;
+     font-weight: 500;
+     border-right: 1px solid #dee2e6;
+     border-bottom: 1px solid #dee2e6;
+     background-color: #e8eaf6;
+     vertical-align: middle;
+     white-space: nowrap;
+     color: #3f51b5;
+     width: 150px;
+     min-width: 150px;
+ }
+
+ .schedule-cell {
+     padding: 15px 8px;
+     border-bottom: 1px solid #dee2e6;
+     vertical-align: top;
+     width: calc((100% - 150px) / 7);
+     min-width: 120px;
+ }
+
+ .schedule-cell:not(:last-child) {
+     border-right: 1px solid #dee2e6;
+ }
+
+ .lesson-card {
+     color: white;
+     padding: 8px;
+     border-radius: 8px;
+     font-size: 12px;
+     line-height: 1.3;
+     box-shadow: 0 2px 8px rgba(63, 81, 181, 0.2);
+     margin-bottom: 8px;
+     transform: scale(1);
+     transition: transform 0.2s ease;
+ }
+
+ .lesson-card:hover {
+     transform: scale(1.02);
+ }
+
+ .lesson-title {
+     font-weight: bold;
+     margin-bottom: 3px;
+ }
+
+ .lesson-location {
+     font-size: 11px;
+     opacity: 0.9;
+ }
+
+ .lesson-time {
+     font-size: 11px;
+     opacity: 0.8;
+ }
+
+ .empty-cell {
+     font-size: 12px;
+     color: #999;
+ }

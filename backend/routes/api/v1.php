@@ -106,6 +106,12 @@ Route::prefix('me')->group(function () {
         ->group(function () {
             Route::get('/subjects', 'getSubjectByTeacherId'); //api lấy danh sách môn học theo giảng viên
         });
+
+        Route::controller(App\Http\Controllers\Schedule\ScheduleController::class)
+        ->group(function (){
+            Route::get('/schedules', 'getScheduleByTeacher');
+            Route::get('/student/schedules', 'getScheduleByStudent');
+        });
 });
 
 Route::controller(App\Http\Controllers\Post\PostController::class)
