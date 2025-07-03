@@ -7,10 +7,9 @@ import { HttpStatus } from "../../../enums/HttpStatus";
 
 interface PropsImport {
     setShowPopupImport: React.Dispatch<React.SetStateAction<boolean>>,
-    setsetLoadingTeacher: React.Dispatch<React.SetStateAction<boolean>>,
     fetchTeacherList: () => void,
 }
-const TeacherImport = ({ setShowPopupImport, setsetLoadingTeacher, fetchTeacherList }: PropsImport) => {
+const TeacherImport = ({ setShowPopupImport, fetchTeacherList }: PropsImport) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +36,7 @@ const TeacherImport = ({ setShowPopupImport, setsetLoadingTeacher, fetchTeacherL
     const handleClickFile = () => {
         fileInputRef.current?.click()
     }
-    
+
     const handleUploadFile = async () => {
         if (!selectedFile) {
             Swal.fire({
@@ -49,15 +48,15 @@ const TeacherImport = ({ setShowPopupImport, setsetLoadingTeacher, fetchTeacherL
         const formData = new FormData();
         formData.append("file", selectedFile);
         try {
-            setsetLoadingTeacher(true);
             const res = await importTeacher(formData);
             if (res.status === HttpStatus.SUCCESS) {
                 setShowPopupImport(false);
-                fetchTeacherList();
                 Swal.fire({
                     title: res.message,
                     icon: "success",
                     draggable: true
+                }).then(() => {
+                    fetchTeacherList();
                 });
             }
         } catch (error: any) {
@@ -70,7 +69,7 @@ const TeacherImport = ({ setShowPopupImport, setsetLoadingTeacher, fetchTeacherL
                     html: `<ul> ${html}</ul>`
                 })
             }
-        } finally { setsetLoadingTeacher(false); }
+        }
     }
     return (
         <>
@@ -118,11 +117,12 @@ const TeacherImport = ({ setShowPopupImport, setsetLoadingTeacher, fetchTeacherL
                             <li>Cột B: Mã Giáo Viên</li>
                             <li>Cột C: Email</li>
                             <li>Các D: Họ và Tên</li>
-                            <li>Các E: Ngày Sinh</li>
+                            <li>Các E: Ngày Sinh (Năm-Tháng-Ngày)</li>
                             <li>Các F Giới Tính (Nam hoặc Nữ)</li>
-                            <li>Các G: Địa Chỉ (Năm-Tháng-Ngày)</li>
+                            <li>Các G: Địa Chỉ</li>
                             <li>Các H: Vai trò (GVBM ,GVCN, QTKHOA hoặc QTBOMON)</li>
                             <li>File phải có định dạng .xlsx hoặc .xls</li>
+                            <li>Nếu Mã Giáo Viên trùng thì sẽ cập nhật</li>
                         </ul>
                     </div>
 

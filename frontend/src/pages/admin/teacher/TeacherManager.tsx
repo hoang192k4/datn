@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import PageHeader from "../../../components/ui/PageHeader"
 import type { Meta, TeacherList } from "../../../types/teacher";
 import { createTeacher, getListRole, getListTeacher, toggleStatusTeacher, updateTeacher } from "../../../services/teacherService";
-import Loadding from "../../../components/ui/Loadding";
 import { genderMap } from "../../../utils/genderMap";
 import './TeacherManager.css';
 import { StatusActiveInactive } from "../../../enums/StatusActiveInactive";
@@ -15,6 +14,7 @@ import { useForm, useWatch } from "react-hook-form";
 import type { RoleList } from "../../../types/role";
 import TeacherImport from "./TeacherImport";
 import TeacherExport from "./TeacherExport";
+import { Loading } from "../../../components/ui/Loading";
 const TeacherManager = () => {
     const [teacherList, setTeacherList] = useState<TeacherList[]>([]);
     const [roleList, setRoleList] = useState<RoleList[]>([]);
@@ -87,7 +87,6 @@ const TeacherManager = () => {
             return;
         }
         try {
-            setLoadingTeacher(true);
             if (updateValues.role_id) {
                 const selectedRole = roleList.find(role => role.id == updateValues.role_id);
                 if (selectedRole) {
@@ -112,7 +111,7 @@ const TeacherManager = () => {
                 icon: "error",
                 draggable: true
             });
-        } finally { setLoadingTeacher(false); }
+        }
     }
     const handleToggeStatus = (teacherId: number) => {
         Swal.fire({
@@ -125,7 +124,6 @@ const TeacherManager = () => {
             confirmButtonText: "Đồng ý",
         }).then(async (result) => {
             if (result.isConfirmed) {
-                setLoadingTeacher(true);
                 const res = await toggleStatusTeacher(teacherId);
                 if (res) {
                     Swal.fire({
@@ -150,7 +148,7 @@ const TeacherManager = () => {
                 icon: "error",
                 draggable: true
             });
-        }).finally(() => setLoadingTeacher(false));
+        })
     }
 
     const handleShowPopup = () => {
@@ -160,15 +158,15 @@ const TeacherManager = () => {
 
     const handleCreateTeacher = async (teacher: TeacherList) => {
         try {
-            setLoadingTeacher(true);
             const res = await createTeacher(teacher);
             if (res) {
-                setActionTeacher('');
-                fetchTeacherList();
                 Swal.fire({
                     title: res.message,
                     icon: "success",
                     draggable: true
+                }).then(() => {
+                    setActionTeacher('');
+                    fetchTeacherList();
                 });
             }
 
@@ -178,13 +176,13 @@ const TeacherManager = () => {
                 icon: "error",
                 draggable: true
             });
-        } finally { setLoadingTeacher(false); }
+        }
     }
 
 
     return (
         <>
-            {loadingTeacher && <Loadding />}
+
             <PageHeader title="Quản lý giảng viên" subtitle="Hệ thống quản lý giảng viên" />
             <div className="box-container">
                 <div className="box-header">
@@ -224,65 +222,66 @@ const TeacherManager = () => {
                     </div>
                 </div>
 
-
-                <div className="teacher-manager-list">
-                    <table className="teacher-table">
-                        <thead>
-                            <tr>
-                                <th>Mã Giảng Viên</th>
-                                <th>Họ và Tên</th>
-                                <th>Email</th>
-                                <th>Địa Chỉ</th>
-                                <th>Giới Tính</th>
-                                <th>Ngày Sinh</th>
-                                <th>Vai Trò</th>
-                                <th>Trạng Thái</th>
-                                <th>Thao Tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {teacherList.length > 0 ? teacherList?.map((teacher) => (
-                                <tr key={teacher.id}>
-                                    <td>{teacher.teacher_code}</td>
-                                    <td>{teacher.name}</td>
-                                    <td>{teacher.email}</td>
-                                    <td>{teacher.address}</td>
-                                    <td>{genderMap[teacher.gender]}</td>
-                                    <td>{formatDayMonthYear(teacher.date_of_birth)}</td>
-                                    <td>
-                                        <span className={`role-badge ${teacher.role}`}>
-                                            {teacherRoleMap[teacher.role as keyof typeof teacherRoleMap]}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className={`status-badge ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`}>
-                                            {teacherStatusMap[teacher.status]}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button className={`btn-admin  ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`} onClick={() => handleToggeStatus(teacher.id)}>{teacher.status === StatusActiveInactive.Active ? <FaLockOpen /> : <FaLock />}</button>
-                                        <button className="btn-admin edit-btn-dmin" onClick={() => handleFetchDataTeacher(teacher.id)}><FaEdit /></button>
-                                    </td>
-                                </tr>
-                            )) :
+                {loadingTeacher ? <Loading /> :
+                    <div className="teacher-manager-list">
+                        <table className="teacher-table">
+                            <thead>
                                 <tr>
-                                    <td colSpan={9} style={{ textAlign: 'center' }}>Không có giảng viên nào phù hợp với tiêu chí đã chọn</td>
+                                    <th>Mã Giảng Viên</th>
+                                    <th>Họ và Tên</th>
+                                    <th>Email</th>
+                                    <th>Địa Chỉ</th>
+                                    <th>Giới Tính</th>
+                                    <th>Ngày Sinh</th>
+                                    <th>Vai Trò</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <div className="pagination-container-admin">
-                        <div className="pagination-controls">
-                            <button className="page-btn" onClick={() => meta?.previous_page != null && fetchTeacherList(keyword, meta.previous_page, selectedStatus, selectedRole)} disabled={!meta?.previous_page}>
-                                Trang trước
-                            </button>
-                            <button className="page-btn active">{meta?.current_page}</button>
-                            <button className="page-btn" onClick={() => meta?.next_page != null && fetchTeacherList(keyword, meta.next_page, selectedStatus, selectedRole)} disabled={!meta?.next_page}>
-                                Trang sau
-                            </button>
+                            </thead>
+                            <tbody>
+                                {teacherList.length > 0 ? teacherList?.map((teacher) => (
+                                    <tr key={teacher.id}>
+                                        <td>{teacher.teacher_code}</td>
+                                        <td>{teacher.name}</td>
+                                        <td>{teacher.email}</td>
+                                        <td>{teacher.address}</td>
+                                        <td>{genderMap[teacher.gender]}</td>
+                                        <td>{formatDayMonthYear(teacher.date_of_birth)}</td>
+                                        <td>
+                                            <span className={`role-badge ${teacher.role}`}>
+                                                {teacherRoleMap[teacher.role as keyof typeof teacherRoleMap]}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className={`status-badge ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`}>
+                                                {teacherStatusMap[teacher.status]}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button className={`btn-admin  ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`} onClick={() => handleToggeStatus(teacher.id)}>{teacher.status === StatusActiveInactive.Active ? <FaLockOpen /> : <FaLock />}</button>
+                                            <button className="btn-admin edit-btn-dmin" onClick={() => handleFetchDataTeacher(teacher.id)}><FaEdit /></button>
+                                        </td>
+                                    </tr>
+                                )) :
+                                    <tr>
+                                        <td colSpan={9} style={{ textAlign: 'center' }}>Không có giảng viên nào phù hợp với tiêu chí đã chọn</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div className="pagination-container-admin">
+                            <div className="pagination-controls">
+                                <button className="page-btn" onClick={() => meta?.previous_page != null && fetchTeacherList(keyword, meta.previous_page, selectedStatus, selectedRole)} disabled={!meta?.previous_page}>
+                                    Trang trước
+                                </button>
+                                <button className="page-btn active">{meta?.current_page}</button>
+                                <button className="page-btn" onClick={() => meta?.next_page != null && fetchTeacherList(keyword, meta.next_page, selectedStatus, selectedRole)} disabled={!meta?.next_page}>
+                                    Trang sau
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
             {/* form create update teacher */}
             {actionTeacher &&
@@ -392,14 +391,11 @@ const TeacherManager = () => {
 
             {/* component import export */}
             {showPopupImport &&
-                <TeacherImport setShowPopupImport={setShowPopupImport} setsetLoadingTeacher={setLoadingTeacher} fetchTeacherList={fetchTeacherList} />
+                <TeacherImport setShowPopupImport={setShowPopupImport} fetchTeacherList={fetchTeacherList} />
             }
 
             {showPopupExport &&
-                <TeacherExport setShowPopupExport={setShowPopupExport}
-                    setLoadingTeacher={setLoadingTeacher}
-                    roleList={roleList}
-                />
+                <TeacherExport setShowPopupExport={setShowPopupExport} roleList={roleList} />
             }
         </>
     )

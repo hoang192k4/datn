@@ -155,7 +155,6 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
 
                     <div className="course-section-summary">
                         {loading ? <Loading /> :
-
                             summaryGradeByStudent.length > 0 ?
                                 <>
                                     {summaryGradeByStudent.map((semester: any, item) => (

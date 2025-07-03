@@ -3,7 +3,7 @@ import PageHeader from "../../../components/ui/PageHeader"
 import "./Document.css";
 import SubjectCard from "./SubjectCard";
 import { getSubjetsByTeacher } from "../../../services/docmentSubjectService";
-import Loadding from "../../../components/ui/Loadding";
+import { Loading } from "../../../components/ui/Loading";
 
 const DocumentManager = () => {
     const [listSubject, setListSubject] = useState<any[]>([]);
@@ -27,18 +27,19 @@ const DocumentManager = () => {
 
     return (
         <>
-            {loadingGetData && <Loadding />}
+
             <PageHeader title="📁 Quản lý tài liệu"
                 subtitle="Hệ thống quản lý tài liệu của từng môn học" />
 
             <div className="subject box-container">
                 <h2>Danh Sách Môn Học</h2>
-
-                <div className="grid">
-                    {listSubject.length !== 0 ? listSubject.map((item, index) => (
-                        <SubjectCard key={index} {...item} />
-                    )): <p>Bạn chưa được bổ nhiệm giảng dạy môn học nào cả</p>}
-                </div>
+                {loadingGetData ? <Loading /> :
+                    <div className="grid">
+                        {listSubject.length !== 0 ? listSubject.map((item, index) => (
+                            <SubjectCard key={index} {...item} />
+                        )) : <p>Bạn chưa được bổ nhiệm giảng dạy môn học nào cả</p>}
+                    </div>
+                }
             </div>
         </>
     )

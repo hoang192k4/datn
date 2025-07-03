@@ -16,13 +16,12 @@ interface Selected {
 interface CourseSectionProps {
     setActionCourseSection: React.Dispatch<React.SetStateAction<'create' | 'update' | ''>>;
     actionCourseSection: 'create' | 'update' | '';
-    setLoadingCourseSection: React.Dispatch<React.SetStateAction<boolean>>;
     selectedCourseSection: CourseSection | null;
     fetchCourseSectionList: () => void;
     semesterList: SemesterList[];
 }
 const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCourseSection, semesterList,
-    setLoadingCourseSection, fetchCourseSectionList, actionCourseSection, selectedCourseSection }) => {
+    fetchCourseSectionList, actionCourseSection, selectedCourseSection }) => {
     const [teacher, setTeacher] = useState<Selected | null>(null);
     const [subject, setSubject] = useState<Selected | null>(null);
     const [selectedClass, setSelectClass] = useState<Selected | null>(null);
@@ -102,20 +101,20 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
         }
         formData.semester_id = formData.semester.id;
         try {
-            setLoadingCourseSection(true);
             const res = await createCourseSection(formData);
             if (res.status === HttpStatus.SUCCESS) {
                 reset();
                 setActionCourseSection('');
-                fetchCourseSectionList();
                 Swal.fire({
                     title: res.message,
                     icon: "success",
-                })
+                }).then(() => {
+                    fetchCourseSectionList();
+                });
             }
         } catch (errors) {
             console.log(errors);
-        } finally { setLoadingCourseSection(false); }
+        }
     }
 
     const handleUpdateCourseSection = async (formData: CourseSection) => {
@@ -155,16 +154,17 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
             return;
         }
         try {
-            setLoadingCourseSection(true);
             if (courseSectionId) {
                 const res = await updateCourseSection(courseSectionId, updateValues);
+                setActionCourseSection('');
                 if (res.status === HttpStatus.SUCCESS) {
                     Swal.fire({
                         title: res.message,
                         icon: 'success'
+                    }).then(() => {
+                        fetchCourseSectionList();
                     });
-                    setActionCourseSection('');
-                    fetchCourseSectionList();
+
                 }
             }
         } catch (errors: any) {
@@ -174,7 +174,7 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
                 text: errors.response.data.errors,
                 icon: 'error'
             });
-        } finally { setLoadingCourseSection(false); }
+        }
     }
     return (
         <>

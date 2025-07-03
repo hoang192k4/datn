@@ -4,7 +4,6 @@ import type { CourseSection } from "../../../types/courseSecion"
 import type { CourseSectionStatus } from "../../../enums/CourseSectionStatus";
 import type { Meta } from "../../../types/teacher";
 import { getCourseSectionFilter, updateCourseSectionStatus } from "../../../services/courseSectionService";
-import Loadding from "../../../components/ui/Loadding";
 import { formatDayMonthYear } from "../../../utils/stringUtil";
 import { getSemesters } from "../../../services/semesterService";
 import type { SemesterList } from "../../../types/semester";
@@ -14,6 +13,7 @@ import debounce from "lodash.debounce";
 import './CourseSection.css';
 import Swal from "sweetalert2";
 import CourseSectionPopupAction from "./CourseSectionPopupAction";
+import { Loading } from "../../../components/ui/Loading";
 
 const CourseSectionManager = () => {
     const [courseSectionlist, setCourseSectionList] = useState<CourseSection[]>([]);
@@ -150,7 +150,7 @@ const CourseSectionManager = () => {
 
     return (
         <>
-            {loadingCourseSection && <Loadding />}
+
             <PageHeader title="Quản lý lớp học phân" subtitle="Hệ thống quản lý lớp học phần" />
             <div className="box-container">
                 <div className="course-section-header">
@@ -207,89 +207,89 @@ const CourseSectionManager = () => {
                         </div>
                     </div>
                 </div>
-
-                <div className="course-section-list">
-                    <table className="course-section-table">
-                        <thead>
-                            <tr>
-                                <th>Lớp Học</th>
-                                <th>Giảng Viên Phụ Trách</th>
-                                <th>Bắt Đầu</th>
-                                <th>Kết Thúc</th>
-                                <th>Số Tuần</th>
-                                <th>Lớp Chủ Quản</th>
-                                <th>Môn Học</th>
-                                <th>Học Kỳ</th>
-                                <th>Trạng Thái</th>
-                                <th>Thao Tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {courseSectionlist && courseSectionlist.length > 0 ? courseSectionlist.map((courseSection) => (
-                                <tr key={courseSection.id}>
-                                    <td>{courseSection.name} <br /> <small>Tổng sinh viên: {courseSection.students_total}</small></td>
-                                    <td>{courseSection.teacher || <small>Chưa cập nhật</small>}</td>
-                                    <td>{formatDayMonthYear(courseSection.start_date)}</td>
-                                    <td>{courseSection.end_date ? formatDayMonthYear(courseSection.end_date) : '-'}</td>
-                                    <td>{courseSection.week_total}</td>
-                                    <td>{courseSection.class || <small>Chưa cập nhật</small>}</td>
-                                    <td>{courseSection.subject || <small>Chưa cập nhật</small>}</td>
-                                    <td>{courseSection.semester.name ?
-                                        <>
-                                            {courseSection.semester.name} <br />
-                                            ( {courseSection.semester.start_year} - {courseSection.semester.end_year} )
-                                        </> :
-                                        <small>Chưa cập nhật</small>}</td>
-                                    <td>
-                                        <div className="status-dropdown-wrapper" >
-                                            <span onClick={() => toggleDropdown(courseSection.id)}
-                                                className={`status-badge course-section-${courseSection.status}`}>
-                                                {CourseSectionStatusMap[courseSection.status]}
-                                            </span>
-                                            {openId === courseSection.id && (
-                                                <div className="status-dropdown">
-                                                    {statusOptions.map(opt => (
-                                                        <div
-                                                            key={opt.value}
-                                                            className="status-dropdown-item"
-                                                            onClick={() => handleUpdateStatus(opt.value as CourseSectionStatus, courseSection.id)}
-                                                        >
-                                                            {opt.label}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button className="btn-admin edit-btn-dmin" onClick={() => handleShowPopupUpdate(courseSection.id)}><FaEdit /></button>
-                                    </td>
+                {loadingCourseSection ? <Loading /> :
+                    <div className="course-section-list">
+                        <table className="course-section-table">
+                            <thead>
+                                <tr>
+                                    <th>Lớp Học</th>
+                                    <th>Giảng Viên Phụ Trách</th>
+                                    <th>Bắt Đầu</th>
+                                    <th>Kết Thúc</th>
+                                    <th>Số Tuần</th>
+                                    <th>Lớp Chủ Quản</th>
+                                    <th>Môn Học</th>
+                                    <th>Học Kỳ</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
                                 </tr>
-                            )) : <tr><td colSpan={10}>Không có lớp học phù hợp theo tiêu chí đã chọn</td></tr>}
-                        </tbody>
-                    </table>
-                    <div className="pagination-container-admin">
-                        <div className="pagination-controls">
-                            <button className="page-btn" onClick={() => meta?.previous_page != null &&
-                                fetchCourseSectionList(keyword, selectedYear, meta?.previous_page, selectedStatus, selectedSemester)
-                            } disabled={!meta?.previous_page}>
-                                Trang trước
-                            </button>
-                            <button className="page-btn active">{meta?.current_page}</button>
-                            <button className="page-btn" onClick={() => meta?.next_page != null &&
-                                fetchCourseSectionList(keyword, selectedYear, meta?.next_page, selectedStatus, selectedSemester)} disabled={!meta?.next_page}>
-                                Trang sau
-                            </button>
+                            </thead>
+                            <tbody>
+                                {courseSectionlist && courseSectionlist.length > 0 ? courseSectionlist.map((courseSection) => (
+                                    <tr key={courseSection.id}>
+                                        <td>{courseSection.name} <br /> <small>Tổng sinh viên: {courseSection.students_total}</small></td>
+                                        <td>{courseSection.teacher || <small>Chưa cập nhật</small>}</td>
+                                        <td>{formatDayMonthYear(courseSection.start_date)}</td>
+                                        <td>{courseSection.end_date ? formatDayMonthYear(courseSection.end_date) : '-'}</td>
+                                        <td>{courseSection.week_total}</td>
+                                        <td>{courseSection.class || <small>Chưa cập nhật</small>}</td>
+                                        <td>{courseSection.subject || <small>Chưa cập nhật</small>}</td>
+                                        <td>{courseSection.semester.name ?
+                                            <>
+                                                {courseSection.semester.name} <br />
+                                                ( {courseSection.semester.start_year} - {courseSection.semester.end_year} )
+                                            </> :
+                                            <small>Chưa cập nhật</small>}</td>
+                                        <td>
+                                            <div className="status-dropdown-wrapper" >
+                                                <span onClick={() => toggleDropdown(courseSection.id)}
+                                                    className={`status-badge course-section-${courseSection.status}`}>
+                                                    {CourseSectionStatusMap[courseSection.status]}
+                                                </span>
+                                                {openId === courseSection.id && (
+                                                    <div className="status-dropdown">
+                                                        {statusOptions.map(opt => (
+                                                            <div
+                                                                key={opt.value}
+                                                                className="status-dropdown-item"
+                                                                onClick={() => handleUpdateStatus(opt.value as CourseSectionStatus, courseSection.id)}
+                                                            >
+                                                                {opt.label}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button className="btn-admin edit-btn-dmin" onClick={() => handleShowPopupUpdate(courseSection.id)}><FaEdit /></button>
+                                        </td>
+                                    </tr>
+                                )) : <tr><td colSpan={10}>Không có lớp học phù hợp theo tiêu chí đã chọn</td></tr>}
+                            </tbody>
+                        </table>
+                        <div className="pagination-container-admin">
+                            <div className="pagination-controls">
+                                <button className="page-btn" onClick={() => meta?.previous_page != null &&
+                                    fetchCourseSectionList(keyword, selectedYear, meta?.previous_page, selectedStatus, selectedSemester)
+                                } disabled={!meta?.previous_page}>
+                                    Trang trước
+                                </button>
+                                <button className="page-btn active">{meta?.current_page}</button>
+                                <button className="page-btn" onClick={() => meta?.next_page != null &&
+                                    fetchCourseSectionList(keyword, selectedYear, meta?.next_page, selectedStatus, selectedSemester)} disabled={!meta?.next_page}>
+                                    Trang sau
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
 
             {
                 actionCourseSection && <CourseSectionPopupAction setActionCourseSection={setActionCourseSection}
-                    semesterList={semesterList} setLoadingCourseSection={setLoadingCourseSection}
-                    fetchCourseSectionList={fetchCourseSectionList} actionCourseSection={actionCourseSection}
-                    selectedCourseSection={selectedCourseSecton} />
+                    semesterList={semesterList} fetchCourseSectionList={fetchCourseSectionList}
+                    actionCourseSection={actionCourseSection} selectedCourseSection={selectedCourseSecton} />
             }
         </>
     )

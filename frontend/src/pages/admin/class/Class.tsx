@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import PageHeader from "../../../components/ui/PageHeader"
 import './Class.css';
 import ClassCard from "./ClassCard";
-import Loadding from "../../../components/ui/Loadding";
 import { detachStudentByCourseSection, getCourseSectionByTeacher, getListStudentByCourseSection } from "../../../services/courseSectionService";
 import type { CourseSection } from "../../../types/courseSecion";
 import type { StudentList } from "../../../types/student";
@@ -16,6 +15,7 @@ import { FaDeleteLeft } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import SelectWithPaginationStudent from "../../../components/ui/SelectWithPaginationStudent";
 import { genderMap } from "../../../utils/genderMap";
+import { Loading } from "../../../components/ui/Loading";
 
 const Class = () => {
     const [loading, setLoading] = useState(false);
@@ -143,7 +143,6 @@ const Class = () => {
 
     return (
         <>
-            {loading && <Loadding />}
             <PageHeader title="📚 Quản lý lớp học" subtitle="Hệ thống quản lý lớp học, danh sách sinh viên" />
             <div className="class-container box-container">
                 {action === 'default' ?
@@ -165,19 +164,20 @@ const Class = () => {
                                 </select>
                             </div>
                         </div>
-
-                        <div className="grid class-scroll">
-                            {
-                                filterCourseSection.length > 0 ?
-                                    filterCourseSection?.map(item => (
-                                        <ClassCard key={item.id} course_section={item} setAction={setAction}
-                                            setCurrentClassId={setCurrentClassId} setCurrentClassName={setCurrentClassName} />
-                                    )) :
-                                    <div style={{ textAlign: 'center', color: '#888', marginTop: '1.5rem' }}>
-                                        <strong>Không có lớp học nào phù hợp với tiêu chí đã chọn.</strong>
-                                    </div>
-                            }
-                        </div>
+                        {loading ? <Loading /> :
+                            <div className="grid class-scroll">
+                                {
+                                    filterCourseSection.length > 0 ?
+                                        filterCourseSection?.map(item => (
+                                            <ClassCard key={item.id} course_section={item} setAction={setAction}
+                                                setCurrentClassId={setCurrentClassId} setCurrentClassName={setCurrentClassName} />
+                                        )) :
+                                        <div style={{ textAlign: 'center', color: '#888', marginTop: '1.5rem' }}>
+                                            <strong>Không có lớp học nào phù hợp với tiêu chí đã chọn.</strong>
+                                        </div>
+                                }
+                            </div>
+                        }
                     </> :
                     action === 'student_list' &&
                     <>
@@ -204,38 +204,40 @@ const Class = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="class-student-main">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>MSSV</th>
-                                        <th>Họ và Tên</th>
-                                        <th>Email</th>
-                                        <th>Giới Tính</th>
-                                        <th>Tình trạng</th>
-                                        <th>Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {studentList && studentList.length > 1 ? studentList.filter(item => item.student_code.toLowerCase().includes(keyword) ||
-                                        normalizeString(item.name).includes(normalizeString(keyword)))
-                                        .map((student, index) => (
-                                            <tr key={student.id} onClick={() => handleStudentDetail(student.id)}>
-                                                <td>{index + 1}</td>
-                                                <td>{student.student_code}</td>
-                                                <td>{student.name}</td>
-                                                <td>{student.email}</td>
-                                                <td>{genderMap[student.gender]}</td>
-                                                <td>{statusMap[student.status]}</td>
-                                                <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
-                                            </tr>
-                                        )) :
-                                        <tr><td colSpan={7} style={{ textAlign: 'center' }}>Không có sinh viên nào</td></tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                        {loading ? <Loading /> :
+                            <div className="class-student-main">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>MSSV</th>
+                                            <th>Họ và Tên</th>
+                                            <th>Email</th>
+                                            <th>Giới Tính</th>
+                                            <th>Tình trạng</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {studentList && studentList.length > 1 ? studentList.filter(item => item.student_code.toLowerCase().includes(keyword) ||
+                                            normalizeString(item.name).includes(normalizeString(keyword)))
+                                            .map((student, index) => (
+                                                <tr key={student.id} onClick={() => handleStudentDetail(student.id)}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{student.student_code}</td>
+                                                    <td>{student.name}</td>
+                                                    <td>{student.email}</td>
+                                                    <td>{genderMap[student.gender]}</td>
+                                                    <td>{statusMap[student.status]}</td>
+                                                    <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
+                                                </tr>
+                                            )) :
+                                            <tr><td colSpan={7} style={{ textAlign: 'center' }}>Không có sinh viên nào</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
                     </>
                 }
             </div>

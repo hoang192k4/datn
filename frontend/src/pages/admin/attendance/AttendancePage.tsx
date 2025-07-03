@@ -6,9 +6,9 @@ import "./Attendance.css";
 import AttendanceCreate from "./AttendanceCreate";
 import { FaSearch } from "react-icons/fa";
 import Swal from "sweetalert2";
-import Loadding from "../../../components/ui/Loadding";
 import type { SessionAttendance } from "../../../types/attendance";
 import { normalizeString } from "../../../utils/searchUtil";
+import { Loading } from "../../../components/ui/Loading";
 
 interface Attendance {
     session_id: number,
@@ -82,7 +82,6 @@ const AttendancePage = () => {
     const handleExport = async () => {
         if (selectedSession) {
             try {
-                setLoadingAttendancePage(true);
                 const response = await exportTemplateAttendance(Number(selectedSession));
                 const contentDisposition = response.headers['content-disposition'];
                 let fileName = 'attendance.xlsx';
@@ -104,8 +103,8 @@ const AttendancePage = () => {
                     draggable: true
                 })
             } catch (error) {
-                console.error('Export thất bại:', error);
-            } finally { setLoadingAttendancePage(false); }
+               
+            }
         }
         else {
             Swal.fire({
@@ -134,7 +133,6 @@ const AttendancePage = () => {
         const formData = new FormData();
         formData.append("file", file);
         try {
-            setLoadingAttendancePage(true);
             const res = await importAttendance(formData);
             if (res) {
                 setActionImpotExport('default');
@@ -142,16 +140,17 @@ const AttendancePage = () => {
                     title: res.message,
                     icon: "success",
                     draggable: true
-                });
-                if (currentClassId !== undefined)
-                    fetchAttendance(currentClassId);
+                }).then(() => {
+                    if (currentClassId !== undefined)
+                        fetchAttendance(currentClassId);
+                })
             }
         } catch (errors: any) {
             Swal.fire({
                 title: errors.response.data.message,
                 icon: "error",
             })
-        } finally { setLoadingAttendancePage(false); }
+        }
     }
 
     const sessions = useMemo(() => {
@@ -170,7 +169,6 @@ const AttendancePage = () => {
 
 
     return <>
-        {loadingAttendancePage && <Loadding />}
         <PageHeader title="📅 Quản lý điểm danh" subtitle="Hệ thống quản lý điểm danh của từng lớp học" />
         {
             actionImportExport !== 'default' &&
@@ -239,52 +237,54 @@ const AttendancePage = () => {
                                 <button className="btn-attendance btn-attendance-right" onClick={() => setAction('create')}>Thêm điểm danh</button>
                             </div>
                         </div>
-                        <div className="attendance-table-wrapper">
-                            <table className="attendance-table">
-                                <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Thông tin sinh viên</th>
-                                        {sessions.map((item, index) => (
-                                            <th key={index}>
-                                                Buổi {index + 1}
-                                                <br />
-                                                <small>{item.date}</small>
-                                            </th>
-                                        ))}
-                                        <th>Có mặt</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {listStudentAttendance.length > 0 ? listStudentAttendance.filter(student =>
-                                        normalizeString(student.name).includes(normalizeString(searchKeyword)) ||
-                                        student.student_code.toLowerCase().includes(searchKeyword.toLowerCase()))
-                                        .map((student, index) => (
-                                            <tr key={student.id}>
-                                                <td>{index + 1}</td>
-                                                <td>
-                                                    {student.name}
+                        {loadingAttendancePage ? <Loading /> :
+                            <div className="attendance-table-wrapper">
+                                <table className="attendance-table">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Thông tin sinh viên</th>
+                                            {sessions.map((item, index) => (
+                                                <th key={index}>
+                                                    Buổi {index + 1}
                                                     <br />
-                                                    <small>MSSV: {student.student_code}</small>
-                                                </td>
-                                                {sessions.map((session) => {
-                                                    const att = student.attendance?.find(a => a.session_id === session.id);
-                                                    return (
-                                                        <td key={session.id}>
-                                                            {att ? (statusIcons[att.status] || '❓') : '--'}
-                                                            <br />
-                                                            <small>{att?.note || ''}</small>
-                                                        </td>
-                                                    );
-                                                })}
-                                                <td>{student.attendance_score}</td>
-                                            </tr>
-                                        )) :
-                                        <tr><td colSpan={3}>Chưa có điểm danh nào</td></tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                                    <small>{item.date}</small>
+                                                </th>
+                                            ))}
+                                            <th>Có mặt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listStudentAttendance.length > 0 ? listStudentAttendance.filter(student =>
+                                            normalizeString(student.name).includes(normalizeString(searchKeyword)) ||
+                                            student.student_code.toLowerCase().includes(searchKeyword.toLowerCase()))
+                                            .map((student, index) => (
+                                                <tr key={student.id}>
+                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        {student.name}
+                                                        <br />
+                                                        <small>MSSV: {student.student_code}</small>
+                                                    </td>
+                                                    {sessions.map((session) => {
+                                                        const att = student.attendance?.find(a => a.session_id === session.id);
+                                                        return (
+                                                            <td key={session.id}>
+                                                                {att ? (statusIcons[att.status] || '❓') : '--'}
+                                                                <br />
+                                                                <small>{att?.note || ''}</small>
+                                                            </td>
+                                                        );
+                                                    })}
+                                                    <td>{student.attendance_score}</td>
+                                                </tr>
+                                            )) :
+                                            <tr><td colSpan={3}>Chưa có điểm danh nào</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
                     </>
                     :
                     <AttendanceCreate classId={currentClassId} currentClassName={currentClassName} action={action} setAction={setAction} listSession={sessionByCourseSection} />
