@@ -5,16 +5,14 @@ import LoginPage from "../pages/login/LoginPage";
 import HomePage from "../pages/home/HomePage";
 import TeacherLayout from "../components/layout/TeacherLayout";
 import { TeacherRoute } from "./TeacherRoute";
-/* import TeacherPage from "../pages/home/TeacherPage"; */
 import DocumentPage from "../pages/document/DocumentPage";
-import ClassPage from "../pages/Class/ClassPage";
 import SchedulePage from "../pages/schedule/SchedulePage";
-import GradePage from "../pages/grade/GradePage";
-import AttendancePage from "../pages/attendance/AttendancePage";
 import StudentLayout from "../components/layout/StudentLayout";
 import { StudentRoute } from "./StudentRoute";
 import NotFoundPage from "../pages/notfound/NotFoundPage";
 import ForbiddenPage from "../pages/forbidden/ForbiddenPage";
+import TeacherPage from "../pages/home/TeacherPage";
+import ClassPage from "../pages/class/ClassPage";
 const AppRoutes = () => {
     const isAuthencation = useSelector((state: any) => state.auth.isAuthentication);
     const role = useSelector((state: any) => state.auth.user?.role ?? null);
@@ -24,16 +22,13 @@ const AppRoutes = () => {
         <Routes>
             {/* Route public */}
             <Route element={<MainLayout />}>
-                {/* <Route path="/:slug" element={<TeacherPage />} /> */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dang-nhap" element={isAuthencation && role === null ? <Navigate to="/sinh-vien" replace /> :
                     isAuthencation && role !== null ? <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> : < LoginPage />} />
-
-                <Route path="/tai-lieu" element={<DocumentPage />} />
-                <Route path="/lop-hoc" element={<ClassPage />} />
                 <Route path="/thoi-khoa-bieu" element={<SchedulePage />} />
-                <Route path="/diem" element={<GradePage />} />
-                <Route path="/diem-danh" element={<AttendancePage />} />
+                <Route path="/:slug" element={<TeacherPage />} />
+                <Route path="/:slug/tai-lieu/:id" element={<DocumentPage />} />
+                <Route path="/:slug/lop-hoc/:id" element={<ClassPage />} />
 
             </Route>
 
@@ -66,6 +61,7 @@ const AppRoutes = () => {
             <Route path="/403" element={<ForbiddenPage />} />
             {/* Route cho notfoud 404 */}
             <Route path="*" element={<NotFoundPage />} />
+            <Route path="/404" element={<NotFoundPage />} />
 
         </Routes>
     );

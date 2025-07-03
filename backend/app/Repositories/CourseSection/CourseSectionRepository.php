@@ -12,4 +12,10 @@ class CourseSectionRepository extends EloquentRepository implements CourseSectio
         return CourseSection::class;
     }
 
+    public function getCourseSectionByTeacherSlug($slug, $limit, $page)
+    {
+        return $this->model->whereHas('teacher', function ($query) use ($slug) {
+            $query->where('slug', $slug);
+        })->paginate($limit, ['*'], 'page', $page);
+    }
 }

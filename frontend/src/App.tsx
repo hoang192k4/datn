@@ -19,9 +19,6 @@ function App() {
         if (res.status === HttpStatus.SUCCESS) {
           dispatch(login({ user: res.data.data }));
           getFCMToken();
-
-
-
         } else {
           dispatch(logout());
         }
@@ -45,7 +42,6 @@ function App() {
       </>
     );
   }
-
 
   return (
     <AppRoutes />

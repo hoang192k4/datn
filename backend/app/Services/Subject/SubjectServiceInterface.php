@@ -7,4 +7,5 @@ use Illuminate\Http\Request;
 interface SubjectServiceInterface
 {
     public function getListSubjects(Request $request);
+    
 }

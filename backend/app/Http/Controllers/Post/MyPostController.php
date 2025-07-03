@@ -38,6 +38,7 @@ class MyPostController extends BaseController
             if (!is_null($status)) {
                 $posts->where('status', $status);
             }
+
             $posts = $posts->where(function ($query) use ($key) {
                 $query->where('title', 'like', '%' . $key . '%')->orWhere('content', 'like', '%' . $key . '%');
             })->orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page)->appends(['limit' => $limit]);
@@ -48,4 +49,5 @@ class MyPostController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
+
 }

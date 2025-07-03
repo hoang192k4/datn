@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Attendance;
 
 use App\Enums\Student\StudentStatus;
+use App\Exceptions\ModelNotFoundByIdException;
 use App\Exports\AttendanceTemplateExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CourseSection\CourseSectionAttendanceRequest;
@@ -36,7 +37,7 @@ class AttendanceController extends BaseController
     ) {
         $this->service = $service;
         $this->repository = $repository;
-        $this->middleware('auth:teacher');
+        $this->middleware('auth:teacher')->except('getAllAttendanceByCourseSection');
     }
 
     public function storeAttendanceStudents(CourseSectionAttendanceRequest $request)
@@ -55,8 +56,11 @@ class AttendanceController extends BaseController
     public function getAllAttendanceByCourseSection(string $courseSectionId)
     {
         try {
+            $this->repository->findOrFailById($courseSectionId);
             $studentData = $this->service->getAllAttendanceByCourseSection($courseSectionId);
             return $this->jsonResponseSuccess(array_values($studentData));
+        } catch (ModelNotFoundByIdException $e) {
+            return $this->jsonResponseError("không tìm thấy lớp học phần theo id $courseSectionId", 404);
         } catch (\Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

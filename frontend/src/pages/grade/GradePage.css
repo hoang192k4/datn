@@ -1,0 +1,14 @@
+.grade-page table tbody tr td {
+    text-align: center;
+}
+
+
+.table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.table-wrapper table {
+    min-width: 100%;
+    border-collapse: collapse;
+}
