@@ -48,3 +48,23 @@ export const deleteSchedule = async (id: number) => {
     const response = await axiosTeacherInstance.delete(`/schedules/${id}`);
     return response.data;
 }
+
+
+
+export const getScheduleByTeacher = async (filterDate: string | undefined | null) => {
+    const response = await axiosTeacherInstance.get('/me/schedules', {
+        params: {
+            filter_date: filterDate,
+        }
+    });
+    return response.data;
+}
+
+export const getScheduleByStudent = async (filterDate: string | undefined | null) => {
+    const response = await axiosTeacherInstance.get('/me/student/schedules', {
+        params: {
+            filter_date: filterDate,
+        }
+    });
+    return response.data;
+}

@@ -14,7 +14,6 @@ export const updateDeviceToken = async (deviceToken: string) => {
     return response;
 }
 
-
 export const getFCMToken = async () => {
 
     try {

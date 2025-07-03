@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Schedule;
 
 use App\Exceptions\ModelNotFoundByIdException;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Schedule\MyScheduleRequest;
 use App\Http\Requests\Schedule\ScheduleRequest;
 use App\Http\Resources\Schedule\ScheduleResource;
 use App\Http\Resources\Schedule\ScheduleResourceCollection;
+use App\Http\Resources\Schedule\TeacherScheduleResource;
 use App\Repositories\Schedule\ScheduleRepositoryInterface;
 use App\Services\Schedule\ScheduleServiceInterface;
 use Exception;
@@ -23,8 +25,8 @@ class ScheduleController extends BaseController
     ) {
         $this->scheduleService = $scheduleService;
         $this->scheduleRepository = $scheduleRepository;
-        $this->middleware('auth:teacher');
-        $this->middleware('role:faculty_admin,department_admin')->except(['index']);
+        $this->middleware('auth:teacher,student');
+        $this->middleware('role:faculty_admin,department_admin')->except(['index', 'getScheduleByTeacher', 'getScheduleByStudent']);
     }
     public function create(ScheduleRequest $request)
     {
@@ -84,6 +86,31 @@ class ScheduleController extends BaseController
             return $this->jsonResponseErrorValidate('Thực hiện không thành công', 400, $e->errors());
         } catch (ModelNotFoundByIdException) {
             return $this->jsonResponseError("Không tìm thấy instance theo id $id", 404);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function getScheduleByTeacher(MyScheduleRequest $request)
+    {
+        try {
+            $schduleByTeacher = $this->scheduleService->getSchedulesByTeacher($request);
+
+            return $this->jsonResponseSuccess(new TeacherScheduleResource($schduleByTeacher));
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+
+    public function getScheduleByStudent(MyScheduleRequest $request)
+    {
+        try {
+            $scheduleByStudent = $this->scheduleService->getSchedulesByStudent($request);
+
+            return $this->jsonResponseSuccess(new TeacherScheduleResource($scheduleByStudent));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

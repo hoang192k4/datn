@@ -40,7 +40,7 @@ Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::clas
     ->prefix('summary-grades')
     ->group(function () {
         Route::put('/{id}', 'update'); //api cập nhật điểm trong summary (cập nhật c.cần, điểm thi)
-        Route::get('/{id}','getSummaryGradesByStudent'); //api xuất toàn bộ điểm số cho sinh viên
+        Route::get('/{id}', 'getSummaryGradesByStudent'); //api xuất toàn bộ điểm số cho sinh viên
     });
 
 
@@ -79,12 +79,18 @@ Route::controller(App\Http\Controllers\Notification\StudentNotificationControlle
     ->prefix('feedbacks')
     ->group(function () {
         Route::post('/', 'sendFeedbackToTeacher'); //api gửi fb của sinh viên
+        Route::get('/', 'getFeedbackStudentSended'); //api lấy danh sách phản hồi đã gửi của sinh viên đăng nhập
     });
 
 Route::prefix('me')->group(function () {
     Route::controller(App\Http\Controllers\Student\MyStudentController::class)
         ->group(function () {
             Route::get('/students', 'getMyStudents'); //api lấy danh sách sinh viên mà giáo viên đang dạy (có limit)
+        });
+
+    Route::controller(App\Http\Controllers\Teacher\MyTeacherController::class)
+        ->group(function () {
+            Route::get('/student/teachers', 'getTeachersByStudentId'); //api lấy danh sách giảng viên đang dạy sinh viên
         });
 
     Route::controller(App\Http\Controllers\Post\MyPostController::class)
@@ -94,7 +100,7 @@ Route::prefix('me')->group(function () {
 
     Route::controller(App\Http\Controllers\Notification\TeacherNotificationController::class)
         ->group(function () {
-            Route::get('/students/notifications', 'getNotificationSendStudentByTeacher');
+            Route::get('/students/notifications', 'getNotificationSendStudentByTeacher'); //api lấy danh sách thông báo gửi sinh viên của teacher
         });
 
     Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::class)
@@ -105,6 +111,12 @@ Route::prefix('me')->group(function () {
     Route::controller(App\Http\Controllers\Subject\SubjectController::class)
         ->group(function () {
             Route::get('/subjects', 'getSubjectByTeacherId'); //api lấy danh sách môn học theo giảng viên
+        });
+
+    Route::controller(App\Http\Controllers\Schedule\ScheduleController::class)
+        ->group(function () {
+            Route::get('/schedules', 'getScheduleByTeacher'); //api lấy thời khóa biẻu theo giảng viên
+            Route::get('/student/schedules', 'getScheduleByStudent'); //api lấy thời khóa biểu theo sinh viên
         });
 });
 

@@ -235,7 +235,7 @@ class NotificationService implements NotificationServiceInterface
             if ($guard == Guard::TEACHER)
                 $notifications = $this->repository->getList(['teacher_receive_id' => $currentUserId, 'type' =>  $type], ['created_at' => 'desc'], ['teacher'], $limit, $page, ['title' => ['like', $key], 'content' => ['like', $key]]);
             if ($guard == Guard::STUDENT) {
-                $notifications = $this->repository->getList(['student_id' => $currentUserId, 'type' => ['!=', NotificationType::StudentSend]], ['created_at' => 'desc'], ['teacher'], $limit, $page);
+                $notifications = $this->repository->getList(['student_id' => $currentUserId, 'type' => ['!=', NotificationType::StudentSend], 'type' => $type], ['created_at' => 'desc'], ['teacher'], $limit, $page, ['title' => ['like', $key], 'content' => ['like', $key]]);
             }
 
             return $notifications;
@@ -301,8 +301,10 @@ class NotificationService implements NotificationServiceInterface
             $instance = $this->repository->find($id);
 
             if ($pushNotification) {
+                $this->repository->delete($id);
                 $this->sendNotificationToStudents($instance->title, $instance->content, array($instance->student_id), NotificationType::TeacherSend->value);
             }
+
             return true;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

@@ -1,3 +1,4 @@
+import axiosStudentInstance from "../config/axiosStudent";
 import axiosTeacherInstance from "../config/axiosTeacher"
 import type { NotificationType } from "../enums/NotificationType";
 import type { Paginate } from "../types/paginate";
@@ -115,5 +116,26 @@ export const getNotifications = async ({ limit, page, key }: Paginate, type: Not
             limit, page, key, type
         }
     });
+    return response.data;
+}
+
+export const sendFeedback = async (title: string, body: string, receiver_ids: any[]) => {
+    const response = await axiosStudentInstance.post('/feedbacks', {
+        title,
+        body,
+        receiver_ids
+    });
+
+    return response.data;
+}
+
+
+export const getFeedbackSendFromStudent = async (key: string | null = null, page: number | null = null) => {
+    const response = await axiosStudentInstance.get('/feedbacks', {
+        params: {
+            key,
+            page,
+        }
+    })
     return response.data;
 }

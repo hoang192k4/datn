@@ -4,9 +4,10 @@ const SidebarStudent = () => {
     return (
         <>
             <div className="sidebar-student">
-                <Link to="#">📅 Thời Khóa Biểu</Link>
+                <Link to="thoi-khoa-bieu">📅 Thời Khóa Biểu</Link>
                 <Link to="#">📊 Điểm Tổng Kết</Link>
                 <Link to="#">🏅 Điểm Rèn Luyện</Link>
+                <Link to="thong-bao">🏅 Thông báo</Link>
             </div>
         </>
     )

@@ -9,6 +9,8 @@ use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
 use App\Repositories\Schedule\ScheduleRepositoryInterface;
 use App\Repositories\Session\SessionRepositoryInterface;
 use App\Supports\Log;
+use App\Traits\AuthStudentApi;
+use App\Traits\AuthTeacherApi;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -18,7 +20,7 @@ use Throwable;
 
 class ScheduleService implements ScheduleServiceInterface
 {
-    use Log;
+    use Log, AuthTeacherApi, AuthStudentApi;
     protected $scheduleRepository;
     protected $sessionRepository;
     protected $courseSectionRepository;
@@ -55,6 +57,16 @@ class ScheduleService implements ScheduleServiceInterface
         if ($this->checkCourseSectionClassroomConflict([...$data, 'period_end' => $periodEnd])) {
             throw ValidationException::withMessages(['period_start' => 'Lớp học phần đã có lịch học vào thời gian này (có thể đã có lịch ở phòng khác)']);
         }
+
+        if ($this->scheduleRepository->hasTeacherConflict($courseSection->teacher_id, $data['day_of_week'], $periodStart, $periodEnd, $courseSection->start_date, $courseSection->end_date)) {
+            $dayOfWeek = DayOfWeek::getDescription($data['day_of_week']);
+            $startTime = $this->periodTimes[$periodStart]['start'];
+            $endTime = $this->periodTimes[$periodStart]['end'];
+
+            $teacherName = optional($courseSection->teacher)->name;
+            throw ValidationException::withMessages(['period_start' => "Giảng viên $teacherName đã có lịch dạy ở lớp khác vào khung giờ ($startTime - $endTime)"]);
+        };
+
 
         if ($periodStart <= 6) {
             $session = SessionStatus::Morning;
@@ -257,7 +269,6 @@ class ScheduleService implements ScheduleServiceInterface
         return false;
     }
 
-
     public function getSchedules(Request $request)
     {
         $data = $request->validated();
@@ -286,5 +297,45 @@ class ScheduleService implements ScheduleServiceInterface
         });
 
         return true;
+    }
+
+
+    public function getSchedulesByTeacher(Request $request)
+    {
+        $currentTeacherId = $this->getCurrentTeacherId();
+        $data = $request->validated();
+        $filterDate = $data['filter_date'] ?? now();
+
+        $targetDate = Carbon::parse($filterDate);
+
+
+        $startOfWeek = $targetDate->copy()->startOfWeek(Carbon::MONDAY);
+        $endOfWeek = $targetDate->copy()->endOfWeek(Carbon::SUNDAY);
+        $sessions = $this->sessionRepository->getSchedulesByTeacher($currentTeacherId, $startOfWeek, $endOfWeek);
+
+        return [
+            'start_of_week' => $startOfWeek,
+            'end_of_week' => $endOfWeek,
+            'sessions' => $sessions
+        ];
+    }
+
+     public function getSchedulesByStudent(Request $request)
+    {
+        $currentStudentId = $this->getCurrentStudentId();
+        $data = $request->validated();
+        $filterDate = $data['filter_date'] ?? now();
+
+        $targetDate = Carbon::parse($filterDate);
+
+        $startOfWeek = $targetDate->copy()->startOfWeek(Carbon::MONDAY);
+        $endOfWeek = $targetDate->copy()->endOfWeek(Carbon::SUNDAY);
+        $sessions = $this->sessionRepository->getSchedulesByStudent($currentStudentId, $startOfWeek, $endOfWeek);
+
+        return [
+            'start_of_week' => $startOfWeek,
+            'end_of_week' => $endOfWeek,
+            'sessions' => $sessions
+        ];
     }
 }

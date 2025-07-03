@@ -16,7 +16,7 @@ use App\Http\Requests\Student\StudentExportRequest;
 use App\Http\Requests\Student\StudentImportRequest;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Http\Resources\Student\StudentResourceCollection;
-
+use App\Services\Teacher\TeacherServiceInterface;
 
 class StudentController extends BaseController
 {
@@ -24,7 +24,7 @@ class StudentController extends BaseController
     protected $studentRepository;
     public function __construct(
         StudentServiceInterface $studentService,
-        StudentRepositoryInterface $studentRepository
+        StudentRepositoryInterface $studentRepository,
 
     ) {
         $this->studentService = $studentService;
@@ -99,4 +99,5 @@ class StudentController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
+
 }

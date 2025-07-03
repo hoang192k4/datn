@@ -11,5 +11,7 @@ interface ScheduleServiceInterface
     public function checkScheduleConflict(array $data): bool;
     public function checkCourseSectionClassroomConflict(array $data);
     public function getSchedules(Request $request);
-    public function delete($id):bool;
+    public function delete($id): bool;
+    public function getSchedulesByTeacher(Request $request);
+    public function getSchedulesByStudent(Request $request);
 }

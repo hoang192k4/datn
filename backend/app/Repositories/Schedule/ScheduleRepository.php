@@ -52,6 +52,34 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
             ->exists();
     }
 
+    public function hasTeacherConflict(
+        int $teacherId,
+        int $dayOfWeek,
+        int $periodStart,
+        int $periodEnd,
+        string $startDate,
+        string $endDate,
+        ?int $excludeScheduleId = null
+    ): bool {
+        return $this->model
+            ->where('day_of_week', $dayOfWeek)
+            ->when($excludeScheduleId, fn($q) => $q->where('id', '!=', $excludeScheduleId))
+            ->where(function ($query) use ($periodStart, $periodEnd) {
+                $query->whereBetween('period_start', [$periodStart, $periodEnd])
+                    ->orWhereBetween('period_end', [$periodStart, $periodEnd])
+                    ->orWhere(function ($q) use ($periodStart, $periodEnd) {
+                        $q->where('period_start', '<=', $periodStart)
+                            ->where('period_end', '>=', $periodEnd);
+                    });
+            })
+            ->whereHas('course_section', function ($query) use ($teacherId, $startDate, $endDate) {
+                $query->where('teacher_id', $teacherId)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('end_date', '>=', $startDate);
+            })
+            ->exists();
+    }
+
 
     public function getSchedules(?string $key = null, $session = null, ?int $dayOfWeek = null, $page, $limit, ?int $semester = null, ?int $classroomId = null)
     {

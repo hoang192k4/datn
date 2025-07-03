@@ -1,3 +1,4 @@
+import axiosStudentInstance from "../config/axiosStudent";
 import axiosTeacherInstance from "../config/axiosTeacher"
 import { StatusActiveInactive } from "../enums/StatusActiveInactive";
 import type { TeacherList } from "../types/teacher";
@@ -54,6 +55,16 @@ export const exportTeacher = async (selectedStatus: string | null, selectedRoleI
             'role_id': selectedRoleId
         },
         responseType: 'blob'
+    });
+    return response.data;
+}
+
+export const getTeacherByStudent = async (key: string | null = null, page: number | null = null) => {
+    const response = await axiosStudentInstance.get('me/student/teachers', {
+        params: {
+            key,
+            page,
+        }
     });
     return response.data;
 }
