@@ -28,6 +28,11 @@ class Notification extends Model
         return $this->belongsTo(Teacher::class);
     }
 
+    public function teacher_receive(): BelongsTo
+    {
+        return $this->belongsTo(Teacher::class, 'teacher_receive_id', 'id');
+    }
+
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);

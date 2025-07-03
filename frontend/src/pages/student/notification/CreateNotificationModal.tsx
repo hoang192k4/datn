@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { X, Users, User } from 'lucide-react';
+import { X, Users } from 'lucide-react';
 import './CreateNotificationModal.css';
 import { useForm, Controller } from 'react-hook-form';
-import { getCourseSectionByTeacher } from '../../../services/courseSectionService';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import type { GroupBase, OptionsOrGroups } from 'react-select';
-import { sendNotificationToCourseSection, getMyStudents, sendNotificationToStudent, sendFeedback } from '../../../services/notificationService';
+import { sendFeedback } from '../../../services/notificationService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import Swal from 'sweetalert2';
 import { CreateLoading } from '../../../components/ui/CreateLoading';
@@ -17,8 +16,7 @@ import { getTeacherByStudent } from '../../../services/teacherService';
 interface NotificationModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSuccessTeacher: () => void;
-    onSuccessStudent: () => void;
+    onSuccess: () => void;
 }
 interface FormValues {
     title: string;
@@ -29,7 +27,7 @@ interface FormValues {
 
 type OptionType = { value: string; label: string };
 
-const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, onSuccessTeacher, onSuccessStudent }) => {
+const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, onSuccess }) => {
     const [createLoading, setCreateLoading] = useState<boolean>(false);
     const { register, handleSubmit, formState: { errors }, control } = useForm<FormValues>({
         defaultValues: {
@@ -59,7 +57,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                     title: "Gửi phản hồi thành công",
                     icon: "success",
                 })
-                onSuccessTeacher();
+                onSuccess();
             }
 
         } catch (error: any) {

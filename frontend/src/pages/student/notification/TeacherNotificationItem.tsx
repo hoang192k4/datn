@@ -1,4 +1,5 @@
 import { ReadStatus } from "../../../enums/ReadStatus";
+import type { TeacherList } from "../../../types/teacher";
 
 interface StudentNotification {
     id: number,
@@ -8,21 +9,16 @@ interface StudentNotification {
     sender: string,
     from: string,
     status: string,
-    student: Student
+    teacher: TeacherList
 }
 
-interface Student {
-    id: string,
-    name: string,
-    student_code: string
-}
 interface Props {
     notification: StudentNotification;
     onDelete: () => void;
     onEdit: () => void;
 }
 
-const StudentNotificationItem: React.FC<Props> = ({ notification, onDelete, onEdit }) => {
+const TeacherNotificationItem: React.FC<Props> = ({ notification, onDelete, onEdit }) => {
     return (
         <div className="notification-content">
             <div className="notification-main">
@@ -51,7 +47,7 @@ const StudentNotificationItem: React.FC<Props> = ({ notification, onDelete, onEd
                         <span>{notification.created_at}</span>
                     </div>
                     <div className="meta-item">
-                        <span><strong>Sinh viên nhận:</strong> {notification.student.name}</span>
+                        <span><strong>Gửi đến giảng viên:</strong> {notification.teacher.name}</span>
                     </div>
 
                 </div>
@@ -79,4 +75,4 @@ const StudentNotificationItem: React.FC<Props> = ({ notification, onDelete, onEd
 }
 
 
-export default StudentNotificationItem;
+export default TeacherNotificationItem;

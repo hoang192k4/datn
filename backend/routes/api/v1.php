@@ -79,6 +79,7 @@ Route::controller(App\Http\Controllers\Notification\StudentNotificationControlle
     ->prefix('feedbacks')
     ->group(function () {
         Route::post('/', 'sendFeedbackToTeacher'); //api gửi fb của sinh viên
+        Route::get('/', 'getFeedbackStudentSended'); //api lấy danh sách phản hồi đã gửi của sinh viên đăng nhập
     });
 
 Route::prefix('me')->group(function () {
@@ -99,7 +100,7 @@ Route::prefix('me')->group(function () {
 
     Route::controller(App\Http\Controllers\Notification\TeacherNotificationController::class)
         ->group(function () {
-            Route::get('/students/notifications', 'getNotificationSendStudentByTeacher');
+            Route::get('/students/notifications', 'getNotificationSendStudentByTeacher'); //api lấy danh sách thông báo gửi sinh viên của teacher
         });
 
     Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::class)
