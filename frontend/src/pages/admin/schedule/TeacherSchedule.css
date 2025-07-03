@@ -173,3 +173,159 @@
      font-size: 12px;
      color: #999;
  }
+
+ /* Responsive cho tablet */
+ @media (max-width: 768px) {
+     .schedule-container {
+         padding: 15px;
+     }
+
+     .schedule-header {
+         padding: 15px;
+         margin-bottom: 15px;
+     }
+
+     .header-content {
+         flex-direction: column;
+         gap: 15px;
+         align-items: center;
+     }
+
+     .header-title {
+         font-size: 20px;
+         text-align: center;
+     }
+
+     .navigation-controls {
+         gap: 10px;
+     }
+
+     .week-range {
+         font-size: 14px;
+         min-width: 80px;
+     }
+
+     .nav-button {
+         width: 35px;
+         height: 35px;
+     }
+
+     .session-header,
+     .session-type-cell {
+         width: 100px;
+         min-width: 100px;
+         padding: 10px 8px;
+         font-size: 14px;
+     }
+
+     .day-header {
+         width: calc((100% - 100px) / 7);
+         min-width: 80px;
+         padding: 10px 5px;
+         font-size: 13px;
+     }
+
+     .day-date {
+         font-size: 11px;
+     }
+
+     .schedule-cell {
+         width: calc((100% - 100px) / 7);
+         min-width: 80px;
+         padding: 10px 5px;
+     }
+
+     .lesson-card {
+         font-size: 11px;
+         padding: 6px;
+         margin-bottom: 6px;
+     }
+
+     .lesson-title {
+         font-size: 11px;
+     }
+
+     .lesson-location,
+     .lesson-time {
+         font-size: 10px;
+     }
+ }
+
+ /* Responsive cho mobile */
+ @media (max-width: 480px) {
+     .schedule-container {
+         padding: 10px;
+     }
+
+     .schedule-header {
+         padding: 12px;
+         margin-bottom: 12px;
+     }
+
+     .header-title {
+         font-size: 18px;
+     }
+
+     .week-range {
+         font-size: 13px;
+         min-width: 70px;
+     }
+
+     .nav-button {
+         width: 30px;
+         height: 30px;
+     }
+
+     .schedule-table-container {
+         overflow-x: auto;
+     }
+
+     .schedule-table {
+         min-width: 600px;
+     }
+
+     .session-header,
+     .session-type-cell {
+         width: 80px;
+         min-width: 80px;
+         padding: 8px 5px;
+         font-size: 12px;
+     }
+
+     .day-header {
+         width: calc((600px - 80px) / 7);
+         min-width: 70px;
+         padding: 8px 3px;
+         font-size: 12px;
+     }
+
+     .day-date {
+         font-size: 10px;
+     }
+
+     .schedule-cell {
+         width: calc((600px - 80px) / 7);
+         min-width: 70px;
+         padding: 8px 3px;
+     }
+
+     .lesson-card {
+         font-size: 10px;
+         padding: 5px;
+         margin-bottom: 5px;
+     }
+
+     .lesson-title {
+         font-size: 10px;
+         margin-bottom: 2px;
+     }
+
+     .lesson-location,
+     .lesson-time {
+         font-size: 9px;
+     }
+
+     .empty-cell {
+         font-size: 11px;
+     }
+ }
