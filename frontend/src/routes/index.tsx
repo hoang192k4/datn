@@ -49,7 +49,6 @@ const AppRoutes = () => {
             {/* Route dành cho giảng viên */}
             <Route path={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} element={<TeacherLayout />} >
                 {
-
                     TeacherRoute.map((route, index) => {
                         let element;
                         if (!isAuthencation) {

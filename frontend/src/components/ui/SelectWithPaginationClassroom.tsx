@@ -45,10 +45,12 @@ const SelectWithPaginationClassroom = ({
     return (
         <AsyncPaginate
             isClearable
-            value={value}
+            value={value && value.value !== null
+                ? value
+                : null}
             loadOptions={loadOptions}
             onChange={onChange}
-            placeholder="-- Tìm phòng học --"
+            placeholder="--Tìm phòng học--"
             additional={{ page: 1 }}
             debounceTimeout={500}
             loadingMessage={() => 'Đang tải...'}
