@@ -5,11 +5,8 @@ import LoginPage from "../pages/login/LoginPage";
 import HomePage from "../pages/home/HomePage";
 import TeacherLayout from "../components/layout/TeacherLayout";
 import { TeacherRoute } from "./TeacherRoute";
-/* import TeacherPage from "../pages/home/TeacherPage"; */
 import DocumentPage from "../pages/document/DocumentPage";
 import SchedulePage from "../pages/schedule/SchedulePage";
-import GradePage from "../pages/grade/GradePage";
-import AttendancePage from "../pages/attendance/AttendancePage";
 import StudentLayout from "../components/layout/StudentLayout";
 import { StudentRoute } from "./StudentRoute";
 import NotFoundPage from "../pages/notfound/NotFoundPage";
@@ -29,7 +26,6 @@ const AppRoutes = () => {
                 <Route path="/dang-nhap" element={isAuthencation && role === null ? <Navigate to="/sinh-vien" replace /> :
                     isAuthencation && role !== null ? <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> : < LoginPage />} />
                 <Route path="/thoi-khoa-bieu" element={<SchedulePage />} />
-                <Route path="/diem-danh" element={<AttendancePage />} />
                 <Route path="/:slug" element={<TeacherPage />} />
                 <Route path="/:slug/tai-lieu/:id" element={<DocumentPage />} />
                 <Route path="/:slug/lop-hoc/:id" element={<ClassPage />} />

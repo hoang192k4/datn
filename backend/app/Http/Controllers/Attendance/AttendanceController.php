@@ -37,7 +37,7 @@ class AttendanceController extends BaseController
     ) {
         $this->service = $service;
         $this->repository = $repository;
-        $this->middleware('auth:teacher');
+        $this->middleware('auth:teacher')->except('getAllAttendanceByCourseSection');
     }
 
     public function storeAttendanceStudents(CourseSectionAttendanceRequest $request)
