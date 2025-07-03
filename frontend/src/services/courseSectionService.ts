@@ -1,3 +1,4 @@
+import { api } from "../config/api";
 import axiosTeacherInstance from "../config/axiosTeacher"
 import type { CourseSectionStatus } from "../enums/CourseSectionStatus";
 import type { CourseSection } from "../types/courseSecion";
@@ -64,5 +65,16 @@ export const getCourseSectionFilter = async (keyword: string | null,
             semester_id: semesterId
         }
     });
+    return response.data;
+}
+
+export const getCourseSectionByTeacherSlug = async (slug:string, page:number = 1, limit:number =12) => {
+    const response = await api.get('/course-sections/slug', {
+        params: {
+            slug,
+            limit,
+            page
+        }
+    })
     return response.data;
 }

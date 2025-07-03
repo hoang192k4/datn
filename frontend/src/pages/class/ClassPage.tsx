@@ -1,16 +1,56 @@
+import { useEffect, useState } from 'react';
+import AttendancePage from '../attendance/AttendancePage';
+import GradePage from '../grade/GradePage';
 import './ClassPage.css';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
+import { getStudentByCourseSectionId } from '../../services/gradeStudentService';
+import type { StudentGrade } from '../../types/student';
+import { Loading } from '../../components/ui/Loading';
+
+
+
 const ClassPage = () => {
+    const { id }: any = useParams();
+    const [studentGrades, setStudentGrades] = useState<StudentGrade[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
+    const fetchStudentGrades = async (id: number) => {
+        try {
+            setLoading(true);
+            const res = await getStudentByCourseSectionId(id);
+            setStudentGrades(res.data.data);
+
+        } catch (error) {
+            setError(true);
+        }
+        finally{
+            setLoading(false);
+        }
+
+    }
+
+
+    useEffect(() => {
+        fetchStudentGrades(id);
+    }, [])
+
+
+    if (error) {
+        return <Navigate to="/404" />
+    }
     return (
         <>
-            <div className="class-page container">
+
+            {/* <div className="class-page container">
                 <div className="class-header">
                     <div className="class-name">Lớp: Nhập môn lập trình</div>
                     <div className="buttons">
-                        <Link to ="/diem">Điểm</Link>
-                        <Link to ="/diem-danh">Điểm Danh </Link>
+                        <Link to ="diem">Điểm</Link>
+                        <Link to ="diem-danh">Điểm Danh </Link>
                     </div>
                 </div>
+
 
                 <div className="student-table-container">
                     <table>
@@ -45,9 +85,14 @@ const ClassPage = () => {
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </div> */}
+            {loading ? <Loading /> : (<>
+                <GradePage students={studentGrades} />
+                <AttendancePage /></>)}
+
         </>
     )
 }
 
 export default ClassPage
+

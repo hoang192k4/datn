@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CourseOffer\CourseOfferController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
@@ -144,6 +143,7 @@ Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::cl
         Route::put('/{id}', 'update'); //api cập nhật lớp học phần
         Route::patch('/{id}', 'updateStatus'); //api cập nhật trạng thái lớp học phần
         Route::get('/', 'getCourseSectionByFilter'); //api lấy danh sách lọc theo status, key , học kì, năm
+        Route::get('/slug', 'getCourseSectionByTeacherSlug'); //api lấy danh sách lớp học phần theo slug
     });
 
 Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)

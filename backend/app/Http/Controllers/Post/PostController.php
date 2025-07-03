@@ -33,7 +33,7 @@ class PostController extends BaseController
     public function getPostByTeacherSlug(PostRequest $request)
     {
         try {
-            $slug = $request->validated()['slug'];
+            $slug = $request->validated()['slug'] ?? '';
             $limit = $request->validated()['limit'] ?? 3;
             $page = $request->validated()['page'] ?? 1;
             $teacher = $this->teacherRepository->findWithConditions(['slug' => $slug]);

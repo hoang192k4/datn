@@ -14,7 +14,6 @@ const DocumentPage = () => {
         try {
             const res = await getDetailDocumentBySubjectId(id);
             setDetailDocumentSubject(res.data);
-            console.log(res.data);
         } catch (error) {
 
         }
@@ -33,7 +32,7 @@ const DocumentPage = () => {
 
                         {chapter.lectures.map((lecture) => (
                             <div className="lecture">
-                                <Link to={lecture.file_path} className="lecture-title"> Bài {lecture.position} : {lecture.title}</Link>
+                                <Link to={lecture.file_path} className="lecture-title" target="_blank"> Bài {lecture.position} : {lecture.title}</Link>
                             </div>
                         ))}
                     </>
