@@ -125,6 +125,7 @@ Route::controller(App\Http\Controllers\Post\PostController::class)
     ->group(function () {
         Route::delete('/{id}', 'destroy');
         Route::put('/{id}', 'update');
+        Route::get('/', 'getPostByTeacherSlug');
     });
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')
@@ -132,7 +133,6 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
         Route::get('/me', 'me'); //api lấy thông tin cá nhân
         Route::post('/refresh', 'refresh'); //api lấy access và refresh token mới
     });
-
 
 Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::class)
     ->prefix('course-sections')
@@ -159,6 +159,7 @@ Route::controller(App\Http\Controllers\Subject\SubjectController::class)
         Route::get('/detail-subject', 'getDetailDocumentBySubjectId'); //api lấy thông tin chi tiết của môn học
         Route::get('/search-subject', 'getListSubjectSearch'); //api lấy danh sách môn học theo giảng viên
         Route::get('/', 'getListSubjects'); //api lấy danh sách môn học
+        Route::get('/teacher-slug', 'getSubjectsByTeacherSlug'); //api lấy danh sách môn học teacher slug
     });
 
 

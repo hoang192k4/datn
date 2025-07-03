@@ -8,5 +8,6 @@ export const api = axios.create({
     headers: {
         'X-API-KEY': apiKey
     },
-    withCredentials: true,
+    withCredentials: false,
 })
+

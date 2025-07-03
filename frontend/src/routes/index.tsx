@@ -15,6 +15,7 @@ import StudentLayout from "../components/layout/StudentLayout";
 import { StudentRoute } from "./StudentRoute";
 import NotFoundPage from "../pages/notfound/NotFoundPage";
 import ForbiddenPage from "../pages/forbidden/ForbiddenPage";
+import TeacherPage from "../pages/home/TeacherPage";
 const AppRoutes = () => {
     const isAuthencation = useSelector((state: any) => state.auth.isAuthentication);
     const role = useSelector((state: any) => state.auth.user?.role ?? null);
@@ -24,17 +25,15 @@ const AppRoutes = () => {
         <Routes>
             {/* Route public */}
             <Route element={<MainLayout />}>
-                {/* <Route path="/:slug" element={<TeacherPage />} /> */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dang-nhap" element={isAuthencation && role === null ? <Navigate to="/sinh-vien" replace /> :
                     isAuthencation && role !== null ? <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> : < LoginPage />} />
-
-                <Route path="/tai-lieu" element={<DocumentPage />} />
                 <Route path="/lop-hoc" element={<ClassPage />} />
                 <Route path="/thoi-khoa-bieu" element={<SchedulePage />} />
                 <Route path="/diem" element={<GradePage />} />
                 <Route path="/diem-danh" element={<AttendancePage />} />
-
+                <Route path="/:slug" element={<TeacherPage />} />
+                <Route path="/:slug/tai-lieu/:id" element={<DocumentPage />} />
             </Route>
 
             {/* Route dành cho sinh viên */}
@@ -49,7 +48,6 @@ const AppRoutes = () => {
             {/* Route dành cho giảng viên */}
             <Route path={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} element={<TeacherLayout />} >
                 {
-
                     TeacherRoute.map((route, index) => {
                         let element;
                         if (!isAuthencation) {

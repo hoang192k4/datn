@@ -1,30 +1,44 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './DocumentPage.css';
+import { useEffect, useState } from 'react';
+import type { DocumentSubject } from '../../types/documentSubject';
+import { getDetailDocumentBySubjectId } from '../../services/docmentSubjectService';
+
+
 const DocumentPage = () => {
+    const { id }: any = useParams()
+    const [detailDocumentSubject, setDetailDocumentSubject] = useState<DocumentSubject>();
+
+
+    const fetchDetailDocumentSubject = async (id: number) => {
+        try {
+            const res = await getDetailDocumentBySubjectId(id);
+            setDetailDocumentSubject(res.data);
+            console.log(res.data);
+        } catch (error) {
+
+        }
+    }
+    useEffect(() => {
+        fetchDetailDocumentSubject(id);
+    }, []);
+
     return (
         <>
             <div className="document-subject container">
-                <h1>Tài liệu môn nhập môn lập trình</h1>
-                <h2>Chương 1: Nhập môn lập trình</h2>
-                <div className="lecture">
-                    <Link to="#" className="lecture-title">Bài 1: Tổng quan về lập trình</Link>
-                </div>
-                <div className="lecture">
-                    <Link to="#" className="lecture-title">Bài 2: Cấu trúc chương trình C</Link>
-                </div>
-                <div className="lecture">
-                    <Link to="#" className="lecture-title">Bài 3: Biến và kiểu dữ liệu</Link>
-                </div>
-                  <h2>Chương 2: Làm quen với C++</h2>
-                <div className="lecture">
-                    <Link to="#" className="lecture-title">Bài 4: Tổng quan về lập trình</Link>
-                </div>
-                <div className="lecture">
-                    <Link to="#" className="lecture-title">Bài 5: Cấu trúc chương trình C</Link>
-                </div>
-                <div className="lecture">
-                    <Link to="#" className="lecture-title">Bài 6: Biến và kiểu dữ liệu</Link>
-                </div>
+                <h1>Tài liệu {detailDocumentSubject?.subject_name}</h1>
+                {detailDocumentSubject?.chapters.map((chapter) => (
+                    <>
+                        <h2>Chương {chapter.position}: {chapter.title}</h2>
+
+                        {chapter.lectures.map((lecture) => (
+                            <div className="lecture">
+                                <Link to={lecture.file_path} className="lecture-title"> Bài {lecture.position} : {lecture.title}</Link>
+                            </div>
+                        ))}
+                    </>
+
+                ))}
             </div>
         </>
     )

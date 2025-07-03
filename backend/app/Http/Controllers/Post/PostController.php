@@ -34,7 +34,7 @@ class PostController extends BaseController
     {
         try {
             $slug = $request->validated()['slug'];
-            $limit = $request->validated()['limit'] ?? 5;
+            $limit = $request->validated()['limit'] ?? 3;
             $page = $request->validated()['page'] ?? 1;
             $teacher = $this->teacherRepository->findWithConditions(['slug' => $slug]);
 
