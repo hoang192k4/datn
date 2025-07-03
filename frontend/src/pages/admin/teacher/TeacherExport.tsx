@@ -5,16 +5,14 @@ import Swal from "sweetalert2";
 
 interface PropsExport {
     setShowPopupExport: React.Dispatch<React.SetStateAction<boolean>>,
-    setLoadingTeacher: React.Dispatch<React.SetStateAction<boolean>>,
     roleList: RoleList[],
 }
-const TeacherExport: React.FC<PropsExport> = ({ setShowPopupExport, setLoadingTeacher, roleList }) => {
+const TeacherExport: React.FC<PropsExport> = ({ setShowPopupExport, roleList }) => {
     const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
     const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
     const handleExport = async () => {
         try {
-            setLoadingTeacher(true);
             const res = await exportTeacher(selectedStatus, selectedRoleId);
             if (res) {
                 const url = window.URL.createObjectURL(res);
@@ -35,8 +33,8 @@ const TeacherExport: React.FC<PropsExport> = ({ setShowPopupExport, setLoadingTe
                 setShowPopupExport(false);
             }
         } catch (errors) {
-            console.log(errors);
-        } finally { setLoadingTeacher(false) }
+
+        }
     }
     return (
         <>

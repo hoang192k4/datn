@@ -49,7 +49,7 @@ const ScheduleManagement: React.FC = () => {
         afternoon: { label: "Chiều", badge: 'session-afternoon' }
     }
 
-    const daysOfWeek = [{ value: 1, label: "Thứ 2" }, { value: 2, label: "Thứ 3" }, { value: 3, label: "Thứ 4" }, { value: 4, label: "Thứ 5" }, { value: 5, label: "Thứ 6" }, { value: 6, label: "Thứ 7" }, {value: 7, label: "Chủ nhật"}];
+    const daysOfWeek = [{ value: 1, label: "Thứ 2" }, { value: 2, label: "Thứ 3" }, { value: 3, label: "Thứ 4" }, { value: 4, label: "Thứ 5" }, { value: 5, label: "Thứ 6" }, { value: 6, label: "Thứ 7" }, { value: 7, label: "Chủ nhật" }];
     const sessions = [
         { value: 'morning', label: 'Sáng' },
         { value: 'afternoon', label: 'Chiều' },
@@ -257,6 +257,7 @@ const ScheduleManagement: React.FC = () => {
                         <div className="filters-grid">
                             <div>
                                 <input
+                                    style={{ paddingLeft: '12px' }}
                                     type="text"
                                     placeholder="Tìm kiếm theo lớp, môn học, giáo viên..."
                                     value={inputSearch}
@@ -315,11 +316,11 @@ const ScheduleManagement: React.FC = () => {
                                         <th className="table-header">Phòng</th>
                                         <th className="table-header">Giáo viên</th>
                                         <th className="table-header">Học kỳ</th>
-                                        <th className="table-header" colSpan={2}>Thao tác</th>
+                                        <th className="table-header" colSpan={2} style={{ textAlign: 'center' }}>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {loading ? (<tr> <td colSpan={10}><Loading /> </td></tr>) : (
+                                    {loading ? (<tr><td colSpan={10}><Loading /> </td></tr>) : (
                                         schedules.map((schedule) => (
                                             <tr key={schedule.id} className="table-row">
                                                 <td className="table-cell">
@@ -407,47 +408,6 @@ const ScheduleManagement: React.FC = () => {
                             </div>
                         )) : <> </>}
                     </div>
-
-                    {/* Statistics
-                    <div className="stats-grid">
-                        <div className="stat-card">
-                            <div className="stat-icon">📅</div>
-                            <div>
-                                <p className="stat-label">Tổng lịch học</p>
-                                <p className="stat-value">{schedules.length}</p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">👥</div>
-                            <div>
-                                <p className="stat-label">Số lớp</p>
-                                <p className="stat-value">
-                                    {new Set(schedules.map(s => s.classroom.name)).size}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">📚</div>
-                            <div>
-                                <p className="stat-label">Số môn học</p>
-                                <p className="stat-value">
-                                    {new Set(schedules.map(s => s.course_section.subject)).size}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="stat-card">
-                            <div className="stat-icon">⏰</div>
-                            <div>
-                                <p className="stat-label">Tổng số tiết</p>
-                                <p className="stat-value">
-                                    {schedules.reduce((sum, s) => sum + s.period_number, 0)}
-                                </p>
-                            </div>
-                        </div>
-                    </div> */}
                 </div>
             </div >
             <ScheduleModal isOpen={scheduleModal} onClose={() => { setScheduleModal(false); setSchdeuleSelected(null) }} onSubmit={handleSubmit} defaultValues={scheduleSelected ?? undefined} />

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
     createUpdateAttendances, getListAttendancesBySession
 } from "../../../services/attendanceService";
-import Loadding from "../../../components/ui/Loadding";
 import type { StudentAttendace, AttendanceForm, SessionAttendance } from "../../../types/attendance";
 import { useForm } from "react-hook-form";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -11,6 +10,7 @@ import type { AttendanceStatus } from "../../../enums/AttendanceStatus";
 import { FaSearch } from "react-icons/fa";
 import { getListStudentByCourseSection } from "../../../services/courseSectionService";
 import { normalizeString } from "../../../utils/searchUtil";
+import { Loading } from "../../../components/ui/Loading";
 interface AttendanceProps {
     classId: number,
     currentClassName?: string,
@@ -92,7 +92,7 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
     }
     return (
         <>
-            {loadingAttendanceCreate && <Loadding />}
+
             <div className="attendance-form-wrapper">
                 <div className="attendance-form-wrapper-header">
                     <div className="attendance-form-wrapper-left">
@@ -121,73 +121,76 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
                         {errors.session_id && <p className="error-message">{errors.session_id.message}</p>}
                     </div>
                 </div>
-                <div id="attendance-form">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>MSSV</th>
-                                <th>Name</th>
-                                <th>✅ Có mặt</th>
-                                <th>⚠️ Đi trễ</th>
-                                <th>📝 Vắng có phép</th>
-                                <th>❌ Vắng</th>
-                                <th>Ghi chú</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {action === 'create' ?
-                                listStudent && listStudent?.filter(student => normalizeString(student.name).includes(normalizeString(searchKeywordUpdateCreate)) ||
-                                    student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()))
-                                    ?.map((student, index) => (
-                                        <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
-                                            <td>{student.student_code}</td>
-                                            <td>{student.name}<input type="hidden" {...register(`attendances.${index}.student_id`, {
-                                                required: "Chọn trạng thái điểm danh",
-                                            })} value={student.id} /></td>
-                                            <td>
-                                                <input type="radio"
-                                                    {...register(`attendances.${index}.status`, {
-                                                        required: 'Vui lòng chọn trạng thái',
-                                                    })} value="present" />
-                                            </td>
-                                            <td><input type="radio" {...register(`attendances.${index}.status`)} value="late" /></td>
-                                            <td ><input type="radio" {...register(`attendances.${index}.status`)} value="excused_absent" /></td>
-                                            <td ><input type="radio" {...register(`attendances.${index}.status`)} value="absent" /></td>
-                                            <td><textarea {...register(`attendances.${index}.note`)} placeholder="Ghi chú..."></textarea></td>
-                                        </tr>
-                                    )) :
-                                action === 'update' &&
-                                listAttendances?.attendances?.filter(student => student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()) ||
-                                    normalizeString(student.student_name).includes(normalizeString(searchKeywordUpdateCreate)))
-                                    .map((attendance, index) => (
-                                        <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
-                                            <td>{attendance.student_code}</td>
-                                            <td>{attendance.student_name}<input type="hidden" {...register(`attendances.${index}.student_id`, {
-                                                required: "Chọn trạng thái điểm danh",
-                                            })} value={attendance.student_id} /></td>
-                                            <td>
-                                                <input type="radio"
-                                                    {...register(`attendances.${index}.status`, {
-                                                        required: 'Vui lòng chọn trạng thái',
-                                                    })} value="present" />
-                                            </td>
-                                            <td><input type="radio" {...register(`attendances.${index}.status`)} value="late" /></td>
-                                            <td ><input type="radio" {...register(`attendances.${index}.status`)} value="excused_absent" /></td>
-                                            <td ><input type="radio" {...register(`attendances.${index}.status`)} value="absent" /></td>
-                                            <td><textarea {...register(`attendances.${index}.note`)} placeholder="Ghi chú..."></textarea></td>
-                                        </tr>
-                                    ))}
-                            {Array.isArray(listAttendances?.attendances) && listAttendances.attendances.length === 0 && (
+                {loadingAttendanceCreate ? <Loading /> :
+                    <div id="attendance-form">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td colSpan={7} style={{ textAlign: 'center' }}>Chưa có danh sách điểm danh</td>
+                                    <th>MSSV</th>
+                                    <th>Name</th>
+                                    <th>✅ Có mặt</th>
+                                    <th>⚠️ Đi trễ</th>
+                                    <th>📝 Vắng có phép</th>
+                                    <th>❌ Vắng</th>
+                                    <th>Ghi chú</th>
                                 </tr>
-                            )}
+                            </thead>
+                            <tbody>
+                                {action === 'create' ?
+                                    listStudent && listStudent?.filter(student => normalizeString(student.name).includes(normalizeString(searchKeywordUpdateCreate)) ||
+                                        student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()))
+                                        ?.map((student, index) => (
+                                            <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
+                                                <td>{student.student_code}</td>
+                                                <td>{student.name}<input type="hidden" {...register(`attendances.${index}.student_id`, {
+                                                    required: "Chọn trạng thái điểm danh",
+                                                })} value={student.id} /></td>
+                                                <td>
+                                                    <input type="radio"
+                                                        {...register(`attendances.${index}.status`, {
+                                                            required: 'Vui lòng chọn trạng thái',
+                                                        })} value="present" />
+                                                </td>
+                                                <td><input type="radio" {...register(`attendances.${index}.status`)} value="late" /></td>
+                                                <td ><input type="radio" {...register(`attendances.${index}.status`)} value="excused_absent" /></td>
+                                                <td ><input type="radio" {...register(`attendances.${index}.status`)} value="absent" /></td>
+                                                <td><textarea {...register(`attendances.${index}.note`)} placeholder="Ghi chú..."></textarea></td>
+                                            </tr>
+                                        )) :
+                                    action === 'update' &&
+                                    listAttendances?.attendances?.filter(student => student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()) ||
+                                        normalizeString(student.student_name).includes(normalizeString(searchKeywordUpdateCreate)))
+                                        .map((attendance, index) => (
+                                            <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
+                                                <td>{attendance.student_code}</td>
+                                                <td>{attendance.student_name}<input type="hidden" {...register(`attendances.${index}.student_id`, {
+                                                    required: "Chọn trạng thái điểm danh",
+                                                })} value={attendance.student_id} /></td>
+                                                <td>
+                                                    <input type="radio"
+                                                        {...register(`attendances.${index}.status`, {
+                                                            required: 'Vui lòng chọn trạng thái',
+                                                        })} value="present" />
+                                                </td>
+                                                <td><input type="radio" {...register(`attendances.${index}.status`)} value="late" /></td>
+                                                <td ><input type="radio" {...register(`attendances.${index}.status`)} value="excused_absent" /></td>
+                                                <td ><input type="radio" {...register(`attendances.${index}.status`)} value="absent" /></td>
+                                                <td><textarea {...register(`attendances.${index}.note`)} placeholder="Ghi chú..."></textarea></td>
+                                            </tr>
+                                        ))}
+                                {Array.isArray(listAttendances?.attendances) && listAttendances.attendances.length === 0 && (
+                                    <tr>
+                                        <td colSpan={7} style={{ textAlign: 'center' }}>Chưa có danh sách điểm danh</td>
+                                    </tr>
+                                )}
 
 
-                        </tbody>
-                    </table>
-                    <button type="button" onClick={handleSubmit(handleSubmitAttendance)} >Gửi điểm danh</button>
-                </div>
+                            </tbody>
+                        </table>
+                        <button type="button" onClick={handleSubmit(handleSubmitAttendance)} >Gửi điểm danh</button>
+                    </div>
+                }
+
             </div >
         </>
     )

@@ -5,13 +5,13 @@ import {
     createChapter, createLecture, deleteChapter, deleteLecture, getDetailDocumentBySubjectId,
     getListSubjectKeyword, updateChapter, updateLecture
 } from "../../../services/docmentSubjectService";
-import Loadding from "../../../components/ui/Loadding";
 import type { ChapterInstance, DocumentSubject, Lecture } from "../../../types/documentSubject";
 import { MdDelete, MdSaveAs } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { FaEdit } from "react-icons/fa";
 import { HttpStatus } from "../../../enums/HttpStatus";
+import { Loading } from "../../../components/ui/Loading";
 
 
 const SubjectDetail = () => {
@@ -283,7 +283,7 @@ const SubjectDetail = () => {
 
     return (
         <>
-            {loadingGetDocumentDetail && <Loadding />}
+
             <div className="subject-detail-container">
                 <h1 className="subject-detail-title">📚 Tài liệu môn {dataDocument?.subject_name}
                     <div className="search-subject">
@@ -309,24 +309,26 @@ const SubjectDetail = () => {
                     <button className="subject-detail-btn " onClick={() => handleShowPopupCreate()}>Thêm bài giảng</button>
                 </div>
                 {/* Hiển thị danh sách chương và bài */}
-                {dataDocument?.chapters?.map((chapter, index) => (
-                    <div key={chapter.id} className="subject-detail-chapter">
-                        <h2 className="subject-detail-chapter-title">Chương {index + 1}: {chapter.title}
-                            <FaEdit onClick={() => { hanldeShowPopupUpdateDeleteChapter(chapter.id) }} />
-                        </h2>
-                        <div className="subject-detail-lecture-list">
-                            {chapter?.lectures?.map((lecture, index) => (
-                                <div key={lecture.id} className="subject-detail-lecture-item">
-                                    <Link to={`${lecture.file_path}`} target="_blank">Bài {index + 1}: {lecture.title}</Link>
-                                    <div className="subject-detail-lecture-item-icons">
-                                        <MdSaveAs onClick={() => handleShowPopupUpdate(lecture.id)} />
-                                        <MdDelete onClick={() => handleDeleteLecture(lecture.id)} />
+                {loadingGetDocumentDetail ? <Loading /> :
+                    dataDocument?.chapters?.map((chapter, index) => (
+                        <div key={chapter.id} className="subject-detail-chapter">
+                            <h2 className="subject-detail-chapter-title">Chương {index + 1}: {chapter.title}
+                                <FaEdit onClick={() => { hanldeShowPopupUpdateDeleteChapter(chapter.id) }} />
+                            </h2>
+                            <div className="subject-detail-lecture-list">
+                                {chapter?.lectures?.map((lecture, index) => (
+                                    <div key={lecture.id} className="subject-detail-lecture-item">
+                                        <Link to={`${lecture.file_path}`} target="_blank">Bài {index + 1}: {lecture.title}</Link>
+                                        <div className="subject-detail-lecture-item-icons">
+                                            <MdSaveAs onClick={() => handleShowPopupUpdate(lecture.id)} />
+                                            <MdDelete onClick={() => handleDeleteLecture(lecture.id)} />
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                }
 
                 {/* Popup Thêm chương */}
                 {showChapterPopup && (
@@ -416,6 +418,8 @@ const SubjectDetail = () => {
                     </div>
                 )}
             </div>
+
+
         </>
     );
 };

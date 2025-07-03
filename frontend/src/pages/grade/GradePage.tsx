@@ -39,10 +39,9 @@ const GradePage: React.FC<Props> = ({ students }) => {
                             {gradeColumns.map((col, idx) => (
                                 <th key={idx}>{col}</th>
                             ))}
-
-                            <th>Giữa kỳ</th>
-                            <th>Cuối kỳ</th>
-                            <th>TB</th>
+                            <th>TBKT</th>
+                            <th>Thi lần 1</th>
+                            <th>Thi lần 2</th>
                             <th>Tổng kết</th>
                             <th>Xếp loại</th>
                             <th>Ghi chú</th>
@@ -70,10 +69,9 @@ const GradePage: React.FC<Props> = ({ students }) => {
                                     {gradeColumns.map((col) => (
                                         <td key={col}>{scoreMap[col] ?? '-'}</td>
                                     ))}
-
+                                    <td>{summary.avg_score ?? '-'}</td>
                                     <td>{summary.exam1_score ?? '-'}</td>
                                     <td>{summary.exam2_score ?? '-'}</td>
-                                    <td>{summary.avg_score ?? '-'}</td>
                                     <td>{summary.final_score ?? '-'}</td>
                                     <td>{getEvaluationLabel(summary.evaluation)}</td>
                                     <td>{summary.note}</td>
