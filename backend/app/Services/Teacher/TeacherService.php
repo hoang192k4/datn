@@ -9,7 +9,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Repositories\Teacher\TeacherRepositoryInterface;
 use Exception;
+use Maatwebsite\Excel\Concerns\ToArray;
 
+use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isNull;
 
 class TeacherService implements TeacherServiceInterface
@@ -25,17 +27,27 @@ class TeacherService implements TeacherServiceInterface
     {
         $data = $request->validated();
         $data['slug'] = Str::slug($data['name']);
-        return $this->teacherRepository->create($data);
+        $subjectIds = $data['subjects'] ?? [];
+        unset($data['subjects']);
+        $teacher =  $this->teacherRepository->create($data);
+        if (!empty($subjectIds)) {
+            $teacher->subjects()->attach($subjectIds);
+        }
+        if (!$teacher)
+            return false;
+        return true;
     }
 
     public function update($teacher, Request $request)
     {
         $data = $request->validated();
-
+        $subjectIds = $data['subjects'];
+        unset($data['subjects']);
         if (array_key_exists('password_current', $data) && array_key_exists('password_update', $data))
             $data['password'] = $data['password_update'];
         if (array_key_exists('name', $data))
             $data['slug'] = Str::slug($data['name']);
+        $teacher->subjects()->sync($subjectIds);
         return $this->teacherRepository->update($teacher->id, $data);
     }
 

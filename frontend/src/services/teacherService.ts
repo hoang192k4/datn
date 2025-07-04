@@ -70,6 +70,10 @@ export const getTeacherByStudent = async (key: string | null = null, page: numbe
     return response.data;
 }
 
+
+export const getTeachersBySubject = async (subjectId: number) => {
+    const response = await axiosTeacherInstance.get(`/teachers/subject/${subjectId}`);
+
 export const getAllTeachers = async ( limit:number|null = null, key: string | null = null, page: number | null = null,
     status: StatusActiveInactive | null = null, role: string | null = null) => {
     const response = await api.get('/teachers', {

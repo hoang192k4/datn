@@ -359,7 +359,7 @@ const StudentManagement = () => {
                 </div>
 
                 {students.length > 0 ? (<div className="pagination-container">
-                    <div className="pagination-info">
+                    <div className="pagination-info" style={{color:'white'}}>
                         Hiển thị từ <strong>{paginate?.from}</strong> đến <strong>{paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> sinh viên
                     </div>
 

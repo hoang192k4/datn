@@ -27,6 +27,7 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Role\RoleRepositoryInterface' => 'App\Repositories\Role\RoleRepository',
         'App\Repositories\Semester\SemesterRepositoryInterface' => 'App\Repositories\Semester\SemesterRepository',
         'App\Repositories\Major\MajorRepositoryInterface' => 'App\Repositories\Major\MajorRepository',
+        'App\Repositories\ConductScore\ConductScoreRepositoryInterface' => 'App\Repositories\ConductScore\ConductScoreRepository',
 
     ];
 

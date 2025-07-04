@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import { attachStudentByCourseSection } from "../../../services/courseSectionService";
 import type { StudentList } from "../../../types/student";
-import { formatDayMonthYear, getInitials } from "../../../utils/stringUtil";
+import { formatDayMonthYear, getInitials } from "../../../utils/utils";
 import { statusMap } from "../../../utils/studentText";
 import { genderMap } from "../../../utils/genderMap";
 import { useEffect, useState } from "react";

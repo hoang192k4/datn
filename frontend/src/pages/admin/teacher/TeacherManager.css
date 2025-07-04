@@ -43,14 +43,16 @@
 }
 
 .teacher-table>thead>tr>th:nth-child(6),
-.teacher-table>thead>tr>th:nth-child(8) {
+.teacher-table>thead>tr>th:nth-child(8),
+.teacher-table>tbody>tr>td:nth-child(9) {
     width: 120px;
     min-width: 120px;
 }
 
 .teacher-table>tbody>tr>td:nth-child(6),
 .teacher-table>tbody>tr>td:nth-child(7),
-.teacher-table>tbody>tr>td:nth-child(8) {
+.teacher-table>tbody>tr>td:nth-child(8),
+.teacher-table>tbody>tr>td:nth-child(9) {
     text-align: center;
 }
 
@@ -473,4 +475,42 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* hover xem mon hoc phu trach */
+.subject-tooltip-container {
+    position: relative;
+    cursor: pointer;
+}
+
+.subject-count {
+    background-color: #1e3a8a;
+    color: #fff;
+    padding: 4px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* Tooltip ẩn mặc định */
+.subject-tooltip {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 100;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    font-size: 14px;
+}
+
+/* Khi hover vào span thì hiện tooltip */
+.subject-tooltip-container:hover .subject-tooltip {
+    display: block;
 }

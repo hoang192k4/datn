@@ -19,6 +19,12 @@ class TeacherResource extends JsonResource
             'gender' => $this->gender,
             'status' => $this->status,
             'address' => $this->address,
+            'subjects' => $this->subjects->map(function($item) {
+                return [
+                    'value'=> $item->id,
+                    'label' => $item->name . '- số tính chỉ ' . $item->credit
+                ];
+            }),
             'role' => $this->role->name,
             'role_id' => $this->role_id,
             'created_at' => $this->created_at,

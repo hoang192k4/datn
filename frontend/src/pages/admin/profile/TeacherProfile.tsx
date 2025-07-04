@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux"
-import { getInitials } from "../../../utils/stringUtil";
+import { getInitials } from "../../../utils/utils";
 import type { TeacherForm } from "../../../types/teacher";
 import { teacherUpdate } from "../../../services/authTeacherService";
 import { login } from '../../../store/slices/authSlice';

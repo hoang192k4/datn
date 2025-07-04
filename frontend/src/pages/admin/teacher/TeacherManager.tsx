@@ -6,15 +6,20 @@ import { genderMap } from "../../../utils/genderMap";
 import './TeacherManager.css';
 import { StatusActiveInactive } from "../../../enums/StatusActiveInactive";
 import { teacherRoleMap, teacherStatusMap } from "../../../utils/teacherText";
-import { formatDayMonthYear } from "../../../utils/stringUtil";
+import { formatDayMonthYear } from "../../../utils/utils";
 import { FaEdit, FaLock, FaLockOpen, FaSearch } from "react-icons/fa";
 import debounce from "lodash.debounce";
 import Swal from "sweetalert2";
-import { useForm, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import type { RoleList } from "../../../types/role";
 import TeacherImport from "./TeacherImport";
 import TeacherExport from "./TeacherExport";
 import { Loading } from "../../../components/ui/Loading";
+import { AsyncPaginate } from "react-select-async-paginate";
+import type { GroupBase, OptionsOrGroups } from "react-select";
+import { getListSubjects } from "../../../services/docmentSubjectService";
+
+type OptionType = { value: string | number; label: string };
 const TeacherManager = () => {
     const [teacherList, setTeacherList] = useState<TeacherList[]>([]);
     const [roleList, setRoleList] = useState<RoleList[]>([]);
@@ -70,7 +75,15 @@ const TeacherManager = () => {
     const handleFetchDataTeacher = (teacherId: number) => {
         setActionTeacher('update');
         const data = teacherList.filter(teacher => teacher.id === teacherId);
-        reset(data[0]);
+        if (data) {
+            reset({
+                ...data[0],
+                subjects: data[0].subjects.map((s) => ({
+                    label: s.label,
+                    value: s.value,
+                }))
+            });
+        }
     }
 
     const handleUpdateTeacher = async (teacherUpdate: TeacherList) => {
@@ -86,6 +99,7 @@ const TeacherManager = () => {
             });
             return;
         }
+
         try {
             if (updateValues.role_id) {
                 const selectedRole = roleList.find(role => role.id == updateValues.role_id);
@@ -93,7 +107,12 @@ const TeacherManager = () => {
                     updateValues.role = selectedRole.name;
                 }
             }
-            const res = await updateTeacher(teacherUpdate.id, updateValues);
+            const payload: any = {
+                ...updateValues,
+                subjects: teacherUpdate.subjects.map(item => item.value),
+            };
+
+            const res = await updateTeacher(teacherUpdate.id, payload);
             if (res) {
                 setActionTeacher('');
                 Swal.fire({
@@ -158,14 +177,18 @@ const TeacherManager = () => {
 
     const handleCreateTeacher = async (teacher: TeacherList) => {
         try {
-            const res = await createTeacher(teacher);
+            const payload: any = {
+                ...teacher,
+                subjects: teacher.subjects.map(item => item.value),
+            };
+            const res = await createTeacher(payload);
             if (res) {
+                setActionTeacher('');
                 Swal.fire({
                     title: res.message,
                     icon: "success",
                     draggable: true
                 }).then(() => {
-                    setActionTeacher('');
                     fetchTeacherList();
                 });
             }
@@ -179,6 +202,30 @@ const TeacherManager = () => {
         }
     }
 
+
+    const loadOptionsSubject = async (
+        search: string,
+        _loadedOptions: OptionsOrGroups<OptionType, GroupBase<OptionType>>,
+        { page }: { page: number } = { page: 1 }
+    ): Promise<{
+        options: readonly OptionType[],
+        hasMore: boolean,
+        additional: { page: number }
+    }> => {
+        const res = await getListSubjects(search, page);
+        const data = res.data;
+
+        const newOptions = data.subjects.map((item: any) => ({
+            value: item.id,
+            label: `${item.name} - số tính chỉ ${item.credit}`,
+        }));
+
+        return {
+            options: newOptions,
+            hasMore: page < data.meta.total_pages,
+            additional: { page: page + 1 },
+        };
+    }
 
     return (
         <>
@@ -235,6 +282,7 @@ const TeacherManager = () => {
                                     <th>Ngày Sinh</th>
                                     <th>Vai Trò</th>
                                     <th>Trạng Thái</th>
+                                    <th>Phụ Trách Môn Học</th>
                                     <th>Thao Tác</th>
                                 </tr>
                             </thead>
@@ -256,6 +304,22 @@ const TeacherManager = () => {
                                             <span className={`status-badge ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`}>
                                                 {teacherStatusMap[teacher.status]}
                                             </span>
+                                        </td>
+                                        <td className="subject-tooltip-container">
+                                            {teacher.subjects?.length > 0 ? (
+                                                <>
+                                                    <span className="subject-count">{teacher.subjects.length} môn</span>
+                                                    <div className="subject-tooltip">
+                                                        <ul>
+                                                            {teacher.subjects.map((s) => (
+                                                                <li key={s.value}>{s.label}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <span>Chưa cập nhật</span>
+                                            )}
                                         </td>
                                         <td>
                                             <button className={`btn-admin  ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`} onClick={() => handleToggeStatus(teacher.id)}>{teacher.status === StatusActiveInactive.Active ? <FaLockOpen /> : <FaLock />}</button>
@@ -337,6 +401,26 @@ const TeacherManager = () => {
                                 Địa chỉ:
                                 <input type="text" {...register("address", { required: "Vui lòng nhập địa chỉ" })} />
                                 {errors.address && <p className="error-message">{errors.address.message}</p>}
+                            </label>
+                            <label >
+                                Môn học:
+                                <Controller name="subjects"
+                                    control={control}
+                                    render={({ field: { onChange, ...field } }) => (
+                                        <AsyncPaginate<OptionType, GroupBase<OptionType>, { page: number }, true>
+                                            {...field}
+                                            isMulti
+                                            value={field.value ?? []}
+                                            onChange={onChange}
+                                            loadOptions={loadOptionsSubject}
+                                            additional={{ page: 1 }}
+                                            placeholder="Tìm môn học..."
+                                            noOptionsMessage={() => "Không tìm thấy môn học"}
+                                            loadingMessage={() => "Đang tải..."}
+                                            debounceTimeout={500}
+                                        />
+                                    )}
+                                />
                             </label>
                             <div className={actionTeacher === 'update' ? 'form-flex' : ''}>
                                 {actionTeacher === 'update' &&

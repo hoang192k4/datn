@@ -40,4 +40,11 @@ class TeacherRepository extends EloquentRepository implements TeacherRepositoryI
         });
         return $query->orderBy('created_at', 'desc')->paginate($limit, ['*'], 'page', $page);
     }
+
+    public function getTeachersBySubject($subjectId)
+    {
+        return Teacher::whereHas('subjects', function ($q) use ($subjectId) {
+            $q->where('subject_id', $subjectId);
+        })->where('status', TeacherStatus::Active)->get();
+    }
 }

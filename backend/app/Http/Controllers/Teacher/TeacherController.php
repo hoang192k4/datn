@@ -9,6 +9,7 @@ use App\Http\Requests\Teacher\MyTeacherRequest;
 use App\Http\Requests\Teacher\TeacherExportRequest;
 use App\Http\Requests\Teacher\TeacherImportRequest;
 use App\Http\Requests\Teacher\TeacherRequest;
+use App\Http\Resources\Teacher\TeacherResource;
 use App\Http\Resources\Teacher\TeacherResourceCollection;
 use App\Imports\TeacherImport;
 use App\Models\Teacher;
@@ -106,5 +107,19 @@ class TeacherController extends BaseController
         }
     }
 
-
+    public function getTeachersBySubject($subjectId)
+    {
+        try {
+            $teachers = $this->repository->getTeachersBySubject($subjectId);
+            if (!$teachers)
+                return $this->jsonResponseError();
+            $result = $teachers->map(function ($item) {
+                return new TeacherResource($item);
+            });
+            return $this->jsonResponseSuccess($result);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
 }
