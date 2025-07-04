@@ -30,7 +30,7 @@ const GradePage: React.FC<Props> = ({ students }) => {
         <div className="grade-page container">
             <h1>Danh Sách Điểm Chi Tiết</h1>
             <div className="table-wrapper">
-                <table>
+                <table className="student-grade">
                     <thead>
                         <tr>
                             <th>Mã số sinh viên</th>
