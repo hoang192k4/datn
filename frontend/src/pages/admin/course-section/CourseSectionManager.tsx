@@ -4,7 +4,7 @@ import type { CourseSection } from "../../../types/courseSecion"
 import type { CourseSectionStatus } from "../../../enums/CourseSectionStatus";
 import type { Meta } from "../../../types/teacher";
 import { getCourseSectionFilter, updateCourseSectionStatus } from "../../../services/courseSectionService";
-import { formatDayMonthYear } from "../../../utils/stringUtil";
+import { formatDayMonthYear } from "../../../utils/utils";
 import { getSemesters } from "../../../services/semesterService";
 import type { SemesterList } from "../../../types/semester";
 import { FaEdit, FaSearch } from "react-icons/fa";

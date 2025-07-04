@@ -156,8 +156,8 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
         try {
             if (courseSectionId) {
                 const res = await updateCourseSection(courseSectionId, updateValues);
-                setActionCourseSection('');
                 if (res.status === HttpStatus.SUCCESS) {
+                    setActionCourseSection('');
                     Swal.fire({
                         title: res.message,
                         icon: 'success'
@@ -193,7 +193,7 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
                             </label>
                         </div>
                         <div className="form-flex">
-                            <label>
+                            <label style={{ marginTop: '6px' }}>
                                 Môn Học:
                                 <SelectWithPaginationSubject handleSelectedSubject={handleSelectedSubject} value={subject} />
                                 {errorSubejct && <p className="error-message">{errorSubejct}</p>}

@@ -10,7 +10,7 @@ import { addGradeColumnToCourseSection, createGrade, exportExcel, getGradeTypes,
 import Swal from 'sweetalert2';
 import { SummaryGrade } from '../../../enums/SummaryGrade';
 import { Evaluation } from '../../../enums/Evaluation';
-import { normalizeString } from '../../../utils/stringUtil';
+import { normalizeString } from '../../../utils/utils';
 import GradeImport from './GradeImport';
 
 

@@ -22,6 +22,7 @@ class TeacherRequest extends BaseRequest
             'date_of_birth' => 'date|required',
             'address' => 'required|string|max:255',
             'gender' => [new Enum(Gender::class), 'required'],
+            'subjects' => 'array|nullable',
             'role_id' => "required|exists:roles,id"
         ];
     }
@@ -37,6 +38,7 @@ class TeacherRequest extends BaseRequest
             'address' => 'string|max:255',
             'password_current' => 'string|max:255',
             'password_update' => 'string|max:255',
+            'subjects' => 'array|nullable',
             'gender' => [new Enum(Gender::class)],
             'role_id' => "exists:roles,id"
         ];

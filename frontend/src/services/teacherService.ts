@@ -68,3 +68,8 @@ export const getTeacherByStudent = async (key: string | null = null, page: numbe
     });
     return response.data;
 }
+
+export const getTeachersBySubject = async (subjectId: number) => {
+    const response = await axiosTeacherInstance.get(`/teachers/subject/${subjectId}`);
+    return response.data;
+}

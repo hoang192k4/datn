@@ -5,8 +5,8 @@ const SidebarStudent = () => {
         <>
             <div className="sidebar-student">
                 <Link to="thoi-khoa-bieu">📅 Thời Khóa Biểu</Link>
-                <Link to="#">📊 Điểm Tổng Kết</Link>
-                <Link to="#">🏅 Điểm Rèn Luyện</Link>
+                <Link to="diem-tong-ket">📊 Điểm Tổng Kết</Link>
+                <Link to="diem-ren-luyen">🏅 Điểm Rèn Luyện</Link>
                 <Link to="thong-bao">🏅 Thông báo</Link>
             </div>
         </>

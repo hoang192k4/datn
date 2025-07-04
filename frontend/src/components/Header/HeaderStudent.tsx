@@ -28,7 +28,6 @@ const HeaderStudent = () => {
             <header className="header-student">
                 <h1><Link to="">KHOA CÔNG NGHỆ THÔNG TIN</Link></h1>
                 <div className="nav-links-student">
-                    <Link to="#">🔔 Thông Báo</Link>
                     <div className="user-menu-student">
                         <button className="user-btn-student">{user && user.name}</button>
                         <div className="dropdown-content-student">

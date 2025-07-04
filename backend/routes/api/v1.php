@@ -86,6 +86,7 @@ Route::prefix('me')->group(function () {
     Route::controller(App\Http\Controllers\Student\MyStudentController::class)
         ->group(function () {
             Route::get('/students', 'getMyStudents'); //api lấy danh sách sinh viên mà giáo viên đang dạy (có limit)
+
         });
 
     Route::controller(App\Http\Controllers\Teacher\MyTeacherController::class)
@@ -117,6 +118,16 @@ Route::prefix('me')->group(function () {
         ->group(function () {
             Route::get('/schedules', 'getScheduleByTeacher'); //api lấy thời khóa biẻu theo giảng viên
             Route::get('/student/schedules', 'getScheduleByStudent'); //api lấy thời khóa biểu theo sinh viên
+        });
+
+    Route::controller(App\Http\Controllers\Student\StudentSummaryGrade::class)
+        ->group(function () {
+            Route::get('/student-summary-grades', 'getSummaryGradeMyStudent'); //api lây danh sách điểm theo sinh viên
+        });
+
+    Route::controller(App\Http\Controllers\ConductScore\StudentConductScoreController::class)
+        ->group(function () {
+            Route::get('/conduct-scores', 'getConductScoreMyStudent'); //api ;ấy danh sách điểm rèn luyện sinh viên
         });
 });
 
@@ -200,6 +211,7 @@ Route::controller(App\Http\Controllers\Teacher\TeacherController::class)
         Route::get('/', 'getAllTeachers'); //api lấy danh sách và tìm kiếm giảng viên
         Route::post('/import', 'importTeachersExcel'); // api import file excel
         Route::get('/export', 'getTeacherListByStatus'); // api export file excel
+        Route::get('/subject/{id}','getTeachersBySubject'); //api lấy danh sách giảng viên theo môn học
     });
 
 Route::controller(App\Http\Controllers\Role\RoleController::class)
