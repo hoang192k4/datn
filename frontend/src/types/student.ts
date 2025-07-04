@@ -31,3 +31,35 @@ export interface StudentList {
     major_id: number,
     status: StudentStatus
 }
+
+type GradeType = {
+    id: number;
+    name: string;
+    weight: number;
+};
+
+type Grade = {
+    id: number;
+    score: string;
+    score_visibility: string;
+    attempt: number;
+    grade_type: GradeType;
+};
+
+type SummaryGrade = {
+    attendance_score: number | null;
+    exam1_score: string | null;
+    exam2_score: string | null;
+    avg_score: string;
+    final_score: string;
+    evaluation: string;
+    note:string
+};
+
+export type StudentGrade = {
+    student_code: string;
+    name: string;
+    grades: Grade[][];
+    summary_grade: SummaryGrade;
+};
+ 

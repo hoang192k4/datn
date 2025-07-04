@@ -16,7 +16,7 @@ class CourseSection extends Model
 
     protected $table = 'course_sections';
 
-    protected $fillable = ['id', 'name', 'start_date', 'end_date', 'week_total', 'class_id', 'classroom_id', 'teacher_id', 'subject_id', 'semester_id','status'];
+    protected $fillable = ['id', 'name', 'start_date', 'end_date', 'week_total', 'class_id', 'classroom_id', 'teacher_id', 'subject_id', 'semester_id', 'status'];
 
     protected function casts(): array
     {

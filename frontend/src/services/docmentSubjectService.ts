@@ -71,3 +71,14 @@ export const getListSubjects = async (keyword: string | null = null, page: numbe
     return response.data;
 }
 
+export const getSubjectsByTeacherSlug = async (slug: string, keyword: string | null = null, page: number | null = null, limit:number = 12) => {
+    const response = await axiosTeacherInstance.get('/subjects/teacher-slug', {
+        params: {
+            key: keyword,
+            page,
+            slug,
+            limit
+        }
+    });
+    return response.data;
+}

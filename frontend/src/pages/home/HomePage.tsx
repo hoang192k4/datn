@@ -1,8 +1,52 @@
 import './HomePage.css';
 import TearcherItem from '../../components/ui/BoxItem';
+import { useCallback, useEffect, useState } from 'react';
+import type { TeacherList } from '../../types/teacher';
+import { getAllTeachers } from '../../services/teacherService';
+import { Loading } from '../../components/ui/Loading';
 
 const HomePage = () => {
+    const [teachers, setTeachers] = useState<TeacherList[]>([]);
+    const [page, setPage] = useState<number>(1);
+    const [hasMore, setHasMore] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
 
+    const fetchTeachers = useCallback(async (page: number | null) => {
+        try {
+            setLoading(true);
+            const response = await getAllTeachers(12, null, page);
+            const data = response.data;
+            const newTeachers: TeacherList[] = data.teachers;
+
+            setTeachers(prev => [...prev, ...newTeachers]);
+
+            if (data.meta.current_page >= data.meta.total_pages) {
+                setHasMore(false);
+            }
+
+        } catch (error) {
+
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchTeachers(page);
+    }, [page]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const isBottom =
+                window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
+            if (isBottom && hasMore && !loading) {
+                setPage(prev => prev + 1);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [hasMore, loading]);
     return (
         <>
             <section className="hero">
@@ -13,22 +57,12 @@ const HomePage = () => {
             <section className="teacher-list container">
                 <h3>Danh Sách Giảng Viên</h3>
                 <div className="card-grid">
-                    <TearcherItem href="leh-uu-vinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
-                    <TearcherItem href="lehuvinh">Lê Hữu vinh</TearcherItem>
+                    {teachers.map((teacher) => (
+                        <TearcherItem key={teacher.id} href={teacher.slug}>{teacher.name}</TearcherItem>
+                    ))}
                 </div>
             </section>
-
-
+            {loading ? <Loading /> : <> </>}
         </>
     )
 }

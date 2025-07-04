@@ -22,7 +22,7 @@ class SubjectController extends BaseController
     {
         $this->repository = $repository;
         $this->service = $service;
-        $this->middleware('auth:teacher');
+        $this->middleware('auth:teacher')->except('getSubjectsByTeacherSlug', 'getDetailDocumentBySubjectId');
         $this->middleware('role:faculty_admin,department_admin')->only('getListSubjects');
     }
 
@@ -45,9 +45,9 @@ class SubjectController extends BaseController
             $data = $request->validated();
             $subject = $this->repository->find($data['subject_id']);
             $teacherId = $this->getCurrentTeacherId();
-            if ($subject->teachers()->first()->id !== $teacherId) {
-                return $this->jsonResponseError('Bạn không có quyền truy cập tài nguyên này', 403);
-            }
+            // if ($subject->teachers()->first()->id !== $teacherId) {
+            //     return $this->jsonResponseError('Bạn không có quyền truy cập tài nguyên này', 403);
+            // }
             return $this->jsonResponseSuccess(new SubjectDetailResource($subject));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
@@ -73,6 +73,17 @@ class SubjectController extends BaseController
             $subjects = $this->service->getListSubjects($request);
             if (!$subjects)
                 return $this->jsonResponseError();
+            return $this->jsonResponseSuccess(new SubjectResourceCollection($subjects));
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống.', 500);
+        }
+    }
+
+    public function getSubjectsByTeacherSlug(SearchRequest $request)
+    {
+        try {
+            $subjects = $this->service->getSubjectsByTeacherSlug($request);
             return $this->jsonResponseSuccess(new SubjectResourceCollection($subjects));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

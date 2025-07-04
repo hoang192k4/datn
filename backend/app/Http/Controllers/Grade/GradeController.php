@@ -42,7 +42,7 @@ class GradeController extends BaseController
         $this->repository = $repository;
         $this->service = $service;
         $this->gradeService = $gradeService;
-        $this->middleware('auth:teacher');
+        $this->middleware('auth:teacher')->except('getGradesByCourseSection');
         $this->middleware('role:subject_teacher,homeroom_teacher')->except(['getGradesByCourseSection']);
     }
 

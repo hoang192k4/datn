@@ -8,6 +8,7 @@ use App\Http\Requests\CourseSection\CourseRequest;
 use App\Http\Requests\CourseSection\CourseSectionFilterRequest;
 use App\Http\Requests\CourseSection\CourseSectionRequest;
 use App\Http\Requests\CourseSection\CourseSectionStudentRequest;
+use App\Http\Requests\Search\SearchRequest;
 use App\Http\Resources\CourseSection\CourseSectionResourceCollection;
 use App\Http\Resources\Student\StudentResource;
 use App\Models\CourseSection;
@@ -24,7 +25,7 @@ class CourseSectionController extends BaseController
     ) {
         $this->service = $service;
         $this->repository = $repository;
-        $this->middleware('auth:teacher');
+        $this->middleware('auth:teacher')->except('getCourseSectionByTeacherSlug');
     }
 
     public function getCourseSectionByTeacher(CourseRequest $request)
@@ -125,6 +126,22 @@ class CourseSectionController extends BaseController
             $courseSections = $this->service->getCourseSectionByFilter($request);
             if (!$courseSections)
                 return $this->jsonResponseError();
+            return $this->jsonResponseSuccess(new CourseSectionResourceCollection($courseSections));
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function getCourseSectionByTeacherSlug(SearchRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $slug = $data['slug'] ?? '';
+            $limit = $data['limit'] ?? 10;
+            $page = $data['page'] ?? 1;
+
+            $courseSections = $this->repository->getCourseSectionByTeacherSlug($slug, $limit, $page);
             return $this->jsonResponseSuccess(new CourseSectionResourceCollection($courseSections));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

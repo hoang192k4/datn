@@ -1,3 +1,4 @@
+import { api } from "../config/api";
 import axiosStudentInstance from "../config/axiosStudent";
 import axiosTeacherInstance from "../config/axiosTeacher"
 import { StatusActiveInactive } from "../enums/StatusActiveInactive";
@@ -15,7 +16,7 @@ export const getListTeacher = async (key: string | null = null, page: number | n
             key,
             page,
             status,
-            role
+            role,
         }
     });
     return response.data;
@@ -69,7 +70,20 @@ export const getTeacherByStudent = async (key: string | null = null, page: numbe
     return response.data;
 }
 
+
 export const getTeachersBySubject = async (subjectId: number) => {
     const response = await axiosTeacherInstance.get(`/teachers/subject/${subjectId}`);
+
+export const getAllTeachers = async ( limit:number|null = null, key: string | null = null, page: number | null = null,
+    status: StatusActiveInactive | null = null, role: string | null = null) => {
+    const response = await api.get('/teachers', {
+        params: {
+            key,
+            page,
+            status,
+            role,
+            limit
+        }
+    });
     return response.data;
 }

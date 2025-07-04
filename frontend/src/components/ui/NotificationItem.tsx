@@ -1,19 +1,15 @@
+import type { Post } from "../../types/post"
 
 interface Props {
-    notification: {
-        title: string,
-        content: string,
-        dateSend: string,
-        to: string
-    }
+    post: Post
 }
-const NotificationItem = ({ notification }: Props) => {
+const NotificationItem = ({ post }: Props) => {
     return (
         <>
             <div className="notification-card">
-                <div className="notification-title">{notification.title}</div>
-                <div className="notification-meta">Ngày gửi: {notification.dateSend} - {notification.to}</div>
-                <div className="notification-content">{notification.content}</div>
+                <div className="notification-title">{post.title}</div>
+                <div className="notification-meta">Ngày gửi: {post.created_at} - {post.course_section.name}</div>
+                <div className="notification-content">{post.content}</div>
             </div>
         </>
     )

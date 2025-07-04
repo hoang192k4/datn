@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CourseOffer\CourseOfferController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(App\Http\Controllers\Auth\TeacherAuthController::class)
@@ -136,6 +135,7 @@ Route::controller(App\Http\Controllers\Post\PostController::class)
     ->group(function () {
         Route::delete('/{id}', 'destroy');
         Route::put('/{id}', 'update');
+        Route::get('/', 'getPostByTeacherSlug');
     });
 Route::controller(App\Http\Controllers\Auth\AuthController::class)
     ->prefix('auth')
@@ -143,7 +143,6 @@ Route::controller(App\Http\Controllers\Auth\AuthController::class)
         Route::get('/me', 'me'); //api lấy thông tin cá nhân
         Route::post('/refresh', 'refresh'); //api lấy access và refresh token mới
     });
-
 
 Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::class)
     ->prefix('course-sections')
@@ -155,6 +154,7 @@ Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::cl
         Route::put('/{id}', 'update'); //api cập nhật lớp học phần
         Route::patch('/{id}', 'updateStatus'); //api cập nhật trạng thái lớp học phần
         Route::get('/', 'getCourseSectionByFilter'); //api lấy danh sách lọc theo status, key , học kì, năm
+        Route::get('/slug', 'getCourseSectionByTeacherSlug'); //api lấy danh sách lớp học phần theo slug
     });
 
 Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)
@@ -170,6 +170,7 @@ Route::controller(App\Http\Controllers\Subject\SubjectController::class)
         Route::get('/detail-subject', 'getDetailDocumentBySubjectId'); //api lấy thông tin chi tiết của môn học
         Route::get('/search-subject', 'getListSubjectSearch'); //api lấy danh sách môn học theo giảng viên
         Route::get('/', 'getListSubjects'); //api lấy danh sách môn học
+        Route::get('/teacher-slug', 'getSubjectsByTeacherSlug'); //api lấy danh sách môn học teacher slug
     });
 
 

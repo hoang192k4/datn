@@ -26,8 +26,8 @@ class TeacherController extends BaseController
     {
         $this->service = $serivce;
         $this->repository = $repository;
-        $this->middleware('auth:teacher');
-        $this->middleware('role:faculty_admin,department_admin');
+        $this->middleware('auth:teacher')->except(['getAllTeachers']);
+        $this->middleware('role:faculty_admin,department_admin')->except(['getAllTeachers']);
     }
 
     public function create(TeacherRequest $request)

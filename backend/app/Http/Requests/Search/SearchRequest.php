@@ -13,6 +13,7 @@ class SearchRequest extends BaseRequest
             'limit' => 'integer|nullable',
             'page' => 'integer|nullable',
             'key' => 'string|nullable',
+            'slug' => ['nullable', 'string', 'exists:teachers,slug'],
         ];
     }
 }
