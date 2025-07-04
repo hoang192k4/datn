@@ -8,7 +8,19 @@
     width: 100%;
 }
 
-.table-wrapper table {
-    min-width: 100%;
+.table-wrapper .student-grade {
     border-collapse: collapse;
+    will-change: transform;
+}
+
+.student-grade>thead>tr>th {
+    min-width: 120px;
+}
+
+.student-grade>thead>tr>th:nth-child(1) {
+    min-width: 120px
+}
+
+.student-grade>thead>tr>th:nth-child(2) {
+    min-width: 180px;
 }
