@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react';
 import type { StudentGrade } from '../../types/student';
 import './GradePage.css'
+import type { CourseSection } from '../../types/courseSecion';
 
 
 interface Props {
     students: StudentGrade[];
+    courseSection: CourseSection | null;
 }
 
-const GradePage: React.FC<Props> = ({ students }) => {
+const GradePage: React.FC<Props> = ({ students, courseSection }) => {
 
     const gradeColumns = useMemo(() => {
         const columns: string[] = [];
@@ -22,13 +24,12 @@ const GradePage: React.FC<Props> = ({ students }) => {
                 });
             });
         });
-
         return columns.sort(); // để có thứ tự nhất quán
     }, [students]);
 
     return (
         <div className="grade-page container">
-            <h1>Danh Sách Điểm Chi Tiết</h1>
+            <h1>Danh sách điểm - {courseSection?.name}</h1>
             <div className="table-wrapper">
                 <table className="student-grade">
                     <thead>

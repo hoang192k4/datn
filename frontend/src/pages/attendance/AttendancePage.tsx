@@ -18,7 +18,7 @@ interface StudentAttendance {
     attendance?: Attendance[];
 }
 
-const AttendancePage = (props: number | any) => {
+const AttendancePage = (props: any) => {
     const [studentAttendance, setStudentAttendance] = useState<StudentAttendance[]>([]);
 
     const fetch = async () => {
@@ -33,6 +33,7 @@ const AttendancePage = (props: number | any) => {
     useEffect(() => {
         fetch();
     }, [])
+
     const sessions = useMemo(() => {
         const sessionMap = new Map<number, string>();
 
@@ -58,7 +59,7 @@ const AttendancePage = (props: number | any) => {
 
     return (
         <><div className="attendance-page container">
-            <h1>Danh Sách Điểm Danh</h1>
+            <h1>Danh sách điểm danh - {props.courseSecion?.name}</h1>
             <div style={{ marginBottom: '15px', fontSize: '16px' }}>
                 ✅ <span className="present">Có mặt</span> &nbsp;&nbsp;
                 ⚠️ <span className="late">Trễ</span> &nbsp;&nbsp;
@@ -82,7 +83,7 @@ const AttendancePage = (props: number | any) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {studentAttendance.map((student) => (
+                    {studentAttendance.length > 0 ? (studentAttendance.map((student) => (
                         <tr key={student.id}>
                             <td>{student.student_code}</td>
                             <td>{student.name}</td>
@@ -101,8 +102,8 @@ const AttendancePage = (props: number | any) => {
                             })}
                             <td>{student.attendance_score}</td>
                         </tr>
-                        
-                    ))}
+
+                    ))) : <tr><td colSpan={3}>Lớp học này chưa có buổi điểm danh nào</td></tr>}
                 </tbody>
             </table>
         </div>
