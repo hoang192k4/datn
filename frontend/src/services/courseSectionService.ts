@@ -68,7 +68,7 @@ export const getCourseSectionFilter = async (keyword: string | null,
     return response.data;
 }
 
-export const getCourseSectionByTeacherSlug = async (slug:string, page:number = 1, limit:number =12) => {
+export const getCourseSectionByTeacherSlug = async (slug: string, page: number = 1, limit: number = 12) => {
     const response = await api.get('/course-sections/slug', {
         params: {
             slug,
@@ -77,4 +77,9 @@ export const getCourseSectionByTeacherSlug = async (slug:string, page:number = 1
         }
     })
     return response.data;
+
 }
+export const getCourseSectionDetail = async (id: number) => {
+    const response = await api.get(`/course-sections/${id}`);
+    return response.data;
+}   

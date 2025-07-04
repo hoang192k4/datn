@@ -6,6 +6,8 @@ import { Navigate, useParams } from 'react-router-dom';
 import { getStudentByCourseSectionId } from '../../services/gradeStudentService';
 import type { StudentGrade } from '../../types/student';
 import { Loading } from '../../components/ui/Loading';
+import type { CourseSection } from '../../types/courseSecion';
+import { getCourseSectionDetail } from '../../services/courseSectionService';
 
 
 
@@ -14,6 +16,7 @@ const ClassPage = () => {
     const [studentGrades, setStudentGrades] = useState<StudentGrade[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [courseSection, setCourseSection] = useState<CourseSection>();
 
     const fetchStudentGrades = async (id: number) => {
         try {
@@ -30,9 +33,19 @@ const ClassPage = () => {
 
     }
 
-
     useEffect(() => {
         fetchStudentGrades(id);
+
+        const fetchCourseSectionDetail = async (id: number) => {
+            try {
+                const res = await getCourseSectionDetail(id);
+                setCourseSection(res.data);
+            } catch (error) {
+                setError(true);
+            }
+        }
+
+        fetchCourseSectionDetail(id);
     }, [])
 
 
@@ -42,8 +55,8 @@ const ClassPage = () => {
     return (
         <>
             {loading ? <Loading /> : (<>
-                <GradePage students={studentGrades} />
-                <AttendancePage id={id} /></>)}
+                <GradePage students={studentGrades} courseSection={courseSection ??  null} />
+                <AttendancePage id={id} courseSecion={courseSection ?? null} /> </>)}
 
         </>
     )

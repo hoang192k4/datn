@@ -155,6 +155,7 @@ Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::cl
         Route::patch('/{id}', 'updateStatus'); //api cập nhật trạng thái lớp học phần
         Route::get('/', 'getCourseSectionByFilter'); //api lấy danh sách lọc theo status, key , học kì, năm
         Route::get('/slug', 'getCourseSectionByTeacherSlug'); //api lấy danh sách lớp học phần theo slug
+        Route::get('/{id}', 'detail'); //api chi tiết lớp học phần
     });
 
 Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)

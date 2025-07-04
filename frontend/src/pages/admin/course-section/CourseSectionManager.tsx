@@ -14,6 +14,7 @@ import './CourseSection.css';
 import Swal from "sweetalert2";
 import CourseSectionPopupAction from "./CourseSectionPopupAction";
 import { Loading } from "../../../components/ui/Loading";
+import { HttpStatus } from "../../../enums/HttpStatus";
 
 const CourseSectionManager = () => {
     const [courseSectionlist, setCourseSectionList] = useState<CourseSection[]>([]);
@@ -132,6 +133,16 @@ const CourseSectionManager = () => {
         }).catch((errors) => {
             if (errors)
                 console.log(errors);
+
+            if (errors.response.status === HttpStatus.BAD_REQUEST) {
+                Swal.fire({
+                    title: "Thực hiện không thành công!",
+                    icon: "warning",
+                    text: errors.response.data.errors[0],
+                    draggable: true
+                });
+                return;
+            }
             Swal.fire({
                 title: "Hệ thống đang có vấn đề. Vui lòng thử lại!",
                 icon: "error",

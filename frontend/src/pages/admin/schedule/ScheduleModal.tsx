@@ -114,7 +114,7 @@ const ScheduleModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, defaultValu
                             <option value="4">Thứ 5</option>
                             <option value="5">Thứ 6</option>
                             <option value="6">Thứ 7</option>
-                            <option value="0">Chủ nhật</option>
+                            <option value="7">Chủ nhật</option>
                         </select>
                     </div>
 

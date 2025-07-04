@@ -76,7 +76,7 @@ const StudentNotification: React.FC = () => {
     const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
     const [feedbackPaginate, setFeedbackPaginate] = useState<Paginate>();
     const [search, setSearch] = useState<string>('');
-    const [feedbackPage, setFeedbackPage] = useState<number|null|undefined>(1);
+    const [feedbackPage, setFeedbackPage] = useState<number | null | undefined>(1);
     const [searchInput, setSearchInput] = useState<string>('');
 
     const fetchNotifications = async ({ page, limit, key }: Paginate, type: NotificationType | null) => {
@@ -116,7 +116,6 @@ const StudentNotification: React.FC = () => {
         }
     }
 
-
     const fetchFeedbacks = async (key: string | null, page: number | null) => {
         try {
             setLoadingStudentNotify(true);
@@ -154,6 +153,7 @@ const StudentNotification: React.FC = () => {
                         });
                         fetchStudentNotifications({ page: 1 }, NotificationType.StudentSend);
                         fetchNotifications({ page: 1 }, NotificationType.AdminSend);
+                        fetchFeedbacks(search, feedbackPage ?? 1);
 
                     }
                 } catch (error: any) {
@@ -199,7 +199,7 @@ const StudentNotification: React.FC = () => {
 
 
     useEffect(() => {
-        fetchFeedbacks(search, feedbackPage??1);
+        fetchFeedbacks(search, feedbackPage ?? 1);
     }, [search, feedbackPage]);
 
 
@@ -290,8 +290,6 @@ const StudentNotification: React.FC = () => {
                                     />
                                     <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
                                 </div>
-
-
                             </div>
                         </div>
 
@@ -328,7 +326,7 @@ const StudentNotification: React.FC = () => {
                                         className="search-input"
                                         placeholder="Tìm kiếm..."
                                         value={searchInput}
-                                        onChange={(e) => {setSearchInput(e.target.value)}}
+                                        onChange={(e) => { setSearchInput(e.target.value) }}
                                     />
                                     <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
                                 </div>
@@ -362,7 +360,7 @@ const StudentNotification: React.FC = () => {
                 </Tabs>
             </div >
 
-            <NotificationModal isOpen={createModal} onClose={() => { setCreateModal(false) }} onSuccess={ () => fetchFeedbacks(search, feedbackPage??1)}/>
+            <NotificationModal isOpen={createModal} onClose={() => { setCreateModal(false) }} onSuccess={() => fetchFeedbacks(search, feedbackPage ?? 1)} />
 
             {/* {
                 isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={() => { fetchMyNotifications({ page: 1 }, filterStatus) }} /> : <> </>

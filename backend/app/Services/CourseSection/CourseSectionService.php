@@ -187,6 +187,12 @@ class CourseSectionService implements CourseSectionServiceInterface
     public function updateStatus(Request $request, $courseSectionId)
     {
         $data = $request->validated();
+        $courseSection = $this->courseSectionRepository->find($courseSectionId);
+
+        if (!$courseSection->schedules()->exists()) {
+            throw ValidationException::withMessages(["Lớp $courseSection->name chưa có thời khóa biểu, chưa thể cập nhật trạng thái"]);
+        }
+
         $result = $this->courseSectionRepository->update($courseSectionId, $data);
         if (!$result)
             return false;
