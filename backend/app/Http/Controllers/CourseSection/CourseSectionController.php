@@ -114,6 +114,8 @@ class CourseSectionController extends BaseController
             if (!$result)
                 return $this->jsonResponseError();
             return $this->jsonResponseSuccessNoData();
+        } catch (ValidationException $e) {
+            return $this->jsonResponseErrorValidate("Thực hiện không thành công", 400, $e->errors());
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);
