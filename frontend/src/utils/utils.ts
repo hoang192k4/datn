@@ -23,3 +23,10 @@ export const normalizeString = (str: string) => {
         .toLowerCase()
         .trim();
 }
+
+export const getMonthYear = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const year = date.getFullYear();
+    return `${month}/${year}`;
+}

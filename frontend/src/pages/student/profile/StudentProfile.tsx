@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./StudentProfile.css";
-import { getInitials } from "../../../utils/stringUtil";
+import { getInitials } from "../../../utils/utils";
 import { useForm } from "react-hook-form";
 import type { StudentForm } from "../../../types/student";
 

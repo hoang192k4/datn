@@ -27,7 +27,7 @@ const Dashboard = () => {
                             <div className="stat-label">Lớp Học</div>
                             <div className="stat-trend">↗ +2 lớp mới</div>
                         </div>
-                        <div className="stat-icon classNamees">📚</div>
+                        <div className="stat-icon classNamees">🎓</div>
                     </div>
                 </div>
                 <div className="stat-card">

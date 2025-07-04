@@ -23,19 +23,13 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const role = useSelector((state: any) => state.auth.user?.role);
     const menuItems: MenuItemData[] = [
         {
-            icon: "📊",
+            icon: "🏠",
             url: "dashboard",
             label: "Dashboard",
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
         {
-            icon: "👥",
-            url: "sinh-vien",
-            label: "Quản lý Sinh Viên",
-            roles: ["faculty_admin", "department_admin"],
-        },
-        {
-            icon: "📚",
+            icon: "🎓",
             url: "lop-hoc",
             label: "Lớp Học",
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
@@ -49,7 +43,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             //roles: ["subject_teacher"]
         },
         {
-            icon: "📅",
+            icon: "📊",
             url: "diem-danh",
             label: "Quản Lý Điểm Danh",
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
@@ -74,7 +68,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             roles: ["subject_teacher"]
         },
         {
-            icon: "📢",
+            icon: "🔔",
             url: "thong-bao/danh-sach",
             label: "Thông Báo",
             subItems: [
@@ -84,13 +78,20 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
         },
         {
-            icon: "📁",
+            icon: "👨‍🎓",
+            url: "sinh-vien",
+            label: "Quản lý Sinh Viên",
+            roles: ["faculty_admin", "department_admin"],
+        },
+        {
+            icon: "👨‍🏫",
             url: "giang-vien",
             label: "Quản lý giảng viên",
             roles: ["faculty_admin", "department_admin"],
         },
+
         {
-            icon: "📁",
+            icon: "📚",
             url: "lop-hoc-phan",
             label: "Quản lý lớp học phần",
             roles: ["faculty_admin", "department_admin"],

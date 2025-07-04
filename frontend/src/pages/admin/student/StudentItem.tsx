@@ -1,5 +1,5 @@
 import type { StudentList } from "../../../types/student";
-import { formatDayMonthYear } from "../../../utils/stringUtil";
+import { formatDayMonthYear } from "../../../utils/utils";
 import { FaRegEdit } from "react-icons/fa";
 import StudentStatusBadge from "./StudentStatusBadge";
 import { genderMap } from "../../../utils/genderMap";

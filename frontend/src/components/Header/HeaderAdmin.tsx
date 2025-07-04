@@ -3,7 +3,7 @@ import './HeaderAdmin.css';
 import { Link } from 'react-router-dom';
 import { teacherLogout } from '../../services/authTeacherService';
 import { logout } from '../../store/slices/authSlice';
-import { getInitials } from '../../utils/stringUtil';
+import { getInitials } from '../../utils/utils';
 import { HttpStatus } from '../../enums/HttpStatus';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

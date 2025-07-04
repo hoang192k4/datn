@@ -1,12 +1,11 @@
   .schedule-container {
-      min-height: 100vh;
       background-color: #f8fafc;
       font-family: system-ui, -apple-system, sans-serif;
   }
 
   .schedule-wrapper {
       max-width: 1400px;
-      margin: 0 auto;
+      margin: 0 auto;   
   }
 
   .schedule-header {

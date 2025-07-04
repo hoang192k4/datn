@@ -1,5 +1,5 @@
 import type { CourseSection } from "../../../types/courseSecion"
-import { formatDayMonthYear } from "../../../utils/stringUtil";
+import { formatDayMonthYear } from "../../../utils/utils";
 
 interface PropsClass {
     course_section: CourseSection,

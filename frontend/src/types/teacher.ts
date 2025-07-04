@@ -25,6 +25,7 @@ export interface TeacherList {
   password: string,
   password_update: string,
   password_current: string,
+  subjects: { label: string; value: string }[],
   role: string,
   role_id: number,
   created_at: string

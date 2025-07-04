@@ -1,3 +1,4 @@
+import axiosStudentInstance from "../config/axiosStudent";
 import axiosTeacherInstance from "../config/axiosTeacher"
 import type { StudentForm } from "../types/student";
 
@@ -41,5 +42,15 @@ export const importExelStudent = async (formData: FormData) => {
         },
     }
     );
+    return response.data;
+}
+
+export const getSummaryGradesMyStudent = async () => {
+    const response = await axiosStudentInstance.get('/me/student-summary-grades');
+    return response.data;
+}
+
+export const getConductScoresMyStudent = async () => {
+    const response = await axiosStudentInstance.get('/me/conduct-scores');
     return response.data;
 }

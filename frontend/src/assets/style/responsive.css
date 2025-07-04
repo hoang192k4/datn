@@ -26,6 +26,16 @@
     .class-add-student {
         width: 50% !important;
     }
+
+    .sidebar-student {
+        width: 100% !important;
+    }
+
+    .layout-student {
+        flex-direction: column;
+        padding: 10px;
+    }
+
 }
 
 /* style responsive table */
@@ -98,14 +108,7 @@
 
 
     /* responsive layout student */
-    .layout-student {
-        flex-direction: column;
-        padding: 10px;
-    }
 
-    .sidebar-student {
-        width: 100% !important;
-    }
 
     .main-student {
         padding: 20px;
@@ -236,5 +239,17 @@
 
     .teacher-modal-box {
         height: 80% !important;
+    }
+    .student-info-avatar{
+        display: none !important;
+    }
+    .student-info-card-container{
+        padding: 0 !important;
+    }
+    .student-info-button {
+        font-size: 12px !important;
+    }
+    .main-student {
+        padding: 0 12px !important;
     }
 }
