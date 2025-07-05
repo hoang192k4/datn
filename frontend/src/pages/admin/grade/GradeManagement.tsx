@@ -13,7 +13,6 @@ import { Evaluation } from '../../../enums/Evaluation';
 import { normalizeString } from '../../../utils/utils';
 import GradeImport from './GradeImport';
 
-
 interface GradeType {
   id: number;
   name: string;
