@@ -25,6 +25,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Type\Integer;
 
 class NotificationService implements NotificationServiceInterface
@@ -57,7 +58,7 @@ class NotificationService implements NotificationServiceInterface
             $data = $request->validated();
             $title = $data['title'];
             $body = $data['body'];
-            $receiver_ids = $data['receiver_ids'];
+            $receiver_ids = $data['receiver_ids'] ?? null;
             $sendTo = $data['send_to'] ?? SendToUserType::All->value;
             $role = $this->getCurrentTeacherRole();
             $currentTeacherId = $this->getCurrentTeacherId();
@@ -69,6 +70,9 @@ class NotificationService implements NotificationServiceInterface
 
             switch ($type) {
                 case NotificationType::TeacherSend->value:
+                    if (is_null($receiver_ids) || count($receiver_ids) === 0) {
+                        throw ValidationException::withMessages(["Vui lòng chọn sinh viên nhận thông báo"]);
+                    }
                     return $this->sendNotificationToStudents($title, $body, $receiver_ids, $type);
                     break;
                 case NotificationType::AdminSend->value: {
@@ -96,6 +100,8 @@ class NotificationService implements NotificationServiceInterface
             }
 
             return false;
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;

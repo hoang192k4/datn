@@ -211,7 +211,7 @@ const FacultyStudentNotification: React.FC = () => {
 
                         {/* Notifications List */}
                         {loading ? (<Loading />) : notifications.length === 0 ? <div className="notification-no-item"> Không có thông báo nào</div> : notifications.map((notification) => (
-                            <div key={notification.id} className="notification-item" style={{ background: 'blue' }}>
+                            <div key={notification.id} className={`notification-item ${notification.status === NotificationStatus.Unred ? 'notification-unread-color' : ''}`}>
                                 <NotificationAdminItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
                             </div>
                         ))}
@@ -250,7 +250,7 @@ const FacultyStudentNotification: React.FC = () => {
 
                         {/* Notifications List */}
                         {loadingStudentNotify ? (<Loading />) : studentNotifications.length === 0 ? <div className="notification-no-item">Không có thông báo nào</div> : studentNotifications.map((notification) => (
-                            <div key={notification.id} className={`notification-item ${notification.status === NotificationStatus.Unred ? 'notification-unread-color' : ''}`} onClick={() => {handleUpdateStatus(notification.id)}}>
+                            <div key={notification.id} className={`notification-item ${notification.status === NotificationStatus.Unred ? 'notification-unread-color' : ''}`} onClick={() => { handleUpdateStatus(notification.id) }}>
                                 <NotificationAdminItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
                             </div>
                         ))}

@@ -18,6 +18,7 @@ use App\Http\Resources\Notification\NotificationResource;
 use App\Http\Resources\Notification\NotificationResourceCollection;
 use App\Repositories\Notification\NotificationRepositoryInterface;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
 
 class NotificationController extends BaseController
 {
@@ -53,6 +54,8 @@ class NotificationController extends BaseController
             if (!$response)
                 return $this->jsonResponseError();
             return $this->jsonResponseSuccessNoData();
+        } catch (ValidationException $e) {
+            return $this->jsonResponseErrorValidate('Thực hiện không thành công', 422, $e->errors());
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

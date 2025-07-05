@@ -29,7 +29,8 @@ interface NotificationModalProps {
     isOpen: boolean;
     onClose: () => void;
     notification?: StudentNotification;
-    onSuccess: () => void;
+    onSuccess: (notification: StudentNotification) => void;
+    onReload: () => void;
 }
 interface FormValues {
     title: string;
@@ -38,7 +39,7 @@ interface FormValues {
     id: number;
 }
 
-const EditStudentNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, notification, onSuccess }) => {
+const EditStudentNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, notification, onSuccess, onReload }) => {
     const [createLoading, setCreateLoading] = useState<boolean>(false);
     const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({});
 
@@ -55,7 +56,6 @@ const EditStudentNotificationModal: React.FC<NotificationModalProps> = ({ isOpen
 
     const onSubmit = async (data: FormValues) => {
         try {
-            console.log(data);
             setCreateLoading(true);
             const res = await updateStudentNotification(data, data.id);
             if (res.status === HttpStatus.SUCCESS) {
@@ -63,7 +63,11 @@ const EditStudentNotificationModal: React.FC<NotificationModalProps> = ({ isOpen
                     title: "Cập nhật thông báo thành công",
                     icon: "success",
                 })
-                onSuccess();
+                if (data.push_notification) {
+                    onReload();
+                    return;
+                }
+                onSuccess(res.data);
             }
         } catch (error: any) {
             if (error.response.status === HttpStatus.BAD_REQUEST) {
@@ -141,9 +145,11 @@ const EditStudentNotificationModal: React.FC<NotificationModalProps> = ({ isOpen
                                     rows={4}
                                     className="notification-textarea-input"
                                     placeholder="Nhập nội dung thông báo..."
-                                    {...register("content", { required: true })}
+                                    {...register("content", { required: "Vui lòng nhập nội dung", maxLength: { value: 255, message: 'Nội dung không được quá 255 ký tự' } })}
                                 />
-                                {errors.title && <span className="notification-error-message">* Bắt buộc</span>}
+                                {errors.content && (
+                                    <span className="notification-error-message">* {errors.content.message}</span>
+                                )}
                             </div>
                         </div>
 

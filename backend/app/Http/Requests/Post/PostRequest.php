@@ -27,4 +27,11 @@ class PostRequest extends BaseRequest
             'status' => ['nullable', new Enum(PublicStatus::class)],
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'course_section_id.required' => 'Vui lòng chọn lớp học phần.'
+        ];
+    }
 }

@@ -55,13 +55,18 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                         icon: "success",
                     })
                     onSuccessTeacher();
+                    onClose();
                 }
 
             } catch (error: any) {
                 if (error.response.status === HttpStatus.BAD_REQUEST) {
+                    const errors = error.response.data.message_validate;
+                    const newErrors = Object.values(errors);
+                    const html = newErrors.map((e) => `<li> ${e} </li>`).join('');
                     Swal.fire({
-                        title: "Gửi thông báo thành công thất bại",
-                        icon: "error",
+                        title: "Gửi thông báo không thành công!",
+                        html: `<ul> ${html}</ul>`,
+                        icon: "warning",
                     })
                 }
                 if (error.response.status === HttpStatus.INTERNAL_SERVER_ERROR) {
@@ -71,7 +76,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                     })
                 }
             } finally {
-                onClose();
+
                 setCreateLoading(false);
             }
         }
@@ -88,6 +93,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                         title: "Gửi thông báo thành công",
                         icon: "success",
                     })
+                    onClose();
                     onSuccessStudent();
                 }
 
@@ -97,6 +103,19 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                         title: "Gửi thông báo thất bại",
                         icon: "error",
                     })
+                    return;
+                }
+
+                if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+                    const errors = error.response.data.errors;
+                    const newErrors = Object.values(errors);
+                    const html = newErrors.map((e) => `<li> ${e} </li>`).join('');
+                    Swal.fire({
+                        title: "Gửi thông báo không thành công!",
+                        html: `<ul> ${html} </ul>`,
+                        icon: "warning",
+                    })
+                    return;
                 }
                 if (error.response.status === HttpStatus.INTERNAL_SERVER_ERROR) {
                     Swal.fire({
@@ -106,7 +125,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                     })
                 }
             } finally {
-                onClose();
+
                 setCreateLoading(false);
             }
         }
