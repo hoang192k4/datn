@@ -240,16 +240,20 @@
     .teacher-modal-box {
         height: 80% !important;
     }
-    .student-info-avatar{
+
+    .student-info-avatar {
         display: none !important;
     }
-    .student-info-card-container{
+
+    .student-info-card-container {
         padding: 0 !important;
     }
+
     .student-info-button {
         font-size: 12px !important;
     }
+
     .main-student {
-        padding: 0 12px !important;
+        padding: 8px 12px !important;
     }
 }

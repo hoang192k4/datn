@@ -310,7 +310,7 @@ const SubjectDetail = () => {
                 </div>
                 {/* Hiển thị danh sách chương và bài */}
                 {loadingGetDocumentDetail ? <Loading /> :
-                    dataDocument?.chapters?.map((chapter, index) => (
+                    dataDocument?.chapters && dataDocument.chapters.length > 0 ? dataDocument?.chapters?.map((chapter, index) => (
                         <div key={chapter.id} className="subject-detail-chapter">
                             <h2 className="subject-detail-chapter-title">Chương {index + 1}: {chapter.title}
                                 <FaEdit onClick={() => { hanldeShowPopupUpdateDeleteChapter(chapter.id) }} />
@@ -327,7 +327,10 @@ const SubjectDetail = () => {
                                 ))}
                             </div>
                         </div>
-                    ))
+                    )) :
+                        <div style={{ textAlign: 'center', color: '#888', marginTop: '1.5rem' }}>
+                            <strong>Tài liệu chưa được cập nhật.</strong>
+                        </div>
                 }
 
                 {/* Popup Thêm chương */}
