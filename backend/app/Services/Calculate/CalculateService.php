@@ -57,7 +57,7 @@ class CalculateService implements CalculateServiceInterface
     {
         $totalAttendanceByCourseSection = $this->attendanceRepository->totalAttendanceStudentByCourseSection($studentId, $courseSectionId);
         $totalSessionByCourseSection = $this->attendanceRepository->totalSessionByCourseSection($courseSectionId);
-        $attendanceScore = 10 - max(0, ($totalSessionByCourseSection - $totalAttendanceByCourseSection));
+        $attendanceScore = max(0, 10 -  ($totalSessionByCourseSection - $totalAttendanceByCourseSection));
         return $attendanceScore;
     }
 }
