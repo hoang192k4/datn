@@ -8,6 +8,7 @@ use App\Supports\Log;
 use Illuminate\Http\Request;
 use App\Traits\AuthTeacherApi;
 use App\Enums\CourseSection\CourseSectionStatus;
+use App\Enums\Role;
 use App\Models\ClassStudent;
 use App\Models\CourseSection;
 use App\Models\SummaryGrade;
@@ -34,10 +35,24 @@ class CourseSectionService implements CourseSectionServiceInterface
     public function getCourseSectionByTeacher(Request $request)
     {
         $currentTeacherId = $this->getCurrentTeacherId();
+        $teacherCurrentRole = $this->getCurrentTeacherRole();
+
         $data = $request->validated();
         $limit = $data['limit'] ?? 10;
         $page = $data['page'] ?? 1;
+
+
         $key = $request->validated()['key'] ?? null;
+
+        if ($teacherCurrentRole === Role::FACULTY_ADMIN || $teacherCurrentRole === Role::DEPARTMENT_ADMIN) {
+            return  $this->courseSectionRepository->getList(
+                ['status' => ['!=', CourseSectionStatus::InRegister], 'name' => ['like', $key]],
+                ['name' => 'asc', 'created_at' => 'desc'],
+                [],
+                $limit,
+                $page
+            );
+        }
         return  $this->courseSectionRepository->getList(
             ['teacher_id' => $currentTeacherId, 'status' => ['!=', CourseSectionStatus::InRegister], 'name' => ['like', $key]],
             ['name' => 'asc', 'created_at' => 'desc'],
