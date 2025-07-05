@@ -330,7 +330,7 @@ const Notification: React.FC = () => {
             }
 
             {
-                isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={() => { fetchMyNotifications({ page: 1 }, filterStatus) }} /> : <> </>
+                isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={(updatePost) => { setNotifications(prev => prev.map((post) => post.id === updatePost.id ? updatePost : post)) }} /> : <> </>
             }
             {
                 isOpenStudentNotificationModal ? <EditStudentNotificationModal isOpen={isOpenStudentNotificationModal} onClose={() => { setIsOpenStudentNotificationModal(false) }} onSuccess={() => fetchStudentNotifications({}, filterStudentStatus)} notification={editStudentNotification} /> : <> </>

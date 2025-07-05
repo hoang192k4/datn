@@ -1,3 +1,4 @@
+import { api } from "../config/api";
 import axiosStudentInstance from "../config/axiosStudent";
 import axiosTeacherInstance from "../config/axiosTeacher"
 import type { NotificationType } from "../enums/NotificationType";
@@ -137,5 +138,17 @@ export const getFeedbackSendFromStudent = async (key: string | null = null, page
             page,
         }
     })
+    return response.data;
+}
+
+
+export const updateReadStatusNotification = async (id: number) => {
+    const response = await axiosTeacherInstance.patch(`/notifications/${id}`);
+    return response.data;
+}
+
+
+export const updateReadStatusNotificationStudent = async (id: number) => {
+    const response = await axiosStudentInstance.patch(`/notifications/${id}`);
     return response.data;
 }

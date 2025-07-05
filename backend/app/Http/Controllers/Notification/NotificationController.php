@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Notification;
 
+use App\Enums\Notification\NotificationStatus;
 use App\Exceptions\ModelNotFoundByIdException;
 use Exception;
 use App\Models\Notification;
@@ -13,6 +14,7 @@ use App\Http\Requests\Notification\NotificationRequest;
 use App\Http\Requests\Notification\NotificationTestRequest;
 use App\Services\Notification\NotificationServiceInterface;
 use App\Http\Requests\Notification\NotificationStudentsRequest;
+use App\Http\Resources\Notification\NotificationResource;
 use App\Http\Resources\Notification\NotificationResourceCollection;
 use App\Repositories\Notification\NotificationRepositoryInterface;
 use Illuminate\Auth\AuthenticationException;
@@ -47,7 +49,6 @@ class NotificationController extends BaseController
     public function sendNotifications(NotificationRequest $request)
     {
         try {
-            $this->logInfo('thong bao',$request->all());
             $response = $this->notificationService->sendNotifications($request);
             if (!$response)
                 return $this->jsonResponseError();
@@ -57,7 +58,6 @@ class NotificationController extends BaseController
             return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
-
 
     public function sendNotificationToCourseSection(NotificationCourseSectionRequest $request)
     {
@@ -110,7 +110,23 @@ class NotificationController extends BaseController
             if (!$isUpdated) {
                 return $this->jsonResponseError();
             }
-            return $this->jsonResponseSuccess();
+            return $this->jsonResponseSuccess(new NotificationResource($isUpdated));
+        } catch (ModelNotFoundByIdException $e) {
+            return $this->jsonResponseError('Không có instance theo id ' . $id, 404);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function updateStatus($id)
+    {
+        try {
+            $notification = $this->notificationRepository->findOrFailById($id);
+            $notification->status = NotificationStatus::Read;
+            $notification->save();
+
+            return $this->jsonResponseSuccess(new NotificationResource($notification));
         } catch (ModelNotFoundByIdException $e) {
             return $this->jsonResponseError('Không có instance theo id ' . $id, 404);
         } catch (Exception $e) {

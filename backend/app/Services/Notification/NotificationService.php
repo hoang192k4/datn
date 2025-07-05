@@ -282,7 +282,7 @@ class NotificationService implements NotificationServiceInterface
     }
 
 
-    public function update(Request $request, $id): bool
+    public function update(Request $request, $id): bool|object
     {
         try {
             $data = $request->validated();
@@ -305,7 +305,7 @@ class NotificationService implements NotificationServiceInterface
                 $this->sendNotificationToStudents($instance->title, $instance->content, array($instance->student_id), NotificationType::TeacherSend->value);
             }
 
-            return true;
+            return $instance;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;

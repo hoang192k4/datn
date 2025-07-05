@@ -5,7 +5,7 @@ import { Tabs, TabList, TabPanel, Tab } from 'react-tabs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import 'react-tabs/style/react-tabs.css';
-import { deleteNotification, getNotifications } from '../../../../services/notificationService';
+import { deleteNotification, getNotifications, updateReadStatusNotification } from '../../../../services/notificationService';
 import type { Paginate } from '../../../../types/paginate';
 import { HttpStatus } from '../../../../enums/HttpStatus';
 import { Loading } from '../../../../components/ui/Loading';
@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 
 import { NotificationType } from '../../../../enums/NotificationType';
 import NotificationAdminItem from './NotificationAdminItem';
+import { NotificationStatus } from '../../../../enums/NotificationStatus';
 
 interface Notification {
     id: number;
@@ -125,6 +126,17 @@ const FacultyStudentNotification: React.FC = () => {
 
     }
 
+    const handleUpdateStatus = async (id: number) => {
+        try {
+            const res = await updateReadStatusNotification(id);
+            setStudentNotifications((prev) => prev.map((notification) => {
+                return notification.id === id ? res.data : notification;
+            }));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -199,7 +211,7 @@ const FacultyStudentNotification: React.FC = () => {
 
                         {/* Notifications List */}
                         {loading ? (<Loading />) : notifications.length === 0 ? <div className="notification-no-item"> Không có thông báo nào</div> : notifications.map((notification) => (
-                            <div key={notification.id} className="notification-item">
+                            <div key={notification.id} className="notification-item" style={{ background: 'blue' }}>
                                 <NotificationAdminItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
                             </div>
                         ))}
@@ -238,7 +250,7 @@ const FacultyStudentNotification: React.FC = () => {
 
                         {/* Notifications List */}
                         {loadingStudentNotify ? (<Loading />) : studentNotifications.length === 0 ? <div className="notification-no-item">Không có thông báo nào</div> : studentNotifications.map((notification) => (
-                            <div key={notification.id} className="notification-item">
+                            <div key={notification.id} className={`notification-item ${notification.status === NotificationStatus.Unred ? 'notification-unread-color' : ''}`} onClick={() => {handleUpdateStatus(notification.id)}}>
                                 <NotificationAdminItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
                             </div>
                         ))}

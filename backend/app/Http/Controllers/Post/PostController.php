@@ -6,6 +6,7 @@ use App\Enums\PublicStatus;
 use App\Exceptions\ModelNotFoundByIdException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Post\PostRequest;
+use App\Http\Resources\Post\PostResource;
 use App\Http\Resources\Post\PostResourceCollection;
 use App\Repositories\Post\PostRepositoryInterface;
 use App\Repositories\Teacher\TeacherRepositoryInterface;
@@ -70,11 +71,11 @@ class PostController extends BaseController
     {
         try {
             $this->postRepository->findOrFailById($id);
-            $isUpdate = $this->postService->update($request, $id);
-            if (!$isUpdate) {
+            $instance = $this->postService->update($request, $id);
+            if (!$instance) {
                 return $this->jsonResponseError();
             }
-            return $this->jsonResponseSuccess();
+            return $this->jsonResponseSuccess(new PostResource($instance));
         } catch (ModelNotFoundByIdException $e) {
             return $this->jsonResponseError('Không có resource thuộc id này', 404);
         } catch (Exception $e) {

@@ -2,7 +2,7 @@
 
 namespace App\Enums\Notification;
 
-enum NotificationStatus:string
+enum NotificationStatus: string
 {
     case Read = 'read';
     case Unread = 'unread';
