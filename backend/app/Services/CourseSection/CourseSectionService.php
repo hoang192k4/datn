@@ -41,7 +41,6 @@ class CourseSectionService implements CourseSectionServiceInterface
         $limit = $data['limit'] ?? 10;
         $page = $data['page'] ?? 1;
 
-
         $key = $request->validated()['key'] ?? null;
 
         if ($teacherCurrentRole === Role::FACULTY_ADMIN || $teacherCurrentRole === Role::DEPARTMENT_ADMIN) {
