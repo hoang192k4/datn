@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Teacher\TeacherStatus;
 use Log;
 use Carbon\Carbon;
 use App\Models\Teacher;
@@ -77,6 +78,11 @@ class TeacherAuthController extends BaseController
 
 
         $user = Auth::guard('teacher')->user();
+
+        if ($user->status !== TeacherStatus::Active) {
+            return response()->json(['error' => "Giảng viên đang trong trạng thái không hoạt động, không thể đăng nhập"], 403);
+        }
+
         $tokenWithGuard = JWTAuth::claims(['guard' => 'teacher'])->fromUser($user);
         return $this->respondWithTokens($tokenWithGuard, $user);
     }
