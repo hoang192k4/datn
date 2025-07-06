@@ -39,4 +39,19 @@ enum StudentStatus: string
             self::Deferment => 'Bảo lưu',
         };
     }
+
+    public static function getDesciptionStatus(self|string $status): string
+    {
+        if (is_string($status)) {
+            $status = self::tryFrom($status); // convert string về enum
+        }
+        return match ($status) {
+            self::Active => 'đang học',
+            self::DroppedOut => 'đã thôi học',
+            self::Suspended => 'đã bị đình chỉ',
+            self::Pending => 'đang chờ duyệt',
+            self::Graduated => 'đã tốt nghiệp',
+            self::Deferment => 'đã bảo lưu',
+        };
+    }
 }
