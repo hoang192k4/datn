@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\CourseSection;
 
+use App\Enums\Student\StudentStatus;
 use App\Http\Resources\Semester\SemesterResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -26,7 +27,7 @@ class CourseSectionResource extends JsonResource
             'teacher_id' => $this->teacher_id,
             'status' => $this->status,
             'created_at' => format_date($this->created_at),
-            'students_total' => count($this->students)
+            'students_total' => $this->students()->where('status', StudentStatus::Active)->count(),
         ];
     }
 }
