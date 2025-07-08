@@ -1,4 +1,3 @@
-import { api } from "../config/api";
 import axiosStudentInstance from "../config/axiosStudent";
 import axiosTeacherInstance from "../config/axiosTeacher"
 import type { NotificationType } from "../enums/NotificationType";

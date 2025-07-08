@@ -11,7 +11,7 @@ import type { CourseSection } from "../../types/courseSecion";
 import { getCourseSectionByTeacherSlug } from "../../services/courseSectionService";
 import NotFoundPage from "../notfound/NotFoundPage";
 import { Loading } from "../../components/ui/Loading";
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 
 interface Subject {
     id: number,
