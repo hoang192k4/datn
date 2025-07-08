@@ -3,6 +3,11 @@
  }
 
  /* Modal Overlay */
+  .create-notification-student
+  {
+    left: 50% !important;
+    transform: translate(-50%,10%) !important;
+  }
  .notification-modal-overlay {
      position: fixed;
      top: 0;

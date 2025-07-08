@@ -141,9 +141,11 @@ const Class = () => {
             fetchStudentList(currentClassId)
     }, [currentClassId])
 
+    const studentFilter = studentList.filter(item => item.student_code.toLowerCase().includes(keyword) ||
+        normalizeString(item.name).includes(normalizeString(keyword)));
     return (
         <>
-            <PageHeader title="📚 Quản lý lớp học" subtitle="Hệ thống quản lý lớp học, danh sách sinh viên" />
+            <PageHeader title="🎓 Quản lý lớp học" subtitle="Hệ thống quản lý lớp học, danh sách sinh viên" />
             <div className="class-container box-container">
                 {action === 'default' ?
                     <>
@@ -172,8 +174,8 @@ const Class = () => {
                                             <ClassCard key={item.id} course_section={item} setAction={setAction}
                                                 setCurrentClassId={setCurrentClassId} setCurrentClassName={setCurrentClassName} />
                                         )) :
-                                        <div style={{ textAlign: 'center', color: '#888', marginTop: '1.5rem' }}>
-                                            <strong>Không có lớp học nào phù hợp với tiêu chí đã chọn.</strong>
+                                        <div style={{ textAlign: 'center', color: '#888', marginTop: '1.5rem' ,width:'100%'}}>
+                                            <strong>Không tìm thấy danh sách lớp học</strong>
                                         </div>
                                 }
                             </div>
@@ -219,20 +221,19 @@ const Class = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {studentList && studentList.length > 1 ? studentList.filter(item => item.student_code.toLowerCase().includes(keyword) ||
-                                            normalizeString(item.name).includes(normalizeString(keyword)))
-                                            .map((student, index) => (
-                                                <tr key={student.id} onClick={() => handleStudentDetail(student.id)}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{student.student_code}</td>
-                                                    <td>{student.name}</td>
-                                                    <td>{student.email}</td>
-                                                    <td>{genderMap[student.gender]}</td>
-                                                    <td>{statusMap[student.status]}</td>
-                                                    <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
-                                                </tr>
-                                            )) :
-                                            <tr><td colSpan={7} style={{ textAlign: 'center' }}>Không có sinh viên nào</td></tr>
+                                        {studentList && studentFilter.length > 0 ? 
+                                            studentFilter.map((student, index) => (
+                                            <tr key={student.id} onClick={() => handleStudentDetail(student.id)}>
+                                                <td>{index + 1}</td>
+                                                <td>{student.student_code}</td>
+                                                <td>{student.name}</td>
+                                                <td>{student.email}</td>
+                                                <td>{genderMap[student.gender]}</td>
+                                                <td>{statusMap[student.status]}</td>
+                                                <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
+                                            </tr>
+                                        )) :
+                                            <tr><td colSpan={7} style={{ textAlign: 'center' }}>Không có sinh viên nào phù hợp</td></tr>
                                         }
                                     </tbody>
                                 </table>

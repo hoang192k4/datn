@@ -103,7 +103,7 @@ const AttendancePage = () => {
                     draggable: true
                 })
             } catch (error) {
-               
+
             }
         }
         else {
@@ -167,9 +167,11 @@ const AttendancePage = () => {
         return Array.from(sessionMap.values()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     }, [listStudentAttendance]);
 
-
+    const listStudentAttendanceFilter = listStudentAttendance.filter(student =>
+        normalizeString(student.name).includes(normalizeString(searchKeyword)) ||
+        student.student_code.toLowerCase().includes(searchKeyword.toLowerCase()));
     return <>
-        <PageHeader title="📅 Quản lý điểm danh" subtitle="Hệ thống quản lý điểm danh của từng lớp học" />
+        <PageHeader title="📊 Quản lý điểm danh" subtitle="Hệ thống quản lý điểm danh của từng lớp học" />
         {
             actionImportExport !== 'default' &&
             <div className="popup-export-import">
@@ -255,31 +257,31 @@ const AttendancePage = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {listStudentAttendance.length > 0 ? listStudentAttendance.filter(student =>
-                                            normalizeString(student.name).includes(normalizeString(searchKeyword)) ||
-                                            student.student_code.toLowerCase().includes(searchKeyword.toLowerCase()))
-                                            .map((student, index) => (
-                                                <tr key={student.id}>
-                                                    <td>{index + 1}</td>
-                                                    <td>
-                                                        {student.name}
-                                                        <br />
-                                                        <small>MSSV: {student.student_code}</small>
-                                                    </td>
-                                                    {sessions.map((session) => {
-                                                        const att = student.attendance?.find(a => a.session_id === session.id);
-                                                        return (
-                                                            <td key={session.id}>
-                                                                {att ? (statusIcons[att.status] || '❓') : '--'}
-                                                                <br />
-                                                                <small>{att?.note || ''}</small>
-                                                            </td>
-                                                        );
-                                                    })}
-                                                    <td>{student.attendance_score}</td>
-                                                </tr>
-                                            )) :
-                                            <tr><td colSpan={3}>Chưa có điểm danh nào</td></tr>
+                                        {listStudentAttendance && listStudentAttendance.length > 0 ?
+                                            (listStudentAttendanceFilter.length > 0 ?
+                                                listStudentAttendanceFilter.map((student, index) => (
+                                                    <tr key={student.id}>
+                                                        <td>{index + 1}</td>
+                                                        <td>
+                                                            {student.name}
+                                                            <br />
+                                                            <small>MSSV: {student.student_code}</small>
+                                                        </td>
+                                                        {sessions.map((session) => {
+                                                            const att = student.attendance?.find(a => a.session_id === session.id);
+                                                            return (
+                                                                <td key={session.id}>
+                                                                    {att ? (statusIcons[att.status] || '❓') : '--'}
+                                                                    <br />
+                                                                    <small>{att?.note || ''}</small>
+                                                                </td>
+                                                            );
+                                                        })}
+                                                        <td>{student.attendance_score}</td>
+                                                    </tr>
+                                                )) :
+                                                <tr><td colSpan={sessions.length + 3}>Không có sinh viên nào phù hợp</td></tr>
+                                            ) : <tr><td colSpan={3}>Chưa có danh sách điểm danh</td></tr>
                                         }
                                     </tbody>
                                 </table>

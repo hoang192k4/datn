@@ -21,7 +21,6 @@ const DocumentManager = () => {
         }
     }
     useEffect(() => {
-
         getListSubjects();
     }, []);
 

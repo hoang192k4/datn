@@ -602,7 +602,7 @@ const GradeManagement: React.FC = () => {
   return (
     <>
       <ToastContainer />
-      <PageHeader title="🎓 Quản lý điểm số" subtitle="Hệ thống quản lý và theo dõi kết quả học tập của sinh viên" />
+      <PageHeader title="📝 Quản lý điểm số" subtitle="Hệ thống quản lý và theo dõi kết quả học tập của sinh viên" />
       {!currentClassId ? (
         <section className="gm-class-selection">
           <div className="gm-selection-icon">📚</div>

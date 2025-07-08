@@ -89,7 +89,9 @@ const ChangePasswrod = () => {
                             {showConfirmPassword ? "🙈" : "🐵"}
                         </button>
                     </div>
-                    {errors.new_password_confirmation ? <p className="error-message">{errors.new_password_confirmation.message}</p> : !checkNewPassword ? '' : <p>Mật khẩu xác nhận không trùng khớp</p>}
+                    {errors.new_password_confirmation ? 
+                    <p className="error-message">{errors.new_password_confirmation.message}</p> : 
+                    !checkNewPassword ? '' : <p className="error-message">Mật khẩu xác nhận không trùng khớp</p>}
                     <button type="submit" className="cpw-submit-btn">Cập nhật mật khẩu</button>
                 </form>
             </div>

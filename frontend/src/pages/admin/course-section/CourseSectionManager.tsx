@@ -151,7 +151,7 @@ const CourseSectionManager = () => {
     return (
         <>
 
-            <PageHeader title="Quản lý lớp học phân" subtitle="Hệ thống quản lý lớp học phần" />
+            <PageHeader title="📚 Quản lý lớp học phần" subtitle="Hệ thống quản lý lớp học phần" />
             <div className="box-container">
                 <div className="course-section-header">
                     <div className="box-header">

@@ -40,6 +40,34 @@
       padding: 10px;
     }
 
+    .button-soft {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+    }
+
+    .button-soft::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .button-soft:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+    }
+
+    .button-soft:active::after {
+      opacity: 1;
+    }
+
     .loading-overlay-layout {
       position: fixed;
       inset: 0;
@@ -96,7 +124,7 @@
       right: 0;
       bottom: 0;
       background: rgba(0, 0, 0, 0.4);
-      z-index: 1000;
+      z-index: 1001;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -119,6 +147,6 @@
     }
 
 
-    table>tbody>tr>td:first-child{
+    table>tbody>tr>td:first-child {
       text-align: center;
     }

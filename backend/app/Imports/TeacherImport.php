@@ -112,7 +112,7 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             '*.ngay_sinh.required' => 'Cột ngày sinh là bắt buộc.',
             '*.vai_tro.required' => 'Cột vai trò là bắt buộc.',
             '*.gioi_tinh.in' => 'Cột giới tính phải ghi đúng Nam hoặc Nữ',
-            '*.vai_tro.in' => 'Cột vai trò phải ghi đúng GVBM, GVCN, CAPKHOA, CAPBOMON'
+            '*.vai_tro.in' => 'Cột vai trò phải ghi đúng GVBM, GVCN, QTKHOA, QTBOMON'
         ];
     }
 }
