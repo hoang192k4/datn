@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getScheduleByStudent } from '../../../services/scheduleService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import '../../admin/schedule/TeacherSchedule.css';
+import { formatDayMonthYear } from '../../../utils/utils';
 
 interface Session {
     course_section_name: string;
@@ -81,7 +82,7 @@ const StudentSchedule: React.FC = () => {
                                 <ChevronLeft color="white" size={20} />
                             </button>
                             <span className="week-range">
-                                {schedule ? `${schedule.week.start} → ${schedule.week.end}` : 'Đang tải...'}
+                                {schedule ? `${formatDayMonthYear(schedule.week.start)} → ${formatDayMonthYear(schedule.week.end)   }` : 'Đang tải...'}
                             </span>
                             <button onClick={() => handleWeekChange('next')} className="nav-button">
                                 <ChevronRight color="white" size={20} />
@@ -100,7 +101,7 @@ const StudentSchedule: React.FC = () => {
                                 {schedule?.schedule.map((day, _index) => (
                                     <th key={day.date} className="day-header">
                                         <div>{day.day_name}</div>
-                                        <div className="day-date">{day.date}</div>
+                                        <div className="day-date">{formatDayMonthYear(day.date)}</div>
                                     </th>
                                 ))}
                             </tr>

@@ -330,10 +330,10 @@ const Notification: React.FC = () => {
             }
 
             {
-                isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={() => { fetchMyNotifications({ page: 1 }, filterStatus) }} /> : <> </>
+                isOpenEditModal ? <EditNotificationModal isOpen={isOpenEditModal} onClose={() => { setIsOpenEditModal(false) }} notification={editingPost} onSuccess={(updatePost) => { setNotifications(prev => prev.map((post) => post.id === updatePost.id ? updatePost : post)) }} /> : <> </>
             }
             {
-                isOpenStudentNotificationModal ? <EditStudentNotificationModal isOpen={isOpenStudentNotificationModal} onClose={() => { setIsOpenStudentNotificationModal(false) }} onSuccess={() => fetchStudentNotifications({}, filterStudentStatus)} notification={editStudentNotification} /> : <> </>
+                isOpenStudentNotificationModal ? <EditStudentNotificationModal isOpen={isOpenStudentNotificationModal} onClose={() => { setIsOpenStudentNotificationModal(false) }} onSuccess={(updateNotification) => setStudentNotifications(prev => prev.map((notification) => notification.id === updateNotification.id ? updateNotification : notification))} onReload={() => { fetchStudentNotifications({ page: 1 }, filterStudentStatus) }} notification={editStudentNotification} /> : <> </>
             }
         </>
     )

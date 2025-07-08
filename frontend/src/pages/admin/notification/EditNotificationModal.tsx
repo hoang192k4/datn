@@ -9,6 +9,7 @@ import { HttpStatus } from '../../../enums/HttpStatus';
 import Swal from 'sweetalert2';
 import { CreateLoading } from '../../../components/ui/CreateLoading';
 import { updatePost } from '../../../services/notificationService';
+import type { Post } from '../../../types/post';
 
 
 
@@ -31,7 +32,7 @@ interface NotificationModalProps {
     isOpen: boolean;
     onClose: () => void;
     notification?: NotificationCourseSection;
-    onSuccess: () => void;
+    onSuccess: (post: Post) => void;
 }
 interface FormValues {
     title: string;
@@ -74,7 +75,7 @@ const EditNotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClo
                     title: "Cập nhật thông báo thành công",
                     icon: "success",
                 })
-                onSuccess();
+                onSuccess(res.data);
             }
         } catch (error: any) {
             if (error.response.status === HttpStatus.BAD_REQUEST) {

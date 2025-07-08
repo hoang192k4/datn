@@ -28,7 +28,7 @@ export const TeacherRoute = [
     {
         'path': 'lop-hoc',
         'element': <Class />,
-        roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+        roles: ["subject_teacher", "homeroom_teacher"],
     },
     {
         'path': 'thong-tin-ca-nhan',

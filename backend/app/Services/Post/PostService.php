@@ -46,7 +46,7 @@ class PostService implements PostServiceInterface
         }
     }
 
-    public function update(Request $request, $id): bool
+    public function update(Request $request, $id): bool|object
     {
         try {
             $data = $request->validated();
@@ -61,7 +61,8 @@ class PostService implements PostServiceInterface
             if ($isPushNotification) {
                 $this->sendNotification($post->course_section, $post);
             }
-            return true;
+
+            return $post;
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return false;

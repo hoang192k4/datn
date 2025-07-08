@@ -18,4 +18,11 @@ class NotificationCourseSectionRequest extends BaseRequest
             'public_type' => [new Enum(PublicStatus::class), 'nullable']
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'course_section_id.required' => 'Vui lòng chọn lớp học phần.'
+        ];
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Student\StudentStatus;
 use Carbon\Carbon;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -64,6 +65,11 @@ class StudentAuthController extends BaseController
         }
 
         $user = Auth::guard('student')->user();
+
+        if ($user->status !== StudentStatus::Active) {
+            $status = StudentStatus::getDesciptionStatus($user->status);
+            return response()->json(['error' => "Sinh viên đang trong trạng thái $status, không thể đăng nhập"], 403);
+        }
         $tokenWithGuard = JWTAuth::claims(['guard' => 'student'])->fromUser($user);
         return $this->respondWithTokens($tokenWithGuard, $user);
     }

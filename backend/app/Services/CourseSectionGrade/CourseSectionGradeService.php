@@ -2,6 +2,8 @@
 
 namespace App\Services\CourseSectionGrade;
 
+use App\Enums\Grade\GradeScoreVisibility;
+use App\Enums\PublicStatus;
 use App\Enums\Student\StudentStatus;
 use Exception;
 use Illuminate\Http\Request;
@@ -63,6 +65,7 @@ class CourseSectionGradeService implements CourseSectionGradeServiceInterface
                     'grade_type_id' => $gradeTypeId,
                     'student_id' => $studentId,
                     'attempt' => $newAttempt,
+                    'score_visibility' => GradeScoreVisibility::Public,
                 ];
                 $this->gradeRepository->create($grade);
             }

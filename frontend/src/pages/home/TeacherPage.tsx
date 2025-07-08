@@ -11,6 +11,7 @@ import type { CourseSection } from "../../types/courseSecion";
 import { getCourseSectionByTeacherSlug } from "../../services/courseSectionService";
 import NotFoundPage from "../notfound/NotFoundPage";
 import { Loading } from "../../components/ui/Loading";
+import { useDispatch, useSelector } from 'react-redux';
 
 interface Subject {
     id: number,
@@ -31,6 +32,8 @@ const TeacherPage = () => {
     const [courseSectionPage, setCourseSectionPage] = useState<number>(1);
     const [notfound, setNotfound] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    const user = useSelector((state: any) => state.auth?.user ?? null);
 
     const fetchPosts = async (slug: string, page: number) => {
         try {
@@ -117,35 +120,38 @@ const TeacherPage = () => {
 
                         </section>
 
-                        <div className="class-list">
-                            <h2>Danh Sách Lớp Học</h2>
-                            <div className="card-grid">
-                                {courseSections.length > 0 ? courseSections?.map((courseSection) => (
-                                    <BoxItem href={'lop-hoc/' + courseSection.id}> {courseSection.name}</BoxItem>
-                                )) : <p> Không có danh sách lớpp học nào</p>}
+                        {user ? (
+                            <div className="class-list">
+                                <h2>Danh Sách Lớp Học</h2>
+                                <div className="card-grid">
+                                    {courseSections.length > 0 ? courseSections?.map((courseSection) => (
+                                        <BoxItem href={'lop-hoc/' + courseSection.id}> {courseSection.name}</BoxItem>
+                                    )) : <p> Không có danh sách lớpp học nào</p>}
+
+                                </div>
+
+
+                                {courseSections.length !== 0 ? (
+                                    <div className="post-pagination">
+                                        <button
+                                            disabled={courseSectionPaginate?.current_page === 1}
+                                            onClick={() => setCourseSectionPage(courseSectionPaginate?.previous_page ?? 1)}
+                                        >
+                                            Trước
+                                        </button>
+                                        <span className="page-info">Trang {courseSectionPaginate?.current_page} / {courseSectionPaginate?.total_pages}</span>
+                                        <button
+                                            disabled={courseSectionPaginate?.current_page === courseSectionPaginate?.total_pages}
+                                            onClick={() => setCourseSectionPage(courseSectionPaginate?.next_page ?? 1)}
+                                        >
+                                            Sau
+                                        </button>
+                                    </div>
+                                ) : <></>}
 
                             </div>
+                        ) : <> </>}
 
-
-                            {courseSections.length !== 0 ? (
-                                <div className="post-pagination">
-                                    <button
-                                        disabled={courseSectionPaginate?.current_page === 1}
-                                        onClick={() => setCourseSectionPage(courseSectionPaginate?.previous_page ?? 1)}
-                                    >
-                                        Trước
-                                    </button>
-                                    <span className="page-info">Trang {courseSectionPaginate?.current_page} / {courseSectionPaginate?.total_pages}</span>
-                                    <button
-                                        disabled={courseSectionPaginate?.current_page === courseSectionPaginate?.total_pages}
-                                        onClick={() => setCourseSectionPage(courseSectionPaginate?.next_page ?? 1)}
-                                    >
-                                        Sau
-                                    </button>
-                                </div>
-                            ) : <></>}
-
-                        </div>
                         <div className="document-subject-list">
                             <h2>Tài Liệu Môn Học</h2>
                             <div className="card-grid">

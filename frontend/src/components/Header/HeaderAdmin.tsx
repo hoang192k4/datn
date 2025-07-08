@@ -11,8 +11,10 @@ import Loadding from '../ui/Loadding';
 import { messaging } from '../../config/firebase';
 import { onMessage } from 'firebase/messaging';
 import { ToastContainer, toast } from 'react-toastify';
+
 const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const [loadingLogout, setLoadingLogout] = useState(false);
+    const [totalNotificationsUnread, setTotalNotificationsUnread] = useState<number>(0);
     const toggleUserDropdown = () => {
         const dropdown = document.getElementById('userDropdown');
         if (!dropdown)
@@ -42,7 +44,8 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         const unsubscribe = onMessage(messaging, (payload) => {
             console.log('🔔 Thông báo mới:', payload);
 
-            toast.info(payload.notification?.title)
+            toast.info("Thông báo mới: " + payload.notification?.title)
+            setTotalNotificationsUnread(prev => prev + 1);
         });
 
         return () => {
@@ -62,9 +65,10 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                             <svg className="bell-icon" viewBox="0 0 24 24">
                                 <path d="M12 2C13.1 2 14 2.9 14 4C14 4.78 13.64 5.47 13.06 5.85C15.84 6.82 18 9.38 18 12.5V16L20 18V19H4V18L6 16V12.5C6 9.38 8.16 6.82 10.94 5.85C10.36 5.47 10 4.78 10 4C10 2.9 10.9 2 12 2ZM12 22C13.11 22 14 21.11 14 20H10C10 21.11 10.89 22 12 22Z" />
                             </svg>
-                            <span className="notification-badge">5</span>
+                            {totalNotificationsUnread === 0 ? <> </> : <span className="notification-badge"> {totalNotificationsUnread} </span>}
                         </Link>
                     </div>
+
                     <div className="nav-user" onClick={toggleUserDropdown}>
                         <div className="user-avatar">{user && getInitials(user.name)}</div>
                         <span>{user && user.name}</span>

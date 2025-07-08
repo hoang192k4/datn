@@ -9,6 +9,7 @@ import { HttpStatus } from '../../enums/HttpStatus';
 import { studentLogin } from '../../services/authStudentService';
 import { getFCMToken } from '../../services/deviceTokenService';
 import Loadding from '../../components/ui/Loadding';
+import { toast, ToastContainer } from 'react-toastify';
 interface FormDataLogIn {
     email: string,
     password: string,
@@ -39,6 +40,9 @@ const LoginPage = () => {
             if (errors.status === HttpStatus.AUTH_ERROR) {
                 setErrorPassword(true);
             }
+            if (errors.response.status === HttpStatus.FORBIDDEN) {
+                toast.warning(errors.response.data.error);
+            }
         } finally {
             setLoading(false);
         }
@@ -46,6 +50,7 @@ const LoginPage = () => {
 
     return (
         <>
+            <ToastContainer />
             <section className="login-section">
                 {loading && <Loadding />}
                 <div className="login-card">

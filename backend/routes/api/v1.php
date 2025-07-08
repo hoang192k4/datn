@@ -72,6 +72,7 @@ Route::controller(App\Http\Controllers\Notification\NotificationController::clas
         Route::get('/', 'getMyNotifications'); //api lấy danh sách thông báo theo người dùng đăng nhập
         Route::delete('/{id}', 'destroy'); //api xóa thông báo
         Route::put('/{id}', 'update');
+        Route::patch('/{id}', 'updateStatus'); //api cập nhật trạng thái đã xem
     });
 
 Route::controller(App\Http\Controllers\Notification\StudentNotificationController::class)
@@ -213,7 +214,7 @@ Route::controller(App\Http\Controllers\Teacher\TeacherController::class)
         Route::get('/', 'getAllTeachers'); //api lấy danh sách và tìm kiếm giảng viên
         Route::post('/import', 'importTeachersExcel'); // api import file excel
         Route::get('/export', 'getTeacherListByStatus'); // api export file excel
-        Route::get('/subject/{id}','getTeachersBySubject'); //api lấy danh sách giảng viên theo môn học
+        Route::get('/subject/{id}', 'getTeachersBySubject'); //api lấy danh sách giảng viên theo môn học
     });
 
 Route::controller(App\Http\Controllers\Role\RoleController::class)

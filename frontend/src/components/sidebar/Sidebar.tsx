@@ -32,7 +32,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             icon: "🎓",
             url: "lop-hoc",
             label: "Lớp Học",
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"]
+            roles: [ "subject_teacher", "homeroom_teacher"]
             //roles: ["subject_teacher"]
         },
         {
