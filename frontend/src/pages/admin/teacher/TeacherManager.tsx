@@ -32,9 +32,9 @@ const TeacherManager = () => {
     const [showPopupImport, setShowPopupImport] = useState(false);
     const [showPopupExport, setShowPopupExport] = useState(false);
     const { register, handleSubmit, reset, formState: { errors, dirtyFields }, getValues, control } = useForm<TeacherList>();
-    const password_current = useWatch({
+    const password_new = useWatch({
         control,
-        name: "password_current",
+        name: "password_new",
     });
     const fetchTeacherList = async (key = '', page = 1, status: StatusActiveInactive | null = null, role: string | null = null) => {
         try {
@@ -111,7 +111,6 @@ const TeacherManager = () => {
                 ...updateValues,
                 subjects: teacherUpdate.subjects.map(item => item.value),
             };
-
             const res = await updateTeacher(teacherUpdate.id, payload);
             if (res) {
                 setActionTeacher('');
@@ -179,8 +178,9 @@ const TeacherManager = () => {
         try {
             const payload: any = {
                 ...teacher,
-                subjects: teacher.subjects.map(item => item.value),
+                subjects: teacher.subjects ? teacher.subjects.map(item => item.value) : [],
             };
+            console.log(payload);
             const res = await createTeacher(payload);
             if (res) {
                 setActionTeacher('');
@@ -230,7 +230,7 @@ const TeacherManager = () => {
     return (
         <>
 
-            <PageHeader title="Quản lý giảng viên" subtitle="Hệ thống quản lý giảng viên" />
+            <PageHeader title="👨‍🏫 Quản lý giảng viên" subtitle="Hệ thống quản lý giảng viên" />
             <div className="box-container">
                 <div className="box-header">
                     <h2>Danh sách giảng viên</h2>
@@ -242,7 +242,7 @@ const TeacherManager = () => {
                 </div>
                 <div className="box-header">
                     <div className="class-search-student">
-                        <input type="text" placeholder="Tìm kiếm sinh viên..." onChange={(e) => { handleSearch(e.target.value, selectedStatus, selectedRole); setKeyword(e.target.value) }} />
+                        <input type="text" placeholder="Tìm kiếm giảng viên..." onChange={(e) => { handleSearch(e.target.value, selectedStatus, selectedRole); setKeyword(e.target.value) }} />
                         <FaSearch />
                     </div>
                     <div>
@@ -328,7 +328,7 @@ const TeacherManager = () => {
                                     </tr>
                                 )) :
                                     <tr>
-                                        <td colSpan={9} style={{ textAlign: 'center' }}>Không có giảng viên nào phù hợp với tiêu chí đã chọn</td>
+                                        <td colSpan={10} style={{ textAlign: 'center' }}>Không có giảng viên nào phù hợp với tiêu chí đã chọn</td>
                                     </tr>
                                 }
                             </tbody>
@@ -441,29 +441,34 @@ const TeacherManager = () => {
                             {actionTeacher === 'update' &&
                                 <div className="form-flex">
                                     <label>
-                                        Mật khẩu cũ:
-                                        <input type="text" {...register("password_current")} />
+                                        Mật khẩu mới:
+                                        <input type="password" {...register("password_new")} />
                                     </label>
 
                                     <label>
-                                        Mật khẩu mới:
-                                        <input type="text" {...register("password_update", {
+                                        Xác nhận khẩu mới:
+                                        <input type="password" {...register("password_confirm", {
                                             validate: (value) => {
-                                                if (password_current) {
+                                                if (value) {
+                                                    if (!password_new) return "Mật khẩu xác nhận không khớp";
+                                                }
+                                                if (password_new) {
                                                     if (!value) return "Vui lòng nhập xác nhận mật khẩu";
+                                                    if (value !== password_new) return "Mật khẩu xác nhận không khớp";
                                                 }
                                                 return true;
+
                                             }
                                         })}
                                         />
-                                        {errors.password_update && <p className="error-message">{errors.password_update.message}</p>}
+                                        {errors.password_confirm && <p className="error-message">{errors.password_confirm.message}</p>}
                                     </label>
                                 </div>
                             }
 
 
                             <div className="form-modal-actions">
-                                <button type="button" className="btn-save" onClick={handleSubmit(actionTeacher === 'update' ? handleUpdateTeacher : handleCreateTeacher)}>
+                                <button type="button" className="btn-save button-soft" onClick={handleSubmit(actionTeacher === 'update' ? handleUpdateTeacher : handleCreateTeacher)}>
                                     {actionTeacher === 'create' ? 'Thêm mới giảng viên' : 'Cập nhật'}
                                 </button>
                                 <button type="button" className="btn-cancel" onClick={() => setActionTeacher('')}>Đóng</button>

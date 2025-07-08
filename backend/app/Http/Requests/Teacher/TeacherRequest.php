@@ -36,8 +36,8 @@ class TeacherRequest extends BaseRequest
             'password' => 'max:255|string',
             'date_of_birth' => 'date',
             'address' => 'string|max:255',
-            'password_current' => 'string|max:255',
-            'password_update' => 'string|max:255',
+            'password_new' => 'string|max:255',
+            'password_confirm' => 'string|max:255',
             'subjects' => 'array|nullable',
             'gender' => [new Enum(Gender::class)],
             'role_id' => "exists:roles,id"

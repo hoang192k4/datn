@@ -267,7 +267,7 @@ const StudentManagement = () => {
             {importLoading ? <Loading title="Đang import sinh viên" /> : <> </>}
             {exportLoading ? <Loading title="Đang xuất danh sách sinh viên" /> : <> </>}
             <ToastContainer />
-            <PageHeader title="Quản lí sinh viên" subtitle="Hệ thống quản lí sinh viên" />
+            <PageHeader title="👨‍🎓 Quản lý sinh viên" subtitle="Hệ thống quản lí sinh viên" />
             <div className="gm-grade-section">
 
                 <div className="gm-grade-header">

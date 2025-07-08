@@ -204,7 +204,7 @@ const Notification: React.FC = () => {
 
     return (
         <>
-            <PageHeader title='Thông Báo' subtitle='Quản lý thông báo của giảng viên' />
+            <PageHeader title='🔔 Thông Báo' subtitle='Quản lý thông báo của giảng viên' />
             <div className="notification-container">
                 {/* Header */}
                 <div className="header">

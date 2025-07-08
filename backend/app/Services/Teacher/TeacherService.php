@@ -43,8 +43,8 @@ class TeacherService implements TeacherServiceInterface
         $data = $request->validated();
         $subjectIds = $data['subjects'];
         unset($data['subjects']);
-        if (array_key_exists('password_current', $data) && array_key_exists('password_update', $data))
-            $data['password'] = $data['password_update'];
+        if (array_key_exists('password_new', $data) && array_key_exists('password_confirm', $data))
+            $data['password'] = $data['password_new'];
         if (array_key_exists('name', $data))
             $data['slug'] = Str::slug($data['name']);
         $teacher->subjects()->sync($subjectIds);
