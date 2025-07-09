@@ -52,6 +52,7 @@ class CourseSectionService implements CourseSectionServiceInterface
                 $page
             );
         }
+
         return  $this->courseSectionRepository->getList(
             ['teacher_id' => $currentTeacherId, 'status' => ['!=', CourseSectionStatus::InRegister], 'name' => ['like', $key]],
             ['name' => 'asc', 'created_at' => 'desc'],

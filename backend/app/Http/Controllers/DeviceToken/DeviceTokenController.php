@@ -8,7 +8,10 @@ use App\Http\Controllers\BaseController;
 
 class DeviceTokenController extends BaseController
 {
-    public function __construct() {}
+    public function __construct()
+    {
+
+    }
 
     public function update(Request $request)
     {

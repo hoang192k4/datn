@@ -113,7 +113,7 @@ class StudentAuthController extends BaseController
             }
 
             $newAccessToken = Auth::guard('student')->tokenById($userId);
-            return $this->respondWithTokens($newAccessToken, $user);
+            return $this->respondWithAccessToken($newAccessToken, $user);
         } catch (TokenExpiredException $e) {
             return response()->json(['status' => 401, 'message' => 'Refresh token hết hạn']);
         } catch (JWTException $e) {
@@ -188,5 +188,19 @@ class StudentAuthController extends BaseController
         ])
             ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Lax')
             ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $this->secure, true, false, 'Lax');
+    }
+
+    protected function respondWithAccessToken($accessToken, $user)
+    {
+        $accessTtl = (int)config('jwt.ttl'); // phút
+
+        return response()->json([
+            'access_token' => $accessToken,
+            'token_type' => 'bearer',
+            'expires_in' => $accessTtl,
+            'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
+            'user' => new StudentResource($user),
+        ])
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Lax');
     }
 }

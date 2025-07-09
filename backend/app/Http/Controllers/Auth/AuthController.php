@@ -72,7 +72,7 @@ class AuthController extends BaseController
 
                 // Tạo access token mới
                 $newAccessToken = Auth::guard($guard)->tokenById($userId);
-                return $this->respondWithTokens($newAccessToken, $user, $guard);
+                return $this->respondWithAccessToken($newAccessToken, $user, $guard);
             } catch (TokenExpiredException $e) {
                 continue;
             } catch (TokenInvalidException $e) {
@@ -107,5 +107,19 @@ class AuthController extends BaseController
             ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $secure, true, false, 'Lax')
             ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $secure, true, false, 'Lax');
     }
+
+     protected function respondWithAccessToken($accessToken, $user, $guard)
+    {
+        $secure = config('session.secure');
+        $accessTtl = (int)config('jwt.ttl'); // phút
+
+        return response()->json([
+            'access_token' => $accessToken,
+            'token_type' => 'bearer',
+            'expires_in' => $accessTtl,
+            'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
+            'user' => $user->name,
+        ])
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $secure, true, false, 'Lax');
+    }
 }
-    
