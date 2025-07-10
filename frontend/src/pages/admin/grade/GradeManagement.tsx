@@ -14,6 +14,9 @@ import { normalizeString } from '../../../utils/utils';
 import GradeImport from './GradeImport';
 import { getGradingStatusLabel, GradeStatus } from '../../../enums/GradeStatus';
 import { submitGradeStatus } from '../../../services/courseSectionService';
+import { useSelector } from 'react-redux';
+import { TeacherRole } from '../../../enums/TeacherRole';
+import UnlockScore from './UnlockScore';
 
 interface GradeType {
   id: number;
@@ -76,6 +79,7 @@ const GradeManagement: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [gradeColumn, setGradeColumn] = useState([]);
   const [isOpenImportModal, setIsOpenImportModal] = useState<boolean>(false);
+  const user = useSelector((state: any) => state.auth.user);
   // const [debouncedKeyword, setDebouncedKeyword] = useState<string>('');
 
   const filteredStudents = studentData.filter((student) =>
@@ -140,7 +144,7 @@ const GradeManagement: React.FC = () => {
       text: `Sau khi nộp điểm, bạn sẽ không thể chỉnh sửa ${statusName} nữa.`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Nộp điểm',  
+      confirmButtonText: 'Nộp điểm',
       cancelButtonText: 'Hủy'
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -732,9 +736,14 @@ const GradeManagement: React.FC = () => {
               </div>
             </div>
             <div className="gm-control-group">
-              <button className="gm-btn gm-btn-secondary" style={{ padding: '10px 10px' }} onClick={() => { handleSubmitGradeStatus() }} disabled={currentCourseSection.grade_status === GradeStatus.SubmittedExam2}  >
-                ✅ Nộp điểm {currentCourseSection.grade_status === GradeStatus.DraftExam ? 'kiểm tra' : currentCourseSection.grade_status === GradeStatus.SubmittedExam ? 'thi lần 1' : currentCourseSection.grade_status === GradeStatus.SubmittedExam1 ? 'thi lần 2' : ''}
-              </button>
+              {user && (user.role === TeacherRole.FacultyAdmin || user.role === TeacherRole.DepartmentAdmin) ? (
+               
+                <UnlockScore courseSectionId={currentClassId}/>
+              ) : (
+                <button className="gm-btn gm-btn-secondary" style={{ padding: '10px 10px' }} onClick={() => { handleSubmitGradeStatus() }} disabled={currentCourseSection.grade_status === GradeStatus.SubmittedExam2}  >
+                  ✅ Nộp điểm {currentCourseSection.grade_status === GradeStatus.DraftExam ? 'kiểm tra' : currentCourseSection.grade_status === GradeStatus.SubmittedExam ? 'thi lần 1' : currentCourseSection.grade_status === GradeStatus.SubmittedExam1 ? 'thi lần 2' : ''}
+                </button>
+              )}
             </div>
           </div>
           <div className="gm-table-container">
@@ -760,9 +769,9 @@ const GradeManagement: React.FC = () => {
               </table>
             )}
           </div>
-        </section>
+        </section >
       )}
-
+     
       <GradeColumnManagerModal isOpen={isOpenModal} onClose={() => { setIsOpenModal(false) }} gradeColumn={gradeColumn} courseSectionId={currentClassId} fetchGradesNoLoading={() => fetchGradesNoLoading(currentClassId)} />
       <GradeImport isOpen={isOpenImportModal} onClose={() => { setIsOpenImportModal(false) }} onFileSelect={handleFileSelect} />
     </>
