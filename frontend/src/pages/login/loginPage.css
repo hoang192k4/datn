@@ -4,6 +4,8 @@
         align-items: center;
         justify-content: center;
         padding: 5rem 2rem 3rem 2rem;
+        min-height: calc(100vh - 140px);
+        margin: auto 0;
     }
 
     .login-card {

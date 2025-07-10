@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './HeaderStudent.css';
 import { useDispatch, useSelector } from "react-redux";
 import { studentLogout } from "../../services/authStudentService";
@@ -9,13 +9,16 @@ import Loadding from "../ui/Loadding";
 const HeaderStudent = () => {
     const [loadingLogoutStudent, setLoadingLogoutStudent] = useState(false);
     const user = useSelector((state: any) => state.auth.user);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleStudentLogout = async () => {
         try {
             setLoadingLogoutStudent(true);
             const data = await studentLogout();
-            if (data.status === HttpStatus.SUCCESS)
+            if (data.status === HttpStatus.SUCCESS) {
+                navigate("/dang-nhap-sinh-vien", { replace: true });
                 dispatch(logout());
+            }
         } catch (error) {
             console.log(error)
         } finally {
@@ -24,7 +27,7 @@ const HeaderStudent = () => {
     }
     return (
         <>
-            {loadingLogoutStudent && <Loadding/>}
+            {loadingLogoutStudent && <Loadding />}
             <header className="header-student">
                 <h1><Link to="">KHOA CÔNG NGHỆ THÔNG TIN</Link></h1>
                 <div className="nav-links-student">

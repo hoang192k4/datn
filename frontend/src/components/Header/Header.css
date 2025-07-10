@@ -72,3 +72,42 @@
      top: 100%;
      left: 0;
  }
+
+ .dropdown-login {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-login-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: -30px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    padding: 8px 0;
+    border-radius: 8px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(10px);
+    z-index: 10;
+    min-width: 150px;
+}
+
+.dropdown-login:hover .dropdown-login-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown-login-menu a {
+    display: block;
+    padding: 8px 16px;
+    color: #333 !important;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.dropdown-login-menu a:hover {
+    background: #f0f0f0;
+}

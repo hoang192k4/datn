@@ -338,20 +338,24 @@ const SubjectDetail = () => {
                     <div className="subject-popup-overlay">
                         <div className="subject-popup">
                             <h3>Thêm chương mới</h3>
-                            <input
-                                type="text"
-                                placeholder="Tên chương"
-                                {...register("title", { required: "Vui lòng nhập tên chương" })}
-                                className="subject-detail-input"
-                            />
-                            {errors.title && <p className="error-message">{errors.title.message}</p>}
-                            <input
-                                type="number"
-                                placeholder="Thứ tự chương"
-                                {...register("position", { required: "Vui lòng nhập thứ tự chương" })}
-                                className="subject-detail-input"
-                            />
-                            {errors.position && <p className="error-message">{errors.position.message}</p>}
+                            <label>Tên chương:
+                                <input
+                                    type="text"
+                                    {...register("title", { required: "Vui lòng nhập tên chương" })}
+                                    className="subject-detail-input"
+                                />
+                                {errors.title && <p className="error-message">{errors.title.message}</p>}
+                            </label>
+
+                            <label>Thứ tự chương:
+                                <input
+                                    type="number"
+                                    {...register("position", { required: "Vui lòng nhập thứ tự chương" })}
+                                    className="subject-detail-input"
+                                />
+                                {errors.position && <p className="error-message">{errors.position.message}</p>}
+                            </label>
+
                             <div className="popup-actions">
                                 {
                                     formAction === 'create' ? <button className="subject-detail-btn green" onClick={handleSubmit(handleAddChapter)}>Thêm</button> :
@@ -371,46 +375,61 @@ const SubjectDetail = () => {
                     <div className="subject-popup-overlay">
                         <div className="subject-popup">
                             <h3>Thêm bài giảng mới</h3>
-                            <input
-                                type="text"
-                                {...regiterLecture("title", { required: "Vui lòng nhập tên bài giảng" })}
-                                placeholder="Tên bài giảng"
-                                className="subject-detail-input"
-                            />
-                            {lectureErrors.title && <p className="error-message">{lectureErrors.title.message}</p>}
-                            <input
-                                type="text"
-                                {...regiterLecture("file_path", {
-                                    required: "Vui lòng nhập đường dẫn của bài giảng",
-                                    pattern: {
-                                        value: /^https?:\/\/.+/,
-                                        message: "Định dạng URL không hợp lệ"
-                                    }
-                                })}
-                                placeholder="Đường dẫn bài giảng"
-                                className="subject-detail-input"
-                            />
-                            {lectureErrors.file_path && <p className="error-message">{lectureErrors.file_path.message}</p>}
-                            <input
-                                type="number"
-                                {...regiterLecture("position", { required: "Vui lòng nhập thứ tự bài giảng" })}
-                                placeholder="Thứ tự bài giảng"
-                                className="subject-detail-input"
-                            />
-                            {lectureErrors.position && <p className="error-message">{lectureErrors.position.message}</p>}
-                            <select
-                                className="subject-detail-select" {...regiterLecture("chapter_id", { required: "Vui lòng chọn chương của bài giảng" })}
-                            >
-                                <option value="">Chọn chương</option>
-                                {dataDocument?.chapters?.map((chapter, index) => (
-                                    <option key={index} value={chapter.id}>{chapter.title}</option>
-                                ))}
-                            </select>
-                            {lectureErrors.chapter_id && <p className="error-message">{lectureErrors.chapter_id.message}</p>}
-                            <select className="subject-detail-select" {...regiterLecture("status")}  >
-                                <option value="public" selected>Hiển thị công khai</option>
-                                <option value="private">Hiển thị không công khai</option>
-                            </select>
+                            <label>
+                                Tên bài giảng:
+                                <input
+                                    type="text"
+                                    {...regiterLecture("title", { required: "Vui lòng nhập tên bài giảng" })}
+                                    className="subject-detail-input"
+                                />
+                                {lectureErrors.title && <p className="error-message">{lectureErrors.title.message}</p>}
+                            </label>
+
+                            <label>
+                                Đường dẫn bài giảng:
+                                <input
+                                    type="text"
+                                    {...regiterLecture("file_path", {
+                                        required: "Vui lòng nhập đường dẫn của bài giảng",
+                                        pattern: {
+                                            value: /^https?:\/\/.+/,
+                                            message: "Định dạng URL không hợp lệ"
+                                        }
+                                    })}
+                                    className="subject-detail-input"
+                                />
+                                {lectureErrors.file_path && <p className="error-message">{lectureErrors.file_path.message}</p>}
+                            </label>
+
+                            <label>
+                                Thứ tự bài giảng:
+                                <input
+                                    type="number"
+                                    {...regiterLecture("position", { required: "Vui lòng nhập thứ tự bài giảng" })}
+                                    className="subject-detail-input"
+                                />
+                                {lectureErrors.position && <p className="error-message">{lectureErrors.position.message}</p>}
+                            </label>
+
+                            <label>
+                               Chọn chương:
+                                <select
+                                    className="subject-detail-select" {...regiterLecture("chapter_id", { required: "Vui lòng chọn chương của bài giảng" })}
+                                >
+                                    <option value="">-- Chọn chương --</option>
+                                    {dataDocument?.chapters?.map((chapter, index) => (
+                                        <option key={index} value={chapter.id}>{chapter.title}</option>
+                                    ))}
+                                </select>
+                                {lectureErrors.chapter_id && <p className="error-message">{lectureErrors.chapter_id.message}</p>}
+                            </label>
+
+                            <label>
+                                <select className="subject-detail-select" {...regiterLecture("status")}  >
+                                    <option value="public" selected>Hiển thị công khai</option>
+                                    <option value="private">Hiển thị không công khai</option>
+                                </select>
+                            </label>
                             <div className="popup-actions">
                                 <button className="subject-detail-btn green" onClick={formAction === 'create' ? handleSubmitLecture(handleAddLecture)
                                     : handleSubmitLecture(handleUpdateLecture)
