@@ -74,7 +74,10 @@ class SummaryGradeService implements SummaryGradeServiceInterface
         try {
             $data = $request->validated();
             $instance = $this->summaryGradeRepository->findOrFailById($id);
-            switch ($data['score_type']) {
+
+            $scoreType = $data['score_type'] ?? null;
+
+            switch ($scoreType) {
                 case SummaryGradeType::Exam1->value:
                     $instance->exam1_score = $data['score'];
                     break;
@@ -90,7 +93,9 @@ class SummaryGradeService implements SummaryGradeServiceInterface
             $finalScore = $this->calculateService->calculateFinalScore($instance);
             $instance->final_score = $finalScore;
             $instance->evaluation = $this->getEvaluation($finalScore);
-            $instance->note = $this->evaluateAcademicResult($finalScore, $instance->exam1_score, $instance->exam2_score);
+            if ($scoreType != SummaryGradeType::Attendance->value) {
+                $instance->note = $this->evaluateAcademicResult($finalScore, $instance->exam1_score, $instance->exam2_score);
+            }
             $instance->save();
             DB::commit();
             return $instance ?? false;

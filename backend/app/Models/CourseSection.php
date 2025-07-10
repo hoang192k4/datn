@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CourseSection\CourseSectionStatus;
+use App\Enums\CourseSection\GradeStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,12 +17,13 @@ class CourseSection extends Model
 
     protected $table = 'course_sections';
 
-    protected $fillable = ['id', 'name', 'start_date', 'end_date', 'week_total', 'class_id', 'classroom_id', 'teacher_id', 'subject_id', 'semester_id', 'status'];
+    protected $fillable = ['id', 'name', 'start_date', 'end_date', 'week_total', 'class_id', 'classroom_id', 'teacher_id', 'subject_id', 'semester_id', 'status', 'grade_status'];
 
     protected function casts(): array
     {
         return [
             'status' => CourseSectionStatus::class,
+            'grade_status' => GradeStatus::class
         ];
     }
 

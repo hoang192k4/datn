@@ -746,3 +746,8 @@
      pointer-events: none;
      color: #888;
  }
+ .gm-btn:disabled {
+     background: #e0e0e0;
+     color: #999;
+     cursor: not-allowed;
+ }

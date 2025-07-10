@@ -26,6 +26,7 @@ class CourseSectionResource extends JsonResource
             'teacher' => optional($this->teacher)->name,
             'teacher_id' => $this->teacher_id,
             'status' => $this->status,
+            'grade_status' => $this->grade_status,
             'created_at' => format_date($this->created_at),
             'students_total' => $this->students()->where('status', StudentStatus::Active)->count(),
         ];
