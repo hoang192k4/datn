@@ -13,11 +13,12 @@ import { toast, ToastContainer } from 'react-toastify';
 interface FormDataLogIn {
     email: string,
     password: string,
-    role: string
 }
 
-
-const LoginPage = () => {
+interface Props {
+    role: string;
+}
+const LoginPage = ({ role }: Props) => {
     const [errorPassword, setErrorPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const LoginPage = () => {
     const hanldeLogin = async (dataForm: FormDataLogIn) => {
         try {
             setLoading(true);
-            if (dataForm.role === Role.Teacher) {
+            if (role === Role.Teacher) {
                 const data = await teacherLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
                 getFCMToken();
@@ -47,34 +48,27 @@ const LoginPage = () => {
             setLoading(false);
         }
     }
-
+    const roleName = role === Role.Teacher ? 'Giảng Viên' : 'Sinh Viên';
     return (
         <>
             <ToastContainer />
             <section className="login-section">
                 {loading && <Loadding />}
                 <div className="login-card">
-                    <h2>Đăng Nhập</h2>
+                    <h2>Đăng Nhập {roleName}</h2>
                     <form>
                         <div className="form-group">
-                            <label htmlFor="email">Email</label>
+                            <label htmlFor="email">Email {roleName}</label>
                             <input type="email" id="email" {...register("email", { required: "Vui lòng nhập email" })} placeholder="Nhập email..." onChange={() => setErrorPassword(false)} />
                             {errors.email && <p>{errors.email.message}</p>}
                         </div>
                         <div className="form-group">
-                            <label htmlFor="password">Mật Khẩu</label>
+                            <label htmlFor="password">Mật Khẩu {roleName}</label>
                             <input type="password" id="password" {...register("password", {
                                 required: 'Vui lòng nhập passowrd', validate: (value) =>
                                     !/\s/.test(value) || 'Password không được chứa khoảng trắng'
                             })} placeholder="Nhập mật khẩu..." onChange={() => setErrorPassword(false)} />
                             {errors.password ? <p>{errors.password.message}</p> : errorPassword && <p>Email hoặc mật khẩu không đúng</p>}
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="role">Vai Trò</label>
-                            <select id="role" {...register("role")}>
-                                <option value="student">Sinh Viên</option>
-                                <option value="teacher">Giảng Viên</option>
-                            </select>
                         </div>
                         <button type="button" className="login-btn" onClick={validated(hanldeLogin)}>Đăng Nhập</button>
                     </form>
