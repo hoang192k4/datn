@@ -2,6 +2,7 @@
 
 namespace App\Services\CourseSectionGrade;
 
+use App\Enums\CourseSection\GradeStatus;
 use App\Enums\Grade\GradeScoreVisibility;
 use App\Enums\PublicStatus;
 use App\Enums\Student\StudentStatus;
@@ -12,6 +13,7 @@ use App\Repositories\CourseSectionGrade\CourseSectionGradeRepositoryInterface;
 use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use App\Supports\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class CourseSectionGradeService implements CourseSectionGradeServiceInterface
 {
@@ -47,11 +49,15 @@ class CourseSectionGradeService implements CourseSectionGradeServiceInterface
 
     public function addGradeColumn(Request $request)
     {
-
         DB::beginTransaction();
         try {
             $data = $request->validated();
             $courseSectionId = $data['course_section_id'];
+            $courseSection = $this->repository->findOrFailById($courseSectionId);
+            if($courseSection->grade_status !== GradeStatus::DraftExam) {
+                throw ValidationException::withMessages(['error' => 'Không thể thêm cột điểm mới vì điểm kiểm tra đã được nộp.']);
+            }
+
             $gradeTypeId = $data['grade_type_id'];
             $maxAttempt = $this->gradeRepository->getMaxAttemptBycourseSection($courseSectionId, $gradeTypeId);
 
@@ -71,7 +77,9 @@ class CourseSectionGradeService implements CourseSectionGradeServiceInterface
             }
             DB::commit();
             return true;
-        } catch (Exception $e) {
+        }catch (ValidationException $e) {
+            throw $e;
+        }catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             DB::rollBack();
             return false;

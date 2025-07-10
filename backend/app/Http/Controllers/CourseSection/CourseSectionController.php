@@ -10,6 +10,7 @@ use App\Http\Requests\CourseSection\CourseSectionFilterRequest;
 use App\Http\Requests\CourseSection\CourseSectionRequest;
 use App\Http\Requests\CourseSection\CourseSectionStudentRequest;
 use App\Http\Requests\Search\SearchRequest;
+use App\Http\Requests\SummaryGrade\SummaryGradeRequest;
 use App\Http\Resources\CourseSection\CourseSectionResource;
 use App\Http\Resources\CourseSection\CourseSectionResourceCollection;
 use App\Http\Resources\Student\StudentResource;
@@ -160,6 +161,26 @@ class CourseSectionController extends BaseController
             return $this->jsonResponseSuccess(new CourseSectionResource($courseSection));
         } catch (ModelNotFoundByIdException $e) {
             $this->jsonResponseError("Không có lớp học phần theo id $id", 404);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
+        }
+    }
+
+    public function submitGradeStatus(SummaryGradeRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $courseSectionId = $data['course_section_id'];
+            $gradeStatus = $data['grade_status'];
+            $courseSection = $this->repository->findOrFailById($courseSectionId);
+
+            $courseSection->grade_status = $gradeStatus;
+            $courseSection->save();
+
+            return $this->jsonResponseSuccess(new CourseSectionResource($courseSection));
+        } catch (ModelNotFoundByIdException $e) {
+            $this->jsonResponseError("Không có lớp học phần theo id $courseSectionId", 404);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

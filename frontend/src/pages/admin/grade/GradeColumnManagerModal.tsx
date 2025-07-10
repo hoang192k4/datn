@@ -5,6 +5,7 @@ import { deleteGradeColumn } from '../../../services/gradeStudentService';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import './GradeColumnManagerModal.css';
+import { HttpStatus } from '../../../enums/HttpStatus';
 interface GradeItem {
     attempt: number;
     typeName: string;
@@ -59,7 +60,14 @@ const GradeColumnManagerModal: React.FC<Props> = ({
                         ));
                         fetchGradesNoLoading();
                     }
-                } catch (error) {
+                } catch (error: any) {
+                    if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+                        Swal.fire({
+                            title: 'Xóa cột điểm thất bại!',
+                            icon: 'warning',
+                            text: error.response.data.errors.join(', '),
+                        });
+                    }
                 }
             }
         });

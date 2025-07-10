@@ -26,7 +26,7 @@ class StudentGradesExport implements FromArray, WithHeadings, WithStyles, Should
         $this->courseSectionId = $courseSectionId;
         $this->gradeTypes = GradeType::orderBy('id')->get();
         $this->students = app(StudentRepositoryInterface::class)->getStudentsWithGradesAndSummaryByCourseSection($this->courseSectionId);
-        $this->attemptsPerType = $this->calculateMaxAttemptsPerType($this->students);
+        $this->attemptsPerType = $this->calculateAttemptsRangePerType($this->students);
     }
 
 
@@ -55,7 +55,7 @@ class StudentGradesExport implements FromArray, WithHeadings, WithStyles, Should
                     ->where('course_section_id', $this->courseSectionId)
                     ->sortBy('attempt');
                 foreach ($grades as $index => $grade) {
-                    $colName = "{$type->code}_" . ($index + 1); // ví dụ: M_1, 15P_2
+                    $colName = "{$type->code}_" . ($grade->attempt); // ví dụ: M_1, 15P_2
                     $afterStudentCode[$colName] = $grade->score;
                 }
             }
@@ -97,8 +97,8 @@ class StudentGradesExport implements FromArray, WithHeadings, WithStyles, Should
 
         $dynamic = [];
         foreach ($this->gradeTypes as $type) {
-            $maxAttempt = $this->attemptsPerType[$type->id] ?? 0;
-            for ($i = 1; $i <= $maxAttempt; $i++) {
+            $range = $this->attemptsPerType[$type->id] ?? ['min' => 1, 'max' => 0];
+            for ($i = $range['min']; $i <= $range['max']; $i++) {
                 $dynamic[] = "{$type->code}_{$i}";
             }
         }
@@ -132,6 +132,35 @@ class StudentGradesExport implements FromArray, WithHeadings, WithStyles, Should
         }
 
         return $maxAttempts;
+    }
+
+
+    protected function calculateAttemptsRangePerType($students): array
+    {
+        $attemptsRange = [];
+
+        foreach ($students as $student) {
+            foreach ($student->grades as $grade) {
+                $typeId = $grade->grade_type_id;
+
+                if (!isset($attemptsRange[$typeId])) {
+                    $attemptsRange[$typeId] = [];
+                }
+
+                $attemptsRange[$typeId][] = $grade->attempt;
+            }
+        }
+
+        // Trả về mảng dạng: [grade_type_id => ['min' => x, 'max' => y]]
+        foreach ($attemptsRange as $typeId => $attempts) {
+            $unique = array_unique($attempts);
+            $attemptsRange[$typeId] = [
+                'min' => min($unique),
+                'max' => max($unique),
+            ];
+        }
+
+        return $attemptsRange;
     }
 
     public function styles(Worksheet $sheet)

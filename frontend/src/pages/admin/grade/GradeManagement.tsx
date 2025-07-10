@@ -12,6 +12,11 @@ import { SummaryGrade } from '../../../enums/SummaryGrade';
 import { Evaluation } from '../../../enums/Evaluation';
 import { normalizeString } from '../../../utils/utils';
 import GradeImport from './GradeImport';
+import { getGradingStatusLabel, GradeStatus } from '../../../enums/GradeStatus';
+import { submitGradeStatus } from '../../../services/courseSectionService';
+import { useSelector } from 'react-redux';
+import { TeacherRole } from '../../../enums/TeacherRole';
+import UnlockScore from './UnlockScore';
 
 interface GradeType {
   id: number;
@@ -21,6 +26,7 @@ interface GradeType {
 interface CourseSection {
   id?: number;
   name: string;
+  grade_status: string;
   students_total: number;
 }
 
@@ -54,10 +60,11 @@ interface gradeTypeCounts {
   [typeId: number]: any;
 }
 
+
 const GradeManagement: React.FC = () => {
   // State management
   const [currentClassId, setCurrentClassId] = useState<number>(0);
-  const [currentCourseSection, setCurrentCourseSection] = useState<CourseSection>({ id: undefined, name: '', students_total: 0 });
+  const [currentCourseSection, setCurrentCourseSection] = useState<CourseSection>({ id: undefined, name: '', students_total: 0, grade_status: '' });
   const [gradeTypeCounts, setGradeTypeCounts] = useState<gradeTypeCounts>({});
   const [gradeTypeOrder, setGradeTypeOrder] = useState<number[]>([]);
   const [studentData, setStudentData] = useState<Student[]>([]);
@@ -72,13 +79,13 @@ const GradeManagement: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [gradeColumn, setGradeColumn] = useState([]);
   const [isOpenImportModal, setIsOpenImportModal] = useState<boolean>(false);
+  const user = useSelector((state: any) => state.auth.user);
   // const [debouncedKeyword, setDebouncedKeyword] = useState<string>('');
 
   const filteredStudents = studentData.filter((student) =>
     normalizeString(student.name).includes(normalizeString(keyword)) ||
     normalizeString(student.student_code).includes(normalizeString(keyword))
   );
-
   // Initialize data
   useEffect(() => {
     loadGradeTypes();
@@ -109,8 +116,54 @@ const GradeManagement: React.FC = () => {
     }
   };
 
+  const getNextGradeStatus = (gradeStatus: string) => {
+    if (gradeStatus == GradeStatus.DraftExam)
+      return GradeStatus.SubmittedExam
+    if (gradeStatus == GradeStatus.SubmittedExam)
+      return GradeStatus.SubmittedExam1
+    if (gradeStatus == GradeStatus.SubmittedExam1)
+      return GradeStatus.SubmittedExam2
+    return GradeStatus.DraftExam;
+  }
 
+  const handleSubmitGradeStatus = async () => {
+    if (!currentClassId) {
+      toast.warning('Vui lòng chọn lớp học trước khi nộp điểm!');
+      return;
+    }
 
+    if (currentCourseSection.grade_status === GradeStatus.SubmittedExam2) {
+      toast.warning('Điểm đã được nộp, không thể nộp lại!');
+      return;
+    }
+
+    const nextStatus = getNextGradeStatus(currentCourseSection.grade_status);
+    const statusName = getGradingStatusLabel(nextStatus);
+    Swal.fire({
+      title: `Bạn có chắc chắn muốn nộp ${statusName}?`,
+      text: `Sau khi nộp điểm, bạn sẽ không thể chỉnh sửa ${statusName} nữa.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Nộp điểm',
+      cancelButtonText: 'Hủy'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await submitGradeStatus(currentClassId, nextStatus);
+          if (response.status === HttpStatus.SUCCESS) {
+            Swal.fire({
+              title: 'Nộp điểm thành công',
+              icon: 'success',
+            });
+            setCurrentCourseSection(prev => ({ ...prev, grade_status: nextStatus }));
+          }
+        } catch (error) {
+          toast.error('Nộp điểm thất bại');
+        }
+      }
+    });
+
+  }
   const fetchGrades = async (courseSectionId: any, key: string | undefined) => {
     if (!courseSectionId) return;
 
@@ -196,16 +249,6 @@ const GradeManagement: React.FC = () => {
     }
 
     const typeId: number | never = parseInt(selectedGradeType);
-    const currentCount = gradeTypeCounts[typeId] || 0;
-
-    setGradeTypeCounts(prev => ({
-      ...prev,
-      [typeId]: currentCount + 1
-    }));
-
-    if (!gradeTypeOrder.includes(typeId)) {
-      setGradeTypeOrder((prev: any[]) => [...prev, typeId]);
-    }
 
     try {
       const response = await addGradeColumnToCourseSection(currentClassId, typeId);
@@ -214,8 +257,18 @@ const GradeManagement: React.FC = () => {
         fetchGradesNoLoading(currentClassId);
       }
 
-    } catch (e) {
-      toast.warning('Thêm cột điểm mới thất bại');
+    } catch (e: any) {
+      if (e.response && e.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+        console.log(e.response.data.errors);
+        Swal.fire({
+          title: 'Thêm cột điểm mới thất bại!',
+          icon: 'warning',
+          text: e.response.data.errors.join(', '),
+        });
+      }
+      else {
+        toast.warning('Thêm cột điểm mới thất bại');
+      }
     }
 
   };
@@ -371,8 +424,18 @@ const GradeManagement: React.FC = () => {
         fetchGradesNoLoading(currentClassId);
 
       }
-    } catch (e) {
+    } catch (e: any) {
+      if (e.response && e.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+        Swal.fire({
+          title: 'Cập nhật điểm thất bại!',
+          icon: 'warning',
+          text: e.response.data.errors.join(', '),
+        });
+        fetchGradesNoLoading(currentClassId);
+        return;
+      }
       toast.warning("Cập nhật điểm thất bại");
+      fetchGradesNoLoading(currentClassId);
     }
   };
 
@@ -408,7 +471,14 @@ const GradeManagement: React.FC = () => {
         fetchGradesNoLoading(currentClassId);
       }
     } catch (error: any) {
-      if (error.response.status) {
+      if (error.response && error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
+        Swal.fire({
+          title: 'Cập nhật điểm thất bại!',
+          icon: 'warning',
+          text: error.response.data.errors.join(', '),
+        });
+        fetchGradesNoLoading(currentClassId);
+      } else if (error.response.status) {
         toast.error("Cập nhật điểm thất bại!");
       }
     }
@@ -598,6 +668,7 @@ const GradeManagement: React.FC = () => {
   const handleChangeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   }
+
   return (
     <>
       <ToastContainer />
@@ -655,6 +726,8 @@ const GradeManagement: React.FC = () => {
               <button className="gm-btn gm-btn-secondary" style={{ padding: '10px 10px' }} onClick={() => { handleExportExcel(currentClassId) }}>
                 📊 Xuất điểm
               </button>
+
+
             </div>
             <div className="gm-control-group">
               <div className="search-container">
@@ -662,9 +735,17 @@ const GradeManagement: React.FC = () => {
                 <span className="icon">🔍</span>
               </div>
             </div>
-
+            <div className="gm-control-group">
+              {user && (user.role === TeacherRole.FacultyAdmin || user.role === TeacherRole.DepartmentAdmin) ? (
+               
+                <UnlockScore courseSectionId={currentClassId}/>
+              ) : (
+                <button className="gm-btn gm-btn-secondary" style={{ padding: '10px 10px' }} onClick={() => { handleSubmitGradeStatus() }} disabled={currentCourseSection.grade_status === GradeStatus.SubmittedExam2}  >
+                  ✅ Nộp điểm {currentCourseSection.grade_status === GradeStatus.DraftExam ? 'kiểm tra' : currentCourseSection.grade_status === GradeStatus.SubmittedExam ? 'thi lần 1' : currentCourseSection.grade_status === GradeStatus.SubmittedExam1 ? 'thi lần 2' : ''}
+                </button>
+              )}
+            </div>
           </div>
-
           <div className="gm-table-container">
             {gradeLoading ? (
               <div className="gm-loading">
@@ -688,9 +769,9 @@ const GradeManagement: React.FC = () => {
               </table>
             )}
           </div>
-        </section>
+        </section >
       )}
-
+     
       <GradeColumnManagerModal isOpen={isOpenModal} onClose={() => { setIsOpenModal(false) }} gradeColumn={gradeColumn} courseSectionId={currentClassId} fetchGradesNoLoading={() => fetchGradesNoLoading(currentClassId)} />
       <GradeImport isOpen={isOpenImportModal} onClose={() => { setIsOpenImportModal(false) }} onFileSelect={handleFileSelect} />
     </>

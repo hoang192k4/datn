@@ -42,7 +42,6 @@ Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::clas
         Route::get('/{id}', 'getSummaryGradesByStudent'); //api xuất toàn bộ điểm số cho sinh viên
     });
 
-
 Route::controller(App\Http\Controllers\Attendance\AttendanceController::class)
     ->prefix('course-section-attendances')
     ->group(function () {
@@ -157,6 +156,7 @@ Route::controller(App\Http\Controllers\CourseSection\CourseSectionController::cl
         Route::get('/', 'getCourseSectionByFilter'); //api lấy danh sách lọc theo status, key , học kì, năm
         Route::get('/slug', 'getCourseSectionByTeacherSlug'); //api lấy danh sách lớp học phần theo slug
         Route::get('/{id}', 'detail'); //api chi tiết lớp học phần
+        Route::post('/submit-status', 'submitGradeStatus'); //api cập nhật, khóa điểm của lớp
     });
 
 Route::controller(App\Http\Controllers\GradeType\GradeTypeController::class)

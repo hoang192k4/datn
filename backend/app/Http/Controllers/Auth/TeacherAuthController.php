@@ -128,7 +128,7 @@ class TeacherAuthController extends BaseController
 
             $newAccessToken = Auth::guard('teacher')->tokenById($userId);
 
-            return $this->respondWithTokens($newAccessToken, $user);
+            return $this->respondWithAccessToken($newAccessToken, $user);
         } catch (TokenExpiredException $e) {
             return response()->json(['status' => 401, 'message' => 'Refresh token hết hạn']);
         } catch (JWTException $e) {
@@ -230,5 +230,19 @@ class TeacherAuthController extends BaseController
         $result = $this->repository->updateOrCreateById($teacherId, $data);
         if ($result)
             return $this->jsonResponseSuccessNoData('Cập nhật thông tin thành công!');
+    }
+
+    protected function respondWithAccessToken($accessToken, $user)
+    {
+        $accessTtl = (int)config('jwt.ttl'); // phút
+
+        return response()->json([
+            'access_token' => $accessToken,
+            'token_type' => 'bearer',
+            'expires_in' => $accessTtl,
+            'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
+            'user' => new TeacherResource($user),
+        ])
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Lax');
     }
 }

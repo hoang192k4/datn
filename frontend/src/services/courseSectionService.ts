@@ -82,4 +82,12 @@ export const getCourseSectionByTeacherSlug = async (slug: string, page: number =
 export const getCourseSectionDetail = async (id: number) => {
     const response = await api.get(`/course-sections/${id}`);
     return response.data;
-}   
+}
+
+export const submitGradeStatus = async (courseSectionId: number, gradeStatus: string) => {
+    const response = await axiosTeacherInstance.post('/course-sections/submit-status', {
+        course_section_id: courseSectionId,
+        grade_status: gradeStatus
+    });
+    return response.data;
+}
