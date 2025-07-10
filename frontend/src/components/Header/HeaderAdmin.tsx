@@ -29,7 +29,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             setLoadingLogout(true);
             const data = await teacherLogout();
             if (data.status === HttpStatus.SUCCESS) {
-                navigate("/dang-nhap", { replace: true });
+                navigate("/dang-nhap-giang-vien", { replace: true });
                 dispatch(logout());
             }
         } catch (errors) {

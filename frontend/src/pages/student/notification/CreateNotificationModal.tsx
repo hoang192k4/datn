@@ -107,7 +107,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="notification-modal-overlay">
                     <div className="notification-modal-backdrop" onClick={onClose}></div>
-                    <div className="notification-modal-container">
+                    <div className="notification-modal-container create-notification-student">
                         <div className="notification-modal-header">
                             <h3 className="notification-modal-title">
                                 <div className="notification-modal-icon">

@@ -68,6 +68,8 @@ class CourseSectionService implements CourseSectionServiceInterface
         $courseSectionId = $data['course_section_id'];
         $studentId = $data['student_id'];
         $courseSection = $this->courseSectionRepository->find($courseSectionId);
+        $summaryGrade = $courseSection->summary_grades()->where('student_id', $studentId)->first();
+        $summaryGrade->delete();
         $result = $courseSection->students()->detach([$studentId]);
         if (!$result)
             return false;
@@ -80,6 +82,15 @@ class CourseSectionService implements CourseSectionServiceInterface
         $courseSectionId = $data['course_section_id'];
         $studentId = $data['student_id'];
         $courseSection = $this->courseSectionRepository->find($courseSectionId);
+
+        $summaryGrade = [
+            'student_id' => $studentId,
+            'subject_id' => $courseSection->subject_id,
+            'semester_id' => $courseSection->semester_id,
+            'attempt' => $courseSection->summary_grades->first()->attempt,
+            'course_section_id' => $courseSectionId
+        ];
+        $this->summaryGradeRepository->inserts($summaryGrade);
         $result = $courseSection->students()->syncWithoutDetaching([$studentId]);
         if (!$result)
             return false;

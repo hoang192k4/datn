@@ -82,9 +82,7 @@
         font-size: 13px;
     }
 
-    .nav-links {
-        padding-bottom: 6px !important;
-    }
+
 
     /* responsive class */
     .buttons {
@@ -204,8 +202,8 @@
         padding: 5px 20px !important;
     }
 
-    .login-section {
-        margin-top: 70px !important;
+    .nav-links {
+        padding-bottom: 6px !important;
     }
 
     .logo {
@@ -255,5 +253,9 @@
 
     .main-student {
         padding: 8px 12px !important;
+    }
+
+    .dropdown-login-menu {
+        left: 0 !important;
     }
 }

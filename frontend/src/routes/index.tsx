@@ -22,8 +22,17 @@ const AppRoutes = () => {
             {/* Route public */}
             <Route element={<MainLayout />}>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/dang-nhap" element={isAuthencation && role === null ? <Navigate to="/sinh-vien" replace /> :
-                    isAuthencation && role !== null ? <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> : < LoginPage />} />
+                
+                {/* Đăng nhập dành cho sinh viên */}
+                <Route path="dang-nhap-sinh-vien" element={isAuthencation && role === null ?
+                    <Navigate to="/sinh-vien" replace /> :
+                    <LoginPage role="student" />} />
+
+                {/* Đăng nhập giảng viên */}
+                <Route path="dang-nhap-giang-vien" element={isAuthencation && role !== null ?
+                    <Navigate to={slugTeacher !== null ? `/${slugTeacher}` : '/giang-vien'} replace /> :
+                    <LoginPage role="teacher" />} />
+
                 <Route path="/:slug" element={<TeacherPage />} />
                 <Route path="/:slug/tai-lieu/:id" element={<DocumentPage />} />
                 <Route path="/:slug/lop-hoc/:id" element={<ClassPage />} />
@@ -34,7 +43,9 @@ const AppRoutes = () => {
             <Route path="/sinh-vien" element={<StudentLayout />}>
                 {
                     StudentRoute.map((route, index) => (
-                        <Route key={index} path={route.path} element={isAuthencation && role === null ? route.element : <Navigate to="/dang-nhap" replace />}></Route>
+                        <Route key={index} path={route.path} element={isAuthencation && role === null ? route.element :
+                            <Navigate to="/dang-nhap-sinh-vien" replace />}>
+                        </Route>
                     ))
                 }
             </Route>
@@ -45,7 +56,7 @@ const AppRoutes = () => {
                     TeacherRoute.map((route, index) => {
                         let element;
                         if (!isAuthencation) {
-                            element = <Navigate to="/dang-nhap" replace />;
+                            element = <Navigate to="/dang-nhap-giang-vien" replace />;
                         } else if (route.roles && !route.roles.includes(role)) {
                             element = <Navigate to="/403" replace />;
                         } else {

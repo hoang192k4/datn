@@ -239,7 +239,11 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.3s ease-in-out;
 }
-
+.subject-popup > label{
+    font-size: 14px;
+    margin-top: 14px;
+    display: block;
+}
 .subject-popup h3 {
     font-size: 20px;
     color: #1e3a8a;
@@ -249,7 +253,7 @@
 .subject-detail-select {
     width: 100%;
     padding: 10px 12px;
-    margin-top: 16px;
+    margin-top: 4px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;

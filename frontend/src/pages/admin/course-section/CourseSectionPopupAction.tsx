@@ -248,7 +248,7 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
 
 
                         <div className="form-modal-actions">
-                            <button type="button" className="btn-save" onClick={handleSubmit(actionCourseSection === 'create' ? hanldeCreateCourseSection : handleUpdateCourseSection)}>
+                            <button type="button" className="btn-save button-soft" onClick={handleSubmit(actionCourseSection === 'create' ? hanldeCreateCourseSection : handleUpdateCourseSection)}>
                                 {actionCourseSection === 'create' ? 'Thêm' : 'Cập nhật'}
                             </button>
                             <button type="button" className="btn-cancel" onClick={() => { setActionCourseSection('') }}>Đóng</button>
