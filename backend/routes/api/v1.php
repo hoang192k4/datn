@@ -264,5 +264,5 @@ Route::controller(App\Http\Controllers\Classroom\ClassroomController::class)
 Route::controller(App\Http\Controllers\Statistics\StatisticsController::class)
 ->prefix('statistics')
 ->group(function (){
-    Route::get('/admin', 'statisticsForAdmin');
+    Route::get('/', 'statistics');
 });
