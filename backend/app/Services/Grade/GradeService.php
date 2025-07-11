@@ -67,4 +67,11 @@ class GradeService implements GradeServiceInterface
         $slug = generate_slug($courseSection->name, '_');
         return "bang_diem_" . $slug . ".xlsx";
     }
+
+    public function getFileNameExportGradeTemplate($courseSectionId): string
+    {
+        $courseSection = $this->courseSectionRepository->find($courseSectionId);
+        $slug = generate_slug($courseSection->name, '_');
+        return "mau_bang_diem_" . $slug . ".xlsx";
+    }
 }

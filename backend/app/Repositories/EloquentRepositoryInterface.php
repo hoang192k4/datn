@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface EloquentRepositoryInterface
 {
-
+    public function countWithConditions(array $conditions); //đếm bản ghi với mảng điều kiện
     public function create(array $data): object|bool; //tạo instance mới
     public function delete($id): bool; //xóa vĩnh viễn instance theo id
     public function deleteByConditions(array $conditions): bool; //xóa vĩnh viễn nhiều instance theo điều kiện

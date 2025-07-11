@@ -13,7 +13,6 @@ const UnlockScore: React.FC<UnlockScoreProps> = ({ courseSectionId }) => {
   const [checked, setChecked] = useState<string>('');
 
   const ref = useRef<HTMLDivElement>(null);
-  console.log('checked:', checked);
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -24,7 +23,9 @@ const UnlockScore: React.FC<UnlockScoreProps> = ({ courseSectionId }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+ 
   const handleClick = async () => {
+
     try {
       const response = await submitGradeStatus(courseSectionId, checked);
       if (response.status === HttpStatus.SUCCESS) {

@@ -16,6 +16,7 @@ use App\Enums\CourseSection\GradeStatus;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Grade\GradeRequest;
 use App\Http\Resources\Grade\GradeResource;
+use App\Exports\StudentGradesTemplateExport;
 use App\Services\Calculate\CalculateService;
 use App\Services\Grade\GradeServiceInterface;
 use App\Exceptions\ModelNotFoundByIdException;
@@ -27,6 +28,7 @@ use App\Repositories\Grade\GradeRepositoryInterface;
 use App\Http\Resources\Grade\GradeResourceCollection;
 use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use App\Http\Requests\CourseSection\CourseSectionGradeRequest;
+use App\Http\Requests\Grade\GradeExportRequest;
 use App\Repositories\CourseSection\CourseSectionRepositoryInterface;
 use App\Services\CourseSectionGrade\CourseSectionGradeServiceInterface;
 use App\Repositories\CourseSectionGrade\CourseSectionGradeRepositoryInterface;
@@ -50,8 +52,8 @@ class GradeController extends BaseController
         $this->gradeService = $gradeService;
         $this->courseSectionRepository = $courseSectionRepository;
         $this->gradeRepository = $gradeRepository;
-        $this->middleware('auth:teacher,student');
-        $this->middleware('role:subject_teacher,homeroom_teacher,faculty_admin,deparment_admin')->except(['getGradesByCourseSection']);
+        $this->middleware('auth:teacher,student')->except('exportGradeTemplate');
+        $this->middleware('role:subject_teacher,homeroom_teacher,faculty_admin,deparment_admin')->except(['getGradesByCourseSection', 'exportGradeTemplate']);
     }
 
     public function getGradesByCourseSection(CourseSectionGradeRequest $request): JsonResponse
@@ -166,6 +168,23 @@ class GradeController extends BaseController
         $courseSection = $this->courseSectionRepository->findOrFailById($courseSectionId);
         if ($courseSection->grade_status !== GradeStatus::DraftExam) {
             throw ValidationException::withMessages(['Không thể cập nhật điểm vì điểm kiểm tra đã được nộp.']);
+        }
+    }
+
+
+    public function exportGradeTemplate(GradeExportRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            $courseSectionId = $data['course_section_id'];
+            $selectedColumns = $data['selected_columns'] ?? [];
+
+
+            $fileName = $this->gradeService->getFileNameExportGradeTemplate($courseSectionId);
+            return Excel::download(new StudentGradesTemplateExport($courseSectionId, $selectedColumns), $fileName);
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống', 500);
         }
     }
 }

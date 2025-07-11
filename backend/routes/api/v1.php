@@ -33,6 +33,7 @@ Route::controller(App\Http\Controllers\Grade\GradeController::class)
         Route::delete('/', 'deleteGradeColumn'); //api xóa cột điểm (xóa tất cả điểm trong cột)
         Route::get('/export', 'export');
         Route::post('/import', 'import');
+        Route::post('/export-template', 'exportGradeTemplate'); //api xuất mẫu điểm sinh viên
     });
 
 Route::controller(App\Http\Controllers\SummaryGrade\SummaryGradeController::class)
@@ -258,3 +259,10 @@ Route::controller(App\Http\Controllers\Classroom\ClassroomController::class)
     ->group(function () {
         Route::get('/', 'index');
     });
+
+
+Route::controller(App\Http\Controllers\Statistics\StatisticsController::class)
+->prefix('statistics')
+->group(function (){
+    Route::get('/', 'statistics');
+});

@@ -99,7 +99,7 @@ class StudentGradesExport implements FromArray, WithHeadings, WithStyles, Should
         foreach ($this->gradeTypes as $type) {
             $range = $this->attemptsPerType[$type->id] ?? ['min' => 1, 'max' => 0];
             for ($i = $range['min']; $i <= $range['max']; $i++) {
-                $dynamic[] = "{$type->code}_{$i}";
+                $dynamic[] = "{$type->name} - Lần {$i}";
             }
         }
 

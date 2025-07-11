@@ -14,6 +14,7 @@ class GradeTypeResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'weight' => $this->weight,
+            'code' => $this->code,
         ];
     }
 }

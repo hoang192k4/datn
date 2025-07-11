@@ -215,4 +215,13 @@ abstract class EloquentRepository implements EloquentRepositoryInterface
 
         return $query->delete();
     }
+
+    public function countWithConditions(array $conditions)
+    {
+        $query = $this->model->query();
+        foreach ($conditions as $key => $value) {
+            $query->where($key, $value);
+        }
+        return $query->count();
+    }
 }
