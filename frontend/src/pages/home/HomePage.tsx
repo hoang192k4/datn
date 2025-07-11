@@ -1,5 +1,5 @@
 import './HomePage.css';
-import TearcherItem from '../../components/ui/BoxItem';
+import TearcherItem from '../../components/ui/TeacherItem';
 import { useCallback, useEffect, useState } from 'react';
 import type { TeacherList } from '../../types/teacher';
 import { getAllTeachers } from '../../services/teacherService';
@@ -51,8 +51,8 @@ const HomePage = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [hasMore, loading]);
 
-
     const filterTeachers = teachers.filter((teacher) => { return teacher.role !== TeacherRole.FacultyAdmin || teacher.role !== TeacherRole.FacultyAdmin });
+   
     return (
         <>
             <section className="hero">
@@ -64,7 +64,9 @@ const HomePage = () => {
                 <h3>Danh Sách Giảng Viên</h3>
                 <div className="card-grid">
                     {filterTeachers.map((teacher) => (
-                        <TearcherItem key={teacher.id} href={teacher.slug}>{teacher.name}</TearcherItem>
+                        <TearcherItem key={teacher.id} href={teacher.slug} 
+                        teacher_email={teacher.email}
+                        subjects={teacher.subjects} teacher_name={teacher.name}/>
                     ))}
                 </div>
             </section>

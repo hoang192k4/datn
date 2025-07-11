@@ -55,6 +55,7 @@
     margin-top: 8px;
     transition: all 0.3s linear;
 }
+
 .btn-attendance-right {
     margin-left: 16px;
 }
@@ -133,7 +134,7 @@
     font-size: 30px;
     color: #1e3a8a;
     transition: all 0.3s ease;
-    margin-right: 20px;
+    margin-right: 8px;
 }
 
 .attendance-form-wrapper-left>span>svg:hover {
@@ -336,10 +337,12 @@
     transition: all 0.3s linear;
     cursor: pointer;
 }
+
 .btn-attendance-cancel:hover {
     background-color: #999;
     color: white;
 }
+
 .popup-export-import select {
     background-color: white;
     color: black;
@@ -350,6 +353,7 @@
     border: 1px solid #ccc;
     outline: none;
 }
+
 .popup-export-import select:focus {
     border: 2px solid #2684ff;
 }
@@ -362,4 +366,56 @@
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 5px;
+}
+
+.select-all-btn {
+    position: relative;
+    background: #1e3a8a;
+    /* xanh dương đậm */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+}
+
+.select-all-btn:hover {
+    background: #1d4ed8;
+    /* xanh dương sáng hơn */
+}
+
+.select-all-dropdown {
+    text-align: left;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    min-width: 160px;
+    padding: 4px 0;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+    color: #333;
+}
+
+.select-all-btn:hover .select-all-dropdown {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.select-all-dropdown li {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.select-all-dropdown li:hover {
+    background: #f3f4f6;
+    /* xám nhạt khi hover */
 }

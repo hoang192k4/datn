@@ -6,7 +6,7 @@ import type { StudentAttendace, AttendanceForm, SessionAttendance } from "../../
 import { useForm } from "react-hook-form";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import Swal from "sweetalert2";
-import type { AttendanceStatus } from "../../../enums/AttendanceStatus";
+import { AttendanceStatus } from "../../../enums/AttendanceStatus";
 import { FaSearch } from "react-icons/fa";
 import { getListStudentByCourseSection } from "../../../services/courseSectionService";
 import { normalizeString } from "../../../utils/searchUtil";
@@ -35,10 +35,11 @@ interface AttendancesSession {
 const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSession }: AttendanceProps) => {
     const [loadingAttendanceCreate, setLoadingAttendanceCreate] = useState(false);
     const [listStudent, setListStudent] = useState<StudentAttendace[]>([]);
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<AttendanceForm>();
+    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<AttendanceForm>();
     const [listAttendances, setListAttendances] = useState<AttendancesSession>();
     const [defaultSeclect, setDefaultSelect] = useState<number>();
     const [searchKeywordUpdateCreate, setSearchKeywordUpdateCreate] = useState<string>('');
+
 
     const feactListStudent = async () => {
         try {
@@ -78,18 +79,34 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
         }
     }
     const handleSelectSession = async (sessionId: number) => {
-        if (action === 'update') {
-            try {
-                setLoadingAttendanceCreate(true);
-                const res = await getListAttendancesBySession(sessionId);
-                setListAttendances(res.data);
-                setDefaultSelect(sessionId);
-                reset(res.data);
-            } catch (errors) {
-                console.log(errors);
-            } finally { setLoadingAttendanceCreate(false); }
+        if (sessionId) {
+            if (action === 'update') {
+                try {
+                    setLoadingAttendanceCreate(true);
+                    const res = await getListAttendancesBySession(sessionId);
+                    setListAttendances(res.data);
+                    setDefaultSelect(sessionId);
+                    reset(res.data);
+                } catch (errors) {
+                    console.log(errors);
+                } finally { setLoadingAttendanceCreate(false); }
+            }
         }
     }
+
+    const handleSelectedAdll = (status: AttendanceStatus) => {
+        listStudent.forEach((_student, index) => {
+            setValue(`attendances.${index}.status`, status, { shouldValidate: true });
+        });
+    }
+
+    const listStudentFilter = listStudent?.some(student => normalizeString(student.name).includes(normalizeString(searchKeywordUpdateCreate)) ||
+        student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()))
+
+
+    const listStudentAttendancesFilter = listAttendances?.attendances?.some(student => student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()) ||
+        normalizeString(student.student_name).includes(normalizeString(searchKeywordUpdateCreate)))
+
     return (
         <>
 
@@ -120,75 +137,92 @@ const AttendanceCreate = ({ classId, currentClassName, setAction, action, listSe
                         </select>
                         {errors.session_id && <p className="error-message">{errors.session_id.message}</p>}
                     </div>
+                    {action === 'create' &&
+                        <button className="select-all-btn">Chọn tất cả
+                            <ul className="select-all-dropdown">
+                                <li onClick={() => handleSelectedAdll(AttendanceStatus.Present)}>✅ Có mặt</li>
+                                <li onClick={() => handleSelectedAdll(AttendanceStatus.Late)}>⚠️ Đi trễ</li>
+                                <li onClick={() => handleSelectedAdll(AttendanceStatus.Excused_Absent)}>📝 Vắng có phép</li>
+                                <li onClick={() => handleSelectedAdll(AttendanceStatus.Absent)}>❌ Vắng không phép</li>
+                            </ul>
+                        </button>
+                    }
                 </div>
                 {loadingAttendanceCreate ? <Loading /> :
-                    <div id="attendance-form">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>MSSV</th>
-                                    <th>Name</th>
-                                    <th>✅ Có mặt</th>
-                                    <th>⚠️ Đi trễ</th>
-                                    <th>📝 Vắng có phép</th>
-                                    <th>❌ Vắng</th>
-                                    <th>Ghi chú</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {action === 'create' ?
-                                    listStudent && listStudent?.filter(student => normalizeString(student.name).includes(normalizeString(searchKeywordUpdateCreate)) ||
-                                        student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()))
-                                        ?.map((student, index) => (
-                                            <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
-                                                <td>{student.student_code}</td>
-                                                <td>{student.name}<input type="hidden" {...register(`attendances.${index}.student_id`, {
-                                                    required: "Chọn trạng thái điểm danh",
-                                                })} value={student.id} /></td>
-                                                <td>
-                                                    <input type="radio"
-                                                        {...register(`attendances.${index}.status`, {
-                                                            required: 'Vui lòng chọn trạng thái',
-                                                        })} value="present" />
-                                                </td>
-                                                <td><input type="radio" {...register(`attendances.${index}.status`)} value="late" /></td>
-                                                <td ><input type="radio" {...register(`attendances.${index}.status`)} value="excused_absent" /></td>
-                                                <td ><input type="radio" {...register(`attendances.${index}.status`)} value="absent" /></td>
-                                                <td><textarea {...register(`attendances.${index}.note`)} placeholder="Ghi chú..."></textarea></td>
-                                            </tr>
-                                        )) :
-                                    action === 'update' &&
-                                    listAttendances?.attendances?.filter(student => student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase()) ||
-                                        normalizeString(student.student_name).includes(normalizeString(searchKeywordUpdateCreate)))
-                                        .map((attendance, index) => (
-                                            <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
-                                                <td>{attendance.student_code}</td>
-                                                <td>{attendance.student_name}<input type="hidden" {...register(`attendances.${index}.student_id`, {
-                                                    required: "Chọn trạng thái điểm danh",
-                                                })} value={attendance.student_id} /></td>
-                                                <td>
-                                                    <input type="radio"
-                                                        {...register(`attendances.${index}.status`, {
-                                                            required: 'Vui lòng chọn trạng thái',
-                                                        })} value="present" />
-                                                </td>
-                                                <td><input type="radio" {...register(`attendances.${index}.status`)} value="late" /></td>
-                                                <td ><input type="radio" {...register(`attendances.${index}.status`)} value="excused_absent" /></td>
-                                                <td ><input type="radio" {...register(`attendances.${index}.status`)} value="absent" /></td>
-                                                <td><textarea {...register(`attendances.${index}.note`)} placeholder="Ghi chú..."></textarea></td>
-                                            </tr>
-                                        ))}
-                                {Array.isArray(listAttendances?.attendances) && listAttendances.attendances.length === 0 && (
+                    <>
+                        <div id="attendance-form">
+                            <table>
+                                <thead>
                                     <tr>
-                                        <td colSpan={7} style={{ textAlign: 'center' }}>Chưa có danh sách điểm danh</td>
+                                        <th>MSSV</th>
+                                        <th>Name</th>
+                                        <th>✅ Có mặt</th>
+                                        <th>⚠️ Đi trễ</th>
+                                        <th>📝 Vắng có phép</th>
+                                        <th>❌ Vắng</th>
+                                        <th>Ghi chú</th>
                                     </tr>
-                                )}
+                                </thead>
+                                <tbody>
+                                    {action === 'create' ?
+                                        listStudent && listStudentFilter ? listStudent?.map((student, index) => {
+                                            const isVisible = normalizeString(student.name).includes(normalizeString(searchKeywordUpdateCreate)) ||
+                                                student.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase());
 
+                                             if (!isVisible) return null; 
+                                            return (
+                                                <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
+                                                    <td>{student.student_code}</td>
+                                                    <td>{student.name}<input type="hidden" {...register(`attendances.${index}.student_id`)} value={student.id} /></td>
+                                                    <td>
+                                                        <input type="radio"
+                                                            {...register(`attendances.${index}.status`, {
+                                                                required: 'Vui lòng chọn trạng thái',
+                                                            })} value="present" />
+                                                    </td>
+                                                    <td><input type="radio" {...register(`attendances.${index}.status`)} value="late" /></td>
+                                                    <td><input type="radio" {...register(`attendances.${index}.status`)} value="excused_absent" /></td>
+                                                    <td><input type="radio" {...register(`attendances.${index}.status`)} value="absent" /></td>
+                                                    <td><textarea {...register(`attendances.${index}.note`)} placeholder="Ghi chú..."></textarea></td>
+                                                </tr>
+                                            )
+                                        }) : <tr><td colSpan={7} style={{ textAlign: 'center' }}>Không tìm thấy sinh viên phù hợp</td></tr>
+                                        :
+                                        action === 'update' && listAttendances ? (listAttendances?.attendances &&
+                                            listAttendances?.attendances?.length > 0 ? (listStudentAttendancesFilter ?
+                                                listAttendances?.attendances?.map((attendance, index) => {
 
-                            </tbody>
-                        </table>
+                                                    const isVisible = normalizeString(attendance.student_name).includes(normalizeString(searchKeywordUpdateCreate)) ||
+                                                        attendance.student_code.toLowerCase().includes(searchKeywordUpdateCreate.toLowerCase());
+
+                                                    if (!isVisible) return null; // bỏ render nếu không match filter
+                                                    return (
+                                                        <tr key={index} className={errors.attendances?.[index]?.status ? 'error-row' : ''}>
+                                                            <td>{attendance.student_code}</td>
+                                                            <td>{attendance.student_name}<input type="hidden" {...register(`attendances.${index}.student_id`, {
+                                                                required: "Chọn trạng thái điểm danh",
+                                                            })} value={attendance.student_id} /></td>
+                                                            <td>
+                                                                <input type="radio"
+                                                                    {...register(`attendances.${index}.status`, {
+                                                                        required: 'Vui lòng chọn trạng thái',
+                                                                    })} value="present" />
+                                                            </td>
+                                                            <td><input type="radio" {...register(`attendances.${index}.status`)} value="late" /></td>
+                                                            <td ><input type="radio" {...register(`attendances.${index}.status`)} value="excused_absent" /></td>
+                                                            <td ><input type="radio" {...register(`attendances.${index}.status`)} value="absent" /></td>
+                                                            <td><textarea {...register(`attendances.${index}.note`)} placeholder="Ghi chú..."></textarea></td>
+                                                        </tr>
+                                                    )
+                                                }) : <tr><td colSpan={7} style={{ textAlign: 'center' }}>Không tìm thấy sinh viên phù hợp</td></tr>
+                                        ) : <tr><td colSpan={7} style={{ textAlign: 'center' }}>Chưa có danh sách điểm danh</td></tr>
+                                        ) : <tr><td colSpan={7} style={{ textAlign: 'center' }}>Vui lòng chọn buổi điểm danh cần chỉnh sửa</td></tr>}
+
+                                </tbody>
+                            </table>
+                        </div>
                         <button type="button" onClick={handleSubmit(handleSubmitAttendance)} >Gửi điểm danh</button>
-                    </div>
+                    </>
                 }
 
             </div >

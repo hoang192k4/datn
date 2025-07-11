@@ -1,15 +1,13 @@
 import React, { useMemo } from 'react';
 import type { StudentGrade } from '../../types/student';
-import './GradePage.css'
-import type { CourseSection } from '../../types/courseSecion';
+import './GradePage.css';
 
 
 interface Props {
     students: StudentGrade[];
-    courseSection: CourseSection | null;
 }
 
-const GradePage: React.FC<Props> = ({ students, courseSection }) => {
+const GradePage: React.FC<Props> = ({ students }) => {
 
     const gradeColumns = useMemo(() => {
         const columns: string[] = [];
@@ -28,8 +26,7 @@ const GradePage: React.FC<Props> = ({ students, courseSection }) => {
     }, [students]);
 
     return (
-        <div className="grade-page container">
-            <h1>Danh sách điểm - {courseSection?.name}</h1>
+        <div className="container-home-page-course-section">
             <div className="table-wrapper">
                 <table className="student-grade">
                     <thead>
