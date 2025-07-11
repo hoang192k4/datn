@@ -38,8 +38,12 @@ const ExportTemplateModal: React.FC<Props> = ({ open, onClose, gradeData, course
             const response = await exportGradeTemplate(courseSectionId, selectedColumns);
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
+            const disposition = response.headers['content-disposition'];
+            const match = disposition && disposition.match(/filename="?(.+)"?/);
+            const filename = match ? match[1] : 'export.xlsx';
+
             link.href = url;
-            link.setAttribute('download', 'grade_template.xlsx');
+            link.setAttribute('download', filename);
             document.body.appendChild(link);
             link.click();
         } catch (error) {

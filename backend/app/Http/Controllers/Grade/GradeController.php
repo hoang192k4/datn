@@ -180,8 +180,8 @@ class GradeController extends BaseController
             $selectedColumns = $data['selected_columns'] ?? [];
 
 
-            //$fileName = $this->gradeService->getFileNameExportGradeTemplate($courseSectionId);
-            return Excel::download(new StudentGradesTemplateExport($courseSectionId, $selectedColumns), 'template-diem-sinh-vien.xlsx');
+            $fileName = $this->gradeService->getFileNameExportGradeTemplate($courseSectionId);
+            return Excel::download(new StudentGradesTemplateExport($courseSectionId, $selectedColumns), $fileName);
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống', 500);

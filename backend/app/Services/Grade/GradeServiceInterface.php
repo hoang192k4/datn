@@ -9,4 +9,5 @@ interface GradeServiceInterface
     public function updateOrCreate(Request $request, $id): object|bool;
     public function create(Request $request): object|bool;
      public function getFileNameExportGrade($courseSectionId):string;
+     public function getFileNameExportGradeTemplate($courseSectionId):string;
 }

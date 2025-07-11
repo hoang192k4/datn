@@ -259,3 +259,10 @@ Route::controller(App\Http\Controllers\Classroom\ClassroomController::class)
     ->group(function () {
         Route::get('/', 'index');
     });
+
+
+Route::controller(App\Http\Controllers\Statistics\StatisticsController::class)
+->prefix('statistics')
+->group(function (){
+    Route::get('/admin', 'statisticsForAdmin');
+});

@@ -45,10 +45,12 @@ class StudentGradesTemplateExport implements FromArray, WithHeadings, WithStyles
 
         return $this->students->filter(function ($student) use ($isExportingExam2) {
 
-            if ($isExportingExam2 && $student->summary_grades->where('course_section_id', $this->courseSectionId)->first()->note == SummayryGradeEvaluation::RETEST) {
-                return true;
-            } else {
-                return false;
+            if ($isExportingExam2) {
+                if ($isExportingExam2 && $student->summary_grades->where('course_section_id', $this->courseSectionId)->first()->note == SummayryGradeEvaluation::RETEST) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
             return true;
         })->values()->map(function ($student, $index) {
