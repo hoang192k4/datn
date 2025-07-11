@@ -3,8 +3,10 @@
 namespace App\Exports;
 
 use App\Enums\Evaluation;
+use App\Enums\SummaryGrade\SummayryGradeEvaluation;
 use App\Models\GradeType;
 use App\Repositories\Student\StudentRepositoryInterface;
+use App\Supports\Log;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -18,7 +20,7 @@ use Mockery\Loader\EvalLoader;
 
 class StudentGradesTemplateExport implements FromArray, WithHeadings, WithStyles, ShouldAutoSize, WithEvents
 {
-
+    use Log;
     protected $courseSectionId;
     protected $gradeTypes;
     protected $students;
@@ -39,7 +41,17 @@ class StudentGradesTemplateExport implements FromArray, WithHeadings, WithStyles
 
     public function array(): array
     {
-        return $this->students->map(function ($student, $index) {
+        $isExportingExam2 = in_array('exam2_score', $this->selectedColumns);
+
+        return $this->students->filter(function ($student) use ($isExportingExam2) {
+
+            if ($isExportingExam2 && $student->summary_grades->where('course_section_id', $this->courseSectionId)->first()->note == SummayryGradeEvaluation::RETEST) {
+                return true;
+            } else {
+                return false;
+            }
+            return true;
+        })->values()->map(function ($student, $index) {
             $row = [
                 'STT' => $index + 1,
                 'MSSV' => $student->student_code,

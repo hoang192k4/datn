@@ -16,6 +16,7 @@ use App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface;
 use App\Supports\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class SummaryGradeService implements SummaryGradeServiceInterface
 {
@@ -81,7 +82,11 @@ class SummaryGradeService implements SummaryGradeServiceInterface
                 case SummaryGradeType::Exam1->value:
                     $instance->exam1_score = $data['score'];
                     break;
-                case SummaryGradeType::Exam2->value:
+                case SummaryGradeType::Exam2->value: {
+                        if ($instance->exam1_score && is_null($instance->exam2_score) && $instance->note == SummayryGradeEvaluation::PASS) {
+                            throw ValidationException::withMessages(['Không thể cập nhật điểm thi lần 2 của sinh viên này khi điểm thi lần 1 đã đạt']);
+                        }
+                    }
                     $instance->exam2_score = $data['score'];
                     break;
                 case SummaryGradeType::Attendance->value:
@@ -99,7 +104,16 @@ class SummaryGradeService implements SummaryGradeServiceInterface
             $instance->save();
             DB::commit();
             return $instance ?? false;
-        } catch (Exception $e) {
+        }catch(ValidationException $e) {
+            DB::rollBack();
+            throw $e; // Re-throw to handle it in the controller
+        } catch (ModelNotFoundByIdException $e) {
+            $this->logError($e->getMessage(), $e);
+            DB::rollBack();
+            return false;
+        }
+
+        catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             DB::rollBack();
             return false;
@@ -151,5 +165,38 @@ class SummaryGradeService implements SummaryGradeServiceInterface
         if (!$summaryGrades)
             return false;
         return $summaryGrades;
+    }
+
+    public function updateNote($courseSectionId, $studentId): object|bool
+    {
+        $student = $this->studentRepository->findOrFailById($studentId);
+        $summaryGrade = $this->summaryGradeRepository->firstOrCreate(['student_id' => $student->id, 'course_section_id' => $courseSectionId]);
+
+        if ($summaryGrade->exam1_score != null || $summaryGrade->exam2_score != null) {
+            $note = $this->evaluateAcademicResult($summaryGrade->final_score, $summaryGrade->exam1_score, $summaryGrade->exam2_score);
+            $summaryGrade->note = $note;
+            $summaryGrade->save();
+            return true;
+        }
+        return false;
+    }
+
+
+    public function updateNoteInCourseSection($courseSectionId): bool
+    {
+        try {
+            $courseSection = $this->courseSectionRepository->findOrFailById($courseSectionId);
+            $students = $courseSection->students->where('status', StudentStatus::Active);
+            foreach ($students as $student) {
+                $this->updateNote($courseSectionId, $student->id);
+            }
+            return true;
+        } catch (ModelNotFoundByIdException $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return false;
+        }
     }
 }

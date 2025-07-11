@@ -124,5 +124,6 @@ class StudentGradesImport implements ToCollection, WithHeadingRow
         }
 
         $this->summaryGradeService->updateSummaryGrades($this->courseSectionId);
+        $this->summaryGradeService->updateNoteInCourseSection($this->courseSectionId);
     }
 }
