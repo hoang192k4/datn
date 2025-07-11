@@ -58,8 +58,7 @@ const AttendancePage = (props: any) => {
     }
 
     return (
-        <><div className="attendance-page container">
-            <h1>Danh sách điểm danh - {props.courseSecion?.name}</h1>
+        <div className="attendance-page container-home-page-course-section">
             <div style={{ marginBottom: '15px', fontSize: '16px' }}>
                 ✅ <span className="present">Có mặt</span> &nbsp;&nbsp;
                 ⚠️ <span className="late">Trễ</span> &nbsp;&nbsp;
@@ -107,8 +106,6 @@ const AttendancePage = (props: any) => {
                 </tbody>
             </table>
         </div>
-
-        </>
     )
 }
 

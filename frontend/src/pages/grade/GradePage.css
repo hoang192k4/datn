@@ -1,5 +1,8 @@
-.grade-page table tbody tr td {
-    text-align: center;
+.container-home-page-course-section {
+    margin-bottom: 1rem;
+    min-height: 500px;
+    padding: 10px 20px;
+    border-radius: 10px;
 }
 
 

@@ -17,6 +17,7 @@ const ClassPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [courseSection, setCourseSection] = useState<CourseSection>();
+    const [activeTab, setActiveTab] = useState<'score' | 'attendance'>('attendance');
 
     const fetchStudentGrades = async (id: number) => {
         try {
@@ -54,9 +55,32 @@ const ClassPage = () => {
     }
     return (
         <>
-            {loading ? <Loading /> : (<>
-                <GradePage students={studentGrades} courseSection={courseSection ??  null} />
-                <AttendancePage id={id} courseSecion={courseSection ?? null} /> </>)}
+            {loading ? <Loading /> :
+
+                <div className="sa-form-container container">
+                    <h1 className="sa-title">Lớp {courseSection?.name}</h1>
+                    <div className="sa-tabs">
+                        <button
+                            className={`sa-tab ${activeTab === 'score' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('score')}>
+                            Bảng điểm
+                        </button>
+                        <button
+                            className={`sa-tab ${activeTab === 'attendance' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('attendance')}>
+                            Điểm danh
+                        </button>
+                    </div>
+
+                    <div className="sa-content">
+                        <h2>
+                            {activeTab === 'score' ? 'Danh sách bảng điểm' : 'Danh sách điểm danh'}
+                        </h2>
+                        {activeTab === 'score' ? <GradePage students={studentGrades} /> :
+                            <AttendancePage id={id} />}
+                    </div>
+                </div>
+            }
 
         </>
     )

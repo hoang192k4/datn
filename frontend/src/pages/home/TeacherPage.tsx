@@ -126,7 +126,7 @@ const TeacherPage = () => {
                                 <div className="card-grid">
                                     {courseSections.length > 0 ? courseSections?.map((courseSection) => (
                                         <BoxItem href={'lop-hoc/' + courseSection.id}> {courseSection.name}</BoxItem>
-                                    )) : <p> Không có danh sách lớpp học nào</p>}
+                                    )) : <p> Không có danh sách lớp học nào</p>}
 
                                 </div>
 
