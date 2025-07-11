@@ -23,7 +23,7 @@ const UnlockScore: React.FC<UnlockScoreProps> = ({ courseSectionId }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = async (_e: React.MouseEvent<HTMLButtonElement>) => {
 
     try {
       const response = await submitGradeStatus(courseSectionId, checked);
