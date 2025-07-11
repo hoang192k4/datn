@@ -17,6 +17,8 @@ import { submitGradeStatus } from '../../../services/courseSectionService';
 import { useSelector } from 'react-redux';
 import { TeacherRole } from '../../../enums/TeacherRole';
 import UnlockScore from './UnlockScore';
+import GradeGuide from './GradeGuid';
+import ExportTemplateModal from './ExportTemplateModal';
 
 interface GradeType {
   id: number;
@@ -80,6 +82,7 @@ const GradeManagement: React.FC = () => {
   const [gradeColumn, setGradeColumn] = useState([]);
   const [isOpenImportModal, setIsOpenImportModal] = useState<boolean>(false);
   const user = useSelector((state: any) => state.auth.user);
+   const [showExportModal, setShowExportModal] = useState(false);
   // const [debouncedKeyword, setDebouncedKeyword] = useState<string>('');
 
   const filteredStudents = studentData.filter((student) =>
@@ -227,7 +230,7 @@ const GradeManagement: React.FC = () => {
           }
 
           if (!column[typeId].some((item: any) => { return item.attempt === grade.attempt && item.typeName == grade.grade_type.name })) {
-            column[typeId].push({ attempt: grade.attempt, typeName: grade.grade_type.name, scoreVisibility: grade.score_visibility });
+            column[typeId].push({ attempt: grade.attempt, typeName: grade.grade_type.name, scoreVisibility: grade.score_visibility, typeCode: grade.grade_type.code });
           }
 
           counts[typeId] = Math.max(counts[typeId], grade.attempt);
@@ -241,6 +244,8 @@ const GradeManagement: React.FC = () => {
     setGradeTypeOrder(order);
     setTotalColumn(total);
   };
+
+  console.log(gradeColumn);
 
   const addGradeColumn = async () => {
     if (!selectedGradeType) {
@@ -516,7 +521,7 @@ const GradeManagement: React.FC = () => {
       }
     });
 
-    headers.push('ĐTB', 'Thi Lần 1', 'Thi Lần 2', 'Tổng kết', 'Xếp loại', 'Ghi chú');
+    headers.push('TBKT', 'Thi Lần 1', 'Thi Lần 2', 'Tổng kết', 'Xếp loại', 'Ghi chú');
 
     return headers.map((header, index) => (
       <th key={index} className="gm-table-header">{header}</th>
@@ -587,7 +592,9 @@ const GradeManagement: React.FC = () => {
     });
 
     cells.push(
-      <td key="avg" className="gm-table-cell gm-cell-center">{summary?.avg_score || '-'}</td>,
+      <td key="avg" className="gm-table-cell gm-cell-center">
+        {summary?.avg_score || '-'}
+      </td>,
       <td key="exam1" className="gm-table-cell gm-cell-center">
         {renderEditableCell('exam1_score', student.id, summary?.exam1_score, null, null, null, summary?.id)}
       </td>,
@@ -737,14 +744,20 @@ const GradeManagement: React.FC = () => {
             </div>
             <div className="gm-control-group">
               {user && (user.role === TeacherRole.FacultyAdmin || user.role === TeacherRole.DepartmentAdmin) ? (
-               
-                <UnlockScore courseSectionId={currentClassId}/>
+
+                <UnlockScore courseSectionId={currentClassId} />
               ) : (
-                <button className="gm-btn gm-btn-secondary" style={{ padding: '10px 10px' }} onClick={() => { handleSubmitGradeStatus() }} disabled={currentCourseSection.grade_status === GradeStatus.SubmittedExam2}  >
-                  ✅ Nộp điểm {currentCourseSection.grade_status === GradeStatus.DraftExam ? 'kiểm tra' : currentCourseSection.grade_status === GradeStatus.SubmittedExam ? 'thi lần 1' : currentCourseSection.grade_status === GradeStatus.SubmittedExam1 ? 'thi lần 2' : ''}
-                </button>
+                <>
+                  <button className="gm-btn gm-btn-secondary" style={{ padding: '10px 10px' }} onClick={() => { handleSubmitGradeStatus() }} disabled={currentCourseSection.grade_status === GradeStatus.SubmittedExam2}  >
+                    ✅ Nộp điểm {currentCourseSection.grade_status === GradeStatus.DraftExam ? 'kiểm tra' : currentCourseSection.grade_status === GradeStatus.SubmittedExam ? 'thi lần 1' : currentCourseSection.grade_status === GradeStatus.SubmittedExam1 ? 'thi lần 2' : ''}
+                  </button>
+                  <button className="gm-btn gm-btn-secondary" style={{ padding: '10px' }} onClick={() => {setShowExportModal(true)}}  >
+                    Xuất mẫu nhập điểm
+                  </button>
+                </>
               )}
             </div>
+            <GradeGuide />
           </div>
           <div className="gm-table-container">
             {gradeLoading ? (
@@ -769,9 +782,11 @@ const GradeManagement: React.FC = () => {
               </table>
             )}
           </div>
+
         </section >
+
       )}
-     
+      <ExportTemplateModal onClose={() => { setShowExportModal(false) }} open={showExportModal} gradeData={gradeColumn} courseSectionId={currentClassId} columnStatus={currentCourseSection.grade_status}/>
       <GradeColumnManagerModal isOpen={isOpenModal} onClose={() => { setIsOpenModal(false) }} gradeColumn={gradeColumn} courseSectionId={currentClassId} fetchGradesNoLoading={() => fetchGradesNoLoading(currentClassId)} />
       <GradeImport isOpen={isOpenImportModal} onClose={() => { setIsOpenImportModal(false) }} onFileSelect={handleFileSelect} />
     </>

@@ -13,6 +13,7 @@ use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\SummaryGrade\SummaryGradeRepositoryInterface;
 use App\Services\SummaryGrade\SummaryGradeServiceInterface;
 use Illuminate\Support\Str;
+use League\CommonMark\Normalizer\SlugNormalizer;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class StudentGradesImport implements ToCollection, WithHeadingRow
@@ -38,7 +39,9 @@ class StudentGradesImport implements ToCollection, WithHeadingRow
     public function __construct(int $courseSectionId)
     {
         $this->courseSectionId = $courseSectionId;
-        $this->gradeTypeMap = GradeType::pluck('id', 'code')->toArray();
+        $this->gradeTypeMap = collect(GradeType::pluck('id', 'name')->toArray())->mapWithKeys(function ($id, $name) {
+            return [Str::upper(generate_slug($name, '_')) => $id]; // Chuyển đổi tên loại điểm thành dạng slug
+        })->toArray();
         $this->studentRepository = app(StudentRepositoryInterface::class);
         $this->gradeRepository = app(GradeRepositoryInterface::class);
         $this->summaryGradeRepository = app(SummaryGradeRepositoryInterface::class);
@@ -47,6 +50,7 @@ class StudentGradesImport implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows)
     {
+
         foreach ($rows as $rowIndex => $row) {
             $row = $row->toArray(); // Vì row là Row object, nên cần toArray()
 
@@ -87,11 +91,10 @@ class StudentGradesImport implements ToCollection, WithHeadingRow
                     continue;
                 }
 
-                // 2. Grade chi tiết
-                if (preg_match('/^([A-Z0-9]+)_([0-9]+)$/', $key, $matches)) {
-                    [, $gradeTypeCode, $attempt] = $matches;
-                    if (!isset($this->gradeTypeMap[$gradeTypeCode])) {
-                        $this->errors[] = "Không xác định được loại điểm '$gradeTypeCode' (cột: $header, dòng " . ($rowIndex + 2) . ")";
+                if (preg_match('/^(.+)_LAN_(\d+)$/', $key, $matches)) {
+                    [, $gradeTypeName, $attempt] = $matches;
+                    if (!isset($this->gradeTypeMap[$gradeTypeName])) {
+                        $this->errors[] = "Không xác định được loại điểm '$gradeTypeName' (cột: $header, dòng " . ($rowIndex + 2) . ")";
                         continue;
                     }
 
@@ -102,7 +105,7 @@ class StudentGradesImport implements ToCollection, WithHeadingRow
                         continue;
                     }
 
-                    $gradeTypeId = $this->gradeTypeMap[$gradeTypeCode];
+                    $gradeTypeId = $this->gradeTypeMap[$gradeTypeName];
 
                     $this->gradeRepository->updateOrCreate([
                         'student_id' => $student->id,

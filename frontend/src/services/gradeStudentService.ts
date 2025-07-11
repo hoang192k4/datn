@@ -79,4 +79,14 @@ export const importGradeExcel = async (formData: FormData) => {
     }
     );
     return response.data;
-} 
+}
+
+
+export const exportGradeTemplate = async (courseSectionId: number, selected: string[]) => {
+    return await axiosTeacherInstance.post('/grades/export-template', {
+        course_section_id: courseSectionId,
+        selected_columns: selected
+    }, {
+        responseType: 'blob'
+    });
+}

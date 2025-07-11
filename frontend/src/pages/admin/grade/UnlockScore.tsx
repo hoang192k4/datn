@@ -13,7 +13,6 @@ const UnlockScore: React.FC<UnlockScoreProps> = ({ courseSectionId }) => {
   const [checked, setChecked] = useState<string>('');
 
   const ref = useRef<HTMLDivElement>(null);
-  console.log('checked:', checked);
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
