@@ -24,8 +24,7 @@ const UnlockScore: React.FC<UnlockScoreProps> = ({ courseSectionId }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-
+  const handleClick = async () => {
     try {
       const response = await submitGradeStatus(courseSectionId, checked);
       if (response.status === HttpStatus.SUCCESS) {
@@ -78,8 +77,8 @@ const UnlockScore: React.FC<UnlockScoreProps> = ({ courseSectionId }) => {
             />
             Thi lần 2
           </label>
-          <button className="submit-btn" onClick={(e) => {
-            handleClick(e);
+          <button className="submit-btn" onClick={() => {
+            handleClick();
             setShow(false);
           }}>
             Lưu lựa chọn
