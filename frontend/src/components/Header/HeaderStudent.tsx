@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { studentLogout } from "../../services/authStudentService";
 import { HttpStatus } from "../../enums/HttpStatus";
 import { logout } from "../../store/slices/authSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loadding from "../ui/Loadding";
+import { onMessage } from "firebase/messaging";
+import { messaging } from "../../config/firebase";
 const HeaderStudent = () => {
     const [loadingLogoutStudent, setLoadingLogoutStudent] = useState(false);
     const user = useSelector((state: any) => state.auth.user);
@@ -25,6 +27,28 @@ const HeaderStudent = () => {
             setLoadingLogoutStudent(false);
         }
     }
+
+    useEffect(() => {
+        const unsubscribe = onMessage(messaging, (payload) => {
+            const { title, body, icon, click_action }: any = payload.data;
+
+            // Hiện thông báo nếu có quyền
+            if (Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: icon || '/logo192.png',
+                    tag: 'fcm-foreground',
+                    data: {
+                        click_action: click_action || '/',
+                    },
+                });
+            }
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
     return (
         <>
             {loadingLogoutStudent && <Loadding />}
