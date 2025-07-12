@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Loadding from "../ui/Loadding";
 import { onMessage } from "firebase/messaging";
 import { messaging } from "../../config/firebase";
+import { toast, ToastContainer } from "react-toastify";
 const HeaderStudent = () => {
     const [loadingLogoutStudent, setLoadingLogoutStudent] = useState(false);
     const user = useSelector((state: any) => state.auth.user);
@@ -31,7 +32,7 @@ const HeaderStudent = () => {
     useEffect(() => {
         const unsubscribe = onMessage(messaging, (payload) => {
             const { title, body, icon, click_action }: any = payload.data;
-            console.log(title);
+            toast.info('Thông báo mới: ' + title);
             // Hiện thông báo nếu có quyền
             if (Notification.permission === 'granted') {
                 new Notification(title, {
@@ -49,10 +50,11 @@ const HeaderStudent = () => {
             unsubscribe();
         };
     }, []);
-    
+
     return (
         <>
             {loadingLogoutStudent && <Loadding />}
+            <ToastContainer />
             <header className="header-student">
                 <h1><Link to="">KHOA CÔNG NGHỆ THÔNG TIN</Link></h1>
                 <div className="nav-links-student">
