@@ -96,11 +96,11 @@ class FirebaseService implements FirebaseServiceInterface
                     'message' => [
                         'token' => $token,
                         'data' => [
-                            'title' => $title,
-                            'body' => $body,
-                            'icon' => url('/logo192.png'),
-                            'click_action' => url('/notifications'),
-                            'requireInteraction' => true
+                            'title' => (string)$title,
+                            'body' => (string)$body,
+                            'icon' => (string)url('/logo192.png'),
+                            'click_action' => (string)url('/notifications'),
+                            'requireInteraction' => 'true'
                         ], // FCM v1 cần data dạng string
                         // 'webpush' => [
                         //     'notification' => [
