@@ -104,8 +104,8 @@ class AuthController extends BaseController
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => $user->name,
         ])
-            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $secure, true, false, 'Strict')
-            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $secure, true, false, 'Strict');
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $secure, true, false, 'Lax')
+            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $secure, true, false, 'Lax');
     }
 
      protected function respondWithAccessToken($accessToken, $user, $guard)
@@ -120,6 +120,6 @@ class AuthController extends BaseController
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => $user->name,
         ])
-            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $secure, true, false, 'Strict');
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $secure, true, false, 'Lax');
     }
 }

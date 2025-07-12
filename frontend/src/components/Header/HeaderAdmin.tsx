@@ -44,7 +44,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         const unsubscribe = onMessage(messaging, (payload) => {
             console.log('🔔 Thông báo mới:', payload);
 
-            toast.info("Thông báo mới: " + payload.notification?.title)
+            toast.info("Thông báo mới: " + payload.data?.title)
             setTotalNotificationsUnread(prev => prev + 1);
         });
 
@@ -52,6 +52,7 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             unsubscribe(); // Clean up khi component bị hủy
         };
     }, []);
+
     return (
         <header>
             <ToastContainer />
