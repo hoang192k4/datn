@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { HttpStatus } from '../../enums/HttpStatus';
 import { studentLogin } from '../../services/authStudentService';
-import { getFCMToken } from '../../services/deviceTokenService';
 import Loadding from '../../components/ui/Loadding';
 import { toast, ToastContainer } from 'react-toastify';
 interface FormDataLogIn {
