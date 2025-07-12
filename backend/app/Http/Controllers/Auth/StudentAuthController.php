@@ -186,8 +186,8 @@ class StudentAuthController extends BaseController
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => new StudentResource($user),
         ])
-            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Lax')
-            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $this->secure, true, false, 'Lax');
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Strict')
+            ->cookie('refresh_token', $refreshToken, $refreshTtl * 30, null, null, $this->secure, true, false, 'Strict');
     }
 
     protected function respondWithAccessToken($accessToken, $user)
@@ -201,6 +201,6 @@ class StudentAuthController extends BaseController
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => new StudentResource($user),
         ])
-            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Lax');
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Strict');
     }
 }
