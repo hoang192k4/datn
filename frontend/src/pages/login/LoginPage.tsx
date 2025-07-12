@@ -29,12 +29,10 @@ const LoginPage = ({ role }: Props) => {
             if (role === Role.Teacher) {
                 const data = await teacherLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
-                getFCMToken();
                 setErrorPassword(false);
             } else {
                 const data = await studentLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
-                getFCMToken();
                 setErrorPassword(false);
             }
         } catch (errors: any) {
