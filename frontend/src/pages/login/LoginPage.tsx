@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { HttpStatus } from '../../enums/HttpStatus';
 import { studentLogin } from '../../services/authStudentService';
-import { getFCMToken } from '../../services/deviceTokenService';
 import Loadding from '../../components/ui/Loadding';
 import { toast, ToastContainer } from 'react-toastify';
 interface FormDataLogIn {
@@ -29,12 +28,10 @@ const LoginPage = ({ role }: Props) => {
             if (role === Role.Teacher) {
                 const data = await teacherLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
-                getFCMToken();
                 setErrorPassword(false);
             } else {
                 const data = await studentLogin(dataForm.email, dataForm.password);
                 dispatch(login({ user: data.data.user }));
-                getFCMToken();
                 setErrorPassword(false);
             }
         } catch (errors: any) {
