@@ -31,7 +31,7 @@ const HeaderStudent = () => {
     useEffect(() => {
         const unsubscribe = onMessage(messaging, (payload) => {
             const { title, body, icon, click_action }: any = payload.data;
-
+            console.log(title);
             // Hiện thông báo nếu có quyền
             if (Notification.permission === 'granted') {
                 new Notification(title, {
@@ -49,6 +49,7 @@ const HeaderStudent = () => {
             unsubscribe();
         };
     }, []);
+    
     return (
         <>
             {loadingLogoutStudent && <Loadding />}

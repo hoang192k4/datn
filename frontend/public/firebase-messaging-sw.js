@@ -15,7 +15,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function (payload) {
-    const { title, body, icon, click_action } = payload.notification;
+    const { title, body, icon, click_action } = payload.data;
     const notificationOptions = {
         body: body,
         icon: icon || '/logo192.png',
