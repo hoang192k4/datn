@@ -194,8 +194,8 @@ class TeacherAuthController extends BaseController
             ->setTTL($refreshTtl)
             ->tokenById($userId);
         $this->logInfo($userId ?? 'Không có ');
-        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl, '/', null, $this->secure, true, false, 'Strict');
-        $refreshCookie = Cookie::make('refresh_token', $refreshToken, $refreshTtl, '/', null, $this->secure, true, false, 'Strict');
+        $accessCookie = Cookie::make('access_token', $accessToken, $accessTtl, '/', null, $this->secure, true, false, 'Lax');
+        $refreshCookie = Cookie::make('refresh_token', $refreshToken, $refreshTtl, '/', null, $this->secure, true, false, 'Lax');
         return response()->json([
             'access_token' => $accessToken,
             'token_type' => 'bearer',
@@ -243,6 +243,6 @@ class TeacherAuthController extends BaseController
             'expires_at' => Carbon::now()->addMinutes($accessTtl)->toDateTimeString(),
             'user' => new TeacherResource($user),
         ])
-            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Strict');
+            ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Lax');
     }
 }
