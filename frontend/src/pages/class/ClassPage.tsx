@@ -17,7 +17,7 @@ const ClassPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [courseSection, setCourseSection] = useState<CourseSection>();
-    const [activeTab, setActiveTab] = useState<'score' | 'attendance'>('attendance');
+    const [activeTab, setActiveTab] = useState<'score' | 'attendance'>('score');
 
     const fetchStudentGrades = async (id: number) => {
         try {

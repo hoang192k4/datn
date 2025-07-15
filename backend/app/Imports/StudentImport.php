@@ -150,6 +150,10 @@ class StudentImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             '*.mssv.string' => 'Cột MSSV phải là chuỗi.',
             '*.email.required' => 'Cột email là bắt buộc.',
             '*.ngay_sinh.required' => 'Cột ngày sinh là bắt buộc.',
+            '*.ngay_sinh.string' => 'Cột ngày sinh phải là dạng chuỗi.',
+            '*.ngay_sinh.date_format' => 'Cột ngày sinh phải là dạng Năm/Tháng/Ngày.',
+            '*.thoi_gian_nhap_hoc.string' => 'Cột ngày sinh phải là dạng chuỗi.',
+            '*.thoi_gian_nhap_hoc.date_format' => 'Cột ngày sinh phải là dạng Năm/Tháng/Ngày.',
             '*.thoi_gian_nhap_hoc.required' => 'Cột ngày nhập học là bắt buộc.',
         ];
     }

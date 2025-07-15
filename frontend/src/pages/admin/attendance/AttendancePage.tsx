@@ -9,6 +9,9 @@ import Swal from "sweetalert2";
 import type { SessionAttendance } from "../../../types/attendance";
 import { normalizeString } from "../../../utils/searchUtil";
 import { Loading } from "../../../components/ui/Loading";
+import { Loading as LoadingExportImport } from "../../../components/ui/loading/Loading";
+
+
 
 interface Attendance {
     session_id: number,
@@ -32,6 +35,7 @@ const AttendancePage = () => {
     const [action, setAction] = useState<'create' | 'update' | 'default'>('default');
     const [searchKeyword, setSearchKeyword] = useState<string>('');
     const [loadingAttendancePage, setLoadingAttendancePage] = useState(false);
+    const [loadingExportImportAttendance, setLoadingExportImportAttendance] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [sessionByCourseSection, setSessionByCourseSection] = useState<SessionAttendance[]>([]);
     const [selectedSession, setSelectedSession] = useState<string>('');
@@ -82,6 +86,7 @@ const AttendancePage = () => {
     const handleExport = async () => {
         if (selectedSession) {
             try {
+                setLoadingExportImportAttendance(true);
                 const response = await exportTemplateAttendance(Number(selectedSession));
                 const contentDisposition = response.headers['content-disposition'];
                 let fileName = 'attendance.xlsx';
@@ -104,7 +109,7 @@ const AttendancePage = () => {
                 })
             } catch (error) {
 
-            }
+            } finally { setLoadingExportImportAttendance(false) }
         }
         else {
             Swal.fire({
@@ -133,6 +138,7 @@ const AttendancePage = () => {
         const formData = new FormData();
         formData.append("file", file);
         try {
+            setLoadingExportImportAttendance(true);
             const res = await importAttendance(formData);
             if (res) {
                 setActionImpotExport('default');
@@ -150,7 +156,7 @@ const AttendancePage = () => {
                 title: errors.response.data.message,
                 icon: "error",
             })
-        }
+        } finally { setLoadingExportImportAttendance(false) }
     }
 
     const sessions = useMemo(() => {
@@ -171,6 +177,7 @@ const AttendancePage = () => {
         normalizeString(student.name).includes(normalizeString(searchKeyword)) ||
         student.student_code.toLowerCase().includes(searchKeyword.toLowerCase()));
     return <>
+        {loadingExportImportAttendance && <LoadingExportImport title={actionImportExport !== 'default' && `Đang ${actionImportExport} danh sách điểm danh...`} />}
         <PageHeader title="📊 Quản lý điểm danh" subtitle="Hệ thống quản lý điểm danh của từng lớp học" />
         {
             actionImportExport !== 'default' &&

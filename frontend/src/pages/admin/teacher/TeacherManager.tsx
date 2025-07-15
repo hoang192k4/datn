@@ -274,10 +274,9 @@ const TeacherManager = () => {
                         <table className="teacher-table">
                             <thead>
                                 <tr>
-                                    <th>Mã Giảng Viên</th>
+                                    <th>#</th>
                                     <th>Họ và Tên</th>
                                     <th>Email</th>
-                                    <th>Địa Chỉ</th>
                                     <th>Giới Tính</th>
                                     <th>Ngày Sinh</th>
                                     <th>Vai Trò</th>
@@ -287,12 +286,11 @@ const TeacherManager = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {teacherList.length > 0 ? teacherList?.map((teacher) => (
+                                {teacherList.length > 0 ? teacherList?.map((teacher, index) => (
                                     <tr key={teacher.id}>
-                                        <td>{teacher.teacher_code}</td>
+                                        <td>{meta?.from && meta?.from + index}</td>
                                         <td>{teacher.name}</td>
                                         <td>{teacher.email}</td>
-                                        <td>{teacher.address}</td>
                                         <td>{genderMap[teacher.gender]}</td>
                                         <td>{formatDayMonthYear(teacher.date_of_birth)}</td>
                                         <td>
@@ -323,7 +321,7 @@ const TeacherManager = () => {
                                         </td>
                                         <td>
                                             <button className={`btn-admin  ${teacher.status === StatusActiveInactive.Active ? 'status-active' : 'status-inactive'}`} onClick={() => handleToggeStatus(teacher.id)}>{teacher.status === StatusActiveInactive.Active ? <FaLockOpen /> : <FaLock />}</button>
-                                            <button className="btn-admin edit-btn-dmin" onClick={() => handleFetchDataTeacher(teacher.id)}><FaEdit /></button>
+                                            <button className="btn-admin edit-btn-admin" onClick={() => handleFetchDataTeacher(teacher.id)}><FaEdit /></button>
                                         </td>
                                     </tr>
                                 )) :
@@ -335,11 +333,11 @@ const TeacherManager = () => {
                         </table>
                         <div className="pagination-container-admin">
                             <div className="pagination-controls">
-                                <button className="page-btn" onClick={() => meta?.previous_page != null && fetchTeacherList(keyword, meta.previous_page, selectedStatus, selectedRole)} disabled={!meta?.previous_page}>
+                                <button className="page-btn page-disabled" onClick={() => meta?.previous_page != null && fetchTeacherList(keyword, meta.previous_page, selectedStatus, selectedRole)} disabled={!meta?.previous_page}>
                                     Trang trước
                                 </button>
                                 <button className="page-btn active">{meta?.current_page}</button>
-                                <button className="page-btn" onClick={() => meta?.next_page != null && fetchTeacherList(keyword, meta.next_page, selectedStatus, selectedRole)} disabled={!meta?.next_page}>
+                                <button className="page-btn page-disabled" onClick={() => meta?.next_page != null && fetchTeacherList(keyword, meta.next_page, selectedStatus, selectedRole)} disabled={!meta?.next_page}>
                                     Trang sau
                                 </button>
                             </div>
@@ -378,7 +376,7 @@ const TeacherManager = () => {
                                     </label>
                                     <label>
                                         Mật khẩu:
-                                        <input type="text" {...register("password", { required: "Vui lòng nhập password" })} />
+                                        <input type="password" {...register("password", { required: "Vui lòng nhập password" })} />
                                         {errors.password && <p className="error-message">{errors.password.message}</p>}
                                     </label>
                                 </div>

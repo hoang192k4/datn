@@ -17,7 +17,7 @@ const SubjectCard = (props: SubjectCardProps) => {
                 <div className="subject-title">{props?.subject_name}</div>
                 <div className="doc-list">
                     {props?.chapters?.map((item, index) => (
-                        <div className="doc-item" key={index}>Chương {item.position} 📄{item.title}</div>
+                        <div className="doc-item" key={index}>Chương {index + 1} 📄{item.title}</div>
                     ))}
                 </div>
                 <Link to={`tai-lieu-chi-tiet/${props.id}`} className="btn-add">Xem chi tiết</Link>

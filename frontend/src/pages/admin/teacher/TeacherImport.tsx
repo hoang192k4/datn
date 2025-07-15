@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { importTeacher } from "../../../services/teacherService";
 import { HttpStatus } from "../../../enums/HttpStatus";
+import { Loading } from "../../../components/ui/loading/Loading";
 
 
 interface PropsImport {
@@ -12,6 +13,7 @@ interface PropsImport {
 const TeacherImport = ({ setShowPopupImport, fetchTeacherList }: PropsImport) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [loadingTeacher,setLoadingTeacher] = useState(false);
 
     const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -48,6 +50,7 @@ const TeacherImport = ({ setShowPopupImport, fetchTeacherList }: PropsImport) =>
         const formData = new FormData();
         formData.append("file", selectedFile);
         try {
+            setLoadingTeacher(true);
             const res = await importTeacher(formData);
             if (res.status === HttpStatus.SUCCESS) {
                 setShowPopupImport(false);
@@ -69,10 +72,11 @@ const TeacherImport = ({ setShowPopupImport, fetchTeacherList }: PropsImport) =>
                     html: `<ul> ${html}</ul>`
                 })
             }
-        }
+        }finally { setLoadingTeacher(false); }
     }
     return (
         <>
+            {loadingTeacher && <Loading title="Đang import danh sách giảng viên..."/>}
             <div id="importExcelModal" className="teacher-modal" onClick={() => setShowPopupImport(false)}>
                 <div className="teacher-modal-content" onClick={(e) => e.stopPropagation()}>
                     <span className="close-btn" onClick={() => setShowPopupImport(false)}>&times;</span>
@@ -114,21 +118,21 @@ const TeacherImport = ({ setShowPopupImport, fetchTeacherList }: PropsImport) =>
                         <strong>Lưu ý về template Excel:</strong>
                         <ul>
                             <li>Cột A: STT (số thứ tự)</li>
-                            <li>Cột B: Mã Giáo Viên</li>
+                            <li>Cột B: Mã Giảng Viên</li>
                             <li>Cột C: Email</li>
                             <li>Các D: Họ và Tên</li>
                             <li>Các E: Ngày Sinh (Năm-Tháng-Ngày)</li>
                             <li>Các F Giới Tính (Nam hoặc Nữ)</li>
                             <li>Các G: Địa Chỉ</li>
-                            <li>Các H: Vai trò (GVBM ,GVCN, QTKHOA hoặc QTBOMON)</li>
+                            <li>Các H: Vai trò (GVBM ,GVCN, TRUONGKHOA hoặc TRUONGBOMON)</li>
                             <li>File phải có định dạng .xlsx hoặc .xls</li>
-                            <li>Nếu Mã Giáo Viên trùng thì sẽ cập nhật</li>
+                            <li>Nếu Mã Giảng Viên trùng thì sẽ cập nhật</li>
                         </ul>
                     </div>
 
                     <div className="button-group">
                         <button onClick={() => setShowPopupImport(false)}>Hủy</button>
-                        <button onClick={handleUploadFile} disabled={!selectedFile}>Tải lên</button>
+                        <button className="button-soft" onClick={handleUploadFile} disabled={!selectedFile}>Tải lên</button>
                     </div>
                 </div>
             </div>
