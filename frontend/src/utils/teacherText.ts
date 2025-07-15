@@ -7,8 +7,8 @@ export const teacherStatusMap = {
 
 
 export const teacherRoleMap = {
-    department_admin: 'QT Bộ Môn',
+    department_admin: 'Trưởng Bộ Môn',
     subject_teacher: 'GV Bộ Môn',
     homeroom_teacher: 'GV Chủ Nhiệm',
-    faculty_admin:'Quản Trị Khoa'
+    faculty_admin:'Trưởng Khoa'
 }

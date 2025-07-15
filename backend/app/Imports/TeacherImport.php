@@ -41,14 +41,14 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
         $role = [
             'GVBM' => Role::SUBJECT_TEACHER,
             'GVCN' => Role::HOMEROOM_TEACHER,
-            'QTKHOA' => Role::FACULTY_ADMIN,
-            'QTBOMON' => Role::DEPARTMENT_ADMIN
+            'TRUONGKHOA' => Role::FACULTY_ADMIN,
+            'TRUONGBOMON' => Role::DEPARTMENT_ADMIN
         ];
         $teachers = [];
 
         foreach ($collection as $row) {
             if (
-                empty($row['ma_giao_vien']) ||
+                empty($row['ma_giang_vien']) ||
                 empty($row['email']) ||
                 empty($row['ho_ten']) ||
                 empty($row['dia_chi']) ||
@@ -60,7 +60,7 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             }
 
             $data = [
-                'teacher_code' => $row['ma_giao_vien'],
+                'teacher_code' => $row['ma_giang_vien'],
                 'email' => $row['email'],
                 'name' => $row['ho_ten'],
                 'slug' => Str::slug($row['ho_ten']),
@@ -84,12 +84,12 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
     public function rules(): array
     {
         return [
-            '*.ma_giao_vien' => 'required|string',
+            '*.ma_giang_vien' => 'required|string',
             '*.ho_ten'   => 'required|string',
             '*.email'       => 'required|email',
-            '*.ngay_sinh'   => 'required',
+            '*.ngay_sinh'   => 'required|string|date_format:Y-m-d',
             '*.dia_chi'     => 'required|string',
-            '*.vai_tro'     => 'required|string|in:GVBM,GVCN,QTKHOA,QTBOMON',
+            '*.vai_tro'     => 'required|string|in:GVBM,GVCN,TRUONGKHOA,TRUONGBOMON',
             '*.gioi_tinh'   => 'required|string|in:Nam,Nữ',
         ];
     }
@@ -98,7 +98,7 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
     public function customValidationMessages()
     {
         return [
-            '*.ma_giao_vien.required' => 'Cột Mã Giáo Viên là bắt buộc.',
+            '*.ma_giang_vien.required' => 'Cột Mã Giảng Viên là bắt buộc.',
             '*.email.email'   => 'Email không hợp lệ ở một dòng nào đó.',
             '*.gioi_tinh.required' => 'Cột giới tính là bắt buộc.',
             '*.ho_ten.required' => 'Cột họ và tên là bắt buộc.',
@@ -107,12 +107,14 @@ class TeacherImport implements ToCollection, WithHeadingRow, WithChunkReading, W
             '*.vai_tro.string' => 'Cột ngành học phải là chuỗi.',
             '*.ho_ten.string' => 'Cột họ tên phải là chuỗi.',
             '*.dia_chi.string' => 'Cột địa chỉ phải là chuỗi.',
-            '*.ma_giao_vien.string' => 'Cột mã giáo viên phải là chuỗi.',
+            '*.ma_giao_vien.string' => 'Cột mã giảng viên phải là chuỗi.',
             '*.email.required' => 'Cột email là bắt buộc.',
             '*.ngay_sinh.required' => 'Cột ngày sinh là bắt buộc.',
+            '*.ngay_sinh.string' => 'Cột ngày sinh phải là dạng chuỗi.',
+            '*.ngay_sinh.date_format' => 'Cột ngày sinh phải là dạng Năm/Tháng/Ngày.',
             '*.vai_tro.required' => 'Cột vai trò là bắt buộc.',
             '*.gioi_tinh.in' => 'Cột giới tính phải ghi đúng Nam hoặc Nữ',
-            '*.vai_tro.in' => 'Cột vai trò phải ghi đúng GVBM, GVCN, QTKHOA, QTBOMON'
+            '*.vai_tro.in' => 'Cột vai trò phải ghi đúng GVBM, GVCN, TRUONGKHOA, TRUONGBOMON'
         ];
     }
 }

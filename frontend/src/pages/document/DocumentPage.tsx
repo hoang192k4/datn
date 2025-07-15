@@ -32,14 +32,14 @@ const DocumentPage = () => {
             <div className="document-subject container">
                 <h1>Tài liệu {detailDocumentSubject?.subject_name}</h1>
 
-                {detailDocumentSubject && detailDocumentSubject?.chapters?.length > 0 ? (detailDocumentSubject?.chapters.map((chapter) => (
+                {detailDocumentSubject && detailDocumentSubject?.chapters?.length > 0 ? (detailDocumentSubject?.chapters.map((chapter , index) => (
 
                     <>
-                        <h2>Chương {chapter.position}: {chapter.title}</h2>
+                        <h2>Chương {index + 1}: {chapter.title}</h2>
 
-                        {chapter.lectures.map((lecture) => (
+                        {chapter.lectures.map((lecture , index) => (
                             <div className="lecture">
-                                <Link to={lecture.file_path} className="lecture-title" target="_blank"> Bài {lecture.position} : {lecture.title}</Link>
+                                <Link to={lecture.file_path} className="lecture-title" target="_blank"> Bài {index + 1} : {lecture.title}</Link>
                             </div>
                         ))}
                     </>

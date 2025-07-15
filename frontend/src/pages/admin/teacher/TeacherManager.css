@@ -1,4 +1,3 @@
-
 .box-header {
     display: flex;
     flex-wrap: wrap;
@@ -39,17 +38,38 @@
 }
 
 .teacher-table>thead>tr>th:nth-child(1) {
-    width: 140px;
-    min-width: 140px;
+    width: 40px;
+    min-width: 40px;
 }
 
-.teacher-table>thead>tr>th:nth-child(6),
-.teacher-table>thead>tr>th:nth-child(8),
-.teacher-table>tbody>tr>td:nth-child(9) {
+.teacher-table>thead>tr>th:nth-child(4) {
+    width: 60px;
+    min-width: 60px;
+}
+
+.teacher-table>thead>tr>th:nth-child(6) {
+    width: 160px;
+    min-width: 160px;
+}
+
+.teacher-table>thead>tr>th:nth-child(5),
+.teacher-table>thead>tr>th:nth-child(7) {
+    width: 115px;
+    min-width: 115px;
+}
+
+.teacher-table>thead>tr>th:nth-child(8) {
     width: 120px;
     min-width: 120px;
 }
 
+.teacher-table>thead>tr>th:nth-child(9) {
+    width: 140px;
+    min-width: 140px;
+}
+
+.teacher-table>tbody>tr>td:nth-child(5),
+.teacher-table>tbody>tr>td:nth-child(4),
 .teacher-table>tbody>tr>td:nth-child(6),
 .teacher-table>tbody>tr>td:nth-child(7),
 .teacher-table>tbody>tr>td:nth-child(8),
@@ -57,23 +77,12 @@
     text-align: center;
 }
 
-.teacher-table>thead>tr>th:nth-child(7) {
-    width: 160px;
-    min-width: 160px;
-}
-
 .teacher-table>thead>tr>th:nth-child(2),
-.teacher-table>thead>tr>th:nth-child(4),
-.teacher-table>tbody>tr>td:nth-child(3) {
+.teacher-table>thead>tr>th:nth-child(3) {
     width: 200px;
     min-width: 200px;
 }
 
-.teacher-table>tbody>tr>td:last-child {
-    text-align: center;
-    width: 150px;
-    min-width: 150px;
-}
 
 .btn-admin {
     background-color: #28a745;
@@ -91,7 +100,7 @@
     transform: scale(1.03);
 }
 
-.edit-btn-dmin {
+.edit-btn-admin {
     margin-left: 10px;
     background-color: #1e3a8a;
 }
@@ -514,4 +523,8 @@
 /* Khi hover vào span thì hiện tooltip */
 .subject-tooltip-container:hover .subject-tooltip {
     display: block;
+}
+
+.page-disabled:disabled {
+    cursor: not-allowed;
 }

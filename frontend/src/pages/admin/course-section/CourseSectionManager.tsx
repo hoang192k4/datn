@@ -21,8 +21,8 @@ const CourseSectionManager = () => {
     const [tmpCourseSectionlist, setTmpCourseSectionList] = useState<CourseSection[]>([]);
     const [loadingCourseSection, setLoadingCourseSection] = useState(false);
     const [meta, setMeta] = useState<Meta | null>(null);
-    const [yearOption, setYearOption] = useState<number[]>([]);
-    const [selectedYear, setSelectedYear] = useState<string | null>(null);
+    /* const [yearOption, setYearOption] = useState<number[]>([]);
+    const [selectedYear, setSelectedYear] = useState<string | null>(null); */
     const [keyword, setKeyword] = useState<string | null>(null);
     const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
     const [selectedStatus, setSelectedStatus] = useState<CourseSectionStatus | null>(null);
@@ -35,13 +35,12 @@ const CourseSectionManager = () => {
         setOpenId(prev => prev === id ? null : id);
     };
     const fetchCourseSectionList = async (keyword: string | null = null,
-        year: string | null = null,
         page = 1,
         status: CourseSectionStatus | null = null,
         semesterId: string | null = null) => {
         try {
             setLoadingCourseSection(true);
-            const res = await getCourseSectionFilter(keyword, year, page, status, semesterId);
+            const res = await getCourseSectionFilter(keyword, null, page, status, semesterId);
             setCourseSectionList(res.data.course_sections);
             setMeta(res.data.meta);
             if (!tmpCourseSectionlist.length) {
@@ -57,43 +56,44 @@ const CourseSectionManager = () => {
         setSemesterList(res.data);
     }
 
-    const fetchYearOption = () => {
-        const yearArray = Array.from(
-            new Set(
-                tmpCourseSectionlist.map(item =>
-                    new Date(item.start_date).getFullYear()
-                )
-            )
-        ).sort((yearA, yearB) => yearB - yearA);
-        setYearOption(yearArray);
-    }
-
-
     useEffect(() => {
         fetchCourseSectionList();
         fetchSemesterList();
     }, [])
 
-    useEffect(() => {
+    /*  const fetchYearOption = () => {
+         const yearArray = Array.from(
+             new Set(
+                 tmpCourseSectionlist.map(item =>
+                     new Date(item.start_date).getFullYear()
+                 )
+             )
+         ).sort((yearA, yearB) => yearB - yearA);
+         setYearOption(yearArray);
+     } */
+
+    /* useEffect(() => {
         if (tmpCourseSectionlist.length) {
             fetchYearOption();
         }
-    }, [tmpCourseSectionlist]);
+    }, [tmpCourseSectionlist]); */
+
+    /*  const hanldeSelectedYear = (selectedYear: string | null) => {
+            fetchCourseSectionList(keyword, selectedYear, 1, selectedStatus, selectedSemester);
+        } */
 
     const handleSelectedStatus = (selectedStatus: CourseSectionStatus | null) => {
-        fetchCourseSectionList(keyword, selectedYear, 1, selectedStatus, selectedSemester);
+        fetchCourseSectionList(keyword, 1, selectedStatus, selectedSemester);
     }
 
     const hanldeSelectedSemester = (selectedSemester: string | null) => {
-        fetchCourseSectionList(keyword, selectedYear, 1, selectedStatus, selectedSemester);
+        fetchCourseSectionList(keyword, 1, selectedStatus, selectedSemester);
     }
 
-    const hanldeSelectedYear = (selectedYear: string | null) => {
-        fetchCourseSectionList(keyword, selectedYear, 1, selectedStatus, selectedSemester);
-    }
+
     const hanldeFilterKey = useMemo(() => debounce((key: string, selectedStatus: CourseSectionStatus | null,
-        selectedSemester: string | null, selectedYear: string | null) => {
-        fetchCourseSectionList(key, selectedYear, 1, selectedStatus, selectedSemester);
+        selectedSemester: string | null) => {
+        fetchCourseSectionList(key, 1, selectedStatus, selectedSemester);
     }, 500), []);
 
     const statusOptions = [
@@ -176,12 +176,12 @@ const CourseSectionManager = () => {
                         <div className="class-search-student">
                             <input type="text" placeholder="Tìm kiếm lớp học phần..." onChange={(e) => {
                                 setKeyword(e.target.value);
-                                hanldeFilterKey(e.target.value, selectedStatus, selectedSemester, selectedYear);
+                                hanldeFilterKey(e.target.value, selectedStatus, selectedSemester);
                             }} />
                             <FaSearch />
                         </div>
                         <div>
-                            <select className="select-filter reposive-select-mb" onChange={(e) => {
+                            {/* <select className="select-filter reposive-select-mb" onChange={(e) => {
                                 const value = e.target.value;
                                 setSelectedYear(value ? value : null);
                                 hanldeSelectedYear(value ? value : null);
@@ -193,7 +193,7 @@ const CourseSectionManager = () => {
                                     ))
                                 }
 
-                            </select>
+                            </select> */}
                             <select className="select-filter reposive-select-mb" onChange={(e) => {
                                 const value = e.target.value;
                                 setSelectedSemester(value ? value : null);
@@ -223,6 +223,7 @@ const CourseSectionManager = () => {
                         <table className="course-section-table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Lớp Học</th>
                                     <th>Giảng Viên Phụ Trách</th>
                                     <th>Bắt Đầu</th>
@@ -236,8 +237,9 @@ const CourseSectionManager = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {courseSectionlist && courseSectionlist.length > 0 ? courseSectionlist.map((courseSection) => (
+                                {courseSectionlist && courseSectionlist.length > 0 ? courseSectionlist.map((courseSection, index) => (
                                     <tr key={courseSection.id}>
+                                        <td>{meta?.from && meta?.from + index}</td>
                                         <td>{courseSection.name} <br /> <small>Tổng sinh viên: {courseSection.students_total}</small></td>
                                         <td>{courseSection.teacher || <small>Chưa cập nhật</small>}</td>
                                         <td>{formatDayMonthYear(courseSection.start_date)}</td>
@@ -273,22 +275,22 @@ const CourseSectionManager = () => {
                                             </div>
                                         </td>
                                         <td>
-                                            <button className="btn-admin edit-btn-dmin" onClick={() => handleShowPopupUpdate(courseSection.id)}><FaEdit /></button>
+                                            <button className="btn-admin edit-btn-admin" onClick={() => handleShowPopupUpdate(courseSection.id)}><FaEdit /></button>
                                         </td>
                                     </tr>
-                                )) : <tr><td colSpan={10}>Không có lớp học phù hợp theo tiêu chí đã chọn</td></tr>}
+                                )) : <tr><td colSpan={11}>Không có lớp học phù hợp theo tiêu chí đã chọn</td></tr>}
                             </tbody>
                         </table>
                         <div className="pagination-container-admin">
                             <div className="pagination-controls">
-                                <button className="page-btn" onClick={() => meta?.previous_page != null &&
-                                    fetchCourseSectionList(keyword, selectedYear, meta?.previous_page, selectedStatus, selectedSemester)
+                                <button className="page-btn page-disabled" onClick={() => meta?.previous_page != null &&
+                                    fetchCourseSectionList(keyword, meta?.previous_page, selectedStatus, selectedSemester)
                                 } disabled={!meta?.previous_page}>
                                     Trang trước
                                 </button>
                                 <button className="page-btn active">{meta?.current_page}</button>
-                                <button className="page-btn" onClick={() => meta?.next_page != null &&
-                                    fetchCourseSectionList(keyword, selectedYear, meta?.next_page, selectedStatus, selectedSemester)} disabled={!meta?.next_page}>
+                                <button className="page-btn page-disabled" onClick={() => meta?.next_page != null &&
+                                    fetchCourseSectionList(keyword, meta?.next_page, selectedStatus, selectedSemester)} disabled={!meta?.next_page}>
                                     Trang sau
                                 </button>
                             </div>

@@ -314,7 +314,7 @@ const ScheduleManagement: React.FC = () => {
                                         <th className="table-header">Thời gian</th>
                                         <th className="table-header">Buổi</th>
                                         <th className="table-header">Phòng</th>
-                                        <th className="table-header">Giáo viên</th>
+                                        <th className="table-header">Giảng viên</th>
                                         <th className="table-header">Học kỳ</th>
                                         <th className="table-header" colSpan={2} style={{ textAlign: 'center' }}>Thao tác</th>
                                     </tr>
@@ -347,38 +347,33 @@ const ScheduleManagement: React.FC = () => {
                                                 <td className="table-cell">{schedule.course_section.teacher}</td>
                                                 <td className="table-cell" style={{ textWrap: 'balance' }}>{`${schedule.course_section.semester.name} (${schedule.course_section.semester.start_year}-${schedule.course_section.semester.end_year})`}</td>
                                                 <td className="table-cell">
-                                                    <div className="action-buttons">
-                                                        <button
-                                                            onClick={() => handleEdit({
-                                                                course_section: {
-                                                                    value: schedule.course_section.id ?? null,
-                                                                    label: schedule.course_section.name ?? null
-                                                                },
-                                                                day_of_week: schedule.day_of_week?.toString() ?? "",
-                                                                period_start: schedule.period_start ?? null,
-                                                                period_number: schedule.period_number ?? null,
-                                                                classroom: {
-                                                                    value: schedule.classroom?.id ?? null,
-                                                                    label: schedule.classroom?.name ?? null
-                                                                },
-                                                                id: schedule.id
-                                                            })}
-                                                            className="schedule-edit-button student-btn-primary"
-                                                        >
-                                                            <FaEdit />
-                                                        </button>
-
-                                                    </div>
+                                                    <button
+                                                        onClick={() => handleEdit({
+                                                            course_section: {
+                                                                value: schedule.course_section.id ?? null,
+                                                                label: schedule.course_section.name ?? null
+                                                            },
+                                                            day_of_week: schedule.day_of_week?.toString() ?? "",
+                                                            period_start: schedule.period_start ?? null,
+                                                            period_number: schedule.period_number ?? null,
+                                                            classroom: {
+                                                                value: schedule.classroom?.id ?? null,
+                                                                label: schedule.classroom?.name ?? null
+                                                            },
+                                                            id: schedule.id
+                                                        })}
+                                                        className="schedule-edit-button student-btn-primary"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
                                                 </td>
                                                 <td className="table-cell">
-                                                    <div className="action-buttons">
-                                                        <button
-                                                            className="schedule-delete-button student-btn-primary"
-                                                            onClick={() => handleDelete(schedule.id)}
-                                                        >
-                                                            <FaTrash />
-                                                        </button>
-                                                    </div>
+                                                    <button
+                                                        className="schedule-delete-button student-btn-primary"
+                                                        onClick={() => handleDelete(schedule.id)}
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
                                                 </td>
                                             </tr>
                                         ))

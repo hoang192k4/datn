@@ -2,6 +2,7 @@ import { useState } from "react"
 import type { RoleList } from "../../../types/role";
 import { exportTeacher } from "../../../services/teacherService";
 import Swal from "sweetalert2";
+import { Loading } from "../../../components/ui/loading/Loading";
 
 interface PropsExport {
     setShowPopupExport: React.Dispatch<React.SetStateAction<boolean>>,
@@ -10,9 +11,11 @@ interface PropsExport {
 const TeacherExport: React.FC<PropsExport> = ({ setShowPopupExport, roleList }) => {
     const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
     const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+    const [loadingExportTeacher, setLoadingExportTeacher] = useState(false);
 
     const handleExport = async () => {
         try {
+            setLoadingExportTeacher(true);
             const res = await exportTeacher(selectedStatus, selectedRoleId);
             if (res) {
                 const url = window.URL.createObjectURL(res);
@@ -34,10 +37,11 @@ const TeacherExport: React.FC<PropsExport> = ({ setShowPopupExport, roleList }) 
             }
         } catch (errors) {
 
-        }
+        } finally { setLoadingExportTeacher(false); }
     }
     return (
         <>
+            {loadingExportTeacher && <Loading title="Đang export danh sách giảng viên..." />}
             <div className="teacher-modal-export" onClick={() => setShowPopupExport(false)} >
                 <div className="teacher-modal-content-export" onClick={(e) => e.stopPropagation()}>
                     <h2>Xuất Danh Sách Giảng Viên</h2>
@@ -65,7 +69,7 @@ const TeacherExport: React.FC<PropsExport> = ({ setShowPopupExport, roleList }) 
 
                     <div className="button-group">
                         <button onClick={() => setShowPopupExport(false)} >Hủy</button>
-                        <button onClick={handleExport}> Xuất Danh Sáchh </button>
+                        <button className="button-soft" onClick={handleExport}> Xuất Danh Sáchh </button>
                     </div>
                 </div>
             </div>
