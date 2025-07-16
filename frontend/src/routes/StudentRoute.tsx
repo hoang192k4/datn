@@ -1,6 +1,7 @@
 
 import ConductScore from "../pages/student/conduct-score/ConductScore";
-import StudentNotification from "../pages/student/notification/StudentNotification";;
+import StudentNotification from "../pages/student/notification/StudentNotification";import StudentChangePasswrod from "../pages/student/profile/StudentChangePassword";
+;
 import StudentProfile from "../pages/student/profile/StudentProfile";
 import StudentSchedule from "../pages/student/schedule/StudentSchedule";
 import SummaryGrade from "../pages/student/summary-grade/SummaryGrade";
@@ -30,5 +31,9 @@ export const StudentRoute = [
   {
     'path': 'diem-ren-luyen',
     'element': <ConductScore />
+  },
+  {
+    'path': 'doi-mat-khau',
+    'element': <StudentChangePasswrod />,
   },
 ]

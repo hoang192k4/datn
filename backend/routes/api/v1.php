@@ -20,6 +20,7 @@ Route::controller(App\Http\Controllers\Auth\StudentAuthController::class)
         Route::post('/refresh', 'refresh')->name('refresh');
         Route::get('/me', 'me')->name('me');
         Route::post('/logout', 'logout')->name('logout');
+        Route::post('/change-password', 'changePassword');
     });
 
 
@@ -262,7 +263,7 @@ Route::controller(App\Http\Controllers\Classroom\ClassroomController::class)
 
 
 Route::controller(App\Http\Controllers\Statistics\StatisticsController::class)
-->prefix('statistics')
-->group(function (){
-    Route::get('/', 'statistics');
-});
+    ->prefix('statistics')
+    ->group(function () {
+        Route::get('/', 'statistics');
+    });
