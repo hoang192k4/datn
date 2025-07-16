@@ -154,7 +154,7 @@ const StudentManagement = () => {
         setStatusModal("create");
     }
 
-    const handleSubmit = async (student: any) => {
+    const handleSubmit = async (student: any): Promise<boolean> => {
         if (statusModal === "update") {
             try {
                 setUpdateLoading(true);
@@ -165,11 +165,13 @@ const StudentManagement = () => {
                         icon: "success",
                     })
                     fetchStudents(keyWordDebounce, page, filterStatus);
+                    setModalOpen(false);
+                    return true;
                 }
+
             } catch (error: any) {
                 if (error.response.status === HttpStatus.BAD_REQUEST) {
                     const messageValidate: any[] = error.response.data.message_validate;
-                    console.log(messageValidate);
                     const html = Object.values(messageValidate)
                         .flat() // lấy tất cả lỗi con trong từng trường
                         .map((msg: string) => `<p>${msg}</p>`)
@@ -187,6 +189,7 @@ const StudentManagement = () => {
                         icon: "error",
                     })
                 }
+                return false;
             } finally {
                 setUpdateLoading(false);
             }
@@ -202,6 +205,8 @@ const StudentManagement = () => {
                         icon: "success",
                     })
                     fetchStudents(keyWordDebounce, page, filterStatus);
+                    setModalOpen(false);
+                    return true;
                 }
             } catch (error: any) {
                 if (error.response.status === HttpStatus.BAD_REQUEST) {
@@ -224,10 +229,13 @@ const StudentManagement = () => {
                         icon: "error",
                     })
                 }
+                return false;
             } finally {
                 setCreateLoading(false);
             }
         }
+        // Ensure a boolean is always returned
+        return false;
     }
 
     const handleUpload = async (file: File) => {
@@ -298,7 +306,13 @@ const StudentManagement = () => {
                     <div className="right-actions">
                         {/* Status Select */}
                         <div className="status-select-container">
-                            <select className="status-select" onChange={(e) => { setFilterStatus(e.target.value); setPage(1) }}>
+                            {/* <label htmlFor="status-select" className="visually-hidden">Lọc theo trạng thái</label> */}
+                            <select
+                                id="status-select"
+                                className="status-select"
+                                aria-label="Lọc theo trạng thái"
+                                onChange={(e) => { setFilterStatus(e.target.value); setPage(1) }}
+                            >
                                 <option value="">Tất cả trạng thái</option>
                                 {
                                     statusOptions.map((option) => (
@@ -335,8 +349,8 @@ const StudentManagement = () => {
                                 <th>Email</th>
                                 <th>Họ Tên</th>
                                 <th>Ngày Sinh</th>
-                                <th>Địa Chỉ</th>
-                                <th>Giới Tính</th>
+                                {/* <th>Địa Chỉ</th> */}
+                                <th style={{ width: '100px' }}>Giới Tính</th>
                                 <th>Thời Gian Nhập Học</th>
                                 <th>Thời Gian Tốt Nghiệp</th>
                                 <th>Ngành Học</th>
@@ -359,7 +373,7 @@ const StudentManagement = () => {
                 </div>
 
                 {students.length > 0 ? (<div className="pagination-container">
-                    <div className="pagination-info" style={{color:'white'}}>
+                    <div className="pagination-info" style={{ color: 'white' }}>
                         Hiển thị từ <strong>{paginate?.from}</strong> đến <strong>{paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> sinh viên
                     </div>
 
@@ -416,7 +430,7 @@ const StudentManagement = () => {
                 </div>) : <> </>}
             </div>
 
-            {<StudentModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={(data) => { handleSubmit(data); setModalOpen(false) }} initialData={selectedStudent} majors={majors} />}
+            {<StudentModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSubmit={(data) => { return handleSubmit(data); }} initialData={selectedStudent} majors={majors} />}
             <ExportStudentsModal isOpen={exportStudent} isClose={() => setExportStudent(false)} onExport={(status) => { handleExportExcel(status) }} />
             <ImportStudentModal isOpen={importModal} onClose={() => setImportModal(false)} onImport={handleUpload} />
         </>

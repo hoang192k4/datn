@@ -16,7 +16,7 @@ type ScheduleFormData = {
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: ScheduleFormData) => void;
+    onSubmit: (data: ScheduleFormData) => Promise<boolean>;
     defaultValues?: ScheduleFormData; // nếu có thì là sửa
 };
 
@@ -48,10 +48,13 @@ const ScheduleModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, defaultValu
         }
     }, [defaultValues, reset]);
 
-    const submitHandler = (data: ScheduleFormData) => {
-        onSubmit(data);
-        onClose();
-        reset(); // clear form sau khi submit
+    const submitHandler = async (data: ScheduleFormData) => {
+        const success = await onSubmit(data);
+        console.log(success);
+        if (success) {
+            onClose();
+            reset();
+        }
     };
 
     if (!isOpen) return null;

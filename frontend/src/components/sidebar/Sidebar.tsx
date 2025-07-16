@@ -72,10 +72,10 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             url: "thong-bao/danh-sach",
             label: "Thông Báo",
             subItems: [
-                { icon: "📋", url: "thong-bao/danh-sach", label: "Danh Sách TB", roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"] },
+                { icon: "📋", url: "thong-bao/danh-sach", label: "Danh Sách TB", roles: ["subject_teacher", "homeroom_teacher"] },
                 { icon: "📝", url: "thong-bao/khoa-va-sinh-vien", label: "Thông Báo Từ Khoa & Sinh Viên", roles: ["subject_teacher", "homeroom_teacher"] },
             ],
-            roles: ["faculty_admin", "department_admin", "subject_teacher", "homeroom_teacher"],
+            roles: ["subject_teacher", "homeroom_teacher"],
         },
         {
             icon: "👨‍🎓",

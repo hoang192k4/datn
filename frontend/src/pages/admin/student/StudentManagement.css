@@ -871,8 +871,7 @@
     min-width: 180px;
 }
 
-.gm-table-container>table>thead>tr>th:nth-child(6),
-.gm-table-container>table>thead>tr>th:nth-child(10) {
+.gm-table-container>table>thead>tr>th:nth-child(7)  {
     width: 200px;
     min-width: 200px;
 }

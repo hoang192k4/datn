@@ -7,8 +7,9 @@ import type { GroupBase, OptionsOrGroups } from 'react-select';
 import { sendFeedback } from '../../../services/notificationService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import Swal from 'sweetalert2';
-import { CreateLoading } from '../../../components/ui/CreateLoading';
+
 import { getTeacherByStudent } from '../../../services/teacherService';
+import { Loading } from '../../../components/ui/loading/Loading';
 
 
 
@@ -29,7 +30,7 @@ type OptionType = { value: string; label: string };
 
 const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, onSuccess }) => {
     const [createLoading, setCreateLoading] = useState<boolean>(false);
-    const { register, handleSubmit, formState: { errors }, control } = useForm<FormValues>({
+    const { register, handleSubmit, formState: { errors }, control, reset } = useForm<FormValues>({
         defaultValues: {
             title: '',
             content: '',
@@ -40,7 +41,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
 
     const onSubmit = async (data: FormValues) => {
 
-        
+
         const receiverIds = [];
         receiverIds.push(data.teacher.value);
 
@@ -58,6 +59,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                     icon: "success",
                 })
                 onSuccess();
+                reset();
             }
 
         } catch (error: any) {
@@ -134,6 +136,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                                     Chọn Giảng Viên *
                                 </label>
                                 <Controller name="teacher"
+                                    rules={{ required: "Giảng viên là bắt buộc" }}
                                     control={control}
                                     render={({ field: { onChange, value, ...field } }) => (
                                         <AsyncPaginate<OptionType, GroupBase<OptionType>, { page: number }, true>
@@ -145,8 +148,14 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                                             noOptionsMessage={() => "Không tìm thấy giảng viên"}
                                             loadingMessage={() => "Đang tải..."}
                                             debounceTimeout={500}
+                                            isClearable
 
                                         />)} />
+                                {errors.teacher && (
+                                    <p style={{ color: "red", fontSize: "0.875rem", marginTop: "0.25rem" }}>
+                                        {errors.teacher.message}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Tiêu đề */}
@@ -198,7 +207,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ isOpen, onClose, 
                     </div>
                 </div>
             </form>
-            {createLoading ? <CreateLoading title="Đang tạo thông báo" /> : <> </>}
+            {createLoading ? <Loading title="Đang tạo thông báo" /> : <> </>}
         </>
     );
 };
