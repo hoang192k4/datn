@@ -112,7 +112,7 @@ const ScheduleManagement: React.FC = () => {
         fetchSchedules(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom?.value);
     }, [page, filterDay, filterSession, searchTerm, filterSemester, filterClassroom]);
 
-    const handleSubmit = async (data: ScheduleFormData) => {
+    const handleSubmit = async (data: ScheduleFormData): Promise<boolean> => {
         if (typeModal === "create") {
             try {
                 setLoadingCreate(true);
@@ -124,6 +124,7 @@ const ScheduleManagement: React.FC = () => {
                         icon: "success"
                     })
                     fetchScheduleNoLoading(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom.value);
+                    return true;
                 }
             } catch (error: any) {
                 if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
@@ -146,6 +147,7 @@ const ScheduleManagement: React.FC = () => {
                         html: `<ul> ${lis}</ul>`
                     })
                 }
+                return false;
             } finally {
                 setLoadingCreate(false);
             }
@@ -161,6 +163,8 @@ const ScheduleManagement: React.FC = () => {
                         icon: "success"
                     })
                     fetchScheduleNoLoading(searchTerm, filterSession, filterDay, page, filterSemester, filterClassroom?.value);
+                    setSchdeuleSelected(null);
+                    return true;
                 }
             } catch (error: any) {
                 if (error.response.status === HttpStatus.UNPROCESSABLE_ENTITY) {
@@ -172,6 +176,7 @@ const ScheduleManagement: React.FC = () => {
                         icon: "warning",
                         html: `<ul> ${lis}</ul>`
                     })
+                    return false;
                 }
                 if (error.response.status === HttpStatus.BAD_REQUEST) {
                     const errors = error.response.data.message_validate;
@@ -183,12 +188,15 @@ const ScheduleManagement: React.FC = () => {
                         icon: "warning",
                         html: `<ul> ${lis}</ul>`
                     })
+                    return false;
                 }
+
             } finally {
                 setLoadingCreate(false);
-                setSchdeuleSelected(null);
+
             }
         }
+        return false;
 
     }
 
@@ -320,7 +328,7 @@ const ScheduleManagement: React.FC = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {loading ? (<tr><td colSpan={10}><Loading /> </td></tr>) : (
+                                    {loading ? (<tr><td colSpan={11}><Loading /> </td></tr>) : (
                                         schedules.map((schedule) => (
                                             <tr key={schedule.id} className="table-row">
                                                 <td className="table-cell">
