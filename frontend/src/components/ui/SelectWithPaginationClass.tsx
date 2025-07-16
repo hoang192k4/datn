@@ -55,7 +55,7 @@ const SelectWithPaginationClass = ({
                     handleSelectedClass(selected as Selected);
                 }}
                 components={customComponents}
-                placeholder="-- Tìm Lớp Chủ Quản --"
+                placeholder="-- Tìm Lớp Chính Khóa --"
                 additional={{
                     page: 1,
                 }}

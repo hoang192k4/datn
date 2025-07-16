@@ -188,7 +188,7 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
                                 <SelectWithPaginationTeacher handleSelectedTeacher={handleSelectedTeacher} value={teacher} />
                             </label>
                             <label>
-                                Lớp Chủ Quản:
+                                Lớp Chính khóa:
                                 <SelectWithPaginationClass handleSelectedClass={handleSelectedClass} value={selectedClass} />
                             </label>
                         </div>

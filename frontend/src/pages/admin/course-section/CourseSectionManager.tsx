@@ -229,7 +229,7 @@ const CourseSectionManager = () => {
                                     <th>Bắt Đầu</th>
                                     <th>Kết Thúc</th>
                                     <th>Số Tuần</th>
-                                    <th>Lớp Chủ Quản</th>
+                                    <th>Lớp Chính Khóa</th>
                                     <th>Môn Học</th>
                                     <th>Học Kỳ</th>
                                     <th>Trạng Thái</th>

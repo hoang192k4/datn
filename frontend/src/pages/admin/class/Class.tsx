@@ -53,7 +53,6 @@ const Class = () => {
         } finally { setLoading(false); }
     }
 
-
     useEffect(() => {
         fetchCourseSection();
     }, [])
@@ -122,6 +121,8 @@ const Class = () => {
                         icon: "success",
                         draggable: true
                     });
+                    const currentStudentTotal = currentClassName.match(/\d+(?=\s+sinh viên)/);
+                    setCurrentClassName((prev) => prev.replace(/\d+(?=\s+sinh viên)/, `${(currentStudentTotal ? parseInt(currentStudentTotal[0]) - 1 : 0)}`));
                     setStudentList((prev) => prev.filter(student => student.id !== studentId));
                 }
             }
@@ -174,7 +175,7 @@ const Class = () => {
                                             <ClassCard key={item.id} course_section={item} setAction={setAction}
                                                 setCurrentClassId={setCurrentClassId} setCurrentClassName={setCurrentClassName} />
                                         )) :
-                                        <div style={{ textAlign: 'center', color: '#888', marginTop: '1.5rem' ,width:'100%'}}>
+                                        <div style={{ textAlign: 'center', color: '#888', marginTop: '1.5rem', width: '100%' }}>
                                             <strong>Không tìm thấy danh sách lớp học</strong>
                                         </div>
                                 }
@@ -221,18 +222,18 @@ const Class = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {studentList && studentFilter.length > 0 ? 
+                                        {studentList && studentFilter.length > 0 ?
                                             studentFilter.map((student, index) => (
-                                            <tr key={student.id} onClick={() => handleStudentDetail(student.id)}>
-                                                <td>{index + 1}</td>
-                                                <td>{student.student_code}</td>
-                                                <td>{student.name}</td>
-                                                <td>{student.email}</td>
-                                                <td>{genderMap[student.gender]}</td>
-                                                <td>{statusMap[student.status]}</td>
-                                                <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
-                                            </tr>
-                                        )) :
+                                                <tr key={student.id} onClick={() => handleStudentDetail(student.id)}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{student.student_code}</td>
+                                                    <td>{student.name}</td>
+                                                    <td>{student.email}</td>
+                                                    <td>{genderMap[student.gender]}</td>
+                                                    <td>{statusMap[student.status]}</td>
+                                                    <td><div onClick={(e) => { e.stopPropagation(); handleDeleteStudent(student.id) }}><FaDeleteLeft /><button>Xóa</button></div></td>
+                                                </tr>
+                                            )) :
                                             <tr><td colSpan={7} style={{ textAlign: 'center' }}>Không có sinh viên nào phù hợp</td></tr>
                                         }
                                     </tbody>
@@ -244,10 +245,10 @@ const Class = () => {
             </div>
             {showPopupAddStudent === 'show' && <ClassStudentDetail student={studentDetail}
                 setShowPopupAddStudent={setShowPopupAddStudent} showBtnAddStudent={true}
-                currentClassId={currentClassId} fetchStudentList={fetchStudentList} />}
+                currentClassId={currentClassId} fetchStudentList={fetchStudentList} setCurrentClassName={setCurrentClassName} currentClassName={currentClassName} />}
 
             {showPopup === 'show' && <ClassStudentDetail currentClassId={currentClassId}
-                student={studentDetail} setShowPopup={setShowPopup} showBtnAddStudent={false} />}
+                student={studentDetail} setShowPopup={setShowPopup} showBtnAddStudent={false} setCurrentClassName={setCurrentClassName} currentClassName={currentClassName} />}
         </>
     )
 }

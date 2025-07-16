@@ -36,9 +36,17 @@
     th,
     td {
       border: 1px solid #ddd;
-      text-align: center;
       padding: 10px;
     }
+
+    th {
+      text-align: center;
+    }
+
+    td {
+      text-align: left;
+    }
+
 
     .button-soft {
       position: relative;
@@ -150,4 +158,3 @@
     table>tbody>tr>td:first-child {
       text-align: center;
     }
-
