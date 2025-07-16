@@ -5,7 +5,7 @@ import { Tabs, TabList, TabPanel, Tab } from 'react-tabs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import 'react-tabs/style/react-tabs.css';
-import { deleteNotification, getFeedbackSendFromStudent, getNotifications } from '../../../services/notificationService';
+import { deleteNotification, getFeedbackSendFromStudent, getNotifications, updateReadStatusNotification } from '../../../services/notificationService';
 import type { Paginate } from '../../../types/paginate';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import { Loading } from '../../../components/ui/Loading';
@@ -18,6 +18,9 @@ import NotificationModal from './CreateNotificationModal';
 import type { TeacherList } from '../../../types/teacher';
 import TeacherNotificationItem from './TeacherNotificationItem';
 import debounce from 'lodash.debounce';
+import { useDispatch } from 'react-redux';
+import { decrementUnread } from '../../../store/slices/notiSlice';
+import { NotificationStatus } from '../../../enums/NotificationStatus';
 
 interface Notification {
     id: number;
@@ -78,6 +81,8 @@ const StudentNotification: React.FC = () => {
     const [search, setSearch] = useState<string>('');
     const [feedbackPage, setFeedbackPage] = useState<number | null | undefined>(1);
     const [searchInput, setSearchInput] = useState<string>('');
+    const dispatch = useDispatch();
+
 
     const fetchNotifications = async ({ page, limit, key }: Paginate, type: NotificationType | null) => {
         try {
@@ -192,7 +197,7 @@ const StudentNotification: React.FC = () => {
     }, [keywordNotification]);
 
     useEffect(() => {
-        fetchStudentNotifications({ key: keywordNotificationDebounce, page: studentPage }, NotificationType.TeacherSend);
+        fetchStudentNotifications({ key: keywordNotificationDebounce, page: studentPage, limit: 10 }, NotificationType.TeacherSend);
     }, [keywordNotificationDebounce, studentPage]);
 
 
@@ -208,7 +213,18 @@ const StudentNotification: React.FC = () => {
 
     useEffect(() => {
         handler(searchInput);
-    }, [searchInput])
+    }, [searchInput]);
+    const handleUpdateStatus = async (id: number) => {
+        try {
+            const res = await updateReadStatusNotification(id);
+            setStudentNotifications((prev) => prev.map((notification) => {
+                return notification.id === id ? res.data : notification;
+            }));
+            dispatch(decrementUnread());
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <>
             <PageHeader title='Thông Báo' subtitle='Quản lý thông báo của sinh viên' />
@@ -219,7 +235,8 @@ const StudentNotification: React.FC = () => {
                         <svg className="header-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-5 5-5-5h5V12h5v5z" />
                         </svg>
-                        <h1 className="header-title">Thông Báo Từ Khoa Và Giảng Viên</h1>
+                        {/* <h1 className="header-title">Thông Báo Từ Khoa Và Giảng Viên</h1> */}
+                        <h1 className="header-title">Thông Báo Từ Giảng Viên</h1>
 
                     </div>
                     <button className="btn-primary" onClick={() => setCreateModal(true)}>
@@ -231,50 +248,11 @@ const StudentNotification: React.FC = () => {
                 </div>
                 <Tabs>
                     <TabList>
-                        <Tab>Thông báo từ khoa</Tab>
+                        {/* <Tab>Thông báo từ khoa</Tab> */}
                         <Tab>Thông báo từ giảng viên</Tab>
                         <Tab>Phản hồi đã gửi</Tab>
                     </TabList>
-                    <TabPanel>
-                        {/* Filters */}
-                        <div className="filters">
-                            <div className="filters-row">
-                                <div className="search-container">
 
-                                    <input
-                                        type="text"
-                                        className="search-input"
-                                        placeholder="Tìm kiếm thông báo..."
-                                        value={keyword}
-                                        onChange={(e) => setKeyword(e.target.value)}
-
-                                    />
-                                    <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
-                                </div>
-
-                            </div>
-                        </div>
-
-                        {/* Notifications List */}
-                        {loading ? (<Loading />) : notifications.length === 0 ? <div className="notification-no-item"> Không có thông báo nào</div> : notifications.map((notification) => (
-                            <div key={notification.id} className="notification-item">
-                                <NotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
-                            </div>
-                        ))}
-
-                        {/* Pagination */}
-                        {notifications.length === 0 ? <> </> : paginate ? (<div className="pagination">
-                            <div className="pagination-info">
-                                Hiển thị <strong> {paginate?.from}</strong> đến <strong> {paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> thông báo
-                            </div>
-                            <div className="pagination-controls">
-                                <button className="page-btn" onClick={() => setPage(paginate?.previous_page)}>Trước</button>
-                                <button className="page-btn active">{paginate?.current_page}</button>
-                                <button className="page-btn" onClick={() => setPage(paginate?.next_page)}>Sau</button>
-                            </div>
-                        </div>) : (<div> </div>)}
-
-                    </TabPanel>
                     <TabPanel>
                         {/* Filters */}
                         <div className="filters">
@@ -294,7 +272,7 @@ const StudentNotification: React.FC = () => {
 
                         {/* Notifications List */}
                         {loadingStudentNotify ? (<Loading />) : studentNotifications.length === 0 ? <div className="notification-no-item">Không có thông báo nào</div> : studentNotifications.map((notification) => (
-                            <div key={notification.id} className="notification-item">
+                            <div key={notification.id} className={`notification-item ${notification.status === NotificationStatus.Unred ? 'notification-unread-color' : ''}`} onClick={() => { handleUpdateStatus(notification.id) }}>
                                 <NotificationItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
                             </div>
                         ))}

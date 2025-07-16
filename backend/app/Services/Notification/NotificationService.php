@@ -231,7 +231,7 @@ class NotificationService implements NotificationServiceInterface
     {
         try {
             $data = $request->validated();
-            $limit = $data['limit'] ?? 10;
+            $limit = $data['limit'] ?? null;
             $page =  $data['page'] ?? 1;
             $key = $data['key'] ?? null;
             $type =  isset($data['type']) == null ? NotificationType::AdminSend : $data['type'];

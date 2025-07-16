@@ -47,7 +47,7 @@ class StudentNotificationController extends BaseController
             $limit = $data['limit'] ?? 10;
             $page = $data['page'] ?? 1;
             $key = $data['key'] ?? null;
-            $feedbacks = $this->repository->getList(['student_id' => $this->getCurrentStudentId(), 'type' => NotificationType::StudentSend], [], [], $limit, $page, ['title' => ['like', $key], 'content' => ['like', $key]]);
+            $feedbacks = $this->repository->getList(['student_id' => $this->getCurrentStudentId(), 'type' => NotificationType::StudentSend], ['created_at' => 'desc'], [], $limit, $page, ['title' => ['like', $key], 'content' => ['like', $key]]);
             return $this->jsonResponseSuccess(new FeedbackRourceCollection($feedbacks));
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);

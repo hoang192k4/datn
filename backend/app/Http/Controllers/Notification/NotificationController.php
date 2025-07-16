@@ -79,9 +79,13 @@ class NotificationController extends BaseController
     {
         try {
             $notifications = $this->notificationService->getMyNotifications($request);
+            $limit = $request->limit ?? null;
             if (!$notifications)
                 return $this->jsonResponseError();
-            return $this->jsonResponseSuccess(new NotificationResourceCollection($notifications));
+            if ($limit) {
+                return $this->jsonResponseSuccess(new NotificationResourceCollection($notifications));
+            }
+            return $this->jsonResponseSuccess(NotificationResource::collection($notifications));
         } catch (AuthenticationException $e) {
             return $this->jsonResponseError($e->getMessage(), 401);
         } catch (Exception $e) {

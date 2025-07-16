@@ -112,9 +112,6 @@
      transition: background-color 0.2s;
  }
 
- .notification-item:hover {
-     background: #f9fafb;
- }
 
  .notification-item:last-child {
      border-bottom: none;

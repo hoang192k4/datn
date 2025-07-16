@@ -15,6 +15,8 @@ import Swal from 'sweetalert2';
 import { NotificationType } from '../../../../enums/NotificationType';
 import NotificationAdminItem from './NotificationAdminItem';
 import { NotificationStatus } from '../../../../enums/NotificationStatus';
+import { useDispatch } from 'react-redux';
+import { decrementUnread } from '../../../../store/slices/notiSlice';
 
 interface Notification {
     id: number;
@@ -44,21 +46,22 @@ interface StudentNotification {
 }
 
 const FacultyStudentNotification: React.FC = () => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [_notifications, setNotifications] = useState<Notification[]>([]);
     const [studentNotifications, setStudentNotifications] = useState<StudentNotification[]>([]);
     const [studentNotifyPaginate, setStudentNotifyPaginate] = useState<Paginate>();
     const [paginate, setPaginate] = useState<Paginate>();
-    const [loading, setLoading] = useState<boolean>(false);
-    const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false)
+    const [_loading, setLoading] = useState<boolean>(false);
+    const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false);
+    const limit = 10;
 
     // const [editingPost, setEditingPost] = useState<NotificationCourseSection>();
-    const [keyword, setKeyword] = useState<string>('');
+    const [keyword, _setKeyword] = useState<string>('');
     const [keywordDebounce, setKeywordDebounce] = useState<string>('');
     const [keywordNotification, setKeywordNotification] = useState<string>('');
     const [keywordNotificationDebounce, setKeywordNotificationDebounce] = useState<string>('');
     const [page, setPage] = useState<number | null | undefined>(1);
     const [studentPage, setStudentPage] = useState<number | null | undefined>(1);
-
+    const dispatch = useDispatch();
     const fetchNotifications = async ({ page, limit, key }: Paginate, type: NotificationType | null) => {
         try {
             setLoading(true);
@@ -114,8 +117,8 @@ const FacultyStudentNotification: React.FC = () => {
                             title: 'Xóa thông báo thành công',
                             icon: 'success',
                         });
-                        fetchStudentNotifications({ page: 1 }, NotificationType.StudentSend);
-                        fetchNotifications({ page: 1 }, NotificationType.AdminSend);
+                        fetchStudentNotifications({ page: 1, limit: limit }, NotificationType.StudentSend);
+                        fetchNotifications({ page: 1, limit: limit }, NotificationType.AdminSend);
 
                     }
                 } catch (error: any) {
@@ -132,6 +135,7 @@ const FacultyStudentNotification: React.FC = () => {
             setStudentNotifications((prev) => prev.map((notification) => {
                 return notification.id === id ? res.data : notification;
             }));
+            dispatch(decrementUnread());
         } catch (error) {
             console.log(error);
         }
@@ -150,7 +154,7 @@ const FacultyStudentNotification: React.FC = () => {
     }, [keyword]);
 
     useEffect(() => {
-        fetchNotifications({ key: keywordDebounce, page: page }, NotificationType.AdminSend);
+        fetchNotifications({ key: keywordDebounce, page: page, limit: limit }, NotificationType.AdminSend);
     }, [keywordDebounce, NotificationType.AdminSend, page]);
 
 
@@ -166,7 +170,7 @@ const FacultyStudentNotification: React.FC = () => {
     }, [keywordNotification]);
 
     useEffect(() => {
-        fetchStudentNotifications({ key: keywordNotificationDebounce, page: studentPage }, NotificationType.StudentSend);
+        fetchStudentNotifications({ key: keywordNotificationDebounce, page: studentPage, limit: limit }, NotificationType.StudentSend);
     }, [keywordNotificationDebounce, studentPage]);
 
 
@@ -181,54 +185,16 @@ const FacultyStudentNotification: React.FC = () => {
                         <svg className="header-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-5 5-5-5h5V12h5v5z" />
                         </svg>
-                        <h1 className="header-title">Thông Báo Từ Khoa Và Sinh Viên</h1>
+                        {/* <h1 className="header-title">Thông Báo Từ Khoa Và Sinh Viên</h1> */}
+                        <h1 className="header-title">Phản Hồi Từ Sinh Viên</h1>
                     </div>
                 </div>
                 <Tabs>
                     <TabList>
-                        <Tab>Thông báo từ khoa</Tab>
+                        {/* <Tab>Thông báo từ khoa</Tab> */}
                         <Tab>Phản hồi từ sinh viên</Tab>
                     </TabList>
-                    <TabPanel>
-                        {/* Filters */}
-                        <div className="filters">
-                            <div className="filters-row">
-                                <div className="search-container">
 
-                                    <input
-                                        type="text"
-                                        className="search-input"
-                                        placeholder="Tìm kiếm thông báo..."
-                                        value={keyword}
-                                        onChange={(e) => setKeyword(e.target.value)}
-
-                                    />
-                                    <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
-                                </div>
-
-                            </div>
-                        </div>
-
-                        {/* Notifications List */}
-                        {loading ? (<Loading />) : notifications.length === 0 ? <div className="notification-no-item"> Không có thông báo nào</div> : notifications.map((notification) => (
-                            <div key={notification.id} className={`notification-item ${notification.status === NotificationStatus.Unred ? 'notification-unread-color' : ''}`}>
-                                <NotificationAdminItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
-                            </div>
-                        ))}
-
-                        {/* Pagination */}
-                        {notifications.length === 0 ? <> </> : paginate ? (<div className="pagination">
-                            <div className="pagination-info">
-                                Hiển thị <strong> {paginate?.from}</strong> đến <strong> {paginate?.to}</strong> trong tổng số <strong>{paginate?.total}</strong> thông báo
-                            </div>
-                            <div className="pagination-controls">
-                                <button className="page-btn" onClick={() => setPage(paginate?.previous_page)}>Trước</button>
-                                <button className="page-btn active">{paginate?.current_page}</button>
-                                <button className="page-btn" onClick={() => setPage(paginate?.next_page)}>Sau</button>
-                            </div>
-                        </div>) : (<div> </div>)}
-
-                    </TabPanel>
                     <TabPanel>
                         {/* Filters */}
                         <div className="filters">
