@@ -7,7 +7,7 @@ import type { GroupBase, OptionsOrGroups } from 'react-select';
 import { sendFeedback } from '../../../services/notificationService';
 import { HttpStatus } from '../../../enums/HttpStatus';
 import Swal from 'sweetalert2';
-import { CreateLoading } from '../../../components/ui/CreateLoading';
+
 import { getTeacherByStudent } from '../../../services/teacherService';
 import { Loading } from '../../../components/ui/loading/Loading';
 

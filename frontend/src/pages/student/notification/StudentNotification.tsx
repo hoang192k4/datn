@@ -61,15 +61,15 @@ interface Feedback {
 }
 
 const StudentNotification: React.FC = () => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [_notifications, setNotifications] = useState<Notification[]>([]);
     const [studentNotifications, setStudentNotifications] = useState<StudentNotification[]>([]);
     const [studentNotifyPaginate, setStudentNotifyPaginate] = useState<Paginate>();
-    const [paginate, setPaginate] = useState<Paginate>();
-    const [loading, setLoading] = useState<boolean>(false);
+    const [_paginate, setPaginate] = useState<Paginate>();
+    const [_loading, setLoading] = useState<boolean>(false);
     const [loadingStudentNotify, setLoadingStudentNotify] = useState<boolean>(false)
 
     // const [editingPost, setEditingPost] = useState<NotificationCourseSection>();
-    const [keyword, setKeyword] = useState<string>('');
+    const [keyword, _setKeyword] = useState<string>('');
     const [keywordDebounce, setKeywordDebounce] = useState<string>('');
     const [keywordNotification, setKeywordNotification] = useState<string>('');
     const [keywordNotificationDebounce, setKeywordNotificationDebounce] = useState<string>('');
