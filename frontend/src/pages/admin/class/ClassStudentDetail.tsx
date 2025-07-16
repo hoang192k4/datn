@@ -14,13 +14,15 @@ import { HttpStatus } from "../../../enums/HttpStatus";
 interface PropClass {
     student?: StudentList,
     currentClassId: number | null,
+    setCurrentClassName: React.Dispatch<React.SetStateAction<string>>,
+    currentClassName: string | null,
     showBtnAddStudent: boolean,
     fetchStudentList?: (courseSectionId: number) => void,
     setShowPopupAddStudent?: React.Dispatch<React.SetStateAction<'show' | 'hide'>>,
     setShowPopup?: React.Dispatch<React.SetStateAction<'show' | 'hide'>>,
 }
 const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
-    setShowPopupAddStudent, currentClassId,
+    setShowPopupAddStudent, currentClassId, setCurrentClassName, currentClassName,
     fetchStudentList }: PropClass) => {
 
     const [summaryGradeByStudent, setSummaryGradeByStudent] = useState<SummaryGradeByStudent[]>([]);
@@ -68,14 +70,17 @@ const ClassStudentDetail = ({ student, setShowPopup, showBtnAddStudent,
                     if (showBtnAddStudent && setShowPopupAddStudent) {
                         setShowPopupAddStudent('hide');
                     }
-                    if (fetchStudentList) {
-                        await fetchStudentList(currentClassId);
-                        Swal.fire({
-                            title: res.message,
-                            icon: "success",
-                            draggable: true
-                        })
-                    }
+                    Swal.fire({
+                        title: res.message,
+                        icon: "success",
+                        draggable: true
+                    }).then(async () => {
+                        const currentStudentTotal = currentClassName?.match(/\d+(?=\s+sinh viên)/);
+                        setCurrentClassName((prev) => prev.replace(/\d+(?=\s+sinh viên)/, `${currentStudentTotal ? parseInt(currentStudentTotal[0]) + 1 : 0}`));
+                        if (fetchStudentList) {
+                            await fetchStudentList(currentClassId);
+                        }
+                    })
                 }
             }
         }).catch((errors) => {

@@ -27,3 +27,10 @@
 .student-grade>thead>tr>th:nth-child(2) {
     min-width: 180px;
 }
+
+.student-grade>tbody>tr>td{
+    text-align: center;
+}
+.student-grade>tbody>tr>td:nth-child(2){
+    text-align: left;
+}

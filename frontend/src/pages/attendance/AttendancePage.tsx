@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import './AttendancePage.css';
 import { getListAttendanceStudent } from '../../services/attendanceService';
+import { Loading } from '../../components/ui/Loading';
 
 
 interface Attendance {
@@ -20,14 +21,16 @@ interface StudentAttendance {
 
 const AttendancePage = (props: any) => {
     const [studentAttendance, setStudentAttendance] = useState<StudentAttendance[]>([]);
+    const [loading, setloading] = useState(false);
 
     const fetch = async () => {
         try {
+            setloading(true);
             const res = await getListAttendanceStudent(props.id);
             setStudentAttendance(res.data);
         } catch (error: any) {
 
-        }
+        } finally { setloading(false) }
     }
 
     useEffect(() => {
@@ -66,45 +69,48 @@ const AttendancePage = (props: any) => {
                 📝 <span className="excused">Vắng có phép</span>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>MSSV</th>
-                        <th>Họ tên</th>
-                        {sessions.map(([sessionId, date], index) => (
-                            <th key={sessionId}>
-                                Buổi {index + 1}
-                                <br />
-                                <small>{date}</small>
-                            </th>
-                        ))}
-                        <td>Có mặt</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {studentAttendance.length > 0 ? (studentAttendance.map((student) => (
-                        <tr key={student.id}>
-                            <td>{student.student_code}</td>
-                            <td>{student.name}</td>
-                            {sessions.map(([sessionId]) => {
-                                const att = student.attendance?.find(a => a.session_id === sessionId);
-                                const status = att?.status || null;
-                                const icon = statusIcons[status ?? ''] || '--';
+            {
+                loading ? <Loading /> :
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>MSSV</th>
+                                <th>Họ tên</th>
+                                {sessions.map(([sessionId, date], index) => (
+                                    <th key={sessionId}>
+                                        Buổi {index + 1}
+                                        <br />
+                                        <small>{date}</small>
+                                    </th>
+                                ))}
+                                <td>Có mặt</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {studentAttendance.length > 0 ? (studentAttendance.map((student) => (
+                                <tr key={student.id}>
+                                    <td>{student.student_code}</td>
+                                    <td>{student.name}</td>
+                                    {sessions.map(([sessionId]) => {
+                                        const att = student.attendance?.find(a => a.session_id === sessionId);
+                                        const status = att?.status || null;
+                                        const icon = statusIcons[status ?? ''] || '--';
 
-                                return (
-                                    <td key={sessionId} className={status || ''}>
-                                        {icon}
-                                        {att?.note && <br />}
-                                        {att?.note && <small>{att.note}</small>}
-                                    </td>
-                                );
-                            })}
-                            <td>{student.attendance_score}</td>
-                        </tr>
+                                        return (
+                                            <td key={sessionId} className={status || ''}>
+                                                {icon}
+                                                {att?.note && <br />}
+                                                {att?.note && <small>{att.note}</small>}
+                                            </td>
+                                        );
+                                    })}
+                                    <td>{student.attendance_score}</td>
+                                </tr>
 
-                    ))) : <tr><td colSpan={3}>Lớp học này chưa có buổi điểm danh nào</td></tr>}
-                </tbody>
-            </table>
+                            ))) : <tr><td colSpan={3}>Lớp học này chưa có buổi điểm danh nào</td></tr>}
+                        </tbody>
+                    </table>
+            }
         </div>
     )
 }

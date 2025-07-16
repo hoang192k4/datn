@@ -316,7 +316,7 @@ const ScheduleManagement: React.FC = () => {
                                         <th className="table-header">Phòng</th>
                                         <th className="table-header">Giảng viên</th>
                                         <th className="table-header">Học kỳ</th>
-                                        <th className="table-header" colSpan={2} style={{ textAlign: 'center' }}>Thao tác</th>
+                                        <th className="table-header">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -366,8 +366,6 @@ const ScheduleManagement: React.FC = () => {
                                                     >
                                                         <FaEdit />
                                                     </button>
-                                                </td>
-                                                <td className="table-cell">
                                                     <button
                                                         className="schedule-delete-button student-btn-primary"
                                                         onClick={() => handleDelete(schedule.id)}

@@ -5,7 +5,7 @@
 
   .schedule-wrapper {
       max-width: 1400px;
-      margin: 0 auto;   
+      margin: 0 auto;
   }
 
   .schedule-header {
@@ -170,11 +170,45 @@
 
   .table-header,
   .table-cell {
-      min-width: 70px;
+      /*  min-width: 70px; */
       padding: 12px;
       font-size: 14px;
       border-bottom: 1px solid #e5e7eb;
       color: black;
+  }
+
+  .table-header:last-child {
+      min-width: 120px;
+      width: 120px;
+  }
+
+  .table-header:nth-child(1),
+  .table-header:nth-child(2),
+  .table-header:nth-child(8){
+      min-width: 150px;
+      width: 150px;
+  }
+
+  .table-header:nth-child(5) {
+      min-width: 110px;
+      width: 110px;
+  }
+
+  .table-header:nth-child(3) {
+      min-width: 90px;
+      width: 90px;
+  }
+
+  .table-header:nth-child(4),
+  .table-header:nth-child(6),
+  .table-header:nth-child(7) {
+      min-width: 70px;
+      width: 70px;
+  }
+
+  .table-header:nth-child(9) {
+      min-width: 100px;
+      width: 100px;
   }
 
   .table-cell {
