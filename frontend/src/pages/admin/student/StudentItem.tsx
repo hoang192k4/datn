@@ -20,13 +20,13 @@ const StudentItem = ({ student, onEdit, setTypeModal, index }: Props) => {
             <td>{student.email}</td>
             <td>{student.name}</td>
             <td>{formatDayMonthYear(student.date_of_birth)}</td>
-            <td>{student.address}</td>
+            {/* <td>{student.address}</td> */}
             <td>{genderMap[student.gender]}</td>
             <td>{formatDayMonthYear(student.enrollment_date)}</td>
             <td>{student.graduation_date ? formatDayMonthYear(student.graduation_date) : 'Chưa tốt nghiệp'}</td>
             <td>{student.major}</td>
             <td> <StudentStatusBadge status={student.status} /></td>
-            <td> <button className="btn-primary-student" type="button" onClick={() => { onEdit(student); setTypeModal() }}> <FaRegEdit /> </button></td>
+            <td> <button className="btn-primary-student" type="button" title="Edit student" onClick={() => { onEdit(student); setTypeModal() }}> <FaRegEdit /> </button></td>
         </>
     );
 }

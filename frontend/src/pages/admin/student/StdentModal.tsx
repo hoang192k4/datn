@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: any) => Promise<boolean>;
     initialData?: any;
     majors: Major[] | undefined;
 
@@ -39,7 +39,7 @@ const StudentModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, initialData,
         },
     });
 
-    const submitHandler = () => {
+    const submitHandler = async () => {
         const allValues = getValues();
         let dataToSend = {};
         if (initialData) {
@@ -67,8 +67,11 @@ const StudentModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, initialData,
             dataToSend = allValues;
         }
 
-        onSubmit(dataToSend);
-        reset(); // reset sau khi submit
+        const success = await onSubmit(dataToSend);
+        if (success) {
+            reset();
+        }
+
     };
 
 
@@ -106,7 +109,7 @@ const StudentModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, initialData,
                         { name: "name", label: "Họ tên", required: true },
                         { name: "email", label: "Email", required: true, type: "email" },
                         { name: "student_code", label: "Mã sinh viên", required: true },
-                        { name: "address", label: "Địa chỉ" },
+                        { name: "address", label: "Địa chỉ", required: true },
                         { name: "date_of_birth", label: "Ngày sinh", type: "date", required: true },
                         { name: "enrollment_date", label: "Ngày nhập học", type: "date", required: true },
                         { name: "graduation_date", label: "Ngày tốt nghiệp", type: "date" },
@@ -218,7 +221,7 @@ const StudentModal: React.FC<Props> = ({ isOpen, onClose, onSubmit, initialData,
                     </div>
 
                     <div className="student-modal__actions">
-                        <button type="button" className="student-modal__btn cancel" onClick={onClose}>
+                        <button type="button" className="student-modal__btn cancel" onClick={() => {onClose(); reset();} }>
                             Hủy
                         </button>
                         <button type="submit" className="student-modal__btn submit">
