@@ -87,7 +87,6 @@ const StudentNotification: React.FC = () => {
             if (response.status === HttpStatus.SUCCESS) {
                 const notifications = response.data.notifications;
                 const paginate = response.data.meta;
-                console.log(paginate);
                 setNotifications(notifications);
                 setPaginate(paginate);
             }
