@@ -4,10 +4,12 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface NotificationState {
     unreadCount: number;
+    reloadFlag: boolean
 }
 
 const initialState: NotificationState = {
     unreadCount: 0,
+    reloadFlag: false,
 };
 
 const notiSlice = createSlice({
@@ -22,6 +24,7 @@ const notiSlice = createSlice({
         },
         incrementUnread(state) {
             state.unreadCount += 1;
+            state.reloadFlag = !state.reloadFlag;
         },
         resetUnread(state) {
             state.unreadCount = 0;

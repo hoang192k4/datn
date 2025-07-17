@@ -18,7 +18,7 @@ import NotificationModal from './CreateNotificationModal';
 import type { TeacherList } from '../../../types/teacher';
 import TeacherNotificationItem from './TeacherNotificationItem';
 import debounce from 'lodash.debounce';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { decrementUnread } from '../../../store/slices/notiSlice';
 import { NotificationStatus } from '../../../enums/NotificationStatus';
 
@@ -83,6 +83,12 @@ const StudentNotification: React.FC = () => {
     const [searchInput, setSearchInput] = useState<string>('');
     const dispatch = useDispatch();
 
+    const reloadFlag = useSelector((state: any) => state.noti.reloadFlag);
+ 
+    useEffect(() => {
+        fetchNotifications({ page: 1, limit: 10 }, NotificationType.AdminSend);
+        fetchStudentNotifications({ page: 1, limit: 10 }, NotificationType.TeacherSend);
+    }, [reloadFlag]);
 
     const fetchNotifications = async ({ page, limit, key }: Paginate, type: NotificationType | null) => {
         try {

@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
 import { NotificationType } from '../../../../enums/NotificationType';
 import NotificationAdminItem from './NotificationAdminItem';
 import { NotificationStatus } from '../../../../enums/NotificationStatus';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { decrementUnread } from '../../../../store/slices/notiSlice';
 
 interface Notification {
@@ -62,6 +62,9 @@ const FacultyStudentNotification: React.FC = () => {
     const [page, setPage] = useState<number | null | undefined>(1);
     const [studentPage, setStudentPage] = useState<number | null | undefined>(1);
     const dispatch = useDispatch();
+
+    const reloadFlag = useSelector((state: any) => state.noti.reloadFlag);
+ 
     const fetchNotifications = async ({ page, limit, key }: Paginate, type: NotificationType | null) => {
         try {
             setLoading(true);
@@ -99,6 +102,11 @@ const FacultyStudentNotification: React.FC = () => {
             setLoadingStudentNotify(false);
         }
     }
+
+    useEffect(() => {
+        fetchNotifications({ page: 1, limit: 10 }, NotificationType.AdminSend);
+        fetchStudentNotifications({ page: 1, limit: 10 }, NotificationType.StudentSend);
+    }, [reloadFlag]);
 
     const handleDeleteNotification = async (id: number) => {
         Swal.fire({
