@@ -64,7 +64,7 @@ const FacultyStudentNotification: React.FC = () => {
     const dispatch = useDispatch();
 
     const reloadFlag = useSelector((state: any) => state.noti.reloadFlag);
- 
+
     const fetchNotifications = async ({ page, limit, key }: Paginate, type: NotificationType | null) => {
         try {
             setLoading(true);
@@ -137,13 +137,16 @@ const FacultyStudentNotification: React.FC = () => {
 
     }
 
-    const handleUpdateStatus = async (id: number) => {
+    const handleUpdateStatus = async (id: number, status: string) => {
         try {
-            const res = await updateReadStatusNotification(id);
-            setStudentNotifications((prev) => prev.map((notification) => {
-                return notification.id === id ? res.data : notification;
-            }));
-            dispatch(decrementUnread());
+            if (status != NotificationStatus.Read) {
+                const res = await updateReadStatusNotification(id);
+                setStudentNotifications((prev) => prev.map((notification) => {
+                    return notification.id === id ? res.data : notification;
+                }));
+                dispatch(decrementUnread());
+            }
+
         } catch (error) {
             console.log(error);
         }
@@ -224,7 +227,7 @@ const FacultyStudentNotification: React.FC = () => {
 
                         {/* Notifications List */}
                         {loadingStudentNotify ? (<Loading />) : studentNotifications.length === 0 ? <div className="notification-no-item">Không có thông báo nào</div> : studentNotifications.map((notification) => (
-                            <div key={notification.id} className={`notification-item ${notification.status === NotificationStatus.Unred ? 'notification-unread-color' : ''}`} onClick={() => { handleUpdateStatus(notification.id) }}>
+                            <div key={notification.id} className={`notification-item ${notification.status === NotificationStatus.Unread ? 'notification-unread-color' : ''}`} onClick={() => { handleUpdateStatus(notification.id, notification.status) }}>
                                 <NotificationAdminItem notification={notification} onDelete={() => handleDeleteNotification(notification.id)} />
                             </div>
                         ))}
