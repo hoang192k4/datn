@@ -239,6 +239,7 @@ Route::controller(App\Http\Controllers\Class\ClassController::class)
         Route::get('/getAllFilter', 'getListClassesFilter'); //api lấy danh sách lớp chính khóa filter tên lớp, tên giảng viên chủ nhiệm, trạng thái
         Route::post('/', 'create'); //api thêm lớp chính khóa
         Route::put('/{id}', 'update'); //api sửa lớp chính khóa
+        Route::patch('/{id}', 'updateStatus'); //api cập nhật status
     });
 
 

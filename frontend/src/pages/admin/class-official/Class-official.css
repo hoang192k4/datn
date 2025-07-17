@@ -1,3 +1,42 @@
+.class-official-table>thead>tr>th:nth-child(7) {
+    min-width: 100px;
+}
+
+.class-official-table>thead>tr>th:nth-child(2) {
+    min-width: 150px;
+}
+
+.class-official-table>thead>tr>th:nth-child(3) {
+    min-width: 200px
+}
+
+.class-official-table>thead>tr>th:nth-child(4),
+.class-official-table>thead>tr>th:nth-child(5),
+.class-official-table>thead>tr>th:nth-child(6){
+    min-width: 120px;
+}
+
+.class-official-table>thead>tr>th:nth-child(7) {
+    min-width: 130px;
+}
+
+.class-official-table>thead>tr>th:last-child {
+    min-width: 100px;
+}
+
+.class-official-table>tbody>tr>td:nth-child(4),
+.class-official-table>tbody>tr>td:nth-child(5),
+.class-official-table>tbody>tr>td:nth-child(6),
+.class-official-table>tbody>tr>td:nth-child(7),
+.class-official-table>tbody>tr>td:nth-child(8) {
+    text-align: center;
+}
+
+.class-official-table>tbody>tr:hover {
+    background-color: #d9dff1;
+    cursor: pointer;
+}
+
 /* popup thêm sinh viên vào lớp */
 .popup-add-student-backdrop {
     position: fixed;
@@ -72,9 +111,11 @@
 .popup-add-student-item:last-child {
     border-bottom: none;
 }
-.popup-add-student-item > input {
+
+.popup-add-student-item>input {
     font-size: 16px;
 }
+
 .popup-add-student-info {
     font-size: 15px;
     font-weight: 500;
@@ -117,4 +158,3 @@
 .popup-add-student-item.selecto-selected {
     background-color: #dbeafe !important;
 }
-

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import PageHeader from "../../../components/ui/PageHeader"
-import { getListClassesFilter } from "../../../services/classServices";
+import { getListClassesFilter, updateStatusClass } from "../../../services/classServices";
 import { CourseSectionStatus } from "../../../enums/CourseSectionStatus";
 import { type Classes } from "../../../types/classes";
 import { HttpStatus } from "../../../enums/HttpStatus";
@@ -11,6 +11,7 @@ import { FaEdit, FaSearch } from "react-icons/fa";
 import { CourseSectionStatusMap } from "../../../utils/courseSectionText";
 import ClassOfficialPopup from "./ClassOfficialPopup";
 import './Class-official.css';
+import Swal from "sweetalert2";
 
 const ClassOfficial = () => {
     const [loading, setLoading] = useState(false);
@@ -39,7 +40,7 @@ const ClassOfficial = () => {
         } finally { setLoading(false) }
     }
 
-    
+
 
     useEffect(() => {
         fetchListClass();
@@ -60,7 +61,52 @@ const ClassOfficial = () => {
     }, 500), []);
 
     const handleUpdateStatus = async (status: CourseSectionStatus, classId: number) => {
-        console.log(status, classId);
+        Swal.fire({
+            title: `Thay đổi trạng thái lớp học phần thành <span style="color: #1e3a8a;">${CourseSectionStatusMap[status as CourseSectionStatus]}</span>?`,
+            showCancelButton: true,
+            icon: "question",
+            confirmButtonColor: "#10b981",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Hủy",
+            confirmButtonText: "Đồng ý",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setOpenId(null);
+                const res = await updateStatusClass(status, classId);
+                if (res) {
+                    console.log(res);
+                    Swal.fire({
+                        title: res.message,
+                        icon: "success",
+                        draggable: true
+                    });
+                    setListClasses(prev => prev.map(item => (
+                        item.id === classId ? {
+                            ...item,
+                            status: item.status = status
+                        } : item
+                    )));
+                }
+            }
+        }).catch((errors) => {
+            if (errors)
+                console.log(errors);
+
+            if (errors.response.status === HttpStatus.BAD_REQUEST) {
+                Swal.fire({
+                    title: "Thực hiện không thành công!",
+                    icon: "warning",
+                    text: errors.response.data.errors[0],
+                    draggable: true
+                });
+                return;
+            }
+            Swal.fire({
+                title: "Hệ thống đang có vấn đề. Vui lòng thử lại!",
+                icon: "error",
+                draggable: true
+            });
+        })
     }
 
     const handleShowPopupUpdate = (classId: number) => {
@@ -103,7 +149,7 @@ const ClassOfficial = () => {
 
                 {loading ? <Loading /> :
                     <div className="course-section-list">
-                        <table className="course-section-table">
+                        <table className="class-official-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -111,7 +157,7 @@ const ClassOfficial = () => {
                                     <th>Giảng viên chủ nhiệm</th>
                                     <th>Thời gian bắt đầu</th>
                                     <th>Thời gian kết thúc</th>
-                                    <th>Số lượng sinh vên</th>
+                                    <th>Số lượng sinh viên</th>
                                     <th>Trạng thái</th>
                                     <th>Thao tác</th>
                                 </tr>
@@ -152,7 +198,7 @@ const ClassOfficial = () => {
                                         </tr>
                                     ))
                                     :
-                                    <tr><td colSpan={5} style={{ textAlign: 'center' }}>Không có lớp học nào phù hợp</td></tr>}
+                                    <tr><td colSpan={8} style={{ textAlign: 'center' }}>Không có lớp học nào phù hợp</td></tr>}
                             </tbody>
                         </table>
                         <div className="pagination-container-admin">
@@ -172,9 +218,9 @@ const ClassOfficial = () => {
                     </div>
                 }
 
-                {actionClass && <ClassOfficialPopup actionClass={actionClass} 
-                setActionClass={setActionClass} fetchListClass={fetchListClass}
-                detailClass={detailClass} />}
+                {actionClass && <ClassOfficialPopup actionClass={actionClass}
+                    setActionClass={setActionClass} fetchListClass={fetchListClass}
+                    detailClass={detailClass} />}
             </div>
         </>
     )
