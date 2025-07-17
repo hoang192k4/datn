@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "../../admin/profile/ChangePassword.css";
 import { useForm } from "react-hook-form";
-import { teacherChangePassword } from "../../../services/authTeacherService";
 import { HttpStatus } from "../../../enums/HttpStatus";
 import Swal from "sweetalert2";
 import Loadding from "../../../components/ui/Loadding";
