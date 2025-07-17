@@ -69,7 +69,7 @@ const Dashboard = () => {
                                     <div className="stat-number">{statistics.total_course_sections}</div>
                                     <div className="stat-label">Lớp Học Phần Đang Hoạt Động</div>
                                 </div>
-                                <div className="stat-icon classNamees">🎓</div>
+                                <div className="stat-icon classNamees">📚</div>
                             </Link>
 
                         </div>

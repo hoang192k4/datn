@@ -168,7 +168,6 @@ const CourseSectionPopupAction: React.FC<CourseSectionProps> = ({ setActionCours
                 }
             }
         } catch (errors: any) {
-            console.log(errors);
             Swal.fire({
                 title: errors.response.data.message,
                 text: errors.response.data.errors,

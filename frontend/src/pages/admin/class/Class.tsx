@@ -92,8 +92,6 @@ const Class = () => {
         } finally { setLoading(false); }
     }
 
-
-
     const handleStudentDetail = async (studentId: number) => {
         const student = studentList.filter(student => student.id === studentId)
         if (student) {

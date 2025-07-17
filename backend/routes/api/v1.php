@@ -235,7 +235,10 @@ Route::controller(App\Http\Controllers\Semester\SemesterController::class)
 Route::controller(App\Http\Controllers\Class\ClassController::class)
     ->prefix('classes')
     ->group(function () {
-        Route::get('/', 'getListClasses'); //api lấy danh sách lớp chủ quản có keywrod kèm paginate
+        Route::get('/', 'getListClasses'); //api lấy danh sách lớp chính khóa có keywrod kèm paginate phục vụ cho course section
+        Route::get('/getAllFilter', 'getListClassesFilter'); //api lấy danh sách lớp chính khóa filter tên lớp, tên giảng viên chủ nhiệm, trạng thái
+        Route::post('/', 'create'); //api thêm lớp chính khóa
+        Route::put('/{id}', 'update'); //api sửa lớp chính khóa
     });
 
 

@@ -12,7 +12,7 @@ const ClassCard = (props: PropsClass) => {
     const handleStudentList = (courseSectionId: number, name: string, studentTotal: number) => {
         props.setAction('student_list');
         props.setCurrentClassId(courseSectionId);
-        props.setCurrentClassName(name + '- ' + studentTotal + ' sinh viên');
+        props.setCurrentClassName(name + ' - ' + studentTotal + ' sinh viên');
     }
     return (
         <>
