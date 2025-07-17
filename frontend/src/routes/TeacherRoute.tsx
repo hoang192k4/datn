@@ -13,6 +13,7 @@ import CourseSectionManager from "../pages/admin/course-section/CourseSectionMan
 import StudentManagement from "../pages/admin/student/StudentManagement";
 import ScheduleManagement from "../pages/admin/schedule/ScheduleManagement";
 import TeacherSchedule from "../pages/admin/schedule/TeacherSchedule";
+import ClassOfficial from "../pages/admin/class-official/ClassOfficial";
 
 export const TeacherRoute = [
     {
@@ -96,6 +97,11 @@ export const TeacherRoute = [
         'path': 'thoi-khoa-bieu-giang-vien',
         'element': <TeacherSchedule />,
         roles: ["homeroom_teacher", "subject_teacher"],
+    },
+    {
+        'path': 'lop-chinh-khoa',
+        'element': <ClassOfficial />,
+        roles: ["faculty_admin", "department_admin"],
     },
 
 ];

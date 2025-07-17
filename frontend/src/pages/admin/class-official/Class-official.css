@@ -1,0 +1,120 @@
+/* popup thêm sinh viên vào lớp */
+.popup-add-student-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-family: sans-serif;
+}
+
+.popup-add-student-dialog {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.popup-add-student-dialog header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.popup-add-student-dialog header h2 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.popup-add-student-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.popup-add-student-search-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.popup-add-student-list {
+    overflow-y: auto;
+    flex: 1;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 8px;
+    user-select: none;
+    padding: 14px 24px;
+}
+
+.popup-add-student-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 4px;
+    user-select: none;
+    border-bottom: 1px solid #d2d4d8;
+}
+
+.popup-add-student-item:last-child {
+    border-bottom: none;
+}
+.popup-add-student-item > input {
+    font-size: 16px;
+}
+.popup-add-student-info {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.popup-add-student-info small {
+    display: block;
+    color: #6b7280;
+    font-size: 0.7rem;
+}
+
+.popup-add-student-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.popup-add-student-btn {
+    padding: 10px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.popup-add-student-btn-close {
+    background: #e5e7eb;
+}
+
+.popup-add-student-btn-confirm {
+    background: #3b82f6;
+    color: white;
+}
+
+.popup-add-student-btn-confirm:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}
+
+.popup-add-student-item.selecto-selected {
+    background-color: #dbeafe !important;
+}
+

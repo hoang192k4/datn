@@ -12,14 +12,14 @@ class CustomClass extends Model
     //
     use HasFactory;
     protected $table = 'classes';
-    protected $fillable = ['id','name','status','teacher_id'];
+    protected $fillable = ['id', 'name', 'status', 'teacher_id','start_time','end_time'];
 
-    public function students():BelongsToMany
+    public function students(): BelongsToMany
     {
-        return $this->belongsToMany(Student::class,'class_student','student_id','class_id');
+        return $this->belongsToMany(Student::class, 'class_student', 'class_id', 'student_id');
     }
 
-    public function teacher():BelongsTo
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class);
     }

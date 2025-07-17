@@ -32,7 +32,7 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             icon: "🎓",
             url: "lop-hoc",
             label: "Lớp Học",
-            roles: [ "subject_teacher", "homeroom_teacher"]
+            roles: ["subject_teacher", "homeroom_teacher"]
             //roles: ["subject_teacher"]
         },
         {
@@ -94,6 +94,12 @@ const Sidebar = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
             icon: "📚",
             url: "lop-hoc-phan",
             label: "Quản lý lớp học phần",
+            roles: ["faculty_admin", "department_admin"],
+        },
+        {
+            icon: "🎓",
+            url: "lop-chinh-khoa",
+            label: "Quản lý lớp chính khóa",
             roles: ["faculty_admin", "department_admin"],
         },
     ];
