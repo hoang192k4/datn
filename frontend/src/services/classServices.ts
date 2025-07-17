@@ -38,3 +38,8 @@ export const updateClass = async (formData: ClassForm, classId: number) => {
     const response = await axiosTeacherInstance.put(`/classes/${classId}`, formData);
     return response.data;
 }
+
+export const updateStatusClass = async (status: CourseSectionStatus, classId: number) => {
+    const response = await axiosTeacherInstance.patch(`/classes/${classId}`, { status });
+    return response.data;
+}

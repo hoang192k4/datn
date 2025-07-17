@@ -7,6 +7,8 @@ use App\Models\ClassStudent;
 use App\Models\CustomClass;
 use App\Repositories\CustomClass\ClassRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use PhpOffice\PhpSpreadsheet\Worksheet\Validations;
 
 class ClassService implements ClassServiceInterface
 {
@@ -106,6 +108,21 @@ class ClassService implements ClassServiceInterface
             $class->students()->sync($studentsId);
         }
 
+        return true;
+    }
+
+    public function updateStatus(Request $request, string $classId)
+    {
+        $data = $request->validated();
+
+        $class = $this->repository->find($classId);
+        $totalStudent = $class->students()->count();
+        if ($totalStudent === 0)
+            throw ValidationException::withMessages(['Lớp học chưa có sinh viên không thể cập nhật']);
+
+        $result = $this->repository->update($classId, $data);
+        if (!$result)
+            return false;
         return true;
     }
 }

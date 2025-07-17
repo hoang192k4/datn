@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { getNotifications } from '../../services/notificationService';
 import { NotificationType } from '../../enums/NotificationType';
 import { incrementUnread, setUnreadCount } from '../../store/slices/notiSlice';
+import { TeacherRole } from '../../enums/TeacherRole';
 
 const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     const [loadingLogout, setLoadingLogout] = useState(false);
@@ -59,9 +60,9 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
 
     useEffect(() => {
         async function fetchNotifications() {
-            const response = await getNotifications({limit: null}, NotificationType.StudentSend);
+            const response = await getNotifications({ limit: null }, NotificationType.StudentSend);
             const notifications = response.data;
-            const unreadCount = notifications.filter((n:any) => n.status === "unread").length;
+            const unreadCount = notifications.filter((n: any) => n.status === "unread").length;
             dispatch(setUnreadCount(unreadCount));
         }
 
@@ -76,15 +77,17 @@ const HeaderAdmin = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
                 <button className="mobile-toggle" onClick={toggleSidebar}>☰</button>
                 <div className="logo"><Link to="dashboard">Khoa Công Nghệ Thông Tin</Link></div>
                 <div className="nav-right">
-                    <div className="notification-bell">
-                        <Link to="thong-bao/khoa-va-sinh-vien">
-                            <svg className="bell-icon" viewBox="0 0 24 24">
-                                <path d="M12 2C13.1 2 14 2.9 14 4C14 4.78 13.64 5.47 13.06 5.85C15.84 6.82 18 9.38 18 12.5V16L20 18V19H4V18L6 16V12.5C6 9.38 8.16 6.82 10.94 5.85C10.36 5.47 10 4.78 10 4C10 2.9 10.9 2 12 2ZM12 22C13.11 22 14 21.11 14 20H10C10 21.11 10.89 22 12 22Z" />
-                            </svg>
-                            {unreadCount === 0 ? <> </> : <span className="notification-badge"> {unreadCount} </span>}
-                        </Link>
-                    </div>
 
+                    {(user?.role !== TeacherRole.FacultyAdmin && user?.role !== TeacherRole.DepartmentAdmin) &&
+                        <div className="notification-bell">
+                            <Link to="thong-bao/khoa-va-sinh-vien">
+                                <svg className="bell-icon" viewBox="0 0 24 24">
+                                    <path d="M12 2C13.1 2 14 2.9 14 4C14 4.78 13.64 5.47 13.06 5.85C15.84 6.82 18 9.38 18 12.5V16L20 18V19H4V18L6 16V12.5C6 9.38 8.16 6.82 10.94 5.85C10.36 5.47 10 4.78 10 4C10 2.9 10.9 2 12 2ZM12 22C13.11 22 14 21.11 14 20H10C10 21.11 10.89 22 12 22Z" />
+                                </svg>
+                                {unreadCount === 0 ? <> </> : <span className="notification-badge"> {unreadCount} </span>}
+                            </Link>
+                        </div>
+                    }
                     <div className="nav-user" onClick={toggleUserDropdown}>
                         <div className="user-avatar">{user && getInitials(user.name)}</div>
                         <span>{user && user.name}</span>

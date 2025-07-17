@@ -39,4 +39,11 @@ class ClassRequest extends BaseRequest
             'studentsId' => 'exists:students,id'
         ];
     }
+
+    public function methodPatch()
+    {
+        return [
+            'status' => [new Enum(ClassStatus::class), 'required']
+        ];
+    }
 }

@@ -9,4 +9,5 @@ interface ClassServiceInterface
     public function getListClasses(Request $request);
     public function getListClassesFilter(Request $request);
     public function update(Request $request, string $classId);
+     public function updateStatus(Request $request, string $classId);
 }

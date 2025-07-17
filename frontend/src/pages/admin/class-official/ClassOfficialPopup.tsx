@@ -137,18 +137,17 @@ const ClassOfficialPopup: React.FC<PropsClass> = ({ actionClass, setActionClass,
                         </label>
                     </div>
 
-                    <div className="form-flex">
-                        <label>
-                            Thêm mới sinh viên:
-                            <button type="button" className="btn-attendance" onClick={() => setOpen(true)}>Thêm {selectedStudentId.length} sinh viên</button>
-                        </label>
-                    </div>
 
-                    <div className="form-modal-actions">
-                        <button type="button" className="btn-save button-soft" onClick={handleSubmit(actionClass === 'create' ? handleCreateClass : handleUpdateClass)}>
-                            {actionClass === 'create' ? 'Thêm' : 'Cập nhật'}
-                        </button>
-                        <button type="button" className="btn-cancel" onClick={() => { setActionClass('') }}>Đóng</button>
+
+                    <div className="form-modal-actions" style={{justifyContent:'space-between',alignItems:'center'}}>
+                        <button type="button" style={{marginTop:'0'}} className="btn-attendance" onClick={() => setOpen(true)}>Thêm mới sinh viên ({selectedStudentId.length})</button>
+
+                        <div>
+                            <button type="button" className="btn-save button-soft" onClick={handleSubmit(actionClass === 'create' ? handleCreateClass : handleUpdateClass)}>
+                                {actionClass === 'create' ? 'Thêm' : 'Cập nhật'}
+                            </button>
+                            <button type="button" className="btn-cancel" style={{marginLeft:'8px'}} onClick={() => { setActionClass('') }}>Đóng</button>
+                        </div>
                     </div>
 
                 </form>

@@ -10,6 +10,7 @@ use App\Repositories\CustomClass\ClassRepositoryInterface;
 use App\Services\Class\ClassServiceInterface;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ClassController extends BaseController
 {
@@ -67,6 +68,21 @@ class ClassController extends BaseController
             if (!$result)
                 return $this->jsonResponseError();
             return $this->jsonResponseSuccessNoData('Cập nhật lớp chính khóa thành công');
+        } catch (Exception $e) {
+            $this->logError($e->getMessage(), $e);
+            return $this->jsonResponseError('Lỗi hệ thống.', 500);
+        }
+    }
+
+    public function updateStatus(ClassRequest $request, string $classId)
+    {
+        try {
+            $result = $this->service->updateStatus($request, $classId);
+            if (!$result)
+                return $this->jsonResponseError();
+            return $this->jsonResponseSuccessNoData('Cập nhật trạng thái thành công');
+        } catch (ValidationException $e) {
+            return $this->jsonResponseErrorValidate('Thực hiện không thành công',400,$e->errors());
         } catch (Exception $e) {
             $this->logError($e->getMessage(), $e);
             return $this->jsonResponseError('Lỗi hệ thống.', 500);
