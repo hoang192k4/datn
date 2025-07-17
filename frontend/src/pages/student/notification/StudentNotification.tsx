@@ -155,8 +155,8 @@ const StudentNotification: React.FC = () => {
                             title: 'Xóa thông báo thành công',
                             icon: 'success',
                         });
-                        fetchStudentNotifications({ page: 1 }, NotificationType.StudentSend);
-                        fetchNotifications({ page: 1 }, NotificationType.AdminSend);
+                        fetchStudentNotifications({ page: 1, limit: 10 }, NotificationType.StudentSend);
+                        fetchNotifications({ page: 1, limit: 10 }, NotificationType.AdminSend);
                         fetchFeedbacks(search, feedbackPage ?? 1);
 
                     }
@@ -181,7 +181,7 @@ const StudentNotification: React.FC = () => {
     }, [keyword]);
 
     useEffect(() => {
-        fetchNotifications({ key: keywordDebounce, page: page }, NotificationType.AdminSend);
+        fetchNotifications({ key: keywordDebounce, page: page, limit: 10 }, NotificationType.AdminSend);
     }, [keywordDebounce, NotificationType.AdminSend, page]);
 
 
