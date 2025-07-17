@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\Student\StudentStatus;
 use Carbon\Carbon;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -10,11 +9,14 @@ use App\Traits\AuthStudentApi;
 use App\Services\AuthServiceApi;
 use App\Supports\ResponseWithJson;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Enums\Student\StudentStatus;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\Student\StudentResource;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Http\Resources\Student\StudentResource;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 /**
@@ -202,5 +204,20 @@ class StudentAuthController extends BaseController
             'user' => new StudentResource($user),
         ])
             ->cookie('access_token', $accessToken, $accessTtl * 30, null, null, $this->secure, true, false, 'Lax');
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $data = $request->validated();
+
+        $student = $this->getCurrentStudent();
+        if (!Hash::check($data['current_password'], $student->password)) {
+            return $this->jsonResponseError('Mật khẩu hiện tại không đúng!', 422);
+        }
+
+        $student->password = Hash::make($data['new_password']);
+        $student->save();
+
+        return $this->jsonResponseSuccessNoData('Thay đổi mật khẩu thành công!');
     }
 }

@@ -84,6 +84,10 @@ const HeaderStudent = () => {
                         <button className="user-btn-student">{user && user.name}</button>
                         <div className="dropdown-content-student">
                             <Link to="thong-tin-ca-nhan">Thông Tin Cá Nhân</Link>
+                            <Link to="doi-mat-khau">
+                                
+                                Đổi mật khẩu
+                            </Link>
                             <Link to="#" onClick={handleStudentLogout}>Đăng Xuất</Link>
                         </div>
                     </div>

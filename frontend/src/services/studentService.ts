@@ -54,3 +54,13 @@ export const getConductScoresMyStudent = async () => {
     const response = await axiosStudentInstance.get('/me/conduct-scores');
     return response.data;
 }
+
+export const studentChangePassword = async (current_password: string, new_password: string, new_password_confirmation: string) => {
+    const response = await axiosStudentInstance.post('/students/change-password', {
+        current_password,
+        new_password,
+        new_password_confirmation
+    });
+
+    return response;
+}
