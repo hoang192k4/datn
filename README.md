@@ -46,18 +46,14 @@ Trong bối cảnh **chuyển đổi số trong giáo dục** ngày càng phát 
 ## 🛠️ Công nghệ sử dụng
 
 ### Backend
-- **🔧 Framework**: Laravel 8.x
+- **🔧 Framework**: Laravel 12.x
 - **🗄️ Database**: MySQL 8.0
-- **🔐 Authentication**: Laravel Sanctum
-- **📧 Email**: Laravel Mail với Mailgun
-- **🔄 Queue**: Redis Queue
+- **🔐 Authentication**: JWT
+- **📧 Notification**: Firebase Cloud Messing
 
 ### Frontend  
-- **⚡ Framework**: Vue.js 3 + Composition API
-- **🎨 UI Library**: Vuetify 3
-- **📱 State Management**: Pinia
+- **⚡ Framework**: React.js 
 - **🚀 Build Tool**: Vite
-- **📊 Charts**: Chart.js
 
 ### DevOps & Tools
 - **🐳 Containerization**: Docker + Docker Compose
@@ -68,8 +64,8 @@ Trong bối cảnh **chuyển đổi số trong giáo dục** ngày càng phát 
 ## 🚀 Cài đặt
 
 ### Yêu cầu hệ thống
-- PHP >= 7.4
-- Node.js >= 14.x
+- PHP >= 8.2
+- Node.js >= 22.x
 - MySQL >= 8.0
 - Composer >= 2.0
 
@@ -192,7 +188,7 @@ Chúng tôi hoan nghênh mọi đóng góp! Vui lòng đọc [CONTRIBUTING.md](C
 | ![Đặng Khánh Đông](https://github.com/github.png?size=100) | ![Nguyễn Ngọc Hoàng](https://github.com/github.png?size=100) |
 |:---:|:---:|
 | **Đặng Khánh Đông** | **Nguyễn Ngọc Hoàng** |
-| Backend Developer | Frontend Developer |
+| Developer | Developer |
 | [![GitHub](https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white)](https://github.com/dongkhanh) | [![GitHub](https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white)](https://github.com/hoang192k4) |
 
 </div>
@@ -204,7 +200,7 @@ Dự án này được phân phối dưới giấy phép MIT. Xem [LICENSE](LICE
 ## 📞 Liên hệ
 
 - 📧 Email: conankun170606@gmail.com
-- 🌐 Website: [learning-system.com](https://learning-system.com)
+- 🌐 Website: [donghoang.online](https://donghoang.online)
 - 📱 Discord: 
 
 ---
