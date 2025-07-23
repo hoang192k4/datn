@@ -142,12 +142,9 @@ Tài liệu API chi tiết có tại: `http://localhost:8000/api/documentation`
 
 ```mermaid
 graph TB
-    A[Client Browser] --> B[Vue.js Frontend]
+    A[Client Browser] --> B[ReactJs Frontend]
     B --> C[Laravel API]
     C --> D[MySQL Database]
-    C --> E[Redis Cache]
-    C --> F[Queue Jobs]
-    G[Admin Panel] --> C
 ```
 
 ## 🧪 Testing
